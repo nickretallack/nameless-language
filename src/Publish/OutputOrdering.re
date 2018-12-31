@@ -1,5 +1,16 @@
 open Definition;
 
+type outputOrderingNode = {
+  contentID: string,
+  kind: definedNodeKind,
+  children: Belt.List.t(outputOrderingTree),
+}
+and outputOrderingTree =
+  | OutputOrderingDisconnected
+  | OutputOrderingInput
+  | OutputOrderingReference
+  | OutputOrderingNode(outputOrderingNode);
+
 let sortBy: 'a .(Belt.List.t('a), 'a => 'b) => Belt.List.t('a) =
   (list, func) =>
     Belt.List.map(

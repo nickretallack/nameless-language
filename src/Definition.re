@@ -159,14 +159,3 @@ type publishingDependency = {
 };
 
 type publishingDependencies = Belt.Map.String.t(publishingDependency);
-
-type outputOrderingNode = {
-  contentID: string,
-  kind: definedNodeKind,
-  children: Belt.List.t(outputOrderingTree),
-}
-and outputOrderingTree =
-  | OutputOrderingDisconnected
-  | OutputOrderingInput
-  | OutputOrderingReference
-  | OutputOrderingNode(outputOrderingNode);

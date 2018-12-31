@@ -8,17 +8,6 @@ var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
 
-function sortBy(list, func) {
-  return Belt_List.map(Belt_List.sort(Belt_List.map(list, (function (item) {
-                        return /* tuple */[
-                                Curry._1(func, item),
-                                item
-                              ];
-                      })), Caml_obj.caml_compare), (function (prim) {
-                return prim[1];
-              }));
-}
-
 function canonicalizeOutputConnection(graph, dependencies, connectionSink) {
   var match = Belt_Map.get(graph[/* connections */0], connectionSink);
   if (match) {
@@ -62,14 +51,20 @@ function getOutputOrdering(graph, dependencies) {
   if (match) {
     return Belt_SetString.toList(graph[/* outputs */3]);
   } else {
-    return sortBy(Belt_SetString.toList(graph[/* outputs */3]), (function (param) {
-                  return canonicalizeOutput(graph, dependencies, param);
+    var list = Belt_SetString.toList(graph[/* outputs */3]);
+    var func = function (param) {
+      return canonicalizeOutput(graph, dependencies, param);
+    };
+    return Belt_List.map(Belt_List.sort(Belt_List.map(list, (function (item) {
+                          return /* tuple */[
+                                  Curry._1(func, item),
+                                  item
+                                ];
+                        })), Caml_obj.caml_compare), (function (prim) {
+                  return prim[1];
                 }));
   }
 }
 
-exports.sortBy = sortBy;
-exports.canonicalizeOutputConnection = canonicalizeOutputConnection;
-exports.canonicalizeOutput = canonicalizeOutput;
 exports.getOutputOrdering = getOutputOrdering;
 /* No side effect */
