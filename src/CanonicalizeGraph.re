@@ -7,6 +7,76 @@ let rec findIndexExn: 'a .(Belt.List.t('a), 'a) => int =
     | [head, ...rest] => head == needle ? 0 : 1 + findIndexExn(rest, needle)
     };
 
+let definedNodeKindToString = (kind: definedNodeKind) =>
+  switch (kind) {
+  | ValueNode => "value"
+  | FunctionCallNode => "function call"
+  | FunctionPointerCallNode => "function pointer call"
+  | FunctionDefinitionNode => "function definition"
+  | ConstructorNode => "constructor"
+  | AccessorNode => "accessor"
+  };
+
+let encodeNode = (node: publishingNode) =>
+  Json.Encode.(
+    switch (node) {
+    | PublishingReferenceNode => object_([("type", string("reference"))])
+    | PublishingListNode(length) =>
+      object_([("type", string("list")), ("length", int(length))])
+    | PublishingDefinedNode({kind, contentID}) =>
+      object_([
+        ("type", string("defined")),
+        ("kind", string(definedNodeKindToString(kind))),
+        ("contentID", string(contentID)),
+      ])
+    }
+  );
+
+let encodeConnectionNode = (connectionNode: publishingConnectionNode) =>
+  Json.Encode.(
+    switch (connectionNode) {
+    | PublishingGraphConnection => object_([("type", string("graph"))])
+    | PublishingNodeConnection(index) =>
+      object_([("type", string("node")), ("index", int(index))])
+    }
+  );
+
+let encodeConnectionNib = (connectionNib: publishingConnectionNib) =>
+  Json.Encode.(
+    switch (connectionNib) {
+    | PublishingValueConnection => object_([("type", string("value"))])
+    | PublishingNibConnection(index) =>
+      object_([("type", string("nib")), ("index", int(index))])
+    }
+  );
+
+let encodeConnectionSide = (connectionSide: publishingConnectionSide) =>
+  Json.Encode.(
+    object_([
+      ("node", encodeConnectionNode(connectionSide.node)),
+      ("nib", encodeConnectionNib(connectionSide.nib)),
+    ])
+  );
+
+let encodeConnection = (connection: publishingConnection) =>
+  Json.Encode.(
+    object_([
+      ("source", encodeConnectionSide(connection.source)),
+      ("sink", encodeConnectionSide(connection.sink)),
+    ])
+  );
+
+let encodeGraph = (graph: publishingGraphImplementation) =>
+  Json.Encode.(
+    object_([
+      ("type", string("graph")),
+      ("inputCount", int(graph.inputCount)),
+      ("outputCount", int(graph.inputCount)),
+      ("nodes", list(encodeNode, graph.nodes)),
+      ("connections", list(encodeConnection, graph.connections)),
+    ])
+  );
+
 let canonicalizeConnectionSide =
     (
       graph: graphImplementation,
@@ -56,60 +126,59 @@ let canonicalizeConnectionSide =
 
 let canonicalizeGraph =
     (graph: graphImplementation, dependencies: publishingDependencies)
-    : (
-        Belt.List.t(nibID),
-        Belt.List.t(nibID),
-        publishingGraphImplementation,
-      ) => {
+    : (string, Belt.List.t(nibID), Belt.List.t(nibID)) => {
   let (nodeOrdering, inputOrdering, outputOrdering) =
     NodeInputOrdering.getNodeInputOrdering(graph, dependencies);
 
   (
-    inputOrdering,
-    outputOrdering,
-    {
-      inputCount: Belt.List.size(inputOrdering),
-      outputCount: Belt.List.size(outputOrdering),
-      nodes:
-        Belt.List.map(nodeOrdering, nodeID =>
-          switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
-          | ReferenceNode => PublishingReferenceNode
-          | ListNode(length) => PublishingListNode(length)
-          | DefinedNode({kind, definitionID}) =>
-            PublishingDefinedNode({
-              kind,
-              contentID:
-                Belt.Map.String.getExn(dependencies, definitionID).contentID,
-            })
-          }
-        ),
-      connections:
-        Belt.List.sort(
-          Belt.List.map(
-            Belt.Map.toList(graph.connections), ((sink, source)) =>
-            {
-              sink:
-                canonicalizeConnectionSide(
-                  graph,
-                  dependencies,
-                  nodeOrdering,
-                  outputOrdering,
-                  sink,
-                  true,
-                ),
-              source:
-                canonicalizeConnectionSide(
-                  graph,
-                  dependencies,
-                  nodeOrdering,
-                  inputOrdering,
-                  source,
-                  false,
-                ),
+    Json.stringify(
+      encodeGraph({
+        inputCount: Belt.List.size(inputOrdering),
+        outputCount: Belt.List.size(outputOrdering),
+        nodes:
+          Belt.List.map(nodeOrdering, nodeID =>
+            switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
+            | ReferenceNode => PublishingReferenceNode
+            | ListNode(length) => PublishingListNode(length)
+            | DefinedNode({kind, definitionID}) =>
+              PublishingDefinedNode({
+                kind,
+                contentID:
+                  Belt.Map.String.getExn(dependencies, definitionID).
+                    contentID,
+              })
             }
           ),
-          compare,
-        ),
-    },
+        connections:
+          Belt.List.sort(
+            Belt.List.map(
+              Belt.Map.toList(graph.connections), ((sink, source)) =>
+              {
+                sink:
+                  canonicalizeConnectionSide(
+                    graph,
+                    dependencies,
+                    nodeOrdering,
+                    outputOrdering,
+                    sink,
+                    true,
+                  ),
+                source:
+                  canonicalizeConnectionSide(
+                    graph,
+                    dependencies,
+                    nodeOrdering,
+                    inputOrdering,
+                    source,
+                    false,
+                  ),
+              }
+            ),
+            compare,
+          ),
+      }),
+    ),
+    inputOrdering,
+    outputOrdering,
   );
 };
