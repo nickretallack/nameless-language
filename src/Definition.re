@@ -84,14 +84,18 @@ type primitiveValueType =
   | NumberType
   | TextType;
 
-type definedValueType =
-  | RecordType
-  | UnionType
-  | FunctionPointerType;
+/* type definedValueKind =
+   | RecordType
+   | UnionType
+   | FunctionPointerType; */
+
+type publishingValueType =
+  | PublishingPrimitiveValueType(primitiveValueType)
+  | PublishingDefinedValueType(contentID);
 
 type valueType =
   | PrimitiveValueType(primitiveValueType)
-  | DefinedValueType(definedValueType);
+  | DefinedValueType(definitionID);
 
 type typedFields = Belt.Map.String.t(valueType);
 

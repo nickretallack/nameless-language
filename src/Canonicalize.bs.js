@@ -2,109 +2,27 @@
 'use strict';
 
 var Json = require("@glennsl/bs-json/src/Json.bs.js");
-var Belt_List = require("bs-platform/lib/js/belt_List.js");
-var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
-var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
+var CanonicalizeType$ReactTemplate = require("./CanonicalizeType.bs.js");
 var CanonicalizeGraph$ReactTemplate = require("./CanonicalizeGraph.bs.js");
-
-function encodePrimitiveValue(primitiveValue) {
-  var tmp;
-  switch (primitiveValue.tag | 0) {
-    case 0 : 
-        tmp = /* :: */[
-          /* tuple */[
-            "type",
-            "integer"
-          ],
-          /* :: */[
-            /* tuple */[
-              "value",
-              primitiveValue[0]
-            ],
-            /* [] */0
-          ]
-        ];
-        break;
-    case 1 : 
-        tmp = /* :: */[
-          /* tuple */[
-            "type",
-            "number"
-          ],
-          /* :: */[
-            /* tuple */[
-              "value",
-              primitiveValue[0]
-            ],
-            /* [] */0
-          ]
-        ];
-        break;
-    case 2 : 
-        tmp = /* :: */[
-          /* tuple */[
-            "type",
-            "text"
-          ],
-          /* :: */[
-            /* tuple */[
-              "value",
-              primitiveValue[0]
-            ],
-            /* [] */0
-          ]
-        ];
-        break;
-    
-  }
-  return Json_encode.object_(tmp);
-}
-
-function encodeConstant(primitiveValue) {
-  return Json.stringify(Json_encode.object_(/* :: */[
-                  /* tuple */[
-                    "type",
-                    "constant"
-                  ],
-                  /* :: */[
-                    /* tuple */[
-                      "value",
-                      encodePrimitiveValue(primitiveValue)
-                    ],
-                    /* [] */0
-                  ]
-                ]));
-}
-
-function canonicalizeTypedFields(typedFields) {
-  var nibOrdering = Belt_List.map(Helpers$ReactTemplate.sortBy(Belt_MapString.toList(typedFields), (function (prim) {
-              return prim[1];
-            })), (function (prim) {
-          return prim[0];
-        }));
-  var canonical = Belt_List.map(nibOrdering, (function (nibID) {
-          return Belt_MapString.getExn(typedFields, nibID);
-        }));
-  return /* tuple */[
-          canonical,
-          nibOrdering
-        ];
-}
+var CanonicalizeConstant$ReactTemplate = require("./CanonicalizeConstant.bs.js");
 
 function canonicalizeImplementation(implementation, display, dependencies) {
+  var tmp;
   switch (implementation.tag | 0) {
     case 0 : 
-        return encodeConstant(implementation[0]);
+        tmp = CanonicalizeConstant$ReactTemplate.encodeCanonicalConstant(implementation[0]);
+        break;
     case 3 : 
-        return CanonicalizeGraph$ReactTemplate.canonicalizeGraph(implementation[0], dependencies, display);
+        tmp = CanonicalizeGraph$ReactTemplate.encodeCanonicalGraph(implementation[0], dependencies, display);
+        break;
+    case 4 : 
+        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalRecord(implementation[0], dependencies, display[/* inputOrdering */0]);
+        break;
     default:
-      return "todo";
+      tmp = "todo";
   }
+  return Json.stringify(tmp);
 }
 
-exports.encodePrimitiveValue = encodePrimitiveValue;
-exports.encodeConstant = encodeConstant;
-exports.canonicalizeTypedFields = canonicalizeTypedFields;
 exports.canonicalizeImplementation = canonicalizeImplementation;
-/* Json_encode Not a pure module */
+/* CanonicalizeType-ReactTemplate Not a pure module */

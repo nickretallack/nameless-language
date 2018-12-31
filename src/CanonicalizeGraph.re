@@ -130,7 +130,7 @@ let canonicalizeGraph =
       dependencies: publishingDependencies,
       display: display,
     )
-    : string => {
+    : publishingGraphImplementation => {
   let nodeOrdering =
     NodeInputOrdering.getNodeInputOrdering(
       graph,
@@ -138,50 +138,56 @@ let canonicalizeGraph =
       display.outputOrdering,
     );
 
-  Json.stringify(
-    encodeGraph({
-      inputCount: Belt.List.size(display.inputOrdering),
-      outputCount: Belt.List.size(display.outputOrdering),
-      nodes:
-        Belt.List.map(nodeOrdering, nodeID =>
-          switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
-          | ReferenceNode => PublishingReferenceNode
-          | ListNode(length) => PublishingListNode(length)
-          | DefinedNode({kind, definitionID}) =>
-            PublishingDefinedNode({
-              kind,
-              contentID:
-                Belt.Map.String.getExn(dependencies, definitionID).contentID,
-            })
+  {
+    inputCount: Belt.List.size(display.inputOrdering),
+    outputCount: Belt.List.size(display.outputOrdering),
+    nodes:
+      Belt.List.map(nodeOrdering, nodeID =>
+        switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
+        | ReferenceNode => PublishingReferenceNode
+        | ListNode(length) => PublishingListNode(length)
+        | DefinedNode({kind, definitionID}) =>
+          PublishingDefinedNode({
+            kind,
+            contentID:
+              Belt.Map.String.getExn(dependencies, definitionID).contentID,
+          })
+        }
+      ),
+    connections:
+      Belt.List.sort(
+        Belt.List.map(Belt.Map.toList(graph.connections), ((sink, source)) =>
+          {
+            sink:
+              canonicalizeConnectionSide(
+                graph,
+                dependencies,
+                nodeOrdering,
+                display.outputOrdering,
+                sink,
+                true,
+              ),
+            source:
+              canonicalizeConnectionSide(
+                graph,
+                dependencies,
+                nodeOrdering,
+                display.inputOrdering,
+                source,
+                false,
+              ),
           }
         ),
-      connections:
-        Belt.List.sort(
-          Belt.List.map(
-            Belt.Map.toList(graph.connections), ((sink, source)) =>
-            {
-              sink:
-                canonicalizeConnectionSide(
-                  graph,
-                  dependencies,
-                  nodeOrdering,
-                  display.outputOrdering,
-                  sink,
-                  true,
-                ),
-              source:
-                canonicalizeConnectionSide(
-                  graph,
-                  dependencies,
-                  nodeOrdering,
-                  display.inputOrdering,
-                  source,
-                  false,
-                ),
-            }
-          ),
-          compare,
-        ),
-    }),
-  );
+        compare,
+      ),
+  };
 };
+
+let encodeCanonicalGraph =
+    (
+      graph: graphImplementation,
+      dependencies: publishingDependencies,
+      display: display,
+    )
+    : Js.Json.t =>
+  encodeGraph(canonicalizeGraph(graph, dependencies, display));
