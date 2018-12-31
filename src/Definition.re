@@ -4,7 +4,15 @@ type definitionID = string;
 type contentID = string;
 type language = string;
 
+/* Misc */
+
+type point = {
+  x: int,
+  y: int,
+};
+
 /* Connections */
+
 type connectionNode =
   | GraphConnection
   | NodeConnection(nodeID);
@@ -26,15 +34,139 @@ module ConnectionComparator =
 type connections =
   Belt.Map.t(connectionSide, connectionSide, ConnectionComparator.identity);
 
-type point = {
-  x: int,
-  y: int,
+/* Nodes */
+
+type definedNodeKind =
+  | FunctionCallNode
+  | ValueNode
+  | FunctionPointerCallNode
+  | FunctionDefinitionNode
+  | ConstructorNode
+  | AccessorNode;
+
+type definedNode = {
+  kind: definedNodeKind,
+  definitionID,
 };
 
-/* type Implementation
-   = ConstantImplementation Value
-   | ExternalImplementation Interface String
-   | GraphImplementation GraphImplementationRecord
-   | InterfaceImplementation Interface
-   | RecordTypeImplementation TypeImplementation
-   | UnionTypeImplementation TypeImplementation */
+type node =
+  | Reference
+  | DefinedNode(definedNode);
+
+type nodes = Belt.Map.String.t(node);
+
+type graphImplementation = {
+  connections,
+  nodes,
+  inputs: Belt.Set.String.t,
+  outputs: Belt.Set.String.t,
+};
+
+/* Interface */
+
+type primitiveValueType =
+  | IntegerType
+  | NumberType
+  | TextType;
+
+type definedValueType =
+  | RecordType
+  | UnionType
+  | FunctionPointerType;
+
+type valueType =
+  | PrimitiveValueType(primitiveValueType)
+  | DefinedValueType(definedValueType);
+
+type typedFields = Belt.Map.String.t(valueType);
+
+type interface = {
+  inputTypes: typedFields,
+  outputTypes: typedFields,
+};
+
+type externalImplementation = {
+  name: string,
+  interface,
+};
+
+/* Value */
+
+type primitiveValue =
+  | IntegerValue(int)
+  | NumberValue(float)
+  | TextValue(string);
+
+type definedValue = {
+  definitionID,
+  values: Belt.List.t(value),
+}
+and value =
+  | PrimitiveValue(primitiveValue)
+  | DefinedValue(definedValue);
+
+/* Implementation */
+
+type implementation =
+  | ConstantImplementation(primitiveValue)
+  | InterfaceImplementation(interface)
+  | ExternalImplementation(externalImplementation)
+  | GraphImplementation(graphImplementation)
+  | RecordTypeImplementation(typedFields)
+  | UnionTypeImplementation(typedFields);
+
+/* Documentation */
+
+type vettable = {
+  text: string,
+  vetted: bool,
+  authorID: option(string),
+};
+
+type translatable = {
+  sourceLanguage: language,
+  translations: Belt.Map.String.t(vettable),
+};
+
+type documentation = {
+  name: translatable,
+  description: translatable,
+  inputs: Belt.Map.String.t(translatable),
+  outputs: Belt.Map.String.t(translatable),
+};
+
+/* Definition */
+
+type display = {
+  inputOrder: Belt.List.t(string),
+  outputOrder: Belt.List.t(string),
+};
+
+type definition = {
+  implementation,
+  documentation,
+  display,
+};
+
+/* Publishing.
+   These types are used ephemerally during publishing.  They won't be retained in the state.
+   */
+
+type publishingDependency = {
+  contentID,
+  inputOrdering: Belt.List.t(string),
+  outputOrdering: Belt.List.t(string),
+};
+
+type publishingDependencies = Belt.Map.String.t(publishingDependency);
+
+type outputOrderingNode = {
+  contentID: string,
+  kind: definedNodeKind,
+  children: Belt.List.t(outputOrderingTree),
+}
+and outputOrderingTree =
+  | OutputOrderingDisconnected
+  | OutputOrderingInput
+  | OutputOrderingReference
+  | OutputOrderingNode(outputOrderingNode);
