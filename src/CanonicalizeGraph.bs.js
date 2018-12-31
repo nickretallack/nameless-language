@@ -23,6 +23,44 @@ function findIndexExn(list, needle) {
   }
 }
 
+function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibOrdering, connectionSide, isSink) {
+  var match = connectionSide[/* node */0];
+  if (match) {
+    var nodeID = match[0];
+    var match$1 = connectionSide[/* nib */1];
+    var tmp;
+    if (match$1) {
+      var match$2 = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
+      if (match$2) {
+        var dependency = Belt_MapString.getExn(dependencies, match$2[0][/* definitionID */1]);
+        tmp = /* PublishingNibConnection */[findIndexExn(isSink ? dependency[/* inputOrdering */1] : dependency[/* outputOrdering */2], match$1[0])];
+      } else {
+        throw Definition$ReactTemplate.InvalidConnection;
+      }
+    } else if (isSink) {
+      throw Definition$ReactTemplate.InvalidConnection;
+    } else {
+      tmp = /* PublishingValueConnection */0;
+    }
+    return /* record */[
+            /* node : PublishingNodeConnection */[findIndexExn(nodeOrdering, nodeID)],
+            /* nib */tmp
+          ];
+  } else {
+    var match$3 = connectionSide[/* nib */1];
+    var tmp$1;
+    if (match$3) {
+      tmp$1 = /* PublishingNibConnection */[findIndexExn(graphNibOrdering, match$3[0])];
+    } else {
+      throw Definition$ReactTemplate.InvalidConnection;
+    }
+    return /* record */[
+            /* node : PublishingGraphConnection */0,
+            /* nib */tmp$1
+          ];
+  }
+}
+
 function canonicalizeGraph(graph, dependencies) {
   var outputOrdering = OutputOrdering$ReactTemplate.getOutputOrdering(graph, dependencies);
   var match = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies, outputOrdering);
@@ -42,77 +80,9 @@ function canonicalizeGraph(graph, dependencies) {
                   }
                 })),
           /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */0]), (function (param) {
-                      var source = param[1];
-                      var sink = param[0];
-                      var match = source[/* node */0];
-                      var tmp;
-                      if (match) {
-                        var nodeID = match[0];
-                        var match$1 = source[/* nib */1];
-                        var tmp$1;
-                        if (match$1) {
-                          var match$2 = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
-                          if (match$2) {
-                            tmp$1 = /* PublishingNibConnection */[findIndexExn(Belt_MapString.getExn(dependencies, match$2[0][/* definitionID */1])[/* outputOrdering */2], match$1[0])];
-                          } else {
-                            throw Definition$ReactTemplate.InvalidConnection;
-                          }
-                        } else {
-                          tmp$1 = /* PublishingValueConnection */0;
-                        }
-                        tmp = /* record */[
-                          /* node : PublishingNodeConnection */[findIndexExn(nodeOrdering, nodeID)],
-                          /* nib */tmp$1
-                        ];
-                      } else {
-                        var match$3 = source[/* nib */1];
-                        var tmp$2;
-                        if (match$3) {
-                          tmp$2 = /* PublishingNibConnection */[findIndexExn(inputOrdering, match$3[0])];
-                        } else {
-                          throw Definition$ReactTemplate.InvalidConnection;
-                        }
-                        tmp = /* record */[
-                          /* node : PublishingGraphConnection */0,
-                          /* nib */tmp$2
-                        ];
-                      }
-                      var match$4 = sink[/* node */0];
-                      var tmp$3;
-                      if (match$4) {
-                        var nodeID$1 = match$4[0];
-                        var match$5 = sink[/* nib */1];
-                        var tmp$4;
-                        if (match$5) {
-                          var match$6 = Belt_MapString.getExn(graph[/* nodes */1], nodeID$1);
-                          if (match$6) {
-                            tmp$4 = /* PublishingNibConnection */[findIndexExn(Belt_MapString.getExn(dependencies, match$6[0][/* definitionID */1])[/* inputOrdering */1], match$5[0])];
-                          } else {
-                            throw Definition$ReactTemplate.InvalidConnection;
-                          }
-                        } else {
-                          throw Definition$ReactTemplate.InvalidConnection;
-                        }
-                        tmp$3 = /* record */[
-                          /* node : PublishingNodeConnection */[findIndexExn(nodeOrdering, nodeID$1)],
-                          /* nib */tmp$4
-                        ];
-                      } else {
-                        var match$7 = sink[/* nib */1];
-                        var tmp$5;
-                        if (match$7) {
-                          tmp$5 = /* PublishingNibConnection */[findIndexExn(outputOrdering, match$7[0])];
-                        } else {
-                          throw Definition$ReactTemplate.InvalidConnection;
-                        }
-                        tmp$3 = /* record */[
-                          /* node : PublishingGraphConnection */0,
-                          /* nib */tmp$5
-                        ];
-                      }
                       return /* record */[
-                              /* source */tmp,
-                              /* sink */tmp$3
+                              /* source */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, inputOrdering, param[1], false),
+                              /* sink */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, outputOrdering, param[0], true)
                             ];
                     })), Caml_obj.caml_compare),
           /* inputCount */Belt_List.size(inputOrdering),
@@ -121,5 +91,6 @@ function canonicalizeGraph(graph, dependencies) {
 }
 
 exports.findIndexExn = findIndexExn;
+exports.canonicalizeConnectionSide = canonicalizeConnectionSide;
 exports.canonicalizeGraph = canonicalizeGraph;
 /* Definition-ReactTemplate Not a pure module */
