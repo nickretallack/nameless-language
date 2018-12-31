@@ -65,7 +65,7 @@ type definedNode = {
 };
 
 type node =
-  | Reference
+  | ReferenceNode
   | DefinedNode(definedNode);
 
 type nodes = Belt.Map.String.t(node);
@@ -163,6 +163,8 @@ type definition = {
   display,
 };
 
+exception InvalidConnection;
+
 /* Publishing.
    These types are used ephemerally during publishing.  They won't be retained in the state.
    */
@@ -174,3 +176,37 @@ type publishingDependency = {
 };
 
 type publishingDependencies = Belt.Map.String.t(publishingDependency);
+
+type publishingDefinedNode = {
+  kind: definedNodeKind,
+  contentID,
+};
+
+type publishingNode =
+  | PublishingReferenceNode
+  | PublishingDefinedNode(publishingDefinedNode);
+
+type publishingConnectionNode =
+  | PublishingGraphConnection
+  | PublishingNodeConnection(int);
+
+type publishingConnectionNib =
+  | PublishingValueConnection
+  | PublishingNibConnection(int);
+
+type publishingConnectionSide = {
+  node: publishingConnectionNode,
+  nib: publishingConnectionNib,
+};
+
+type publishingConnection = {
+  source: publishingConnectionSide,
+  sink: publishingConnectionSide,
+};
+
+type publishingGraphImplementation = {
+  nodes: Belt.List.t(publishingNode),
+  connections: Belt.List.t(publishingConnection),
+  inputCount: int,
+  outputCount: int,
+};

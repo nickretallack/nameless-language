@@ -3,6 +3,7 @@
 
 var Belt_Id = require("bs-platform/lib/js/belt_Id.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
+var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
 
 var cmp = Caml_obj.caml_compare;
 
@@ -30,7 +31,10 @@ function definedNodeKindHasValueOutput(kind) {
   }
 }
 
+var InvalidConnection = Caml_exceptions.create("Definition-ReactTemplate.InvalidConnection");
+
 exports.ConnectionComparator = ConnectionComparator;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
+exports.InvalidConnection = InvalidConnection;
 /* ConnectionComparator Not a pure module */

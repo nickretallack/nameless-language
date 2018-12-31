@@ -5,10 +5,7 @@ var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
-var Definition$ReactTemplate = require("../Definition.bs.js");
-
-var InvalidConnection = Caml_exceptions.create("NodeInputOrdering-ReactTemplate.InvalidConnection");
+var Definition$ReactTemplate = require("./Definition.bs.js");
 
 function listHas(haystack, needle) {
   return Belt_List.has(haystack, needle, Caml_obj.caml_equal);
@@ -68,14 +65,14 @@ function visitConnection(graph, dependencies, connectionSide, acc) {
               ];
       }
     } else {
-      throw InvalidConnection;
+      throw Definition$ReactTemplate.InvalidConnection;
     }
   } else {
     return acc;
   }
 }
 
-function getNodeOrdering(graph, dependencies, outputOrder) {
+function getNodeInputOrdering(graph, dependencies, outputOrder) {
   var match = Belt_List.reduce(outputOrder, /* tuple */[
         /* [] */0,
         /* [] */0
@@ -91,8 +88,5 @@ function getNodeOrdering(graph, dependencies, outputOrder) {
         ];
 }
 
-exports.InvalidConnection = InvalidConnection;
-exports.listHas = listHas;
-exports.visitConnection = visitConnection;
-exports.getNodeOrdering = getNodeOrdering;
+exports.getNodeInputOrdering = getNodeInputOrdering;
 /* Definition-ReactTemplate Not a pure module */

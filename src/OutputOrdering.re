@@ -36,7 +36,7 @@ let rec canonicalizeConnection =
     | GraphConnection => OutputOrderingInput
     | NodeConnection(nodeID) =>
       switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
-      | Reference => OutputOrderingReference
+      | ReferenceNode => OutputOrderingReference
       | DefinedNode({kind, definitionID}) =>
         let dependency = Belt.Map.String.getExn(dependencies, definitionID);
         OutputOrderingNode({

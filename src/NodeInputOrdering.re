@@ -1,7 +1,5 @@
 open Definition;
 
-exception InvalidConnection;
-
 let listHas: 'a .(Belt.List.t('a), 'a) => bool =
   (haystack, needle) => Belt.List.has(haystack, needle, (a, b) => a == b);
 
@@ -30,7 +28,7 @@ let rec visitConnection =
       } else {
         let nodeAcc = ([nodeID, ...nodes], inputs);
         switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
-        | Reference => nodeAcc
+        | ReferenceNode => nodeAcc
         | DefinedNode({kind, definitionID}) =>
           let valueAcc =
             definedNodeKindHasValueInput(kind) ?
@@ -58,7 +56,7 @@ let rec visitConnection =
   };
 };
 
-let getNodeOrdering =
+let getNodeInputOrdering =
     (
       graph: graphImplementation,
       dependencies: publishingDependencies,

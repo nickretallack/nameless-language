@@ -7,7 +7,7 @@ var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
-var Definition$ReactTemplate = require("../Definition.bs.js");
+var Definition$ReactTemplate = require("./Definition.bs.js");
 
 function canonicalizeConnection(graph, dependencies, connectionSink) {
   var match = Belt_Map.get(graph[/* connections */0], connectionSink);
