@@ -1,14 +1,14 @@
 open Definition;
 
-/* let getOutputOrdering = (graph : graphImplementation, dependencies: publishingDependencies) : Belt.List.t(nibID) =>
-   	Belt.Set.size(graph.outputs) <= 1 ?
-   	Belt.Set.toList(graph.outputs)
-   : Belt.List.sortU(Belt.Set.toList(graph.outputs), (a, b) => {
-   	String.compare(
-   		canonicalizeOutputAsString(graph, dependencies, a),
-   		canonicalizeOutputAsString(graph, dependencies, b),
-   	)
-   }) */
+let sortBy: 'a .(Belt.List.t('a), 'a => 'b) => Belt.List.t('a) =
+  (list, func) =>
+    Belt.List.map(
+      Belt.List.sort(
+        Belt.List.map(list, item => (func(item), item)),
+        compare,
+      ),
+      snd,
+    );
 
 let rec canonicalizeOutputConnection =
         (
@@ -32,10 +32,12 @@ let rec canonicalizeOutputConnection =
           contentID: dependency.contentID,
           children:
             Belt.List.map(dependency.inputOrdering, (nibID: nibID) =>
-              canonicalizeOutputConnection(
-                graph,
-                dependencies,
-                {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
+              (
+                canonicalizeOutputConnection(
+                  graph,
+                  dependencies,
+                  {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
+                ): outputOrderingTree
               )
             ),
         });
@@ -55,3 +57,13 @@ let canonicalizeOutput =
     dependencies,
     {node: GraphConnection, nib: NibConnection(nibID)},
   );
+
+let getOutputOrdering =
+    (graph: graphImplementation, dependencies: publishingDependencies)
+    : Belt.List.t(nibID) =>
+  Belt.Set.String.size(graph.outputs) <= 1 ?
+    Belt.Set.String.toList(graph.outputs) :
+    sortBy(
+      Belt.Set.String.toList(graph.outputs),
+      canonicalizeOutput(graph, dependencies),
+    );
