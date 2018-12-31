@@ -19,7 +19,8 @@ type connectionNode =
 
 type connectionNib =
   | ValueConnection
-  | NibConnection(nibID);
+  | NibConnection(nibID)
+  | PositionalConnection(int);
 
 type connectionSide = {
   node: connectionNode,
@@ -66,6 +67,7 @@ type definedNode = {
 
 type node =
   | ReferenceNode
+  | ListNode(int)
   | DefinedNode(definedNode);
 
 type nodes = Belt.Map.String.t(node);
@@ -184,6 +186,7 @@ type publishingDefinedNode = {
 
 type publishingNode =
   | PublishingReferenceNode
+  | PublishingListNode(int)
   | PublishingDefinedNode(publishingDefinedNode);
 
 type publishingConnectionNode =

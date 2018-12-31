@@ -25,6 +25,7 @@ let canonicalizeConnectionSide =
       nib:
         switch (connectionSide.nib) {
         | ValueConnection => raise(InvalidConnection)
+        | PositionalConnection(_) => raise(InvalidConnection)
         | NibConnection(nibID) =>
           PublishingNibConnection(findIndexExn(graphNibOrdering, nibID))
         },
@@ -35,9 +36,12 @@ let canonicalizeConnectionSide =
         switch (connectionSide.nib) {
         | ValueConnection =>
           isSink ? raise(InvalidConnection) : PublishingValueConnection
+        | PositionalConnection(index) =>
+          isSink ? PublishingNibConnection(index) : raise(InvalidConnection)
         | NibConnection(nibID) =>
           switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
           | ReferenceNode => raise(InvalidConnection)
+          | ListNode(_) => raise(InvalidConnection)
           | DefinedNode({definitionID}) =>
             let dependency =
               Belt.Map.String.getExn(dependencies, definitionID);
@@ -66,6 +70,7 @@ let canonicalizeGraph =
       Belt.List.map(nodeOrdering, nodeID =>
         switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
         | ReferenceNode => PublishingReferenceNode
+        | ListNode(length) => PublishingListNode(length)
         | DefinedNode({kind, definitionID}) =>
           PublishingDefinedNode({
             kind,

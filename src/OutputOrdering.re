@@ -10,6 +10,7 @@ and outputOrderingTree =
   | OutputOrderingDisconnected
   | OutputOrderingInput
   | OutputOrderingReference
+  | OutputOrderingList(Belt.List.t(outputOrderingTree))
   | OutputOrderingNode(outputOrderingNode);
 
 let sortBy: 'a .(Belt.List.t('a), 'a => 'b) => Belt.List.t('a) =
@@ -37,6 +38,19 @@ let rec canonicalizeConnection =
     | NodeConnection(nodeID) =>
       switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
       | ReferenceNode => OutputOrderingReference
+      | ListNode(length) =>
+        OutputOrderingList(
+          Belt.List.makeBy(length, index =>
+            canonicalizeConnection(
+              graph,
+              dependencies,
+              {
+                node: NodeConnection(nodeID),
+                nib: PositionalConnection(index),
+              },
+            )
+          ),
+        )
       | DefinedNode({kind, definitionID}) =>
         let dependency = Belt.Map.String.getExn(dependencies, definitionID);
         OutputOrderingNode({
