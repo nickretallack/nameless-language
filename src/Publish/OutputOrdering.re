@@ -3,7 +3,8 @@ open Definition;
 type outputOrderingNode = {
   contentID: string,
   kind: definedNodeKind,
-  children: Belt.List.t(outputOrderingTree),
+  keywordChildren: Belt.List.t(outputOrderingTree),
+  valueChild: option(outputOrderingTree),
 }
 and outputOrderingTree =
   | OutputOrderingDisconnected
@@ -21,7 +22,7 @@ let sortBy: 'a .(Belt.List.t('a), 'a => 'b) => Belt.List.t('a) =
       snd,
     );
 
-let rec canonicalizeOutputConnection =
+let rec canonicalizeConnection =
         (
           graph: graphImplementation,
           dependencies: publishingDependencies,
@@ -41,14 +42,22 @@ let rec canonicalizeOutputConnection =
         OutputOrderingNode({
           kind,
           contentID: dependency.contentID,
-          children:
-            Belt.List.map(dependency.inputOrdering, (nibID: nibID) =>
-              (
-                canonicalizeOutputConnection(
+          valueChild:
+            definedNodeKindHasValueInput(kind) ?
+              Some(
+                canonicalizeConnection(
                   graph,
                   dependencies,
-                  {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
-                ): outputOrderingTree
+                  {node: NodeConnection(nodeID), nib: ValueConnection},
+                ),
+              ) :
+              None,
+          keywordChildren:
+            Belt.List.map(dependency.inputOrdering, (nibID: nibID) =>
+              canonicalizeConnection(
+                graph,
+                dependencies,
+                {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
               )
             ),
         });
@@ -63,7 +72,7 @@ let canonicalizeOutput =
       nibID: nibID,
     )
     : outputOrderingTree =>
-  canonicalizeOutputConnection(
+  canonicalizeConnection(
     graph,
     dependencies,
     {node: GraphConnection, nib: NibConnection(nibID)},

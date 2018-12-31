@@ -8,5 +8,29 @@ var cmp = Caml_obj.caml_compare;
 
 var ConnectionComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp]);
 
+function definedNodeKindHasValueInput(kind) {
+  if (kind !== 2) {
+    return kind >= 5;
+  } else {
+    return true;
+  }
+}
+
+function definedNodeKindHasValueOutput(kind) {
+  switch (kind) {
+    case 1 : 
+    case 3 : 
+    case 4 : 
+        return true;
+    case 0 : 
+    case 2 : 
+    case 5 : 
+        return false;
+    
+  }
+}
+
 exports.ConnectionComparator = ConnectionComparator;
+exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
+exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
 /* ConnectionComparator Not a pure module */

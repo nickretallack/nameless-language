@@ -44,6 +44,21 @@ type definedNodeKind =
   | ConstructorNode
   | AccessorNode;
 
+let definedNodeKindHasValueInput = (kind: definedNodeKind) : bool =>
+  switch (kind) {
+  | FunctionPointerCallNode => true
+  | AccessorNode => true
+  | _ => false
+  };
+
+let definedNodeKindHasValueOutput = (kind: definedNodeKind) : bool =>
+  switch (kind) {
+  | ValueNode => true
+  | FunctionDefinitionNode => true
+  | ConstructorNode => true
+  | _ => false
+  };
+
 type definedNode = {
   kind: definedNodeKind,
   definitionID,

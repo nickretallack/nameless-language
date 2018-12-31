@@ -7,8 +7,9 @@ var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 
-function canonicalizeOutputConnection(graph, dependencies, connectionSink) {
+function canonicalizeConnection(graph, dependencies, connectionSink) {
   var match = Belt_Map.get(graph[/* connections */0], connectionSink);
   if (match) {
     var node = match[0][/* node */0];
@@ -17,16 +18,22 @@ function canonicalizeOutputConnection(graph, dependencies, connectionSink) {
       var match$1 = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
       if (match$1) {
         var match$2 = match$1[0];
+        var kind = match$2[/* kind */0];
         var dependency = Belt_MapString.getExn(dependencies, match$2[/* definitionID */1]);
+        var match$3 = Definition$ReactTemplate.definedNodeKindHasValueInput(kind);
         return /* OutputOrderingNode */[/* record */[
                   /* contentID */dependency[/* contentID */0],
-                  /* kind */match$2[/* kind */0],
-                  /* children */Belt_List.map(dependency[/* inputOrdering */1], (function (nibID) {
-                          return canonicalizeOutputConnection(graph, dependencies, /* record */[
+                  /* kind */kind,
+                  /* keywordChildren */Belt_List.map(dependency[/* inputOrdering */1], (function (nibID) {
+                          return canonicalizeConnection(graph, dependencies, /* record */[
                                       /* node : NodeConnection */[nodeID],
                                       /* nib : NibConnection */[nibID]
                                     ]);
-                        }))
+                        })),
+                  /* valueChild */match$3 ? /* Some */[canonicalizeConnection(graph, dependencies, /* record */[
+                            /* node : NodeConnection */[nodeID],
+                            /* nib : ValueConnection */0
+                          ])] : /* None */0
                 ]];
       } else {
         return /* OutputOrderingReference */2;
@@ -40,7 +47,7 @@ function canonicalizeOutputConnection(graph, dependencies, connectionSink) {
 }
 
 function canonicalizeOutput(graph, dependencies, nibID) {
-  return canonicalizeOutputConnection(graph, dependencies, /* record */[
+  return canonicalizeConnection(graph, dependencies, /* record */[
               /* node : GraphConnection */0,
               /* nib : NibConnection */[nibID]
             ]);
@@ -67,4 +74,4 @@ function getOutputOrdering(graph, dependencies) {
 }
 
 exports.getOutputOrdering = getOutputOrdering;
-/* No side effect */
+/* Definition-ReactTemplate Not a pure module */
