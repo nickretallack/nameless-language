@@ -75,8 +75,6 @@ type nodes = Belt.Map.String.t(node);
 type graphImplementation = {
   connections,
   nodes,
-  inputs: Belt.Set.String.t,
-  outputs: Belt.Set.String.t,
 };
 
 /* Interface */
@@ -155,8 +153,8 @@ type documentation = {
 /* Definition */
 
 type display = {
-  inputOrder: Belt.List.t(string),
-  outputOrder: Belt.List.t(string),
+  inputOrdering: Belt.List.t(string),
+  outputOrdering: Belt.List.t(string),
 };
 
 type definition = {

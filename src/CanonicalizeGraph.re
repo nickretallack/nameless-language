@@ -125,60 +125,63 @@ let canonicalizeConnectionSide =
   };
 
 let canonicalizeGraph =
-    (graph: graphImplementation, dependencies: publishingDependencies)
-    : (string, Belt.List.t(nibID), Belt.List.t(nibID)) => {
-  let (nodeOrdering, inputOrdering, outputOrdering) =
-    NodeInputOrdering.getNodeInputOrdering(graph, dependencies);
+    (
+      graph: graphImplementation,
+      dependencies: publishingDependencies,
+      display: display,
+    )
+    : string => {
+  let nodeOrdering =
+    NodeInputOrdering.getNodeInputOrdering(
+      graph,
+      dependencies,
+      display.outputOrdering,
+    );
 
-  (
-    Json.stringify(
-      encodeGraph({
-        inputCount: Belt.List.size(inputOrdering),
-        outputCount: Belt.List.size(outputOrdering),
-        nodes:
-          Belt.List.map(nodeOrdering, nodeID =>
-            switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
-            | ReferenceNode => PublishingReferenceNode
-            | ListNode(length) => PublishingListNode(length)
-            | DefinedNode({kind, definitionID}) =>
-              PublishingDefinedNode({
-                kind,
-                contentID:
-                  Belt.Map.String.getExn(dependencies, definitionID).
-                    contentID,
-              })
+  Json.stringify(
+    encodeGraph({
+      inputCount: Belt.List.size(display.inputOrdering),
+      outputCount: Belt.List.size(display.outputOrdering),
+      nodes:
+        Belt.List.map(nodeOrdering, nodeID =>
+          switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
+          | ReferenceNode => PublishingReferenceNode
+          | ListNode(length) => PublishingListNode(length)
+          | DefinedNode({kind, definitionID}) =>
+            PublishingDefinedNode({
+              kind,
+              contentID:
+                Belt.Map.String.getExn(dependencies, definitionID).contentID,
+            })
+          }
+        ),
+      connections:
+        Belt.List.sort(
+          Belt.List.map(
+            Belt.Map.toList(graph.connections), ((sink, source)) =>
+            {
+              sink:
+                canonicalizeConnectionSide(
+                  graph,
+                  dependencies,
+                  nodeOrdering,
+                  display.outputOrdering,
+                  sink,
+                  true,
+                ),
+              source:
+                canonicalizeConnectionSide(
+                  graph,
+                  dependencies,
+                  nodeOrdering,
+                  display.inputOrdering,
+                  source,
+                  false,
+                ),
             }
           ),
-        connections:
-          Belt.List.sort(
-            Belt.List.map(
-              Belt.Map.toList(graph.connections), ((sink, source)) =>
-              {
-                sink:
-                  canonicalizeConnectionSide(
-                    graph,
-                    dependencies,
-                    nodeOrdering,
-                    outputOrdering,
-                    sink,
-                    true,
-                  ),
-                source:
-                  canonicalizeConnectionSide(
-                    graph,
-                    dependencies,
-                    nodeOrdering,
-                    inputOrdering,
-                    source,
-                    false,
-                  ),
-              }
-            ),
-            compare,
-          ),
-      }),
-    ),
-    inputOrdering,
-    outputOrdering,
+          compare,
+        ),
+    }),
   );
 };

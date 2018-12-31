@@ -258,39 +258,32 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
   }
 }
 
-function canonicalizeGraph(graph, dependencies) {
-  var match = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies);
-  var outputOrdering = match[2];
-  var inputOrdering = match[1];
-  var nodeOrdering = match[0];
-  return /* tuple */[
-          Json.stringify(encodeGraph(/* record */[
-                    /* nodes */Belt_List.map(nodeOrdering, (function (nodeID) {
-                            var match = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
-                            if (typeof match === "number") {
-                              return /* PublishingReferenceNode */0;
-                            } else if (match.tag) {
-                              var match$1 = match[0];
-                              return /* PublishingDefinedNode */Block.__(1, [/* record */[
-                                          /* kind */match$1[/* kind */0],
-                                          /* contentID */Belt_MapString.getExn(dependencies, match$1[/* definitionID */1])[/* contentID */0]
-                                        ]]);
-                            } else {
-                              return /* PublishingListNode */Block.__(0, [match[0]]);
-                            }
-                          })),
-                    /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */0]), (function (param) {
-                                return /* record */[
-                                        /* source */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, inputOrdering, param[1], false),
-                                        /* sink */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, outputOrdering, param[0], true)
-                                      ];
-                              })), Caml_obj.caml_compare),
-                    /* inputCount */Belt_List.size(inputOrdering),
-                    /* outputCount */Belt_List.size(outputOrdering)
-                  ])),
-          inputOrdering,
-          outputOrdering
-        ];
+function canonicalizeGraph(graph, dependencies, display) {
+  var nodeOrdering = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies, display[/* outputOrdering */1]);
+  return Json.stringify(encodeGraph(/* record */[
+                  /* nodes */Belt_List.map(nodeOrdering, (function (nodeID) {
+                          var match = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
+                          if (typeof match === "number") {
+                            return /* PublishingReferenceNode */0;
+                          } else if (match.tag) {
+                            var match$1 = match[0];
+                            return /* PublishingDefinedNode */Block.__(1, [/* record */[
+                                        /* kind */match$1[/* kind */0],
+                                        /* contentID */Belt_MapString.getExn(dependencies, match$1[/* definitionID */1])[/* contentID */0]
+                                      ]]);
+                          } else {
+                            return /* PublishingListNode */Block.__(0, [match[0]]);
+                          }
+                        })),
+                  /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */0]), (function (param) {
+                              return /* record */[
+                                      /* source */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* inputOrdering */0], param[1], false),
+                                      /* sink */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* outputOrdering */1], param[0], true)
+                                    ];
+                            })), Caml_obj.caml_compare),
+                  /* inputCount */Belt_List.size(display[/* inputOrdering */0]),
+                  /* outputCount */Belt_List.size(display[/* outputOrdering */1])
+                ]));
 }
 
 exports.findIndexExn = findIndexExn;

@@ -92,22 +92,14 @@ function canonicalizeTypedFields(typedFields) {
         ];
 }
 
-function canonicalizeImplementation(implementation, dependencies) {
+function canonicalizeImplementation(implementation, display, dependencies) {
   switch (implementation.tag | 0) {
     case 0 : 
-        return /* tuple */[
-                encodeConstant(implementation[0]),
-                /* [] */0,
-                /* [] */0
-              ];
+        return encodeConstant(implementation[0]);
     case 3 : 
-        return CanonicalizeGraph$ReactTemplate.canonicalizeGraph(implementation[0], dependencies);
+        return CanonicalizeGraph$ReactTemplate.canonicalizeGraph(implementation[0], dependencies, display);
     default:
-      return /* tuple */[
-              "todo",
-              /* [] */0,
-              /* [] */0
-            ];
+      return "todo";
   }
 }
 

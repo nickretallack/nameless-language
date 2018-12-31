@@ -10,33 +10,26 @@ let rec visitConnection =
           graph: graphImplementation,
           dependencies: publishingDependencies,
           connectionSide: connectionSide,
-          acc: (Belt.List.t(nodeID), Belt.List.t(nibID)),
+          nodes: Belt.List.t(nodeID),
         )
-        : (Belt.List.t(nodeID), Belt.List.t(nibID)) => {
-  let (nodes, inputs) = acc;
+        : Belt.List.t(nodeID) =>
   switch (Belt.Map.get(graph.connections, connectionSide)) {
-  | None => acc
-  | Some({nib, node}) =>
+  | None => nodes
+  | Some({node}) =>
     switch (node) {
-    | GraphConnection =>
-      switch (nib) {
-      | ValueConnection => raise(InvalidConnection)
-      | PositionalConnection(_) => raise(InvalidConnection)
-      | NibConnection(nibID) =>
-        listHas(inputs, nibID) ? acc : (nodes, [nibID, ...inputs])
-      }
+    | GraphConnection => nodes
     | NodeConnection(nodeID) =>
       if (listHas(nodes, nodeID)) {
-        acc;
+        nodes;
       } else {
-        let nodeAcc = ([nodeID, ...nodes], inputs);
+        let nodeAcc = [nodeID, ...nodes];
         switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
         | ReferenceNode => nodeAcc
         | ListNode(length) =>
           Belt.List.reduce(
             Belt.List.makeBy(length, id),
             nodeAcc,
-            (acc: (Belt.List.t(nodeID), Belt.List.t(nibID)), index: int) =>
+            (nodes: Belt.List.t(nodeID), index: int) =>
             visitConnection(
               graph,
               dependencies,
@@ -44,7 +37,7 @@ let rec visitConnection =
                 node: NodeConnection(nodeID),
                 nib: PositionalConnection(index),
               },
-              acc,
+              nodes,
             )
           )
         | DefinedNode({kind, definitionID}) =>
@@ -60,7 +53,7 @@ let rec visitConnection =
           Belt.List.reduce(
             Belt.Map.String.getExn(dependencies, definitionID).inputOrdering,
             valueAcc,
-            (acc: (Belt.List.t(nodeID), Belt.List.t(nibID)), nibID: nibID) =>
+            (acc: Belt.List.t(nodeID), nibID: nibID) =>
             visitConnection(
               graph,
               dependencies,
@@ -72,20 +65,21 @@ let rec visitConnection =
       }
     }
   };
-};
 
 let getNodeInputOrdering =
-    (graph: graphImplementation, dependencies: publishingDependencies)
-    : (Belt.List.t(nodeID), Belt.List.t(nibID), Belt.List.t(nibID)) => {
-  let outputOrder = OutputOrdering.getOutputOrdering(graph, dependencies);
-  let (nodeIDs, nibIDs) =
-    Belt.List.reduce(outputOrder, ([], []), (acc, nibID) =>
+    (
+      graph: graphImplementation,
+      dependencies: publishingDependencies,
+      outputOrdering: Belt.List.t(nibID),
+    )
+    : Belt.List.t(nodeID) =>
+  Belt.List.reverse(
+    Belt.List.reduce(outputOrdering, [], (acc, nibID) =>
       visitConnection(
         graph,
         dependencies,
         {node: GraphConnection, nib: NibConnection(nibID)},
         acc,
       )
-    );
-  (Belt.List.reverse(nodeIDs), Belt.List.reverse(nibIDs), outputOrder);
-};
+    ),
+  );

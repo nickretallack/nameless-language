@@ -7,7 +7,6 @@ var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
-var OutputOrdering$ReactTemplate = require("./OutputOrdering.bs.js");
 
 function listHas(haystack, needle) {
   return Belt_List.has(haystack, needle, Caml_obj.caml_equal);
@@ -17,92 +16,59 @@ function id(x) {
   return x;
 }
 
-function visitConnection(graph, dependencies, connectionSide, acc) {
-  var inputs = acc[1];
-  var nodes = acc[0];
+function visitConnection(graph, dependencies, connectionSide, nodes) {
   var match = Belt_Map.get(graph[/* connections */0], connectionSide);
   if (match) {
-    var match$1 = match[0];
-    var nib = match$1[/* nib */1];
-    var node = match$1[/* node */0];
+    var node = match[0][/* node */0];
     if (node) {
       var nodeID = node[0];
       if (listHas(nodes, nodeID)) {
-        return acc;
+        return nodes;
       } else {
-        var nodeAcc_000 = /* :: */[
+        var nodeAcc = /* :: */[
           nodeID,
           nodes
         ];
-        var nodeAcc = /* tuple */[
-          nodeAcc_000,
-          inputs
-        ];
-        var match$2 = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
-        if (typeof match$2 === "number") {
+        var match$1 = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
+        if (typeof match$1 === "number") {
           return nodeAcc;
-        } else if (match$2.tag) {
-          var match$3 = match$2[0];
-          var match$4 = Definition$ReactTemplate.definedNodeKindHasValueInput(match$3[/* kind */0]);
-          var valueAcc = match$4 ? visitConnection(graph, dependencies, /* record */[
+        } else if (match$1.tag) {
+          var match$2 = match$1[0];
+          var match$3 = Definition$ReactTemplate.definedNodeKindHasValueInput(match$2[/* kind */0]);
+          var valueAcc = match$3 ? visitConnection(graph, dependencies, /* record */[
                   /* node : NodeConnection */[nodeID],
                   /* nib : ValueConnection */0
                 ], nodeAcc) : nodeAcc;
-          return Belt_List.reduce(Belt_MapString.getExn(dependencies, match$3[/* definitionID */1])[/* inputOrdering */1], valueAcc, (function (acc, nibID) {
+          return Belt_List.reduce(Belt_MapString.getExn(dependencies, match$2[/* definitionID */1])[/* inputOrdering */1], valueAcc, (function (acc, nibID) {
                         return visitConnection(graph, dependencies, /* record */[
                                     /* node : NodeConnection */[nodeID],
                                     /* nib : NibConnection */Block.__(0, [nibID])
                                   ], acc);
                       }));
         } else {
-          return Belt_List.reduce(Belt_List.makeBy(match$2[0], id), nodeAcc, (function (acc, index) {
+          return Belt_List.reduce(Belt_List.makeBy(match$1[0], id), nodeAcc, (function (nodes, index) {
                         return visitConnection(graph, dependencies, /* record */[
                                     /* node : NodeConnection */[nodeID],
                                     /* nib : PositionalConnection */Block.__(1, [index])
-                                  ], acc);
+                                  ], nodes);
                       }));
         }
       }
-    } else if (typeof nib === "number") {
-      throw Definition$ReactTemplate.InvalidConnection;
-    } else if (nib.tag) {
-      throw Definition$ReactTemplate.InvalidConnection;
     } else {
-      var nibID = nib[0];
-      var match$5 = listHas(inputs, nibID);
-      if (match$5) {
-        return acc;
-      } else {
-        return /* tuple */[
-                nodes,
-                /* :: */[
-                  nibID,
-                  inputs
-                ]
-              ];
-      }
+      return nodes;
     }
   } else {
-    return acc;
+    return nodes;
   }
 }
 
-function getNodeInputOrdering(graph, dependencies) {
-  var outputOrder = OutputOrdering$ReactTemplate.getOutputOrdering(graph, dependencies);
-  var match = Belt_List.reduce(outputOrder, /* tuple */[
-        /* [] */0,
-        /* [] */0
-      ], (function (acc, nibID) {
-          return visitConnection(graph, dependencies, /* record */[
-                      /* node : GraphConnection */0,
-                      /* nib : NibConnection */Block.__(0, [nibID])
-                    ], acc);
-        }));
-  return /* tuple */[
-          Belt_List.reverse(match[0]),
-          Belt_List.reverse(match[1]),
-          outputOrder
-        ];
+function getNodeInputOrdering(graph, dependencies, outputOrdering) {
+  return Belt_List.reverse(Belt_List.reduce(outputOrdering, /* [] */0, (function (acc, nibID) {
+                    return visitConnection(graph, dependencies, /* record */[
+                                /* node : GraphConnection */0,
+                                /* nib : NibConnection */Block.__(0, [nibID])
+                              ], acc);
+                  })));
 }
 
 exports.getNodeInputOrdering = getNodeInputOrdering;

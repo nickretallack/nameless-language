@@ -48,17 +48,21 @@ let canonicalizeTypedFields = (typedFields: typedFields) => {
 /* let canonicalizeInterface = (interface: interface) => */
 
 let canonicalizeImplementation =
-    (implementation: implementation, dependencies: publishingDependencies)
-    : (string, Belt.List.t(nibID), Belt.List.t(nibID)) =>
+    (
+      implementation: implementation,
+      display: display,
+      dependencies: publishingDependencies,
+    )
+    : string =>
   switch (implementation) {
   | GraphImplementation(graphImplementation) =>
-    CanonicalizeGraph.canonicalizeGraph(graphImplementation, dependencies)
-  | ConstantImplementation(primitiveValue) => (
-      encodeConstant(primitiveValue),
-      [],
-      [],
+    CanonicalizeGraph.canonicalizeGraph(
+      graphImplementation,
+      dependencies,
+      display,
     )
+  | ConstantImplementation(primitiveValue) => encodeConstant(primitiveValue)
   /* | InterfaceImplementation(interface) =>
      canonicalizeInterface(interface) */
-  | _ => ("todo", [], [])
+  | _ => "todo"
   };
