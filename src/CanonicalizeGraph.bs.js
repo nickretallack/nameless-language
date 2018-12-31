@@ -8,7 +8,6 @@ var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
-var OutputOrdering$ReactTemplate = require("./OutputOrdering.bs.js");
 var NodeInputOrdering$ReactTemplate = require("./NodeInputOrdering.bs.js");
 
 function findIndexExn(list, needle) {
@@ -75,33 +74,37 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
 }
 
 function canonicalizeGraph(graph, dependencies) {
-  var outputOrdering = OutputOrdering$ReactTemplate.getOutputOrdering(graph, dependencies);
-  var match = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies, outputOrdering);
+  var match = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies);
+  var outputOrdering = match[2];
   var inputOrdering = match[1];
   var nodeOrdering = match[0];
-  return /* record */[
-          /* nodes */Belt_List.map(nodeOrdering, (function (nodeID) {
-                  var match = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
-                  if (typeof match === "number") {
-                    return /* PublishingReferenceNode */0;
-                  } else if (match.tag) {
-                    var match$1 = match[0];
-                    return /* PublishingDefinedNode */Block.__(1, [/* record */[
-                                /* kind */match$1[/* kind */0],
-                                /* contentID */Belt_MapString.getExn(dependencies, match$1[/* definitionID */1])[/* contentID */0]
-                              ]]);
-                  } else {
-                    return /* PublishingListNode */Block.__(0, [match[0]]);
-                  }
-                })),
-          /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */0]), (function (param) {
-                      return /* record */[
-                              /* source */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, inputOrdering, param[1], false),
-                              /* sink */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, outputOrdering, param[0], true)
-                            ];
-                    })), Caml_obj.caml_compare),
-          /* inputCount */Belt_List.size(inputOrdering),
-          /* outputCount */Belt_List.size(outputOrdering)
+  return /* tuple */[
+          inputOrdering,
+          outputOrdering,
+          /* record */[
+            /* nodes */Belt_List.map(nodeOrdering, (function (nodeID) {
+                    var match = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
+                    if (typeof match === "number") {
+                      return /* PublishingReferenceNode */0;
+                    } else if (match.tag) {
+                      var match$1 = match[0];
+                      return /* PublishingDefinedNode */Block.__(1, [/* record */[
+                                  /* kind */match$1[/* kind */0],
+                                  /* contentID */Belt_MapString.getExn(dependencies, match$1[/* definitionID */1])[/* contentID */0]
+                                ]]);
+                    } else {
+                      return /* PublishingListNode */Block.__(0, [match[0]]);
+                    }
+                  })),
+            /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */0]), (function (param) {
+                        return /* record */[
+                                /* source */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, inputOrdering, param[1], false),
+                                /* sink */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, outputOrdering, param[0], true)
+                              ];
+                      })), Caml_obj.caml_compare),
+            /* inputCount */Belt_List.size(inputOrdering),
+            /* outputCount */Belt_List.size(outputOrdering)
+          ]
         ];
 }
 

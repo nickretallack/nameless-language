@@ -7,6 +7,7 @@ var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
+var OutputOrdering$ReactTemplate = require("./OutputOrdering.bs.js");
 
 function listHas(haystack, needle) {
   return Belt_List.has(haystack, needle, Caml_obj.caml_equal);
@@ -86,7 +87,8 @@ function visitConnection(graph, dependencies, connectionSide, acc) {
   }
 }
 
-function getNodeInputOrdering(graph, dependencies, outputOrder) {
+function getNodeInputOrdering(graph, dependencies) {
+  var outputOrder = OutputOrdering$ReactTemplate.getOutputOrdering(graph, dependencies);
   var match = Belt_List.reduce(outputOrder, /* tuple */[
         /* [] */0,
         /* [] */0
@@ -98,7 +100,8 @@ function getNodeInputOrdering(graph, dependencies, outputOrder) {
         }));
   return /* tuple */[
           Belt_List.reverse(match[0]),
-          Belt_List.reverse(match[1])
+          Belt_List.reverse(match[1]),
+          outputOrder
         ];
 }
 

@@ -75,12 +75,9 @@ let rec visitConnection =
 };
 
 let getNodeInputOrdering =
-    (
-      graph: graphImplementation,
-      dependencies: publishingDependencies,
-      outputOrder: Belt.List.t(nibID),
-    )
-    : (Belt.List.t(nodeID), Belt.List.t(nibID)) => {
+    (graph: graphImplementation, dependencies: publishingDependencies)
+    : (Belt.List.t(nodeID), Belt.List.t(nibID), Belt.List.t(nibID)) => {
+  let outputOrder = OutputOrdering.getOutputOrdering(graph, dependencies);
   let (nodeIDs, nibIDs) =
     Belt.List.reduce(outputOrder, ([], []), (acc, nibID) =>
       visitConnection(
@@ -90,5 +87,5 @@ let getNodeInputOrdering =
         acc,
       )
     );
-  (Belt.List.reverse(nodeIDs), Belt.List.reverse(nibIDs));
+  (Belt.List.reverse(nodeIDs), Belt.List.reverse(nibIDs), outputOrder);
 };
