@@ -2,7 +2,10 @@
 'use strict';
 
 var Json = require("@glennsl/bs-json/src/Json.bs.js");
+var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
+var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var CanonicalizeGraph$ReactTemplate = require("./CanonicalizeGraph.bs.js");
 
 function encodePrimitiveValue(primitiveValue) {
@@ -74,6 +77,21 @@ function encodeConstant(primitiveValue) {
                 ]));
 }
 
+function canonicalizeTypedFields(typedFields) {
+  var nibOrdering = Belt_List.map(Helpers$ReactTemplate.sortBy(Belt_MapString.toList(typedFields), (function (prim) {
+              return prim[1];
+            })), (function (prim) {
+          return prim[0];
+        }));
+  var canonical = Belt_List.map(nibOrdering, (function (nibID) {
+          return Belt_MapString.getExn(typedFields, nibID);
+        }));
+  return /* tuple */[
+          canonical,
+          nibOrdering
+        ];
+}
+
 function canonicalizeImplementation(implementation, dependencies) {
   switch (implementation.tag | 0) {
     case 0 : 
@@ -95,5 +113,6 @@ function canonicalizeImplementation(implementation, dependencies) {
 
 exports.encodePrimitiveValue = encodePrimitiveValue;
 exports.encodeConstant = encodeConstant;
+exports.canonicalizeTypedFields = canonicalizeTypedFields;
 exports.canonicalizeImplementation = canonicalizeImplementation;
 /* Json_encode Not a pure module */

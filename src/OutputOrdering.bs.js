@@ -2,12 +2,11 @@
 'use strict';
 
 var Block = require("bs-platform/lib/js/block.js");
-var Curry = require("bs-platform/lib/js/curry.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
-var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
+var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 
 function canonicalizeConnection(graph, dependencies, connectionSink) {
@@ -54,29 +53,19 @@ function canonicalizeConnection(graph, dependencies, connectionSink) {
   }
 }
 
-function canonicalizeOutput(graph, dependencies, nibID) {
-  return canonicalizeConnection(graph, dependencies, /* record */[
-              /* node : GraphConnection */0,
-              /* nib : NibConnection */Block.__(0, [nibID])
-            ]);
-}
-
 function getOutputOrdering(graph, dependencies) {
   var match = Belt_SetString.size(graph[/* outputs */3]) <= 1;
   if (match) {
     return Belt_SetString.toList(graph[/* outputs */3]);
   } else {
-    var list = Belt_SetString.toList(graph[/* outputs */3]);
-    var func = function (param) {
-      return canonicalizeOutput(graph, dependencies, param);
-    };
-    return Belt_List.map(Belt_List.sort(Belt_List.map(list, (function (item) {
-                          return /* tuple */[
-                                  Curry._1(func, item),
-                                  item
-                                ];
-                        })), Caml_obj.caml_compare), (function (prim) {
-                  return prim[1];
+    return Helpers$ReactTemplate.sortBy(Belt_SetString.toList(graph[/* outputs */3]), (function (param) {
+                  var graph$1 = graph;
+                  var dependencies$1 = dependencies;
+                  var nibID = param;
+                  return canonicalizeConnection(graph$1, dependencies$1, /* record */[
+                              /* node : GraphConnection */0,
+                              /* nib : NibConnection */Block.__(0, [nibID])
+                            ]);
                 }));
   }
 }

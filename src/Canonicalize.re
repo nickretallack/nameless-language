@@ -1,4 +1,5 @@
 open Definition;
+open Helpers;
 
 let encodePrimitiveValue = (primitiveValue: primitiveValue) =>
   Json.(
@@ -30,6 +31,22 @@ let encodeConstant = (primitiveValue: primitiveValue) : string =>
     ),
   );
 
+let canonicalizeTypedFields = (typedFields: typedFields) => {
+  let nibOrdering =
+    Belt.List.map(sortBy(Belt.Map.String.toList(typedFields), snd), fst);
+  let canonical =
+    Belt.List.map(nibOrdering, nibID =>
+      Belt.Map.String.getExn(typedFields, nibID)
+    );
+  (canonical, nibOrdering);
+};
+
+/* let canonicalizeRecord = (typedFields: typedFields) => {
+     let (canonical, nibOrdering) =
+   } */
+
+/* let canonicalizeInterface = (interface: interface) => */
+
 let canonicalizeImplementation =
     (implementation: implementation, dependencies: publishingDependencies)
     : (string, Belt.List.t(nibID), Belt.List.t(nibID)) =>
@@ -41,5 +58,7 @@ let canonicalizeImplementation =
       [],
       [],
     )
+  /* | InterfaceImplementation(interface) =>
+     canonicalizeInterface(interface) */
   | _ => ("todo", [], [])
   };
