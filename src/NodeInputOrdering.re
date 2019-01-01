@@ -41,30 +41,88 @@ let rec visitConnection =
             )
           )
         | DefinedNode({kind, definitionID}) =>
-          let valueAcc =
-            definedNodeKindHasValueInput(kind) ?
-              visitConnection(
-                graph,
-                dependencies,
-                {node: NodeConnection(nodeID), nib: ValueConnection},
-                nodeAcc,
-              ) :
-              nodeAcc;
-          Belt.List.reduce(
-            Belt.Map.String.getExn(dependencies, definitionID).inputOrdering,
-            valueAcc,
-            (acc: Belt.List.t(nodeID), nibID: nibID) =>
-            visitConnection(
+          switch (kind) {
+          | FunctionCallNode =>
+            visitNibConnections(
               graph,
               dependencies,
-              {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
-              acc,
+              nodeID,
+              definitionID,
+              true,
+              nodes,
             )
-          );
+          | ValueNode => nodes
+          | FunctionPointerCallNode =>
+            visitNibConnections(
+              graph,
+              dependencies,
+              nodeID,
+              definitionID,
+              true,
+              visitValueConnection(graph, dependencies, nodeID, nodes),
+            )
+          | FunctionDefinitionNode =>
+            visitNibConnections(
+              graph,
+              dependencies,
+              nodeID,
+              definitionID,
+              false,
+              nodes,
+            )
+          | ConstructorNode =>
+            visitNibConnections(
+              graph,
+              dependencies,
+              nodeID,
+              definitionID,
+              true,
+              nodes,
+            )
+          | AccessorNode =>
+            visitValueConnection(graph, dependencies, nodeID, nodes)
+          }
         };
       }
     }
-  };
+  }
+and visitValueConnection =
+    (
+      graph: graphImplementation,
+      dependencies: publishingDependencies,
+      nodeID: nodeID,
+      nodes: Belt.List.t(nodeID),
+    )
+    : Belt.List.t(nodeID) =>
+  visitConnection(
+    graph,
+    dependencies,
+    {node: NodeConnection(nodeID), nib: ValueConnection},
+    nodes,
+  )
+and visitNibConnections =
+    (
+      graph: graphImplementation,
+      dependencies: publishingDependencies,
+      nodeID: nodeID,
+      definitionID: definitionID,
+      isInputs: bool,
+      nodes: Belt.List.t(nodeID),
+    )
+    : Belt.List.t(nodeID) => {
+  let dependency = Belt.Map.String.getExn(dependencies, definitionID);
+  Belt.List.reduce(
+    isInputs ? dependency.inputOrdering : dependency.outputOrdering,
+    nodes,
+    (acc: Belt.List.t(nodeID), nibID: nibID) =>
+    visitConnection(
+      graph,
+      dependencies,
+      {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
+      acc,
+    )
+  );
+};
 
 let getNodeInputOrdering =
     (

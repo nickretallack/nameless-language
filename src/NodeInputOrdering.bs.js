@@ -6,7 +6,6 @@ var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
 
 function listHas(haystack, needle) {
   return Belt_List.has(haystack, needle, Caml_obj.caml_equal);
@@ -34,17 +33,27 @@ function visitConnection(graph, dependencies, connectionSide, nodes) {
           return nodeAcc;
         } else if (match$1.tag) {
           var match$2 = match$1[0];
-          var match$3 = Definition$ReactTemplate.definedNodeKindHasValueInput(match$2[/* kind */0]);
-          var valueAcc = match$3 ? visitConnection(graph, dependencies, /* record */[
-                  /* node : NodeConnection */[nodeID],
-                  /* nib : ValueConnection */0
-                ], nodeAcc) : nodeAcc;
-          return Belt_List.reduce(Belt_MapString.getExn(dependencies, match$2[/* definitionID */1])[/* inputOrdering */1], valueAcc, (function (acc, nibID) {
-                        return visitConnection(graph, dependencies, /* record */[
-                                    /* node : NodeConnection */[nodeID],
-                                    /* nib : NibConnection */Block.__(0, [nibID])
-                                  ], acc);
-                      }));
+          var definitionID = match$2[/* definitionID */1];
+          var exit = 0;
+          switch (match$2[/* kind */0]) {
+            case 1 : 
+                return nodes;
+            case 2 : 
+                return visitNibConnections(graph, dependencies, nodeID, definitionID, true, visitValueConnection(graph, dependencies, nodeID, nodes));
+            case 3 : 
+                return visitNibConnections(graph, dependencies, nodeID, definitionID, false, nodes);
+            case 0 : 
+            case 4 : 
+                exit = 1;
+                break;
+            case 5 : 
+                return visitValueConnection(graph, dependencies, nodeID, nodes);
+            
+          }
+          if (exit === 1) {
+            return visitNibConnections(graph, dependencies, nodeID, definitionID, true, nodes);
+          }
+          
         } else {
           return Belt_List.reduce(Belt_List.makeBy(match$1[0], id), nodeAcc, (function (nodes, index) {
                         return visitConnection(graph, dependencies, /* record */[
@@ -62,6 +71,23 @@ function visitConnection(graph, dependencies, connectionSide, nodes) {
   }
 }
 
+function visitValueConnection(graph, dependencies, nodeID, nodes) {
+  return visitConnection(graph, dependencies, /* record */[
+              /* node : NodeConnection */[nodeID],
+              /* nib : ValueConnection */0
+            ], nodes);
+}
+
+function visitNibConnections(graph, dependencies, nodeID, definitionID, isInputs, nodes) {
+  var dependency = Belt_MapString.getExn(dependencies, definitionID);
+  return Belt_List.reduce(isInputs ? dependency[/* inputOrdering */1] : dependency[/* outputOrdering */2], nodes, (function (acc, nibID) {
+                return visitConnection(graph, dependencies, /* record */[
+                            /* node : NodeConnection */[nodeID],
+                            /* nib : NibConnection */Block.__(0, [nibID])
+                          ], acc);
+              }));
+}
+
 function getNodeInputOrdering(graph, dependencies, outputOrdering) {
   return Belt_List.reverse(Belt_List.reduce(outputOrdering, /* [] */0, (function (acc, nibID) {
                     return visitConnection(graph, dependencies, /* record */[
@@ -72,4 +98,4 @@ function getNodeInputOrdering(graph, dependencies, outputOrdering) {
 }
 
 exports.getNodeInputOrdering = getNodeInputOrdering;
-/* Definition-ReactTemplate Not a pure module */
+/* No side effect */
