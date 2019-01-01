@@ -104,9 +104,19 @@ type interface = {
   outputTypes: typedFields,
 };
 
+type publishingInterface = {
+  inputs: Belt.List.t(publishingValueType),
+  outputs: Belt.List.t(publishingValueType),
+};
+
 type externalImplementation = {
   name: string,
   interface,
+};
+
+type publishingExternal = {
+  name: string,
+  interface: publishingInterface,
 };
 
 /* Value */

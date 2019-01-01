@@ -12,14 +12,22 @@ function canonicalizeImplementation(implementation, display, dependencies) {
     case 0 : 
         tmp = CanonicalizeConstant$ReactTemplate.encodeCanonicalConstant(implementation[0]);
         break;
+    case 1 : 
+        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalInterface(implementation[0], dependencies, display);
+        break;
+    case 2 : 
+        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalExternal(implementation[0], dependencies, display);
+        break;
     case 3 : 
         tmp = CanonicalizeGraph$ReactTemplate.encodeCanonicalGraph(implementation[0], dependencies, display);
         break;
     case 4 : 
-        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalRecord(implementation[0], dependencies, display[/* inputOrdering */0]);
+        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalRecordType(implementation[0], dependencies, display[/* inputOrdering */0]);
         break;
-    default:
-      tmp = "todo";
+    case 5 : 
+        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalUnionType(implementation[0], dependencies, display[/* inputOrdering */0]);
+        break;
+    
   }
   return Json.stringify(tmp);
 }

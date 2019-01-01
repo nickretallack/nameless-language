@@ -65,14 +65,119 @@ function canonicalizeTypedFields(typedFields, dependencies, fieldOrdering) {
               }));
 }
 
-function encodeCanonicalRecord(typedFields, dependencies, fieldOrdering) {
-  var fields = canonicalizeTypedFields(typedFields, dependencies, fieldOrdering);
-  return Json_encode.list(encodeValueType, fields);
+function encodeRecordType(fields) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "type",
+                "record"
+              ],
+              /* :: */[
+                /* tuple */[
+                  "fields",
+                  Json_encode.list(encodeValueType, fields)
+                ],
+                /* [] */0
+              ]
+            ]);
+}
+
+function encodeUnionType(fields) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "type",
+                "union"
+              ],
+              /* :: */[
+                /* tuple */[
+                  "types",
+                  Json_encode.list(encodeValueType, fields)
+                ],
+                /* [] */0
+              ]
+            ]);
+}
+
+function encodeCanonicalRecordType(typedFields, dependencies, fieldOrdering) {
+  return encodeRecordType(canonicalizeTypedFields(typedFields, dependencies, fieldOrdering));
+}
+
+function encodeCanonicalUnionType(typedFields, dependencies, fieldOrdering) {
+  return encodeUnionType(canonicalizeTypedFields(typedFields, dependencies, fieldOrdering));
+}
+
+function canonicalizeInterface($$interface, dependencies, display) {
+  return /* record */[
+          /* inputs */canonicalizeTypedFields($$interface[/* inputTypes */0], dependencies, display[/* inputOrdering */0]),
+          /* outputs */canonicalizeTypedFields($$interface[/* outputTypes */1], dependencies, display[/* outputOrdering */1])
+        ];
+}
+
+function encodeInterface($$interface) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "type",
+                "interface"
+              ],
+              /* :: */[
+                /* tuple */[
+                  "inputs",
+                  Json_encode.list(encodeValueType, $$interface[/* inputs */0])
+                ],
+                /* :: */[
+                  /* tuple */[
+                    "outputs",
+                    Json_encode.list(encodeValueType, $$interface[/* outputs */1])
+                  ],
+                  /* [] */0
+                ]
+              ]
+            ]);
+}
+
+function encodeCanonicalInterface($$interface, dependencies, display) {
+  return encodeInterface(canonicalizeInterface($$interface, dependencies, display));
+}
+
+function encodeExternal(publishingExternal) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "type",
+                "interface"
+              ],
+              /* :: */[
+                /* tuple */[
+                  "inputs",
+                  Json_encode.list(encodeValueType, publishingExternal[/* interface */1][/* inputs */0])
+                ],
+                /* :: */[
+                  /* tuple */[
+                    "outputs",
+                    Json_encode.list(encodeValueType, publishingExternal[/* interface */1][/* outputs */1])
+                  ],
+                  /* [] */0
+                ]
+              ]
+            ]);
+}
+
+function encodeCanonicalExternal(externalImplementation, dependencies, display) {
+  return encodeExternal(/* record */[
+              /* name */externalImplementation[/* name */0],
+              /* interface */canonicalizeInterface(externalImplementation[/* interface */1], dependencies, display)
+            ]);
 }
 
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.encodeValueType = encodeValueType;
 exports.encodeTypedFields = encodeTypedFields;
 exports.canonicalizeTypedFields = canonicalizeTypedFields;
-exports.encodeCanonicalRecord = encodeCanonicalRecord;
+exports.encodeRecordType = encodeRecordType;
+exports.encodeUnionType = encodeUnionType;
+exports.encodeCanonicalRecordType = encodeCanonicalRecordType;
+exports.encodeCanonicalUnionType = encodeCanonicalUnionType;
+exports.canonicalizeInterface = canonicalizeInterface;
+exports.encodeInterface = encodeInterface;
+exports.encodeCanonicalInterface = encodeCanonicalInterface;
+exports.encodeExternal = encodeExternal;
+exports.encodeCanonicalExternal = encodeCanonicalExternal;
 /* Json_encode Not a pure module */

@@ -26,13 +26,28 @@ let canonicalizeImplementation =
     | ConstantImplementation(primitiveValue) =>
       CanonicalizeConstant.encodeCanonicalConstant(primitiveValue)
     | RecordTypeImplementation(typedFields) =>
-      CanonicalizeType.encodeCanonicalRecord(
+      CanonicalizeType.encodeCanonicalRecordType(
         typedFields,
         dependencies,
         display.inputOrdering,
       )
-    /* | InterfaceImplementation(interface) =>
-       canonicalizeInterface(interface) */
-    | _ => Json.Encode.string("todo")
+    | UnionTypeImplementation(typedFields) =>
+      CanonicalizeType.encodeCanonicalUnionType(
+        typedFields,
+        dependencies,
+        display.inputOrdering,
+      )
+    | InterfaceImplementation(interface) =>
+      CanonicalizeType.encodeCanonicalInterface(
+        interface,
+        dependencies,
+        display,
+      )
+    | ExternalImplementation(externalImplementation) =>
+      CanonicalizeType.encodeCanonicalExternal(
+        externalImplementation,
+        dependencies,
+        display,
+      )
     },
   );
