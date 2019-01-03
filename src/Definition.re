@@ -177,6 +177,8 @@ type definition = {
   display,
 };
 
+type definitions = Belt.Map.String.t(definition);
+
 exception InvalidConnection;
 
 /* Publishing.
