@@ -23,6 +23,13 @@ let pointFromMouse = event => {
   y: ReactEvent.Mouse.clientY(event),
 };
 
+let positionStyle = (position: point) =>
+  ReactDOMRe.Style.make(
+    ~left=pixels(position.x),
+    ~top=pixels(position.y),
+    (),
+  );
+
 external convertToList: Js.t('a) => array('b) = "%identity";
 
 let iterateTouches = (event, callback) =>

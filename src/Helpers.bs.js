@@ -52,6 +52,13 @@ function pointFromMouse($$event) {
         ];
 }
 
+function positionStyle(position) {
+  return {
+          left: String(position[/* x */0]) + "px",
+          top: String(position[/* y */1]) + "px"
+        };
+}
+
 function iterateTouches($$event, callback) {
   return $$Array.iter(callback, $$event.changedTouches);
 }
@@ -61,5 +68,6 @@ exports.randomHex = randomHex;
 exports.randomId = randomId;
 exports.pixels = pixels;
 exports.pointFromMouse = pointFromMouse;
+exports.positionStyle = positionStyle;
 exports.iterateTouches = iterateTouches;
 /*  Not a pure module */
