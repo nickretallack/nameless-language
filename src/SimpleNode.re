@@ -3,11 +3,6 @@ open Helpers;
 
 let component = ReasonReact.statelessComponent("Node");
 
-type displayNib = {
-  name: string,
-  nib: connectionNib,
-};
-
 let nibKey = (connectionNib: connectionNib) => {
   switch (connectionNib) {
   | ValueConnection => "value"

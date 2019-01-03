@@ -45,14 +45,14 @@ type definedNodeKind =
   | ConstructorNode
   | AccessorNode;
 
-let definedNodeKindHasValueInput = (kind: definedNodeKind) : bool =>
+let definedNodeKindHasValueInput = (kind: definedNodeKind): bool =>
   switch (kind) {
   | FunctionPointerCallNode => true
   | AccessorNode => true
   | _ => false
   };
 
-let definedNodeKindHasValueOutput = (kind: definedNodeKind) : bool =>
+let definedNodeKindHasValueOutput = (kind: definedNodeKind): bool =>
   switch (kind) {
   | ValueNode => true
   | FunctionDefinitionNode => true
@@ -176,6 +176,78 @@ type definition = {
   documentation,
   display,
 };
+
+let getName = (definition: definition, language: language) =>
+  Belt.Map.String.getExn(definition.documentation.name.translations, language).
+    text;
+
+let getDescription = (definition: definition, language: language) =>
+  Belt.Map.String.getExn(
+    definition.documentation.description.translations,
+    language,
+  ).
+    text;
+
+type displayNib = {
+  name: string,
+  nib: connectionNib,
+};
+
+let displayKeywordNibs =
+    (definition: definition, language: language, isInputs: bool)
+    : list(displayNib) =>
+  Belt.List.map(
+    definition.display.inputOrdering,
+    nibID => {
+      let documentation = definition.documentation;
+      let nibs = isInputs ? documentation.inputs : documentation.outputs;
+      let translatable = Belt.Map.String.getExn(nibs, nibID);
+      let vettable =
+        Belt.Map.String.getExn(translatable.translations, language);
+      {nib: NibConnection(nibID), name: vettable.text};
+    },
+  );
+
+let displayKeywordInputs = (definition: definition, language: language) =>
+  displayKeywordNibs(definition, language, true);
+
+let displayKeywordOutputs = (definition: definition, language: language) =>
+  displayKeywordNibs(definition, language, false);
+
+type displayNibs = {
+  inputs: list(displayNib),
+  outputs: list(displayNib),
+};
+
+let displayDefinedNode =
+    (definition: definition, kind: definedNodeKind, language: language)
+    : displayNibs =>
+  switch (kind) {
+  | FunctionCallNode => {
+      inputs: displayKeywordInputs(definition, language),
+      outputs: displayKeywordOutputs(definition, language),
+    }
+  | ValueNode => {inputs: [], outputs: [{nib: ValueConnection, name: ""}]}
+  | FunctionPointerCallNode => {
+      inputs: [
+        {nib: ValueConnection, name: "implementation"},
+        ...displayKeywordInputs(definition, language),
+      ],
+      outputs: displayKeywordOutputs(definition, language),
+    }
+  | FunctionDefinitionNode => {
+      inputs: [],
+      outputs: [{nib: ValueConnection, name: ""}],
+    }
+  | ConstructorNode => {
+      inputs: displayKeywordInputs(definition, language),
+      outputs: [{nib: ValueConnection, name: ""}],
+    }
+  | AccessorNode => {
+      inputs: [{nib: ValueConnection, name: ""}],
+      outputs: displayKeywordInputs(definition, language),
+    }
+  };
 
 type definitions = Belt.Map.String.t(definition);
 
