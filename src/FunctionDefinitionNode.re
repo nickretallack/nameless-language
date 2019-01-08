@@ -8,7 +8,7 @@ let make =
       ~nodeID: nodeID,
       ~definition: definition,
       ~position: point,
-      ~emit: ActionTypes.graphAction => unit,
+      ~emit: GraphActions.graphAction => unit,
       _children,
     ) => {
   ...component,

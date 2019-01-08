@@ -30,11 +30,11 @@ function make(nodeID, node, definitions, position, emit, _children) {
               if (typeof node === "number") {
                 return makeNode(/* :: */[
                             /* record */[
-                              /* name */"Reference",
+                              /* name */"",
                               /* nib : ValueConnection */0
                             ],
                             /* [] */0
-                          ], undefined, undefined, /* () */0);
+                          ], undefined, "Reference", /* () */0);
               } else if (node.tag) {
                 var match = node[0];
                 var kind = match[/* kind */0];
@@ -57,7 +57,7 @@ function make(nodeID, node, definitions, position, emit, _children) {
                                           /* name */String(index),
                                           /* nib : PositionalConnection */Block.__(1, [index])
                                         ];
-                                })), undefined, /* () */0);
+                                })), "List", /* () */0);
               }
             }),
           /* initialState */component[/* initialState */10],

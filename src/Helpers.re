@@ -1,4 +1,7 @@
-open Definition;
+type point = {
+  x: int,
+  y: int,
+};
 
 let sortBy: 'a. (Belt.List.t('a), 'a => 'b) => Belt.List.t('a) =
   (list, func) =>
@@ -9,6 +12,20 @@ let sortBy: 'a. (Belt.List.t('a), 'a => 'b) => Belt.List.t('a) =
       ),
       snd,
     );
+
+let rec findIndexExn: 'a. (Belt.List.t('a), 'a) => int =
+  (list, needle) =>
+    switch (list) {
+    | [] => raise(Not_found)
+    | [head, ...rest] => head == needle ? 0 : 1 + findIndexExn(rest, needle)
+    };
+
+let rec findByIndexExn: 'a. (Belt.List.t('a), 'a => bool) => int =
+  (list, check) =>
+    switch (list) {
+    | [] => raise(Not_found)
+    | [head, ...rest] => check(head) ? 0 : 1 + findByIndexExn(rest, check)
+    };
 
 Random.init(int_of_float(Js.Date.now()));
 
@@ -37,3 +54,13 @@ let iterateTouches = (event, callback) =>
     callback,
     convertToList(ReactEvent.Touch.changedTouches(event)),
   );
+
+let getEventValue = event => ReactEvent.Form.target(event)##value;
+
+let renderMap = (fn, map) =>
+  ReasonReact.array(Array.map(fn, Belt.Map.toArray(map)));
+let renderStringMap = (fn, map) =>
+  ReasonReact.array(Array.map(fn, Belt.Map.String.toArray(map)));
+let renderList = (fn, list) =>
+  ReasonReact.array(Array.of_list(List.mapi(fn, list)));
+let renderArray = (fn, array) => ReasonReact.array(Array.map(fn, array));

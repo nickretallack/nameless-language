@@ -7,22 +7,9 @@ var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
+var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 var NodeInputOrdering$ReactTemplate = require("./NodeInputOrdering.bs.js");
-
-function findIndexExn(list, needle) {
-  if (list) {
-    var match = Caml_obj.caml_equal(list[0], needle);
-    if (match) {
-      return 0;
-    } else {
-      return 1 + findIndexExn(list[1], needle) | 0;
-    }
-  } else {
-    throw Caml_builtin_exceptions.not_found;
-  }
-}
 
 function definedNodeKindToString(kind) {
   switch (kind) {
@@ -231,13 +218,13 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
         throw Definition$ReactTemplate.InvalidConnection;
       } else if (match$2.tag) {
         var dependency = Belt_MapString.getExn(dependencies, match$2[0][/* definitionID */1]);
-        tmp = /* PublishingNibConnection */[findIndexExn(isSink ? dependency[/* inputOrdering */1] : dependency[/* outputOrdering */2], match$1[0])];
+        tmp = /* PublishingNibConnection */[Helpers$ReactTemplate.findIndexExn(isSink ? dependency[/* inputOrdering */1] : dependency[/* outputOrdering */2], match$1[0])];
       } else {
         throw Definition$ReactTemplate.InvalidConnection;
       }
     }
     return /* record */[
-            /* node : PublishingNodeConnection */[findIndexExn(nodeOrdering, nodeID)],
+            /* node : PublishingNodeConnection */[Helpers$ReactTemplate.findIndexExn(nodeOrdering, nodeID)],
             /* nib */tmp
           ];
   } else {
@@ -248,7 +235,7 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
     } else if (match$3.tag) {
       throw Definition$ReactTemplate.InvalidConnection;
     } else {
-      tmp$1 = /* PublishingNibConnection */[findIndexExn(graphNibOrdering, match$3[0])];
+      tmp$1 = /* PublishingNibConnection */[Helpers$ReactTemplate.findIndexExn(graphNibOrdering, match$3[0])];
     }
     return /* record */[
             /* node : PublishingGraphConnection */0,
@@ -289,7 +276,6 @@ function encodeCanonicalGraph(graph, dependencies, display) {
   return encodeGraph(canonicalizeGraph(graph, dependencies, display));
 }
 
-exports.findIndexExn = findIndexExn;
 exports.definedNodeKindToString = definedNodeKindToString;
 exports.encodeNode = encodeNode;
 exports.encodeConnectionNode = encodeConnectionNode;
@@ -300,4 +286,4 @@ exports.encodeGraph = encodeGraph;
 exports.canonicalizeConnectionSide = canonicalizeConnectionSide;
 exports.canonicalizeGraph = canonicalizeGraph;
 exports.encodeCanonicalGraph = encodeCanonicalGraph;
-/* Definition-ReactTemplate Not a pure module */
+/* Helpers-ReactTemplate Not a pure module */

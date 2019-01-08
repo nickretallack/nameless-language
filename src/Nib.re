@@ -1,6 +1,6 @@
 [%%debugger.chrome];
 open Definition;
-open ActionTypes;
+open GraphActions;
 open Helpers;
 
 [@bs.get] external getEventDetail: Dom.event => Js.t({..}) = "detail";

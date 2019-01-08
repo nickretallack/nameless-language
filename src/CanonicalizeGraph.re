@@ -1,11 +1,5 @@
 open Definition;
-
-let rec findIndexExn: 'a .(Belt.List.t('a), 'a) => int =
-  (list, needle) =>
-    switch (list) {
-    | [] => raise(Not_found)
-    | [head, ...rest] => head == needle ? 0 : 1 + findIndexExn(rest, needle)
-    };
+open Helpers;
 
 let definedNodeKindToString = (kind: definedNodeKind) =>
   switch (kind) {

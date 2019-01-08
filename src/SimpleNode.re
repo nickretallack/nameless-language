@@ -17,18 +17,19 @@ let renderNibs =
       className: string,
       isSource: bool,
       nodeID: nodeID,
-      emit: ActionTypes.graphAction => unit,
+      emit: GraphActions.graphAction => unit,
     ) =>
   ReasonReact.array(
     Array.of_list(
       Belt.List.map(nibs, ({name, nib}) =>
         <div className key={nibKey(nib)}>
-          {ReasonReact.string(name)}
+          {isSource ? ReasonReact.null : ReasonReact.string(name)}
           <Nib
             isSource
             connectionSide={node: NodeConnection(nodeID), nib}
             emit
           />
+          {isSource ? ReasonReact.string(name) : ReasonReact.null}
         </div>
       ),
     ),
@@ -41,7 +42,7 @@ let make =
       ~inputs: list(displayNib),
       ~outputs: list(displayNib),
       ~position: point,
-      ~emit: ActionTypes.graphAction => unit,
+      ~emit: GraphActions.graphAction => unit,
       _children,
     ) => {
   ...component,

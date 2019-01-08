@@ -1,3 +1,5 @@
+open Helpers;
+
 type nibID = string;
 type nodeID = string;
 type definitionID = string;
@@ -6,26 +8,39 @@ type language = string;
 
 /* Misc */
 
-type point = {
-  x: int,
-  y: int,
-};
-
 /* Connections */
 
 type connectionNode =
   | GraphConnection
   | NodeConnection(nodeID);
 
+let connectionNodeToString = (connectionNode: connectionNode) =>
+  switch (connectionNode) {
+  | GraphConnection => "graph"
+  | NodeConnection(nodeID) => "node-" ++ nodeID
+  };
+
 type connectionNib =
   | ValueConnection
   | NibConnection(nibID)
   | PositionalConnection(int);
 
+let connectionNibToString = (connectionNib: connectionNib) =>
+  switch (connectionNib) {
+  | ValueConnection => "value"
+  | NibConnection(nibID) => "nib-" ++ nibID
+  | PositionalConnection(index) => "index-" ++ string_of_int(index)
+  };
+
 type connectionSide = {
   node: connectionNode,
   nib: connectionNib,
 };
+
+let connectionSideToString = (connectionSide: connectionSide) =>
+  connectionNodeToString(connectionSide.node)
+  ++ "-"
+  ++ connectionNibToString(connectionSide.nib);
 
 module ConnectionComparator =
   Belt.Id.MakeComparable({
@@ -70,6 +85,105 @@ type node =
   | ListNode(int)
   | DefinedNode(definedNode);
 
+/*
+ variant Yes
+ variant No
+ variant Maybe
+
+ union type boolean = Yes | No
+ union type trinary = Yes | No | Maybe
+
+
+ foo : () => boolean
+ bar : trinary => ()
+
+ bar(foo())
+
+ foo : () => trinary
+ bar : boolean => ()
+
+ bar(default(foo(), boolean, Yes));
+
+ let rec fac n =
+   n <= 1 ?
+     1
+     : n * (fac (n - 1))
+
+
+ x = Yes : trinary
+ type assert x : boolean
+
+ variant Nothing
+ variant Some(x)
+ union type Maybe = Nothing | Some(x)
+
+ union type Maybe = Nothing | x
+
+ vairant Error(x)
+ variant Success(x)
+ union type Result = Error(a) | Success(b)
+
+ x : Nothing -> Nothing
+
+ AuthorA:
+ type person1 = {
+   name: string,
+   age: integer,
+ }
+
+
+ AuthorB:
+ foo1 : person1 -> ()
+
+ AuthorA
+ type person2 = {
+   name: string,
+   age: integer,
+   thuesathueath
+ };
+
+ AuthorC
+ foo2 : perosn2 -> ()
+
+
+ Foo (foo1 <- foo2)
+ Person (person1
+   <- person2a -- vetted by the community
+   <- person2b -- security exploit!
+ )
+
+
+
+ type employed inherits person {
+   company: string,
+ }
+
+ type hasAddress inherits person {
+   address: string,
+ }
+
+ type businessman inherits person = {
+   company: string,
+ }
+
+
+ {
+   name,
+   age,
+   company,
+   address
+ }
+
+ (,,,)
+
+
+ fun : {empoyed hasAddress} -> ()
+
+
+
+
+ */
+
 type nodes = Belt.Map.String.t(node);
 
 type graphImplementation = {
@@ -83,6 +197,10 @@ type primitiveValueType =
   | IntegerType
   | NumberType
   | TextType;
+
+type boolean =
+  | True
+  | False;
 
 /* type definedValueKind =
    | RecordType
@@ -157,6 +275,32 @@ type translatable = {
   translations: Belt.Map.String.t(vettable),
 };
 
+let getTranslated = (translatable: translatable, language: language) =>
+  Belt.Map.String.getExn(translatable.translations, language).text;
+
+let setTranslated =
+    (translatable: translatable, language: language, text: string) => {
+  ...translatable,
+  translations:
+    Belt.Map.String.update(
+      translatable.translations, language, (maybeVettable: option(vettable)) =>
+      switch (maybeVettable) {
+      | Some(vettable) => Some({...vettable, text})
+      | None => Some({text, vetted: false, authorID: None})
+      }
+    ),
+};
+
+let makeTranslatable = (text: string, language: language) => {
+  sourceLanguage: language,
+  translations:
+    Belt.Map.String.fromArray([|
+      (language, {text, vetted: true, authorID: None}),
+    |]),
+};
+
+let emptyTranslatable = makeTranslatable("", "en");
+
 type documentation = {
   name: translatable,
   description: translatable,
@@ -176,6 +320,8 @@ type definition = {
   documentation,
   display,
 };
+
+type definitions = Belt.Map.String.t(definition);
 
 let getName = (definition: definition, language: language) =>
   Belt.Map.String.getExn(definition.documentation.name.translations, language).
@@ -197,7 +343,8 @@ let displayKeywordNibs =
     (definition: definition, language: language, isInputs: bool)
     : list(displayNib) =>
   Belt.List.map(
-    definition.display.inputOrdering,
+    isInputs ?
+      definition.display.inputOrdering : definition.display.outputOrdering,
     nibID => {
       let documentation = definition.documentation;
       let nibs = isInputs ? documentation.inputs : documentation.outputs;
@@ -249,7 +396,75 @@ let displayDefinedNode =
     }
   };
 
-type definitions = Belt.Map.String.t(definition);
+let displayNode = (node: node, definitions: definitions, language: language) =>
+  switch (node) {
+  | ReferenceNode => {
+      outputs: [{nib: ValueConnection, name: "Reference"}],
+      inputs: [],
+    }
+  | ListNode(length) => {
+      outputs: [{nib: ValueConnection, name: ""}],
+      inputs:
+        Belt.List.makeBy(length, index =>
+          {nib: PositionalConnection(index), name: string_of_int(index)}
+        ),
+    }
+  | DefinedNode({kind, definitionID}) =>
+    let definition = Belt.Map.String.getExn(definitions, definitionID);
+    displayDefinedNode(definition, kind, language);
+  };
+
+let getNodeNibIndex =
+    (
+      node: node,
+      definitions: definitions,
+      connectionNib: connectionNib,
+      isSink: bool,
+    ) => {
+  let {inputs, outputs} = displayNode(node, definitions, "en");
+  let nibs = isSink ? inputs : outputs;
+  let nibIndex = findByIndexExn(nibs, ({nib}) => nib == connectionNib);
+  isSink ? nibIndex : nibIndex + Belt.List.length(inputs);
+};
+
+let getOutputIndex =
+    (node: node, definitions: definitions, connectionNib: connectionNib) => {
+  let {outputs} = displayNode(node, definitions, "en");
+  findByIndexExn(outputs, ({nib}) => nib == connectionNib);
+};
+
+let countNodeNibs = (node: node, definitions: definitions) =>
+  switch (node) {
+  | ReferenceNode => 1
+  | ListNode(length) => length
+  | DefinedNode({kind, definitionID}) =>
+    let nodeDefinition = Belt.Map.String.getExn(definitions, definitionID);
+    let nodeDisplay = displayDefinedNode(nodeDefinition, kind, "en");
+    Belt.List.length(nodeDisplay.inputs)
+    + Belt.List.length(nodeDisplay.outputs);
+  };
+
+/* let getNibIndex =
+     (
+       node: node,
+       definitions: definitions,
+       connectionNib: connectionNib,
+       isSink: bool,
+     ) =>
+   switch (node) {
+   | ReferenceNode => (-1)
+   | ListNode(length) =>
+     switch(connectionNib) {
+       | ValueConnection
+       | NibConnection(nibID)
+       | PositionalConnection(int);
+     }
+   | DefinedNode({kind, definitionID}) =>
+     let nodeDefinition = Belt.Map.String.getExn(definitions, definitionID);
+     let nodeDisplay = displayDefinedNode(nodeDefinition, kind, "en");
+     Belt.List.length(nodeDisplay.inputs)
+     + Belt.List.length(nodeDisplay.outputs);
+   }; */
 
 exception InvalidConnection;
 

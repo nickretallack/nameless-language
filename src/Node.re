@@ -1,4 +1,5 @@
 open Definition;
+open Helpers;
 
 let component = ReasonReact.statelessComponent("Node");
 
@@ -8,7 +9,7 @@ let make =
       ~node: node,
       ~definitions: definitions,
       ~position: point,
-      ~emit: ActionTypes.graphAction => unit,
+      ~emit: GraphActions.graphAction => unit,
       _children,
     ) => {
   ...component,
@@ -18,9 +19,14 @@ let make =
 
     switch (node) {
     | ReferenceNode =>
-      makeNode(~outputs=[{nib: ValueConnection, name: "Reference"}], ())
+      makeNode(
+        ~outputs=[{nib: ValueConnection, name: ""}],
+        ~name="Reference",
+        (),
+      )
     | ListNode(length) =>
       makeNode(
+        ~name="List",
         ~outputs=[{nib: ValueConnection, name: ""}],
         ~inputs=
           Belt.List.makeBy(length, index =>

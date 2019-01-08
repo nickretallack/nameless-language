@@ -1,0 +1,94 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.graph {
+	width: 100vw;
+	height: 100vh;
+}
+
+.evaluate {
+	display: block;
+	color: blue;
+	cursor: pointer;
+}
+
+.node {
+	position: absolute;
+	width: 80px;
+	background: lightgray;
+	top: 0;
+	left: 0;
+}
+
+.node .name {
+	text-align: center;
+	height: 20px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+:root {
+	--nib-size: 14px;
+	--row-size: 20px;
+	--nega-half-nib: calc(var(--nib-size) / -2);
+	--nega-half-row: calc(var(--row-size) / -2);
+}
+
+.nib {
+	width: var(--nib-size);
+	height: var(--nib-size);
+	border-radius: 50%;
+	display: inline-block;
+	border: 1px solid gray;
+	vertical-align: middle;
+	margin: calc((var(--row-size) - var(--nib-size)) / 2);
+}
+
+.nib.sink {
+	background: white;
+}
+
+.nib.source {
+	background: gray;
+}
+
+.node .input,
+.node .output {
+	width: 100%;
+	height: 20px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.node .input {
+	text-align: right;
+}
+
+.node .input .nib {
+	margin-right: var(--nega-half-nib);
+}
+
+.node .output .nib {
+	margin-left: var(--nega-half-nib);
+}
+
+.graph-input,
+.graph-output {
+	position: absolute;
+	margin-top: var(--nega-half-row);
+}
+
+.graph-input {
+	margin-right: var(--nega-half-nib);
+}
+.graph-output {
+	margin-left: var(--nega-half-nib);
+}
