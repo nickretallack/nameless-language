@@ -14,22 +14,18 @@ let make =
   render: _self => {
     let strokeWidth = 5.0;
     let nudgeMagnitude = 20.0;
-    let left = float_of_int(min(sourcePosition.x, sinkPosition.x));
-    let top =
-      float_of_int(min(sourcePosition.y, sinkPosition.y))
-      -. strokeWidth
-      /. 2.0;
-    let width = float_of_int(abs(sourcePosition.x - sinkPosition.x));
-    let height =
-      float_of_int(abs(sourcePosition.y - sinkPosition.y)) +. strokeWidth;
+    let left = min(sourcePosition.x, sinkPosition.x);
+    let top = min(sourcePosition.y, sinkPosition.y) -. strokeWidth /. 2.0;
+    let width = abs_float(sourcePosition.x -. sinkPosition.x);
+    let height = abs_float(sourcePosition.y -. sinkPosition.y) +. strokeWidth;
     let palette = [|"fuchsia", "aqua", "lime", "blue"|];
 
     let containerStyle =
       ReactDOMRe.Style.make(
-        ~width=floatPixels(width),
-        ~height=floatPixels(height),
-        ~left=floatPixels(left),
-        ~top=floatPixels(top),
+        ~width=pixels(width),
+        ~height=pixels(height),
+        ~left=pixels(left),
+        ~top=pixels(top),
         ~pointerEvents="none",
         ~position="absolute",
         (),
@@ -37,8 +33,8 @@ let make =
 
     let sharedStyle =
       ReactDOMRe.Style.make(
-        ~height=floatPixels(height /. 2.0),
-        ~width=floatPixels(width /. 2.0),
+        ~height=pixels(height /. 2.0),
+        ~width=pixels(width /. 2.0),
         ~position="absolute",
         ~borderStyle="solid",
         ~borderColor=palette[nudge mod Array.length(palette)],
@@ -63,10 +59,10 @@ let make =
           ReactDOMRe.Style.combine(
             sharedStyle,
             ReactDOMRe.Style.make(
-              ~borderBottomWidth=floatPixels(strokeWidth),
+              ~borderBottomWidth=pixels(strokeWidth),
               ~borderTopWidth="0",
               ~right=
-                floatPixels(
+                pixels(
                   width
                   /. 2.0
                   -. actualNudge
@@ -74,7 +70,7 @@ let make =
                   -. clampedNudgeMagnitude
                   /. 4.0,
                 ),
-              ~borderBottomRightRadius=floatPixels(actualRoundness),
+              ~borderBottomRightRadius=pixels(actualRoundness),
               ~bottom="0",
               (),
             ),
@@ -82,13 +78,13 @@ let make =
           ReactDOMRe.Style.combine(
             sharedStyle,
             ReactDOMRe.Style.make(
-              ~borderTopWidth=floatPixels(strokeWidth),
+              ~borderTopWidth=pixels(strokeWidth),
               ~borderBottomWidth="0",
               ~left=
-                floatPixels(
+                pixels(
                   width /. 2.0 +. actualNudge +. clampedNudgeMagnitude /. 4.0,
                 ),
-              ~borderTopLeftRadius=floatPixels(actualRoundness),
+              ~borderTopLeftRadius=pixels(actualRoundness),
               ~top="0",
               (),
             ),
@@ -99,10 +95,10 @@ let make =
           ReactDOMRe.Style.combine(
             sharedStyle,
             ReactDOMRe.Style.make(
-              ~borderTopWidth=floatPixels(strokeWidth),
+              ~borderTopWidth=pixels(strokeWidth),
               ~borderBottomWidth="0",
-              ~right=floatPixels(width /. 2.0 +. actualNudge),
-              ~borderTopRightRadius=floatPixels(actualRoundness),
+              ~right=pixels(width /. 2.0 +. actualNudge),
+              ~borderTopRightRadius=pixels(actualRoundness),
               ~top="0",
               (),
             ),
@@ -110,10 +106,10 @@ let make =
           ReactDOMRe.Style.combine(
             sharedStyle,
             ReactDOMRe.Style.make(
-              ~borderBottomWidth=floatPixels(strokeWidth),
+              ~borderBottomWidth=pixels(strokeWidth),
               ~borderTopWidth="0",
-              ~left=floatPixels(width /. 2.0 -. actualNudge -. strokeWidth),
-              ~borderBottomLeftRadius=floatPixels(actualRoundness),
+              ~left=pixels(width /. 2.0 -. actualNudge -. strokeWidth),
+              ~borderBottomLeftRadius=pixels(actualRoundness),
               ~bottom="0",
               (),
             ),
@@ -126,7 +122,7 @@ let make =
         leftStyle,
         ReactDOMRe.Style.make(
           ~left="0",
-          ~borderRightWidth=floatPixels(strokeWidth),
+          ~borderRightWidth=pixels(strokeWidth),
           (),
         ),
       );
@@ -136,7 +132,7 @@ let make =
         rightStyle,
         ReactDOMRe.Style.make(
           ~right="0",
-          ~borderLeftWidth=floatPixels(strokeWidth),
+          ~borderLeftWidth=pixels(strokeWidth),
           (),
         ),
       );

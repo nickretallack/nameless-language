@@ -72,10 +72,6 @@ function randomId(param) {
 }
 
 function pixels(x) {
-  return String(x) + "px";
-}
-
-function floatPixels(x) {
   return Curry._1(Printf.sprintf(/* Format */[
                   /* Float */Block.__(8, [
                       /* Float_g */9,
@@ -99,8 +95,8 @@ function pointFromMouse($$event) {
 
 function positionStyle(position) {
   return {
-          left: String(position[/* x */0]) + "px",
-          top: String(position[/* y */1]) + "px"
+          left: pixels(position[/* x */0]),
+          top: pixels(position[/* y */1])
         };
 }
 
@@ -132,7 +128,6 @@ exports.findByIndexExn = findByIndexExn;
 exports.randomHex = randomHex;
 exports.randomId = randomId;
 exports.pixels = pixels;
-exports.floatPixels = floatPixels;
 exports.pointFromMouse = pointFromMouse;
 exports.positionStyle = positionStyle;
 exports.iterateTouches = iterateTouches;

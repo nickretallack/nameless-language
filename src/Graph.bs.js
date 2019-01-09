@@ -10,7 +10,6 @@ var Belt_Id = require("bs-platform/lib/js/belt_Id.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
-var Caml_int32 = require("bs-platform/lib/js/caml_int32.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
@@ -59,30 +58,30 @@ function make(definitionID, definitions, implementation, display, documentation,
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               var columns = ColumnizeNodes$ReactTemplate.topoSort(implementation[/* nodes */1], implementation[/* connections */0]);
-              var columnWidth = Caml_int32.div(size[/* x */0], List.length(columns) + 1 | 0);
+              var columnWidth = size[/* x */0] / (List.length(columns) + 1 | 0);
               var nodeHeight = function (node) {
-                return Caml_int32.imul(20, 1 + Definition$ReactTemplate.countNodeNibs(node, definitions) | 0);
+                return 20.0 * (1 + Definition$ReactTemplate.countNodeNibs(node, definitions) | 0);
               };
               var nodePositions = Belt_MapString.mergeMany(Belt_MapString.empty, $$Array.of_list(List.flatten(List.mapi((function (column, nodes) {
-                                  var rowHeight = Caml_int32.div(size[/* y */1], Belt_MapString.size(nodes) + 1 | 0);
+                                  var rowHeight = size[/* y */1] / (Belt_MapString.size(nodes) + 1 | 0);
                                   return Belt_List.mapWithIndex(Belt_MapString.toList(nodes), (function (row, param) {
                                                 return /* tuple */[
                                                         param[0],
                                                         /* record */[
-                                                          /* x */Caml_int32.imul(columnWidth, column + 1 | 0) - 40 | 0,
-                                                          /* y */Caml_int32.imul(rowHeight, row + 1 | 0) - (nodeHeight(param[1]) / 2 | 0) | 0
+                                                          /* x */columnWidth * (column + 1 | 0) - 80.0 / 2.0,
+                                                          /* y */rowHeight * (row + 1 | 0) - nodeHeight(param[1]) / 2.0
                                                         ]
                                                       ];
                                               }));
                                 }), columns))));
               var nibPositions = function (nibIds, isInput) {
-                var rowHeight = Caml_int32.div(size[/* y */1], List.length(nibIds) + 1 | 0);
+                var rowHeight = size[/* y */1] / (List.length(nibIds) + 1 | 0);
                 return Belt_MapString.fromArray($$Array.of_list(List.mapi((function (index, nibID) {
                                       return /* tuple */[
                                               nibID,
                                               /* record */[
-                                                /* x */isInput ? size[/* x */0] - 10 | 0 : 10,
-                                                /* y */Caml_int32.imul(index + 1 | 0, rowHeight)
+                                                /* x */isInput ? size[/* x */0] - 10.0 : 10.0,
+                                                /* y */(index + 1 | 0) * rowHeight
                                               ]
                                             ];
                                     }), nibIds)));
@@ -97,9 +96,9 @@ function make(definitionID, definitions, implementation, display, documentation,
                   var node = Belt_MapString.getExn(implementation[/* nodes */1], nodeID);
                   return /* record */[
                           /* x */nodePosition[/* x */0] + (
-                            isSink ? 80 : 0
-                          ) | 0,
-                          /* y */(Caml_int32.imul(Definition$ReactTemplate.getNodeNibIndex(node, definitions, connectionSide[/* nib */1], isSink) + 1 | 0, 20) + 10 | 0) + nodePosition[/* y */1] | 0
+                            isSink ? 80.0 : 0.0
+                          ),
+                          /* y */(Definition$ReactTemplate.getNodeNibIndex(node, definitions, connectionSide[/* nib */1], isSink) + 1 | 0) * 20.0 + 20.0 / 2.0 + nodePosition[/* y */1]
                         ];
                 } else {
                   var match$1 = connectionSide[/* nib */1];
@@ -186,7 +185,7 @@ function make(definitionID, definitions, implementation, display, documentation,
                                                 key: nibID,
                                                 className: "graph-input input",
                                                 style: {
-                                                  right: Helpers$ReactTemplate.pixels(10),
+                                                  right: Helpers$ReactTemplate.pixels(10.0),
                                                   top: Helpers$ReactTemplate.pixels(Belt_MapString.getExn(inputPositions, nibID)[/* y */1])
                                                 }
                                               }, name, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(true, /* record */[

@@ -35,8 +35,8 @@ function make(render, _children) {
             }),
           /* initialState */(function (param) {
               return /* record */[
-                      /* x */1366,
-                      /* y */768
+                      /* x */1366.0,
+                      /* y */768.0
                     ];
             }),
           /* retainedProps */component[/* retainedProps */11],

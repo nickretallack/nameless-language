@@ -1,6 +1,6 @@
 type point = {
-  x: int,
-  y: int,
+  x: float,
+  y: float,
 };
 
 let sortBy: 'a. (Belt.List.t('a), 'a => 'b) => Belt.List.t('a) =
@@ -33,13 +33,11 @@ let randomHex = () => Printf.sprintf("%x", Random.int(16));
 let randomId = () =>
   String.concat("", Belt.List.makeBy(32, _ => randomHex()));
 
-let pixels = x => string_of_int(x) ++ "px";
-
-let floatPixels = x => Printf.sprintf("%gpx", x);
+let pixels = x => Printf.sprintf("%gpx", x);
 
 let pointFromMouse = event => {
-  x: ReactEvent.Mouse.clientX(event),
-  y: ReactEvent.Mouse.clientY(event),
+  x: float_of_int(ReactEvent.Mouse.clientX(event)),
+  y: float_of_int(ReactEvent.Mouse.clientY(event)),
 };
 
 let positionStyle = (position: point) =>

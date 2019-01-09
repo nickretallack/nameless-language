@@ -133,11 +133,11 @@ let make =
         implementation.nodes,
         implementation.connections,
       );
-    let columnWidth = size.x / (List.length(columns) + 1);
-    let nodeWidth = 80;
-    let textHeight = 20;
+    let columnWidth = size.x /. float_of_int(List.length(columns) + 1);
+    let nodeWidth = 80.0;
+    let textHeight = 20.0;
     let nodeHeight = (node: node) =>
-      textHeight * (1 + countNodeNibs(node, definitions));
+      textHeight *. float_of_int(1 + countNodeNibs(node, definitions));
 
     let nodePositions: Belt.Map.String.t(point) =
       Belt.Map.String.mergeMany(
@@ -146,15 +146,24 @@ let make =
           List.flatten(
             List.mapi(
               (column, nodes: Belt.Map.String.t(node)) => {
-                let rowHeight = size.y / (Belt.Map.String.size(nodes) + 1);
+                let rowHeight =
+                  size.y /. float_of_int(Belt.Map.String.size(nodes) + 1);
                 Belt.List.mapWithIndex(
                   Belt.Map.String.toList(nodes),
                   (row, (nodeID: nodeID, node: node)) =>
                   (
                     nodeID,
                     {
-                      x: columnWidth * (column + 1) - nodeWidth / 2,
-                      y: rowHeight * (row + 1) - nodeHeight(node) / 2,
+                      x:
+                        columnWidth
+                        *. float_of_int(column + 1)
+                        -. nodeWidth
+                        /. 2.0,
+                      y:
+                        rowHeight
+                        *. float_of_int(row + 1)
+                        -. nodeHeight(node)
+                        /. 2.0,
                     },
                   )
                 );
@@ -167,9 +176,9 @@ let make =
     let getNodePosition = nodeID =>
       Belt.Map.String.getExn(nodePositions, nodeID);
 
-    let nibOffset = 10;
+    let nibOffset = 10.0;
     let nibPositions = (nibIds, isInput) => {
-      let rowHeight = size.y / (List.length(nibIds) + 1);
+      let rowHeight = size.y /. float_of_int(List.length(nibIds) + 1);
       Belt.Map.String.fromArray(
         Array.of_list(
           List.mapi(
@@ -179,11 +188,11 @@ let make =
                 {
                   x:
                     if (isInput) {
-                      size.x - nibOffset;
+                      size.x -. nibOffset;
                     } else {
                       nibOffset;
                     },
-                  y: (index + 1) * rowHeight,
+                  y: float_of_int(index + 1) *. rowHeight,
                 },
               ),
             nibIds,
@@ -200,16 +209,16 @@ let make =
         let nodePosition = getNodePosition(nodeID);
         let node = getNode(nodeID);
         {
-          x: nodePosition.x + (isSink ? 80 : 0),
+          x: nodePosition.x +. (isSink ? 80.0 : 0.0),
           y:
-            (
+            float_of_int(
               getNodeNibIndex(node, definitions, connectionSide.nib, isSink)
-              + 1
+              + 1,
             )
-            * textHeight
-            + textHeight
-            / 2
-            + nodePosition.y,
+            *. textHeight
+            +. textHeight
+            /. 2.0
+            +. nodePosition.y,
         };
       | GraphConnection =>
         switch (connectionSide.nib) {
@@ -328,7 +337,7 @@ let make =
                  className="graph-input input"
                  key=nibID
                  style={ReactDOMRe.Style.make(
-                   ~right=pixels(10),
+                   ~right=pixels(10.0),
                    ~top=
                      pixels(Belt.Map.String.getExn(inputPositions, nibID).y),
                    (),
