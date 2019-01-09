@@ -283,10 +283,7 @@ let make =
       <input
         type_="text"
         className="graph-name"
-        value={
-                Belt.Map.String.getExn(documentation.name.translations, "en").
-                  text
-              }
+        value={getTranslated(documentation.name, "en")}
         onChange=changeName
       />
       {switch (self.state.error) {

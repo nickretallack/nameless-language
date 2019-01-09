@@ -165,7 +165,7 @@ function make(definitionID, definitions, implementation, display, documentation,
                         }, React.createElement("input", {
                               className: "graph-name",
                               type: "text",
-                              value: Belt_MapString.getExn(documentation[/* name */0][/* translations */1], "en")[/* text */0],
+                              value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
                               onChange: changeName
                             }), match !== undefined ? React.createElement("div", {
                                 className: "error-message"

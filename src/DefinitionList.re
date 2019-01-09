@@ -11,9 +11,7 @@ let make = (~definitions: definitions, _children) => {
          ((definitionID, definition)) =>
            <li key=definitionID>
              <a href={"#" ++ definitionID}>
-               {ReasonReact.string(
-                  getTranslated(definition.documentation.name, "en"),
-                )}
+               {ReasonReact.string(getDisplayName(definition, "en"))}
              </a>
            </li>,
          definitions,

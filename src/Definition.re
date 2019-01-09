@@ -198,6 +198,14 @@ type primitiveValueType =
   | NumberType
   | TextType;
 
+let primitiveValueTypeToString =
+    (primitiveValueType: primitiveValueType): string =>
+  switch (primitiveValueType) {
+  | IntegerType => "integer"
+  | NumberType => "number"
+  | TextType => "text"
+  };
+
 type boolean =
   | True
   | False;
@@ -243,6 +251,24 @@ type primitiveValue =
   | IntegerValue(int)
   | NumberValue(float)
   | TextValue(string);
+
+let primitiveValueToType =
+    (primitiveValue: primitiveValue): primitiveValueType =>
+  switch (primitiveValue) {
+  | IntegerValue(_) => IntegerType
+  | NumberValue(_) => NumberType
+  | TextValue(_) => TextType
+  };
+
+let primitiveValueToString = (primitiveValue: primitiveValue) =>
+  switch (primitiveValue) {
+  | IntegerValue(value) => string_of_int(value)
+  | NumberValue(value) => floatToString(value)
+  | TextValue(value) => value
+  };
+
+let primitiveValueToTypeString = x =>
+  x |> primitiveValueToType |> primitiveValueTypeToString;
 
 type definedValue = {
   definitionID,
@@ -323,16 +349,17 @@ type definition = {
 
 type definitions = Belt.Map.String.t(definition);
 
-let getName = (definition: definition, language: language) =>
-  Belt.Map.String.getExn(definition.documentation.name.translations, language).
+let getDisplayName = (definition: definition, language: language) => {
+  let text = getTranslated(definition.documentation.name, language);
+  if (text != "") {
     text;
-
-let getDescription = (definition: definition, language: language) =>
-  Belt.Map.String.getExn(
-    definition.documentation.description.translations,
-    language,
-  ).
-    text;
+  } else {
+    switch (definition.implementation) {
+    | ConstantImplementation(value) => primitiveValueToString(value)
+    | _ => "(nameless)"
+    };
+  };
+};
 
 type displayNib = {
   name: string,

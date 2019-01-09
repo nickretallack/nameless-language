@@ -71,6 +71,18 @@ function randomId(param) {
                   })));
 }
 
+function floatToString(x) {
+  return Curry._1(Printf.sprintf(/* Format */[
+                  /* Float */Block.__(8, [
+                      /* Float_g */9,
+                      /* No_padding */0,
+                      /* No_precision */0,
+                      /* End_of_format */0
+                    ]),
+                  "%g"
+                ]), x);
+}
+
 function pixels(x) {
   return Curry._1(Printf.sprintf(/* Format */[
                   /* Float */Block.__(8, [
@@ -127,6 +139,7 @@ exports.findIndexExn = findIndexExn;
 exports.findByIndexExn = findByIndexExn;
 exports.randomHex = randomHex;
 exports.randomId = randomId;
+exports.floatToString = floatToString;
 exports.pixels = pixels;
 exports.pointFromMouse = pointFromMouse;
 exports.positionStyle = positionStyle;

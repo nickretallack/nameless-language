@@ -47,6 +47,14 @@ let make = (~size, ~definitions, _children) => {
             }
           | _ => definition
           }
+        | ChangeConstantValue(implementation) =>
+          switch (definition.implementation) {
+          | ConstantImplementation(_) => {
+              ...definition,
+              implementation: ConstantImplementation(implementation),
+            }
+          | _ => raise(Not_found)
+          }
         | ChangeName(text) => {
             ...definition,
             documentation: {
@@ -103,11 +111,12 @@ let make = (~size, ~definitions, _children) => {
     switch (self.state.definitionID) {
     | "" => <DefinitionList definitions={self.state.definitions} />
     | _ =>
-      switch (
-        Belt.Map.String.get(self.state.definitions, self.state.definitionID)
-      ) {
+      let definitionID = self.state.definitionID;
+      let emit = action => self.send(action);
+      switch (Belt.Map.String.get(self.state.definitions, definitionID)) {
       | None => ReasonReact.string("Not found")
-      | Some({implementation, display, documentation}) =>
+      | Some(definition) =>
+        let {implementation, display, documentation} = definition;
         switch (implementation) {
         | GraphImplementation(implementation) =>
           <Graph
@@ -117,10 +126,18 @@ let make = (~size, ~definitions, _children) => {
             display
             documentation
             size
-            emit={action => self.send(action)}
+            emit
+          />
+        | ConstantImplementation(implementation) =>
+          <ConstantDefinition
+            definitionID
+            implementation
+            display
+            documentation
+            emit
           />
         | _ => ReasonReact.string("TODO")
-        }
-      }
+        };
+      };
     },
 };

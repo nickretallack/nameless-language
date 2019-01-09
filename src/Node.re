@@ -40,7 +40,13 @@ let make =
       switch (kind) {
       | FunctionDefinitionNode =>
         <FunctionDefinitionNode nodeID definition position emit />
-      | _ => makeNode(~name=getName(definition, "en"), ~inputs, ~outputs, ())
+      | _ =>
+        makeNode(
+          ~name=getDisplayName(definition, "en"),
+          ~inputs,
+          ~outputs,
+          (),
+        )
       };
     };
   },

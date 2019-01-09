@@ -26,7 +26,7 @@ function make(definitions, _children) {
                                             key: definitionID
                                           }, React.createElement("a", {
                                                 href: "#" + definitionID
-                                              }, Definition$ReactTemplate.getTranslated(param[1][/* documentation */1][/* name */0], "en")));
+                                              }, Definition$ReactTemplate.getDisplayName(param[1], "en")));
                               }), definitions));
             }),
           /* initialState */component[/* initialState */10],

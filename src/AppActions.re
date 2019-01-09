@@ -14,6 +14,7 @@ type definitionAction =
   | CreateConnection(createConnection)
   | ChangeName(string)
   | ChangeDescription(string)
+  | ChangeConstantValue(primitiveValue)
   | AddInput;
 
 type definitionActionRecord = {

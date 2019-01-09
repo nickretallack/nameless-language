@@ -33,7 +33,8 @@ let randomHex = () => Printf.sprintf("%x", Random.int(16));
 let randomId = () =>
   String.concat("", Belt.List.makeBy(32, _ => randomHex()));
 
-let pixels = x => Printf.sprintf("%gpx", x);
+let floatToString = (x: float) => Printf.sprintf("%g", x);
+let pixels = (x: float) => Printf.sprintf("%gpx", x);
 
 let pointFromMouse = event => {
   x: float_of_int(ReactEvent.Mouse.clientX(event)),

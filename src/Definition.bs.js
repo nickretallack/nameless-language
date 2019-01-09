@@ -57,6 +57,46 @@ function definedNodeKindHasValueOutput(kind) {
   }
 }
 
+function primitiveValueTypeToString(primitiveValueType) {
+  switch (primitiveValueType) {
+    case 0 : 
+        return "integer";
+    case 1 : 
+        return "number";
+    case 2 : 
+        return "text";
+    
+  }
+}
+
+function primitiveValueToType(primitiveValue) {
+  switch (primitiveValue.tag | 0) {
+    case 0 : 
+        return /* IntegerType */0;
+    case 1 : 
+        return /* NumberType */1;
+    case 2 : 
+        return /* TextType */2;
+    
+  }
+}
+
+function primitiveValueToString(primitiveValue) {
+  switch (primitiveValue.tag | 0) {
+    case 0 : 
+        return String(primitiveValue[0]);
+    case 1 : 
+        return Helpers$ReactTemplate.floatToString(primitiveValue[0]);
+    case 2 : 
+        return primitiveValue[0];
+    
+  }
+}
+
+function primitiveValueToTypeString(x) {
+  return primitiveValueTypeToString(primitiveValueToType(x));
+}
+
 function getTranslated(translatable, language) {
   return Belt_MapString.getExn(translatable[/* translations */1], language)[/* text */0];
 }
@@ -99,12 +139,18 @@ function makeTranslatable(text, language) {
 
 var emptyTranslatable = makeTranslatable("", "en");
 
-function getName(definition, language) {
-  return Belt_MapString.getExn(definition[/* documentation */1][/* name */0][/* translations */1], language)[/* text */0];
-}
-
-function getDescription(definition, language) {
-  return Belt_MapString.getExn(definition[/* documentation */1][/* description */1][/* translations */1], language)[/* text */0];
+function getDisplayName(definition, language) {
+  var text = getTranslated(definition[/* documentation */1][/* name */0], language);
+  if (text !== "") {
+    return text;
+  } else {
+    var match = definition[/* implementation */0];
+    if (match.tag) {
+      return "(nameless)";
+    } else {
+      return primitiveValueToString(match[0]);
+    }
+  }
 }
 
 function displayKeywordNibs(definition, language, isInputs) {
@@ -261,12 +307,15 @@ exports.connectionSideToString = connectionSideToString;
 exports.ConnectionComparator = ConnectionComparator;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
+exports.primitiveValueTypeToString = primitiveValueTypeToString;
+exports.primitiveValueToType = primitiveValueToType;
+exports.primitiveValueToString = primitiveValueToString;
+exports.primitiveValueToTypeString = primitiveValueToTypeString;
 exports.getTranslated = getTranslated;
 exports.setTranslated = setTranslated;
 exports.makeTranslatable = makeTranslatable;
 exports.emptyTranslatable = emptyTranslatable;
-exports.getName = getName;
-exports.getDescription = getDescription;
+exports.getDisplayName = getDisplayName;
 exports.displayKeywordNibs = displayKeywordNibs;
 exports.displayKeywordInputs = displayKeywordInputs;
 exports.displayKeywordOutputs = displayKeywordOutputs;

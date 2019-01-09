@@ -9,8 +9,10 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Graph$ReactTemplate = require("./Graph.bs.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
+var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
+var ConstantDefinition$ReactTemplate = require("./ConstantDefinition.bs.js");
 
 var component = ReasonReact.reducerComponent("App");
 
@@ -37,16 +39,23 @@ function make(size, definitions, _children) {
               if (match === "") {
                 return ReasonReact.element(undefined, undefined, DefinitionList$ReactTemplate.make(self[/* state */1][/* definitions */0], /* array */[]));
               } else {
-                var match$1 = Belt_MapString.get(self[/* state */1][/* definitions */0], self[/* state */1][/* definitionID */1]);
+                var definitionID = self[/* state */1][/* definitionID */1];
+                var emit = function (action) {
+                  return Curry._1(self[/* send */3], action);
+                };
+                var match$1 = Belt_MapString.get(self[/* state */1][/* definitions */0], definitionID);
                 if (match$1 !== undefined) {
-                  var match$2 = match$1;
-                  var implementation = match$2[/* implementation */0];
-                  if (implementation.tag === 3) {
-                    return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitionID */1], self[/* state */1][/* definitions */0], implementation[0], match$2[/* display */2], match$2[/* documentation */1], size, (function (action) {
-                                      return Curry._1(self[/* send */3], action);
-                                    }), /* array */[]));
-                  } else {
-                    return "TODO";
+                  var definition = match$1;
+                  var display = definition[/* display */2];
+                  var documentation = definition[/* documentation */1];
+                  var implementation = definition[/* implementation */0];
+                  switch (implementation.tag | 0) {
+                    case 0 : 
+                        return ReasonReact.element(undefined, undefined, ConstantDefinition$ReactTemplate.make(definitionID, implementation[0], documentation, display, emit, /* array */[]));
+                    case 3 : 
+                        return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitionID */1], self[/* state */1][/* definitions */0], implementation[0], display, documentation, size, emit, /* array */[]));
+                    default:
+                      return "TODO";
                   }
                 } else {
                   return "Not found";
@@ -138,6 +147,18 @@ function make(size, definitions, _children) {
                           ],
                           /* display */definition[/* display */2]
                         ];
+                        break;
+                    case 3 : 
+                        var match$3 = definition[/* implementation */0];
+                        if (match$3.tag) {
+                          throw Caml_builtin_exceptions.not_found;
+                        } else {
+                          newDefinition = /* record */[
+                            /* implementation : ConstantImplementation */Block.__(0, [action$1[0]]),
+                            /* documentation */definition[/* documentation */1],
+                            /* display */definition[/* display */2]
+                          ];
+                        }
                         break;
                     
                   }

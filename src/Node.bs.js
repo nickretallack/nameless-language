@@ -41,7 +41,7 @@ function make(nodeID, node, definitions, position, emit, _children) {
                 var definition = Belt_MapString.getExn(definitions, match[/* definitionID */1]);
                 var match$1 = Definition$ReactTemplate.displayDefinedNode(definition, kind, "en");
                 if (kind !== 3) {
-                  return makeNode(match$1[/* outputs */1], match$1[/* inputs */0], Definition$ReactTemplate.getName(definition, "en"), /* () */0);
+                  return makeNode(match$1[/* outputs */1], match$1[/* inputs */0], Definition$ReactTemplate.getDisplayName(definition, "en"), /* () */0);
                 } else {
                   return ReasonReact.element(undefined, undefined, FunctionDefinitionNode$ReactTemplate.make(nodeID, definition, position, emit, /* array */[]));
                 }
