@@ -23,9 +23,9 @@ function make(nodeID, node, definitions, position, emit, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              var makeNode = function (outputs, $staropt$star, name, param) {
+              var makeNode = function (outputs, $staropt$star, definitionID, name, param) {
                 var inputs = $staropt$star !== undefined ? $staropt$star : /* [] */0;
-                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, name, inputs, outputs, position, emit, /* array */[]));
+                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, emit, /* array */[]));
               };
               if (typeof node === "number") {
                 return makeNode(/* :: */[
@@ -34,14 +34,15 @@ function make(nodeID, node, definitions, position, emit, _children) {
                               /* nib : ValueConnection */0
                             ],
                             /* [] */0
-                          ], undefined, "Reference", /* () */0);
+                          ], undefined, undefined, "Reference", /* () */0);
               } else if (node.tag) {
                 var match = node[0];
+                var definitionID = match[/* definitionID */1];
                 var kind = match[/* kind */0];
-                var definition = Belt_MapString.getExn(definitions, match[/* definitionID */1]);
+                var definition = Belt_MapString.getExn(definitions, definitionID);
                 var match$1 = Definition$ReactTemplate.displayDefinedNode(definition, kind, "en");
                 if (kind !== 3) {
-                  return makeNode(match$1[/* outputs */1], match$1[/* inputs */0], Definition$ReactTemplate.getDisplayName(definition, "en"), /* () */0);
+                  return makeNode(match$1[/* outputs */1], match$1[/* inputs */0], definitionID, Definition$ReactTemplate.getDisplayName(definition, "en"), /* () */0);
                 } else {
                   return ReasonReact.element(undefined, undefined, FunctionDefinitionNode$ReactTemplate.make(nodeID, definition, position, emit, /* array */[]));
                 }
@@ -57,7 +58,7 @@ function make(nodeID, node, definitions, position, emit, _children) {
                                           /* name */String(index),
                                           /* nib : PositionalConnection */Block.__(1, [index])
                                         ];
-                                })), "List", /* () */0);
+                                })), undefined, "List", /* () */0);
               }
             }),
           /* initialState */component[/* initialState */10],

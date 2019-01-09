@@ -4,6 +4,8 @@
 var $$Array = require("bs-platform/lib/js/array.js");
 var React = require("react");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
+var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
@@ -34,7 +36,7 @@ function renderNibs(nibs, className, isSource, nodeID, emit) {
                   })));
 }
 
-function make(nodeID, name, inputs, outputs, position, emit, _children) {
+function make(nodeID, definitionID, name, inputs, outputs, position, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -46,10 +48,17 @@ function make(nodeID, name, inputs, outputs, position, emit, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement("div", {
-                          className: "node",
-                          style: Helpers$ReactTemplate.positionStyle(position)
-                        }, name !== undefined ? React.createElement("div", {
+              var tmp = {
+                className: "node",
+                style: Helpers$ReactTemplate.positionStyle(position)
+              };
+              var tmp$1 = Belt_Option.map(definitionID, (function (definitionID, _event) {
+                      return ReasonReact.Router[/* push */0]("#" + definitionID);
+                    }));
+              if (tmp$1 !== undefined) {
+                tmp.onDoubleClick = Caml_option.valFromOption(tmp$1);
+              }
+              return React.createElement("div", tmp, name !== undefined ? React.createElement("div", {
                                 className: "name"
                               }, name) : null, renderNibs(inputs, "input", false, nodeID, emit), renderNibs(outputs, "output", true, nodeID, emit));
             }),

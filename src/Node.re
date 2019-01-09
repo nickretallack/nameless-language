@@ -14,8 +14,8 @@ let make =
     ) => {
   ...component,
   render: _self => {
-    let makeNode = (~outputs, ~inputs=[], ~name=?, ()) =>
-      <SimpleNode nodeID position emit ?name inputs outputs />;
+    let makeNode = (~outputs, ~inputs=[], ~definitionID=?, ~name=?, ()) =>
+      <SimpleNode nodeID position emit ?name inputs outputs ?definitionID />;
 
     switch (node) {
     | ReferenceNode =>
@@ -45,6 +45,7 @@ let make =
           ~name=getDisplayName(definition, "en"),
           ~inputs,
           ~outputs,
+          ~definitionID,
           (),
         )
       };

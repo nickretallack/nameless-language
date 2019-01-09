@@ -38,6 +38,7 @@ let renderNibs =
 let make =
     (
       ~nodeID: nodeID,
+      ~definitionID: option(definitionID)=?,
       ~name: option(string)=?,
       ~inputs: list(displayNib),
       ~outputs: list(displayNib),
@@ -47,7 +48,14 @@ let make =
     ) => {
   ...component,
   render: _self =>
-    <div className="node" style={positionStyle(position)}>
+    <div
+      className="node"
+      style={positionStyle(position)}
+      onDoubleClick=?{
+        Belt.Option.map(definitionID, (definitionID: definitionID, _event) =>
+          ReasonReact.Router.push("#" ++ definitionID)
+        )
+      }>
       {switch (name) {
        | Some(name) =>
          <div className="name"> {ReasonReact.string(name)} </div>
