@@ -27,9 +27,9 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               var left = Caml_primitive.caml_int_min(sourcePosition[/* x */0], sinkPosition[/* x */0]);
-              var top = Caml_primitive.caml_int_min(sourcePosition[/* y */1], sinkPosition[/* y */1]) - 2 | 0;
+              var top = Caml_primitive.caml_int_min(sourcePosition[/* y */1], sinkPosition[/* y */1]) - 5.0 / 2.0;
               var width = Pervasives.abs(sourcePosition[/* x */0] - sinkPosition[/* x */0] | 0);
-              var height = Pervasives.abs(sourcePosition[/* y */1] - sinkPosition[/* y */1] | 0) + 5 | 0;
+              var height = Pervasives.abs(sourcePosition[/* y */1] - sinkPosition[/* y */1] | 0) + 5.0;
               var palette = /* array */[
                 "fuchsia",
                 "aqua",
@@ -37,11 +37,11 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
                 "blue"
               ];
               var containerStyle = {
-                height: Helpers$ReactTemplate.pixels(height),
-                left: Helpers$ReactTemplate.pixels(left),
+                height: Helpers$ReactTemplate.floatPixels(height),
+                left: Helpers$ReactTemplate.floatPixels(left),
                 position: "absolute",
-                top: Helpers$ReactTemplate.pixels(top),
-                width: Helpers$ReactTemplate.pixels(width),
+                top: Helpers$ReactTemplate.floatPixels(top),
+                width: Helpers$ReactTemplate.floatPixels(width),
                 pointerEvents: "none"
               };
               var sharedStyle = {
@@ -52,12 +52,12 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
                 position: "absolute",
                 width: Helpers$ReactTemplate.floatPixels(width / 2.0)
               };
-              var centeredNudge = nudge - ((maxNudge - 1 | 0) / 2 | 0) | 0;
-              var match = Caml_int32.imul(maxNudge, 20) < width;
-              var clampedNudgeMagnitude = match ? 20 : Caml_int32.div(width, maxNudge);
-              var actualNudge = Caml_int32.imul(centeredNudge, clampedNudgeMagnitude);
-              var match$1 = 16 < height;
-              var actualRoundness = match$1 ? 8 : height / 2 | 0;
+              var centeredNudge = nudge - (maxNudge - 1 | 0) / 2.0;
+              var match = maxNudge * 20.0 < width;
+              var clampedNudgeMagnitude = match ? 20.0 : width / maxNudge;
+              var actualNudge = centeredNudge * clampedNudgeMagnitude;
+              var match$1 = 8.0 * 2.0 < height;
+              var actualRoundness = match$1 ? 8.0 : height / 2.0;
               var sourceIsHigher = sourcePosition[/* y */1] > sinkPosition[/* y */1];
               var match$2 = sourcePosition[/* x */0] < sinkPosition[/* x */0];
               var match$3 = (
@@ -65,40 +65,40 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
               ) ? /* tuple */[
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: "0",
-                        borderBottomWidth: Helpers$ReactTemplate.pixels(5),
+                        borderBottomWidth: Helpers$ReactTemplate.floatPixels(5.0),
                         bottom: "0",
-                        right: Helpers$ReactTemplate.floatPixels(width / 2.0 - actualNudge - 5 - clampedNudgeMagnitude / 4.0),
-                        borderBottomRightRadius: Helpers$ReactTemplate.pixels(actualRoundness)
+                        right: Helpers$ReactTemplate.floatPixels(width / 2.0 - actualNudge - 5.0 - clampedNudgeMagnitude / 4.0),
+                        borderBottomRightRadius: Helpers$ReactTemplate.floatPixels(actualRoundness)
                       }),
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
-                        borderTopWidth: Helpers$ReactTemplate.pixels(5),
+                        borderTopWidth: Helpers$ReactTemplate.floatPixels(5.0),
                         borderBottomWidth: "0",
                         left: Helpers$ReactTemplate.floatPixels(width / 2.0 + actualNudge + clampedNudgeMagnitude / 4.0),
                         top: "0",
-                        borderTopLeftRadius: Helpers$ReactTemplate.pixels(actualRoundness)
+                        borderTopLeftRadius: Helpers$ReactTemplate.floatPixels(actualRoundness)
                       })
                 ] : /* tuple */[
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
-                        borderTopWidth: Helpers$ReactTemplate.pixels(5),
+                        borderTopWidth: Helpers$ReactTemplate.floatPixels(5.0),
                         borderBottomWidth: "0",
                         right: Helpers$ReactTemplate.floatPixels(width / 2.0 + actualNudge),
                         top: "0",
-                        borderTopRightRadius: Helpers$ReactTemplate.pixels(actualRoundness)
+                        borderTopRightRadius: Helpers$ReactTemplate.floatPixels(actualRoundness)
                       }),
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: "0",
-                        borderBottomWidth: Helpers$ReactTemplate.pixels(5),
+                        borderBottomWidth: Helpers$ReactTemplate.floatPixels(5.0),
                         bottom: "0",
-                        left: Helpers$ReactTemplate.floatPixels(width / 2.0 - actualNudge - 5),
-                        borderBottomLeftRadius: Helpers$ReactTemplate.pixels(actualRoundness)
+                        left: Helpers$ReactTemplate.floatPixels(width / 2.0 - actualNudge - 5.0),
+                        borderBottomLeftRadius: Helpers$ReactTemplate.floatPixels(actualRoundness)
                       })
                 ];
               var fullLeftStyle = ReactDOMRe.Style[/* combine */0](match$3[0], {
-                    borderRightWidth: Helpers$ReactTemplate.pixels(5),
+                    borderRightWidth: Helpers$ReactTemplate.floatPixels(5.0),
                     left: "0"
                   });
               var fullRightStyle = ReactDOMRe.Style[/* combine */0](match$3[1], {
-                    borderLeftWidth: Helpers$ReactTemplate.pixels(5),
+                    borderLeftWidth: Helpers$ReactTemplate.floatPixels(5.0),
                     right: "0"
                   });
               return React.createElement("div", {

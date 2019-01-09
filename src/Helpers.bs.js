@@ -11,7 +11,6 @@ var $$String = require("bs-platform/lib/js/string.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
-var Pervasives = require("bs-platform/lib/js/pervasives.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
@@ -77,7 +76,18 @@ function pixels(x) {
 }
 
 function floatPixels(x) {
-  return Pervasives.string_of_float(x) + "px";
+  return Curry._1(Printf.sprintf(/* Format */[
+                  /* Float */Block.__(8, [
+                      /* Float_g */9,
+                      /* No_padding */0,
+                      /* No_precision */0,
+                      /* String_literal */Block.__(11, [
+                          "px",
+                          /* End_of_format */0
+                        ])
+                    ]),
+                  "%gpx"
+                ]), x);
 }
 
 function pointFromMouse($$event) {
