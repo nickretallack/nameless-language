@@ -48,8 +48,9 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
                 borderColor: Caml_array.caml_array_get(palette, Caml_int32.mod_(nudge, palette.length)),
                 borderStyle: "solid",
                 borderWidth: "0",
-                height: Helpers$ReactTemplate.pixels(height / 2 | 0),
-                position: "absolute"
+                height: Helpers$ReactTemplate.floatPixels(height / 2.0),
+                position: "absolute",
+                width: Helpers$ReactTemplate.floatPixels(width / 2.0)
               };
               var centeredNudge = nudge - ((maxNudge - 1 | 0) / 2 | 0) | 0;
               var match = Caml_int32.imul(maxNudge, 20) < width;
@@ -64,48 +65,48 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
               ) ? /* tuple */[
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: "0",
-                        borderRightWidth: Helpers$ReactTemplate.pixels(5),
                         borderBottomWidth: Helpers$ReactTemplate.pixels(5),
                         bottom: "0",
-                        left: "0",
-                        right: Helpers$ReactTemplate.pixels((((width / 2 | 0) - actualNudge | 0) - 5 | 0) - (clampedNudgeMagnitude / 4 | 0) | 0),
+                        right: Helpers$ReactTemplate.floatPixels(width / 2.0 - actualNudge - 5 - clampedNudgeMagnitude / 4.0),
                         borderBottomRightRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       }),
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: Helpers$ReactTemplate.pixels(5),
                         borderBottomWidth: "0",
-                        borderLeftWidth: Helpers$ReactTemplate.pixels(5),
-                        left: Helpers$ReactTemplate.pixels(((width / 2 | 0) + actualNudge | 0) + (clampedNudgeMagnitude / 4 | 0) | 0),
-                        right: "0",
+                        left: Helpers$ReactTemplate.floatPixels(width / 2.0 + actualNudge + clampedNudgeMagnitude / 4.0),
                         top: "0",
                         borderTopLeftRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       })
                 ] : /* tuple */[
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: Helpers$ReactTemplate.pixels(5),
-                        borderRightWidth: Helpers$ReactTemplate.pixels(5),
                         borderBottomWidth: "0",
-                        left: "0",
-                        right: Helpers$ReactTemplate.pixels((width / 2 | 0) + actualNudge | 0),
+                        right: Helpers$ReactTemplate.floatPixels(width / 2.0 + actualNudge),
                         top: "0",
                         borderTopRightRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       }),
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: "0",
                         borderBottomWidth: Helpers$ReactTemplate.pixels(5),
-                        borderLeftWidth: Helpers$ReactTemplate.pixels(5),
                         bottom: "0",
-                        left: Helpers$ReactTemplate.pixels(((width / 2 | 0) - actualNudge | 0) - 5 | 0),
-                        right: "0",
+                        left: Helpers$ReactTemplate.floatPixels(width / 2.0 - actualNudge - 5),
                         borderBottomLeftRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       })
                 ];
+              var fullLeftStyle = ReactDOMRe.Style[/* combine */0](match$3[0], {
+                    borderRightWidth: Helpers$ReactTemplate.pixels(5),
+                    left: "0"
+                  });
+              var fullRightStyle = ReactDOMRe.Style[/* combine */0](match$3[1], {
+                    borderLeftWidth: Helpers$ReactTemplate.pixels(5),
+                    right: "0"
+                  });
               return React.createElement("div", {
                           style: containerStyle
                         }, React.createElement("div", {
-                              style: match$3[0]
+                              style: fullLeftStyle
                             }), React.createElement("div", {
-                              style: match$3[1]
+                              style: fullRightStyle
                             }));
             }),
           /* initialState */component[/* initialState */10],

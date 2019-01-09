@@ -11,6 +11,7 @@ var $$String = require("bs-platform/lib/js/string.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
+var Pervasives = require("bs-platform/lib/js/pervasives.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
@@ -75,6 +76,10 @@ function pixels(x) {
   return String(x) + "px";
 }
 
+function floatPixels(x) {
+  return Pervasives.string_of_float(x) + "px";
+}
+
 function pointFromMouse($$event) {
   return /* record */[
           /* x */$$event.clientX,
@@ -117,6 +122,7 @@ exports.findByIndexExn = findByIndexExn;
 exports.randomHex = randomHex;
 exports.randomId = randomId;
 exports.pixels = pixels;
+exports.floatPixels = floatPixels;
 exports.pointFromMouse = pointFromMouse;
 exports.positionStyle = positionStyle;
 exports.iterateTouches = iterateTouches;

@@ -35,6 +35,9 @@ let randomId = () =>
 
 let pixels = x => string_of_int(x) ++ "px";
 
+let floatPixels = x => string_of_float(x) ++ "px";
+
+
 let pointFromMouse = event => {
   x: ReactEvent.Mouse.clientX(event),
   y: ReactEvent.Mouse.clientY(event),
