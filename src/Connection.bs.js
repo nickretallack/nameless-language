@@ -59,39 +59,44 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
               var actualRoundness = match$1 ? 8.0 : height / 2.0;
               var sourceIsHigher = sourcePosition[/* y */1] > sinkPosition[/* y */1];
               var match$2 = sourcePosition[/* x */0] < sinkPosition[/* x */0];
-              var match$3 = (
-                match$2 ? sourceIsHigher : !sourceIsHigher
-              ) ? /* tuple */[
+              var match$3;
+              if (match$2 ? sourceIsHigher : !sourceIsHigher) {
+                var leftWidth = width / 2.0 - actualNudge - 5.0 - clampedNudgeMagnitude / 4.0;
+                match$3 = /* tuple */[
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: "0",
                         borderBottomWidth: Helpers$ReactTemplate.pixels(5.0),
                         bottom: "0",
-                        right: Helpers$ReactTemplate.pixels(width / 2.0 - actualNudge - 5.0 - clampedNudgeMagnitude / 4.0),
+                        width: Helpers$ReactTemplate.pixels(leftWidth),
                         borderBottomRightRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       }),
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: Helpers$ReactTemplate.pixels(5.0),
                         borderBottomWidth: "0",
-                        left: Helpers$ReactTemplate.pixels(width / 2.0 + actualNudge + clampedNudgeMagnitude / 4.0),
                         top: "0",
+                        width: Helpers$ReactTemplate.pixels(width - leftWidth + 5.0),
                         borderTopLeftRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       })
-                ] : /* tuple */[
+                ];
+              } else {
+                var leftWidth$1 = width / 2.0 + actualNudge;
+                match$3 = /* tuple */[
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: Helpers$ReactTemplate.pixels(5.0),
                         borderBottomWidth: "0",
-                        right: Helpers$ReactTemplate.pixels(width / 2.0 + actualNudge),
                         top: "0",
+                        width: Helpers$ReactTemplate.pixels(leftWidth$1),
                         borderTopRightRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       }),
                   ReactDOMRe.Style[/* combine */0](sharedStyle, {
                         borderTopWidth: "0",
                         borderBottomWidth: Helpers$ReactTemplate.pixels(5.0),
                         bottom: "0",
-                        left: Helpers$ReactTemplate.pixels(width / 2.0 - actualNudge - 5.0),
+                        width: Helpers$ReactTemplate.pixels(width - leftWidth$1 + 5.0),
                         borderBottomLeftRadius: Helpers$ReactTemplate.pixels(actualRoundness)
                       })
                 ];
+              }
               var fullLeftStyle = ReactDOMRe.Style[/* combine */0](match$3[0], {
                     borderRightWidth: Helpers$ReactTemplate.pixels(5.0),
                     left: "0"

@@ -55,21 +55,20 @@ let make =
     let sourceIsHigher = sourcePosition.y > sinkPosition.y;
     let (leftStyle, rightStyle) =
       if (sourcePosition.x < sinkPosition.x ? sourceIsHigher : !sourceIsHigher) {
+        let leftWidth =
+          width
+          /. 2.0
+          -. actualNudge
+          -. strokeWidth
+          -. clampedNudgeMagnitude
+          /. 4.0;
         (
           ReactDOMRe.Style.combine(
             sharedStyle,
             ReactDOMRe.Style.make(
               ~borderBottomWidth=pixels(strokeWidth),
               ~borderTopWidth="0",
-              ~right=
-                pixels(
-                  width
-                  /. 2.0
-                  -. actualNudge
-                  -. strokeWidth
-                  -. clampedNudgeMagnitude
-                  /. 4.0,
-                ),
+              ~width=pixels(leftWidth),
               ~borderBottomRightRadius=pixels(actualRoundness),
               ~bottom="0",
               (),
@@ -80,10 +79,7 @@ let make =
             ReactDOMRe.Style.make(
               ~borderTopWidth=pixels(strokeWidth),
               ~borderBottomWidth="0",
-              ~left=
-                pixels(
-                  width /. 2.0 +. actualNudge +. clampedNudgeMagnitude /. 4.0,
-                ),
+              ~width=pixels(width -. leftWidth +. strokeWidth),
               ~borderTopLeftRadius=pixels(actualRoundness),
               ~top="0",
               (),
@@ -91,13 +87,14 @@ let make =
           ),
         );
       } else {
+        let leftWidth = width /. 2.0 +. actualNudge;
         (
           ReactDOMRe.Style.combine(
             sharedStyle,
             ReactDOMRe.Style.make(
               ~borderTopWidth=pixels(strokeWidth),
               ~borderBottomWidth="0",
-              ~right=pixels(width /. 2.0 +. actualNudge),
+              ~width=pixels(leftWidth),
               ~borderTopRightRadius=pixels(actualRoundness),
               ~top="0",
               (),
@@ -108,7 +105,7 @@ let make =
             ReactDOMRe.Style.make(
               ~borderBottomWidth=pixels(strokeWidth),
               ~borderTopWidth="0",
-              ~left=pixels(width /. 2.0 -. actualNudge -. strokeWidth),
+              ~width=pixels(width -. leftWidth +. strokeWidth),
               ~borderBottomLeftRadius=pixels(actualRoundness),
               ~bottom="0",
               (),
