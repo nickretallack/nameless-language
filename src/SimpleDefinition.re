@@ -13,6 +13,8 @@ let make = (~definition: definition, ~emit, _children) => {
          <ConstantImplementation implementation documentation emit />
        | RecordTypeImplementation(implementation) =>
          <RecordTypeImplementation implementation documentation display emit />
+       | InterfaceImplementation(implementation) =>
+         <InterfaceImplementation implementation documentation display emit />
        | _ => ReasonReact.string("TODO")
        }}
     </div>;

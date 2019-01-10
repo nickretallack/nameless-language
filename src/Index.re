@@ -1,5 +1,4 @@
 open Definition;
-open Helpers;
 
 let makeNibDocs = (nibs: array((nibID, string))) =>
   Belt.Map.String.fromArray(
@@ -220,6 +219,26 @@ let referenceExample =
     (),
   );
 
+let exampleInterface =
+  makeDefinition(
+    ~name="Example Interface",
+    ~inputs=[|("left", "Left"), ("right", "Right")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      InterfaceImplementation({
+        inputTypes:
+          Belt.Map.String.fromArray([|
+            ("left", PrimitiveValueType(NumberType)),
+            ("right", PrimitiveValueType(NumberType)),
+          |]),
+        outputTypes:
+          Belt.Map.String.fromArray([|
+            ("result", PrimitiveValueType(NumberType)),
+          |]),
+      }),
+    (),
+  );
+
 let definitions =
   Belt.Map.String.fromArray([|
     ("example", example),
@@ -229,6 +248,7 @@ let definitions =
     ("point", point),
     ("point-example", pointExample),
     ("reference-example", referenceExample),
+    ("example-interface", exampleInterface),
   |]);
 
 ReactDOMRe.renderToElementWithId(

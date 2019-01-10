@@ -370,6 +370,35 @@ var referenceExample = makeGraph("Reference example", "", /* array */[], /* arra
         ]
       ]], /* () */0);
 
+var exampleInterface = makeDefinition("Example Interface", undefined, /* array */[
+      /* tuple */[
+        "left",
+        "Left"
+      ],
+      /* tuple */[
+        "right",
+        "Right"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* InterfaceImplementation */Block.__(1, [/* record */[
+          /* inputTypes */Belt_MapString.fromArray(/* array */[
+                /* tuple */[
+                  "left",
+                  /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                ],
+                /* tuple */[
+                  "right",
+                  /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                ]
+              ]),
+          /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                  "result",
+                  /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                ]])
+        ]]), /* () */0);
+
 var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "example",
@@ -398,6 +427,10 @@ var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "reference-example",
         referenceExample
+      ],
+      /* tuple */[
+        "example-interface",
+        exampleInterface
       ]
     ]);
 
@@ -417,5 +450,6 @@ exports.point = point;
 exports.plus = plus;
 exports.pointExample = pointExample;
 exports.referenceExample = referenceExample;
+exports.exampleInterface = exampleInterface;
 exports.definitions = definitions;
 /* example Not a pure module */

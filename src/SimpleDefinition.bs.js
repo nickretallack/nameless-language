@@ -5,6 +5,7 @@ var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var DefinitionHeader$ReactTemplate = require("./DefinitionHeader.bs.js");
 var ConstantImplementation$ReactTemplate = require("./ConstantImplementation.bs.js");
+var InterfaceImplementation$ReactTemplate = require("./InterfaceImplementation.bs.js");
 var RecordTypeImplementation$ReactTemplate = require("./RecordTypeImplementation.bs.js");
 
 var component = ReasonReact.statelessComponent("SimpleDefinition");
@@ -21,6 +22,7 @@ function make(definition, emit, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
+              var display = definition[/* display */2];
               var documentation = definition[/* documentation */1];
               var implementation = definition[/* implementation */0];
               var tmp;
@@ -28,8 +30,11 @@ function make(definition, emit, _children) {
                 case 0 : 
                     tmp = ReasonReact.element(undefined, undefined, ConstantImplementation$ReactTemplate.make(implementation[0], documentation, emit, /* array */[]));
                     break;
+                case 1 : 
+                    tmp = ReasonReact.element(undefined, undefined, InterfaceImplementation$ReactTemplate.make(implementation[0], documentation, display, emit, /* array */[]));
+                    break;
                 case 4 : 
-                    tmp = ReasonReact.element(undefined, undefined, RecordTypeImplementation$ReactTemplate.make(implementation[0], documentation, definition[/* display */2], emit, /* array */[]));
+                    tmp = ReasonReact.element(undefined, undefined, RecordTypeImplementation$ReactTemplate.make(implementation[0], documentation, display, emit, /* array */[]));
                     break;
                 default:
                   tmp = "TODO";
