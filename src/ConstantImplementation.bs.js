@@ -10,7 +10,6 @@ var Caml_js_exceptions = require("bs-platform/lib/js/caml_js_exceptions.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
-var DefinitionHeader$ReactTemplate = require("./DefinitionHeader.bs.js");
 
 var component = ReasonReact.statelessComponent("ConstantDefinition");
 
@@ -128,7 +127,7 @@ function make(implementation, documentation, emit, _children) {
                     break;
                 
               }
-              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, emit, /* array */[])), React.createElement("h1", undefined, "Constant"), React.createElement("div", undefined, "Type:"), React.createElement("select", {
+              return React.createElement("div", undefined, React.createElement("h1", undefined, "Constant"), React.createElement("div", undefined, "Type:"), React.createElement("select", {
                               value: typeName,
                               onChange: changeType
                             }, React.createElement("option", {

@@ -320,10 +320,10 @@ function displayDefinedType(definition, language) {
   var tmp;
   switch (match.tag | 0) {
     case 1 : 
-        tmp = "function";
+        tmp = "Function";
         break;
     case 4 : 
-        tmp = "record";
+        tmp = "Record";
         break;
     default:
       throw Caml_builtin_exceptions.not_found;
@@ -331,11 +331,23 @@ function displayDefinedType(definition, language) {
   return getTranslated(definition[/* documentation */1][/* name */0], language) + (" " + tmp);
 }
 
+function displayPrimitiveValueType(primitiveValueType) {
+  switch (primitiveValueType) {
+    case 0 : 
+        return "Integer";
+    case 1 : 
+        return "Number";
+    case 2 : 
+        return "Text";
+    
+  }
+}
+
 function displayValueType(valueType, definitions, language) {
   if (valueType.tag) {
     return displayDefinedType(Belt_MapString.getExn(definitions, valueType[0]), language);
   } else {
-    return primitiveValueTypeToString(valueType[0]);
+    return displayPrimitiveValueType(valueType[0]);
   }
 }
 
@@ -367,6 +379,7 @@ exports.getNodeNibIndex = getNodeNibIndex;
 exports.getOutputIndex = getOutputIndex;
 exports.countNodeNibs = countNodeNibs;
 exports.displayDefinedType = displayDefinedType;
+exports.displayPrimitiveValueType = displayPrimitiveValueType;
 exports.displayValueType = displayValueType;
 exports.InvalidConnection = InvalidConnection;
 /* ConnectionComparator Not a pure module */

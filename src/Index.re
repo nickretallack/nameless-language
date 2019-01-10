@@ -116,7 +116,6 @@ let simple =
 
 let one =
   makeDefinition(
-    ~name="1",
     ~implementation=ConstantImplementation(NumberValue(1.0)),
     (),
   );

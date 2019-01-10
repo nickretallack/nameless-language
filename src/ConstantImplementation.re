@@ -47,7 +47,6 @@ let make =
     let typeName = primitiveValueToTypeString(implementation);
 
     <div>
-      <DefinitionHeader emit documentation />
       <h1> {ReasonReact.string("Constant")} </h1>
       <div> {ReasonReact.string("Type:")} </div>
       <select value=typeName onChange=changeType>

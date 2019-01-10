@@ -208,7 +208,7 @@ var simple = makeGraph("Simple Definition", "A simple function", /* array */[
       ]
     ], /* () */0);
 
-var one = makeDefinition("1", undefined, undefined, undefined, /* ConstantImplementation */Block.__(0, [/* NumberValue */Block.__(1, [1.0])]), /* () */0);
+var one = makeDefinition(undefined, undefined, undefined, undefined, /* ConstantImplementation */Block.__(0, [/* NumberValue */Block.__(1, [1.0])]), /* () */0);
 
 var point = makeDefinition("2D Point", "X and Y coordinates", /* array */[
       /* tuple */[

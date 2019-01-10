@@ -488,18 +488,26 @@ let displayDefinedType = (definition: definition, language: language): string =>
   ++ " "
   ++ (
     switch (definition.implementation) {
-    | RecordTypeImplementation(_) => "record"
-    | InterfaceImplementation(_) => "function"
+    | RecordTypeImplementation(_) => "Record"
+    | InterfaceImplementation(_) => "Function"
     | _ => raise(Not_found)
     }
   );
+
+let displayPrimitiveValueType =
+    (primitiveValueType: primitiveValueType): string =>
+  switch (primitiveValueType) {
+  | IntegerType => "Integer"
+  | NumberType => "Number"
+  | TextType => "Text"
+  };
 
 let displayValueType =
     (valueType: valueType, definitions: definitions, language: language)
     : string =>
   switch (valueType) {
   | PrimitiveValueType(primitiveValueType) =>
-    primitiveValueTypeToString(primitiveValueType)
+    displayPrimitiveValueType(primitiveValueType)
   | DefinedValueType(definitionID) =>
     displayDefinedType(
       Belt.Map.String.getExn(definitions, definitionID),
