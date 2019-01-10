@@ -125,7 +125,6 @@ let make = (~size, ~definitions, _children) => {
     | "" => <DefinitionList definitions={self.state.definitions} />
     | _ =>
       let definitionID = self.state.definitionID;
-      let emit = action => self.send(action);
       switch (Belt.Map.String.get(self.state.definitions, definitionID)) {
       | None => ReasonReact.string("Not found")
       | Some(definition) =>

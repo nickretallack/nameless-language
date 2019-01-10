@@ -1,5 +1,4 @@
 open Definition;
-open AppActions;
 open Helpers;
 
 let component = ReasonReact.statelessComponent("NibInterface");
@@ -10,13 +9,19 @@ let make =
       ~isInput: bool,
       ~valueType: valueType,
       ~name: translatable,
-      ~emit: definitionAction => unit,
+      ~emit: AppActions.definitionAction => unit,
       _children,
     ) => {
   ...component,
   render: _self => {
     let changeName = event =>
-      emit(ChangeNibName({nibID, isInput, text: getEventValue(event)}));
+      emit(
+        AppActions.ChangeNibName({
+          nibID,
+          isInput,
+          text: getEventValue(event),
+        }),
+      );
 
     <div>
       <div> {ReasonReact.string("TODO: type")} </div>
