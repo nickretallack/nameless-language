@@ -92,3 +92,23 @@ body {
 .graph-output {
 	margin-left: var(--nega-half-nib);
 }
+
+.type-selector-menu {
+	display: flex;
+}
+
+.type-selector-menu a {
+	display: block;
+}
+
+.type-selector-menu a.selected {
+	background: lightgray;
+}
+
+.type-selector-choices {
+	margin-left: 5px;
+}
+
+a {
+	color: blue;
+}

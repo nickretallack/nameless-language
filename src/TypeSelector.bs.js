@@ -29,6 +29,14 @@ function categoryFromType(valueType, definitions) {
   }
 }
 
+function hasDefinitionID(valueType, definitionID) {
+  if (valueType.tag) {
+    return definitionID === valueType[0];
+  } else {
+    return false;
+  }
+}
+
 var component = ReasonReact.reducerComponent("TypeSelector");
 
 function make(valueType, definitions, changeType, _children) {
@@ -43,27 +51,26 @@ function make(valueType, definitions, changeType, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
+              var renderCategory = function (name, category) {
+                var match = self[/* state */1][/* category */1] === category;
+                return React.createElement("a", {
+                            className: match ? "selected" : "",
+                            onClick: (function (_event) {
+                                return Curry._1(self[/* send */3], /* SelectCategory */[category]);
+                              })
+                          }, name);
+              };
               var match = self[/* state */1][/* opened */0];
               var tmp;
               if (match) {
                 var match$1 = self[/* state */1][/* category */1];
-                tmp = React.createElement("div", undefined, "categories:", React.createElement("a", {
-                          onClick: (function (_event) {
-                              return Curry._1(self[/* send */3], /* SelectCategory */[/* TextCategory */1]);
-                            })
-                        }, "Text"), React.createElement("a", {
-                          onClick: (function (_event) {
-                              return Curry._1(self[/* send */3], /* SelectCategory */[/* NumberCategory */0]);
-                            })
-                        }, "Number"), React.createElement("a", {
-                          onClick: (function (_event) {
-                              return Curry._1(self[/* send */3], /* SelectCategory */[/* RecordCategory */2]);
-                            })
-                        }, "Record"), React.createElement("a", {
-                          onClick: (function (_event) {
-                              return Curry._1(self[/* send */3], /* SelectCategory */[/* FunctionCategory */3]);
-                            })
-                        }, "Function"), match$1 !== 2 ? null : React.createElement("div", undefined, "Record", Belt_Array.map(Belt_Array.keep(Belt_MapString.toArray(definitions), (function (param) {
+                tmp = React.createElement("div", {
+                      className: "type-selector-menu"
+                    }, React.createElement("div", {
+                          className: "type-selector-categories"
+                        }, React.createElement("h3", undefined, "Category"), renderCategory("Text", /* TextCategory */1), renderCategory("Number", /* NumberCategory */0), renderCategory("Record", /* RecordCategory */2), renderCategory("Function", /* FunctionCategory */3)), match$1 !== 2 ? null : React.createElement("div", {
+                            className: "type-selector-choices"
+                          }, React.createElement("h3", undefined, "Record Types"), Belt_Array.map(Belt_Array.keep(Belt_MapString.toArray(definitions), (function (param) {
                                       var match = param[1][/* implementation */0];
                                       if (match.tag === 4) {
                                         return true;
@@ -72,7 +79,9 @@ function make(valueType, definitions, changeType, _children) {
                                       }
                                     })), (function (param) {
                                   var definitionID = param[0];
+                                  var match = hasDefinitionID(valueType, definitionID);
                                   return React.createElement("a", {
+                                              className: match ? "selected" : "",
                                               onClick: (function (_event) {
                                                   return Curry._1(changeType, /* DefinedValueType */Block.__(1, [definitionID]));
                                                 })
@@ -81,7 +90,9 @@ function make(valueType, definitions, changeType, _children) {
               } else {
                 tmp = null;
               }
-              return React.createElement("div", undefined, React.createElement("a", {
+              return React.createElement("div", {
+                          className: "type-selector"
+                        }, React.createElement("a", {
                               onClick: (function (_event) {
                                   return Curry._1(self[/* send */3], /* Toggle */0);
                                 })
@@ -126,6 +137,7 @@ function make(valueType, definitions, changeType, _children) {
 }
 
 exports.categoryFromType = categoryFromType;
+exports.hasDefinitionID = hasDefinitionID;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */

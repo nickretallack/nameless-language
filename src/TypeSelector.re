@@ -33,6 +33,12 @@ let categoryFromType =
     };
   };
 
+let hasDefinitionID = (valueType: valueType, definitionID: definitionID) =>
+  switch (valueType) {
+  | PrimitiveValueType(_) => false
+  | DefinedValueType(theDefinitionID) => definitionID == theDefinitionID
+  };
+
 let component = ReasonReact.reducerComponent("TypeSelector");
 
 let make =
@@ -57,30 +63,30 @@ let make =
       )
     },
   render: self => {
-    <div>
+    let renderCategory = (name, category) =>
+      <a
+        onClick={_event => self.send(SelectCategory(category))}
+        className={self.state.category == category ? "selected" : ""}>
+        {ReasonReact.string(name)}
+      </a>;
+
+    <div className="type-selector">
       <a onClick={_event => self.send(Toggle)}>
         {ReasonReact.string(displayValueType(valueType, definitions, "en"))}
       </a>
       {self.state.opened ?
-         <div>
-           {ReasonReact.string("categories:")}
-           <a onClick={_event => self.send(SelectCategory(TextCategory))}>
-             {ReasonReact.string("Text")}
-           </a>
-           <a onClick={_event => self.send(SelectCategory(NumberCategory))}>
-             {ReasonReact.string("Number")}
-           </a>
-           <a onClick={_event => self.send(SelectCategory(RecordCategory))}>
-             {ReasonReact.string("Record")}
-           </a>
-           <a
-             onClick={_event => self.send(SelectCategory(FunctionCategory))}>
-             {ReasonReact.string("Function")}
-           </a>
+         <div className="type-selector-menu">
+           <div className="type-selector-categories">
+             <h3> {ReasonReact.string("Category")} </h3>
+             {renderCategory("Text", TextCategory)}
+             {renderCategory("Number", NumberCategory)}
+             {renderCategory("Record", RecordCategory)}
+             {renderCategory("Function", FunctionCategory)}
+           </div>
            {switch (self.state.category) {
             | RecordCategory =>
-              <div>
-                {ReasonReact.string("Record")}
+              <div className="type-selector-choices">
+                <h3> {ReasonReact.string("Record Types")} </h3>
                 {ReasonReact.array(
                    Belt.Array.map(
                      Belt.Array.keep(
@@ -95,6 +101,10 @@ let make =
                      ),
                      ((definitionID: definitionID, definition: definition)) =>
                      <a
+                       className={
+                         hasDefinitionID(valueType, definitionID) ?
+                           "selected" : ""
+                       }
                        onClick={_event =>
                          changeType(DefinedValueType(definitionID))
                        }>
