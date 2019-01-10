@@ -438,8 +438,6 @@ ReactDOMRe.renderToElementWithId(ReasonReact.element(undefined, undefined, Windo
                 return ReasonReact.element(undefined, undefined, App$ReactTemplate.make(size, definitions, /* array */[]));
               }), /* array */[])), "graph");
 
-console.log(example);
-
 exports.makeNibDocs = makeNibDocs;
 exports.makeDefinition = makeDefinition;
 exports.makeGraph = makeGraph;

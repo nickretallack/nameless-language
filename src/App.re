@@ -1,6 +1,6 @@
 [%%debugger.chrome];
 open Definition;
-open AppActions;
+open! AppActions;
 open Helpers;
 
 type appState = {
@@ -113,6 +113,41 @@ let make = (~size, ~definitions, _children) => {
               {...definition.documentation, inputs: newNibs} :
               {...definition.documentation, outputs: newNibs};
           {...definition, documentation};
+        | ChangeNibType({nibID, isInput, valueType}) => {
+            ...definition,
+            implementation:
+              switch (definition.implementation) {
+              | InterfaceImplementation(interface) =>
+                InterfaceImplementation(
+                  isInput ?
+                    {
+                      ...interface,
+                      inputTypes:
+                        changeTypedFields(
+                          interface.inputTypes,
+                          nibID,
+                          valueType,
+                        ),
+                    } :
+                    {
+                      ...interface,
+                      outputTypes:
+                        changeTypedFields(
+                          interface.outputTypes,
+                          nibID,
+                          valueType,
+                        ),
+                    },
+                )
+              | RecordTypeImplementation(typedFields) =>
+                RecordTypeImplementation(
+                  isInput ?
+                    changeTypedFields(typedFields, nibID, valueType) :
+                    raise(Not_found),
+                )
+              | _ => raise(Not_found)
+              },
+          }
         };
       ReasonReact.Update({
         ...state,
@@ -141,7 +176,7 @@ let make = (~size, ~definitions, _children) => {
             size
             emit
           />
-        | _ => <SimpleDefinition definition emit />
+        | _ => <SimpleDefinition definition definitions emit />
         };
       };
     },

@@ -8,6 +8,7 @@ var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
+var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
 function connectionNodeToString(connectionNode) {
   if (connectionNode) {
@@ -68,6 +69,21 @@ function primitiveValueTypeToString(primitiveValueType) {
     
   }
 }
+
+function stringToPrimitiveValueType(string) {
+  switch (string) {
+    case "integer" : 
+        return /* IntegerType */0;
+    case "number" : 
+        return /* NumberType */1;
+    case "text" : 
+        return /* TextType */2;
+    default:
+      throw Caml_builtin_exceptions.not_found;
+  }
+}
+
+var changeTypedFields = Belt_MapString.set;
 
 function primitiveValueToType(primitiveValue) {
   switch (primitiveValue.tag | 0) {
@@ -299,6 +315,30 @@ function countNodeNibs(node, definitions) {
   }
 }
 
+function displayDefinedType(definition, language) {
+  var match = definition[/* implementation */0];
+  var tmp;
+  switch (match.tag | 0) {
+    case 1 : 
+        tmp = "record";
+        break;
+    case 4 : 
+        tmp = "function";
+        break;
+    default:
+      throw Caml_builtin_exceptions.not_found;
+  }
+  return getTranslated(definition[/* documentation */1][/* name */0], language) + (" " + tmp);
+}
+
+function displayValueType(valueType, definitions, language) {
+  if (valueType.tag) {
+    return displayDefinedType(Belt_MapString.getExn(definitions, valueType[0]), language);
+  } else {
+    return primitiveValueTypeToString(valueType[0]);
+  }
+}
+
 var InvalidConnection = Caml_exceptions.create("Definition-ReactTemplate.InvalidConnection");
 
 exports.connectionNodeToString = connectionNodeToString;
@@ -308,6 +348,8 @@ exports.ConnectionComparator = ConnectionComparator;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
+exports.stringToPrimitiveValueType = stringToPrimitiveValueType;
+exports.changeTypedFields = changeTypedFields;
 exports.primitiveValueToType = primitiveValueToType;
 exports.primitiveValueToString = primitiveValueToString;
 exports.primitiveValueToTypeString = primitiveValueToTypeString;
@@ -324,5 +366,7 @@ exports.displayNode = displayNode;
 exports.getNodeNibIndex = getNodeNibIndex;
 exports.getOutputIndex = getOutputIndex;
 exports.countNodeNibs = countNodeNibs;
+exports.displayDefinedType = displayDefinedType;
+exports.displayValueType = displayValueType;
 exports.InvalidConnection = InvalidConnection;
 /* ConnectionComparator Not a pure module */

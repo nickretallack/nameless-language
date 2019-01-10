@@ -10,7 +10,7 @@ var RecordTypeImplementation$ReactTemplate = require("./RecordTypeImplementation
 
 var component = ReasonReact.statelessComponent("SimpleDefinition");
 
-function make(definition, emit, _children) {
+function make(definition, definitions, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -31,10 +31,10 @@ function make(definition, emit, _children) {
                     tmp = ReasonReact.element(undefined, undefined, ConstantImplementation$ReactTemplate.make(implementation[0], documentation, emit, /* array */[]));
                     break;
                 case 1 : 
-                    tmp = ReasonReact.element(undefined, undefined, InterfaceImplementation$ReactTemplate.make(implementation[0], documentation, display, emit, /* array */[]));
+                    tmp = ReasonReact.element(undefined, undefined, InterfaceImplementation$ReactTemplate.make(definitions, implementation[0], documentation, display, emit, /* array */[]));
                     break;
                 case 4 : 
-                    tmp = ReasonReact.element(undefined, undefined, RecordTypeImplementation$ReactTemplate.make(implementation[0], documentation, display, emit, /* array */[]));
+                    tmp = ReasonReact.element(undefined, undefined, RecordTypeImplementation$ReactTemplate.make(definitions, implementation[0], documentation, display, emit, /* array */[]));
                     break;
                 default:
                   tmp = "TODO";

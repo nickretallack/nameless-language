@@ -9,7 +9,7 @@ var TypedField$ReactTemplate = require("./TypedField.bs.js");
 
 var component = ReasonReact.statelessComponent("TypedFields");
 
-function make(typedFields, nibDocumentations, isInput, ordering, emit, _children) {
+function make(definitions, typedFields, nibDocumentations, isInput, ordering, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -22,7 +22,7 @@ function make(typedFields, nibDocumentations, isInput, ordering, emit, _children
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               return React.createElement("div", undefined, Belt_List.toArray(Belt_List.map(ordering, (function (nibID) {
-                                    return ReasonReact.element(undefined, undefined, TypedField$ReactTemplate.make(nibID, isInput, Belt_MapString.getExn(typedFields, nibID), Belt_MapString.getExn(nibDocumentations, nibID), emit, /* array */[]));
+                                    return ReasonReact.element(nibID, undefined, TypedField$ReactTemplate.make(nibID, definitions, isInput, Belt_MapString.getExn(typedFields, nibID), Belt_MapString.getExn(nibDocumentations, nibID), emit, /* array */[]));
                                   }))));
             }),
           /* initialState */component[/* initialState */10],

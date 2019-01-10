@@ -4,6 +4,7 @@ let component = ReasonReact.statelessComponent("InterfaceImplementation");
 
 let make =
     (
+      ~definitions: definitions,
       ~implementation: interface,
       ~documentation: documentation,
       ~display: display,
@@ -20,6 +21,7 @@ let make =
         nibDocumentations={documentation.inputs}
         isInput=true
         ordering={display.inputOrdering}
+        definitions
         emit
       />
       <h2> {ReasonReact.string("Outputs:")} </h2>
@@ -28,6 +30,7 @@ let make =
         nibDocumentations={documentation.outputs}
         isInput=false
         ordering={display.outputOrdering}
+        definitions
         emit
       />
     </div>;

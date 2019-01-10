@@ -6,6 +6,7 @@ let component = ReasonReact.statelessComponent("NibInterface");
 let make =
     (
       ~nibID: nibID,
+      ~definitions: definitions,
       ~isInput: bool,
       ~valueType: valueType,
       ~name: translatable,
@@ -23,8 +24,11 @@ let make =
         }),
       );
 
+    let changeType = (valueType: valueType) =>
+      emit(AppActions.ChangeNibType({nibID, isInput, valueType}));
+
     <div>
-      <div> {ReasonReact.string("TODO: type")} </div>
+      <TypeSelector valueType definitions changeType />
       <input
         type_="text"
         className="name"

@@ -7,7 +7,7 @@ var TypedFields$ReactTemplate = require("./TypedFields.bs.js");
 
 var component = ReasonReact.statelessComponent("RecordTypeImplementation");
 
-function make(implementation, documentation, display, emit, _children) {
+function make(definitions, implementation, documentation, display, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -19,7 +19,7 @@ function make(implementation, documentation, display, emit, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement("div", undefined, React.createElement("h1", undefined, "Record"), React.createElement("h2", undefined, "Fields:"), ReasonReact.element(undefined, undefined, TypedFields$ReactTemplate.make(implementation, documentation[/* inputs */2], true, display[/* inputOrdering */0], emit, /* array */[])));
+              return React.createElement("div", undefined, React.createElement("h1", undefined, "Record"), React.createElement("h2", undefined, "Fields:"), ReasonReact.element(undefined, undefined, TypedFields$ReactTemplate.make(definitions, implementation, documentation[/* inputs */2], true, display[/* inputOrdering */0], emit, /* array */[])));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

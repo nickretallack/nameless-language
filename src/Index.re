@@ -255,5 +255,3 @@ ReactDOMRe.renderToElementWithId(
   <WindowSize render={size => <App definitions size />} />,
   "graph",
 );
-
-Js.log(example);

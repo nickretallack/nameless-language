@@ -7,8 +7,14 @@ type createConnection = {
 
 type changeNibName = {
   nibID,
-  text: string,
   isInput: bool,
+  text: string,
+};
+
+type changeNibType = {
+  nibID,
+  isInput: bool,
+  valueType,
 };
 
 type definitionAction =
@@ -17,6 +23,7 @@ type definitionAction =
   | ChangeDescription(string)
   | ChangeConstantValue(primitiveValue)
   | ChangeNibName(changeNibName)
+  | ChangeNibType(changeNibType)
   | AddInput;
 
 type definitionActionRecord = {

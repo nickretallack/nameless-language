@@ -7,10 +7,11 @@ var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
+var TypeSelector$ReactTemplate = require("./TypeSelector.bs.js");
 
 var component = ReasonReact.statelessComponent("NibInterface");
 
-function make(nibID, isInput, valueType, name, emit, _children) {
+function make(nibID, definitions, isInput, valueType, name, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -25,11 +26,18 @@ function make(nibID, isInput, valueType, name, emit, _children) {
               var changeName = function ($$event) {
                 return Curry._1(emit, /* ChangeNibName */Block.__(4, [/* record */[
                                 /* nibID */nibID,
-                                /* text */Helpers$ReactTemplate.getEventValue($$event),
-                                /* isInput */isInput
+                                /* isInput */isInput,
+                                /* text */Helpers$ReactTemplate.getEventValue($$event)
                               ]]));
               };
-              return React.createElement("div", undefined, React.createElement("div", undefined, "TODO: type"), React.createElement("input", {
+              var changeType = function (valueType) {
+                return Curry._1(emit, /* ChangeNibType */Block.__(5, [/* record */[
+                                /* nibID */nibID,
+                                /* isInput */isInput,
+                                /* valueType */valueType
+                              ]]));
+              };
+              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, TypeSelector$ReactTemplate.make(valueType, definitions, changeType, /* array */[])), React.createElement("input", {
                               className: "name",
                               type: "text",
                               value: Definition$ReactTemplate.getTranslated(name, "en"),

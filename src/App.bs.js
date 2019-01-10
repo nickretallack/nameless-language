@@ -53,7 +53,7 @@ function make(size, definitions, _children) {
                   if (implementation.tag === 3) {
                     return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], definition[/* documentation */1], size, emit, /* array */[]));
                   } else {
-                    return ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definition, emit, /* array */[]));
+                    return ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definition, definitions, emit, /* array */[]));
                   }
                 } else {
                   return "Not found";
@@ -160,11 +160,11 @@ function make(size, definitions, _children) {
                         break;
                     case 4 : 
                         var match$4 = action$1[0];
-                        var isInput = match$4[/* isInput */2];
+                        var isInput = match$4[/* isInput */1];
                         var nibID$1 = match$4[/* nibID */0];
                         var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
                         var nib = Belt_MapString.getExn(nibs, nibID$1);
-                        var newNib = Definition$ReactTemplate.setTranslated(nib, "en", match$4[/* text */1]);
+                        var newNib = Definition$ReactTemplate.setTranslated(nib, "en", match$4[/* text */2]);
                         var newNibs = Belt_MapString.set(nibs, nibID$1, newNib);
                         var documentation;
                         if (isInput) {
@@ -187,6 +187,42 @@ function make(size, definitions, _children) {
                         newDefinition = /* record */[
                           /* implementation */definition[/* implementation */0],
                           /* documentation */documentation,
+                          /* display */definition[/* display */2]
+                        ];
+                        break;
+                    case 5 : 
+                        var match$5 = action$1[0];
+                        var valueType = match$5[/* valueType */2];
+                        var isInput$1 = match$5[/* isInput */1];
+                        var nibID$2 = match$5[/* nibID */0];
+                        var match$6 = definition[/* implementation */0];
+                        var tmp;
+                        switch (match$6.tag | 0) {
+                          case 1 : 
+                              var $$interface = match$6[0];
+                              tmp = /* InterfaceImplementation */Block.__(1, [isInput$1 ? /* record */[
+                                      /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* inputTypes */0], nibID$2, valueType),
+                                      /* outputTypes */$$interface[/* outputTypes */1]
+                                    ] : /* record */[
+                                      /* inputTypes */$$interface[/* inputTypes */0],
+                                      /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* outputTypes */1], nibID$2, valueType)
+                                    ]]);
+                              break;
+                          case 4 : 
+                              var tmp$1;
+                              if (isInput$1) {
+                                tmp$1 = Definition$ReactTemplate.changeTypedFields(match$6[0], nibID$2, valueType);
+                              } else {
+                                throw Caml_builtin_exceptions.not_found;
+                              }
+                              tmp = /* RecordTypeImplementation */Block.__(4, [tmp$1]);
+                              break;
+                          default:
+                            throw Caml_builtin_exceptions.not_found;
+                        }
+                        newDefinition = /* record */[
+                          /* implementation */tmp,
+                          /* documentation */definition[/* documentation */1],
                           /* display */definition[/* display */2]
                         ];
                         break;

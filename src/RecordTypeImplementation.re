@@ -4,6 +4,7 @@ let component = ReasonReact.statelessComponent("RecordTypeImplementation");
 
 let make =
     (
+      ~definitions: definitions,
       ~implementation: typedFields,
       ~documentation: documentation,
       ~display: display,
@@ -20,6 +21,7 @@ let make =
         nibDocumentations={documentation.inputs}
         isInput=true
         ordering={display.inputOrdering}
+        definitions
         emit
       />
     </div>;

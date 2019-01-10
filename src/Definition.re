@@ -206,6 +206,14 @@ let primitiveValueTypeToString =
   | TextType => "text"
   };
 
+let stringToPrimitiveValueType = (string: string): primitiveValueType =>
+  switch (string) {
+  | "integer" => IntegerType
+  | "number" => NumberType
+  | "text" => TextType
+  | _ => raise(Not_found)
+  };
+
 type boolean =
   | True
   | False;
@@ -224,6 +232,10 @@ type valueType =
   | DefinedValueType(definitionID);
 
 type typedFields = Belt.Map.String.t(valueType);
+
+let changeTypedFields =
+    (typedFields: typedFields, nibID: nibID, valueType: valueType) =>
+  Belt.Map.String.set(typedFields, nibID, valueType);
 
 type interface = {
   inputTypes: typedFields,
@@ -469,6 +481,30 @@ let countNodeNibs = (node: node, definitions: definitions) =>
     let nodeDisplay = displayDefinedNode(nodeDefinition, kind, "en");
     Belt.List.length(nodeDisplay.inputs)
     + Belt.List.length(nodeDisplay.outputs);
+  };
+
+let displayDefinedType = (definition: definition, language: language): string =>
+  getTranslated(definition.documentation.name, language)
+  ++ " "
+  ++ (
+    switch (definition.implementation) {
+    | InterfaceImplementation(_) => "record"
+    | RecordTypeImplementation(_) => "function"
+    | _ => raise(Not_found)
+    }
+  );
+
+let displayValueType =
+    (valueType: valueType, definitions: definitions, language: language)
+    : string =>
+  switch (valueType) {
+  | PrimitiveValueType(primitiveValueType) =>
+    primitiveValueTypeToString(primitiveValueType)
+  | DefinedValueType(definitionID) =>
+    displayDefinedType(
+      Belt.Map.String.getExn(definitions, definitionID),
+      language,
+    )
   };
 
 /* let getNibIndex =
