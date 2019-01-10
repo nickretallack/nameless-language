@@ -11,7 +11,7 @@ var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 
-var component = ReasonReact.statelessComponent("Connection");
+var component = ReasonReact.statelessComponent("DefinitionHeader");
 
 function round(x) {
   return x + 0.5 | 0;

@@ -2,7 +2,7 @@ open Definition;
 open AppActions;
 open Helpers;
 
-let component = ReasonReact.statelessComponent("Connection");
+let component = ReasonReact.statelessComponent("DefinitionHeader");
 
 let round = (x: float) => int_of_float(x +. 0.5);
 

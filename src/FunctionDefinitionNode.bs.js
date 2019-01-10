@@ -5,7 +5,7 @@ var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 
-var component = ReasonReact.statelessComponent("Node");
+var component = ReasonReact.statelessComponent("FunctionDefinitionNode");
 
 function make(nodeID, definition, position, emit, _children) {
   return /* record */[

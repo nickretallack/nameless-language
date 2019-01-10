@@ -1,7 +1,7 @@
 open Definition;
 open Helpers;
 
-let component = ReasonReact.statelessComponent("Node");
+let component = ReasonReact.statelessComponent("FunctionDefinitionNode");
 
 let make =
     (
