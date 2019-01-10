@@ -28,51 +28,26 @@ let convertPrimitiveValueType =
 
 let make =
     (
-      ~definitionID: definitionID,
       ~implementation: primitiveValue,
       ~documentation: documentation,
-      ~display: display,
       ~emit,
       _children,
     ) => {
   ...component,
   render: _self => {
-    let changeName = event =>
-      emit(
-        DefinitionAction({
-          definitionID,
-          action: ChangeName(getEventValue(event)),
-        }),
-      );
-
     let changeType = event =>
       emit(
-        DefinitionAction({
-          definitionID,
-          action:
-            ChangeConstantValue(
-              convertPrimitiveValueType(
-                implementation,
-                getEventValue(event),
-              ),
-            ),
-        }),
+        ChangeConstantValue(
+          convertPrimitiveValueType(implementation, getEventValue(event)),
+        ),
       );
 
-    let changeValue = value =>
-      emit(
-        DefinitionAction({definitionID, action: ChangeConstantValue(value)}),
-      );
+    let changeValue = value => emit(ChangeConstantValue(value));
 
     let typeName = primitiveValueToTypeString(implementation);
 
     <div>
-      <input
-        type_="text"
-        className="name"
-        value={getTranslated(documentation.name, "en")}
-        onChange=changeName
-      />
+      <DefinitionHeader emit documentation />
       <h1> {ReasonReact.string("Constant")} </h1>
       <div> {ReasonReact.string("Type:")} </div>
       <select value=typeName onChange=changeType>

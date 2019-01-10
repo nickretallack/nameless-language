@@ -23,13 +23,12 @@ let preventDefault = event => EventRe.preventDefault(event);
 let component = ReasonReact.reducerComponent("Graph");
 let make =
     (
-      ~definitionID: definitionID,
       ~definitions: definitions,
       ~implementation: graphImplementation,
       ~display: display,
       ~documentation: documentation,
       ~size: point,
-      ~emit: appAction => unit,
+      ~emit: definitionAction => unit,
       _children,
     ) => {
   ...component,
@@ -95,13 +94,9 @@ let make =
               },
               _ =>
                 emit(
-                  DefinitionAction({
-                    definitionID,
-                    action:
-                      CreateConnection({
-                        source: startIsSource ? start_nib : end_nib,
-                        sink: startIsSource ? end_nib : start_nib,
-                      }),
+                  CreateConnection({
+                    source: startIsSource ? start_nib : end_nib,
+                    sink: startIsSource ? end_nib : start_nib,
                   }),
                 ),
             ) :
@@ -243,13 +238,7 @@ let make =
         }
       };
 
-    let changeName = event =>
-      emit(
-        DefinitionAction({
-          definitionID,
-          action: ChangeName(getEventValue(event)),
-        }),
-      );
+    let changeName = event => emit(ChangeName(getEventValue(event)));
 
     /* let evaluate = output_id =>
        Js.log(evaluateOutput(definitions, definitionID, output_id)); */

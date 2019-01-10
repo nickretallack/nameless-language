@@ -35,7 +35,7 @@ function preventDefault($$event) {
 
 var component = ReasonReact.reducerComponent("Graph");
 
-function make(definitionID, definitions, implementation, display, documentation, size, emit, _children) {
+function make(definitions, implementation, display, documentation, size, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -128,10 +128,7 @@ function make(definitionID, definitions, implementation, display, documentation,
                 }
               };
               var changeName = function ($$event) {
-                return Curry._1(emit, /* DefinitionAction */Block.__(0, [/* record */[
-                                /* definitionID */definitionID,
-                                /* action : ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)])
-                              ]]));
+                return Curry._1(emit, /* ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)]));
               };
               var match = self[/* state */1][/* error */1];
               return React.createElement("div", {
@@ -263,12 +260,9 @@ function make(definitionID, definitions, implementation, display, documentation,
                                       /* error */undefined
                                     ],
                                     (function (param) {
-                                        return Curry._1(emit, /* DefinitionAction */Block.__(0, [/* record */[
-                                                        /* definitionID */definitionID,
-                                                        /* action : CreateConnection */Block.__(0, [/* record */[
-                                                              /* source */startIsSource ? start_nib : end_nib,
-                                                              /* sink */startIsSource ? end_nib : start_nib
-                                                            ]])
+                                        return Curry._1(emit, /* CreateConnection */Block.__(0, [/* record */[
+                                                        /* source */startIsSource ? start_nib : end_nib,
+                                                        /* sink */startIsSource ? end_nib : start_nib
                                                       ]]));
                                       })
                                   ]);

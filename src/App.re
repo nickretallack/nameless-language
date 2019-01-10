@@ -117,10 +117,11 @@ let make = (~size, ~definitions, _children) => {
       | None => ReasonReact.string("Not found")
       | Some(definition) =>
         let {implementation, display, documentation} = definition;
+        let emit = (action: definitionAction) =>
+          self.send(DefinitionAction({definitionID, action}));
         switch (implementation) {
         | GraphImplementation(implementation) =>
           <Graph
-            definitionID={self.state.definitionID}
             definitions={self.state.definitions}
             implementation
             display
@@ -129,13 +130,7 @@ let make = (~size, ~definitions, _children) => {
             emit
           />
         | ConstantImplementation(implementation) =>
-          <ConstantDefinition
-            definitionID
-            implementation
-            display
-            documentation
-            emit
-          />
+          <ConstantDefinition implementation documentation emit />
         | _ => ReasonReact.string("TODO")
         };
       };

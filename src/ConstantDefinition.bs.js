@@ -10,6 +10,7 @@ var Caml_js_exceptions = require("bs-platform/lib/js/caml_js_exceptions.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
+var DefinitionHeader$ReactTemplate = require("./DefinitionHeader.bs.js");
 
 var component = ReasonReact.statelessComponent("Connection");
 
@@ -53,7 +54,7 @@ function convertPrimitiveValueType(primitiveValue, typeName) {
   }
 }
 
-function make(definitionID, implementation, documentation, display, emit, _children) {
+function make(implementation, documentation, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -65,23 +66,8 @@ function make(definitionID, implementation, documentation, display, emit, _child
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              var changeName = function ($$event) {
-                return Curry._1(emit, /* DefinitionAction */Block.__(0, [/* record */[
-                                /* definitionID */definitionID,
-                                /* action : ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)])
-                              ]]));
-              };
               var changeType = function ($$event) {
-                return Curry._1(emit, /* DefinitionAction */Block.__(0, [/* record */[
-                                /* definitionID */definitionID,
-                                /* action : ChangeConstantValue */Block.__(3, [convertPrimitiveValueType(implementation, Helpers$ReactTemplate.getEventValue($$event))])
-                              ]]));
-              };
-              var changeValue = function (value) {
-                return Curry._1(emit, /* DefinitionAction */Block.__(0, [/* record */[
-                                /* definitionID */definitionID,
-                                /* action : ChangeConstantValue */Block.__(3, [value])
-                              ]]));
+                return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [convertPrimitiveValueType(implementation, Helpers$ReactTemplate.getEventValue($$event))]));
               };
               var typeName = Definition$ReactTemplate.primitiveValueToTypeString(implementation);
               var tmp;
@@ -103,7 +89,8 @@ function make(definitionID, implementation, documentation, display, emit, _child
                                   throw exn;
                                 }
                               }
-                              return changeValue(/* IntegerValue */Block.__(0, [tmp]));
+                              var value = /* IntegerValue */Block.__(0, [tmp]);
+                              return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [value]));
                             })
                         });
                     break;
@@ -124,7 +111,8 @@ function make(definitionID, implementation, documentation, display, emit, _child
                                   throw exn;
                                 }
                               }
-                              return changeValue(/* NumberValue */Block.__(1, [tmp]));
+                              var value = /* NumberValue */Block.__(1, [tmp]);
+                              return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [value]));
                             })
                         });
                     break;
@@ -133,18 +121,14 @@ function make(definitionID, implementation, documentation, display, emit, _child
                           type: "text",
                           value: implementation[0],
                           onChange: (function ($$event) {
-                              return changeValue(/* TextValue */Block.__(2, [Helpers$ReactTemplate.getEventValue($$event)]));
+                              var value = /* TextValue */Block.__(2, [Helpers$ReactTemplate.getEventValue($$event)]);
+                              return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [value]));
                             })
                         });
                     break;
                 
               }
-              return React.createElement("div", undefined, React.createElement("input", {
-                              className: "name",
-                              type: "text",
-                              value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
-                              onChange: changeName
-                            }), React.createElement("h1", undefined, "Constant"), React.createElement("div", undefined, "Type:"), React.createElement("select", {
+              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, emit, /* array */[])), React.createElement("h1", undefined, "Constant"), React.createElement("div", undefined, "Type:"), React.createElement("select", {
                               value: typeName,
                               onChange: changeType
                             }, React.createElement("option", {

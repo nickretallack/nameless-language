@@ -40,20 +40,22 @@ function make(size, definitions, _children) {
                 return ReasonReact.element(undefined, undefined, DefinitionList$ReactTemplate.make(self[/* state */1][/* definitions */0], /* array */[]));
               } else {
                 var definitionID = self[/* state */1][/* definitionID */1];
-                var emit = function (action) {
-                  return Curry._1(self[/* send */3], action);
-                };
                 var match$1 = Belt_MapString.get(self[/* state */1][/* definitions */0], definitionID);
                 if (match$1 !== undefined) {
                   var definition = match$1;
-                  var display = definition[/* display */2];
                   var documentation = definition[/* documentation */1];
                   var implementation = definition[/* implementation */0];
+                  var emit = function (action) {
+                    return Curry._1(self[/* send */3], /* DefinitionAction */Block.__(0, [/* record */[
+                                    /* definitionID */definitionID,
+                                    /* action */action
+                                  ]]));
+                  };
                   switch (implementation.tag | 0) {
                     case 0 : 
-                        return ReasonReact.element(undefined, undefined, ConstantDefinition$ReactTemplate.make(definitionID, implementation[0], documentation, display, emit, /* array */[]));
+                        return ReasonReact.element(undefined, undefined, ConstantDefinition$ReactTemplate.make(implementation[0], documentation, emit, /* array */[]));
                     case 3 : 
-                        return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitionID */1], self[/* state */1][/* definitions */0], implementation[0], display, documentation, size, emit, /* array */[]));
+                        return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], documentation, size, emit, /* array */[]));
                     default:
                       return "TODO";
                   }
