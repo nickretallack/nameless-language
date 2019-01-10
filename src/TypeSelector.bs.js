@@ -39,6 +39,24 @@ function hasDefinitionID(valueType, definitionID) {
 
 var component = ReasonReact.reducerComponent("TypeSelector");
 
+function isRecordType(definition) {
+  var match = definition[/* implementation */0];
+  if (match.tag === 4) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function isInterface(definition) {
+  var match = definition[/* implementation */0];
+  if (match.tag === 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function make(valueType, definitions, changeType, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
@@ -60,24 +78,12 @@ function make(valueType, definitions, changeType, _children) {
                               })
                           }, name);
               };
-              var match = self[/* state */1][/* opened */0];
-              var tmp;
-              if (match) {
-                var match$1 = self[/* state */1][/* category */1];
-                tmp = React.createElement("div", {
-                      className: "type-selector-menu"
-                    }, React.createElement("div", {
-                          className: "type-selector-categories"
-                        }, React.createElement("h3", undefined, "Category"), renderCategory("Text", /* TextCategory */1), renderCategory("Number", /* NumberCategory */0), renderCategory("Record", /* RecordCategory */2), renderCategory("Function", /* FunctionCategory */3)), match$1 !== 2 ? null : React.createElement("div", {
+              var definedTypeSelector = function (name, filterFunction) {
+                return React.createElement("div", {
                             className: "type-selector-choices"
-                          }, React.createElement("h3", undefined, "Record Types"), Belt_Array.map(Belt_Array.keep(Belt_MapString.toArray(definitions), (function (param) {
-                                      var match = param[1][/* implementation */0];
-                                      if (match.tag === 4) {
-                                        return true;
-                                      } else {
-                                        return false;
-                                      }
-                                    })), (function (param) {
+                          }, React.createElement("h3", undefined, name + " Types"), Belt_Array.map(Belt_MapString.toArray(Belt_MapString.keep(definitions, (function (_definitionID, definition) {
+                                          return Curry._1(filterFunction, definition);
+                                        }))), (function (param) {
                                   var definitionID = param[0];
                                   var match = hasDefinitionID(valueType, definitionID);
                                   return React.createElement("a", {
@@ -86,7 +92,19 @@ function make(valueType, definitions, changeType, _children) {
                                                   return Curry._1(changeType, /* DefinedValueType */Block.__(1, [definitionID]));
                                                 })
                                             }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
-                                }))));
+                                })));
+              };
+              var match = self[/* state */1][/* opened */0];
+              var tmp;
+              if (match) {
+                var match$1 = self[/* state */1][/* category */1];
+                tmp = React.createElement("div", {
+                      className: "type-selector-menu"
+                    }, React.createElement("div", {
+                          className: "type-selector-categories"
+                        }, React.createElement("h3", undefined, "Category"), renderCategory("Text", /* TextCategory */1), renderCategory("Number", /* NumberCategory */0), renderCategory("Record", /* RecordCategory */2), renderCategory("Function", /* FunctionCategory */3)), match$1 !== 2 ? (
+                        match$1 >= 3 ? definedTypeSelector("Function", isInterface) : null
+                      ) : definedTypeSelector("Record", isRecordType));
               } else {
                 tmp = null;
               }
@@ -139,5 +157,7 @@ function make(valueType, definitions, changeType, _children) {
 exports.categoryFromType = categoryFromType;
 exports.hasDefinitionID = hasDefinitionID;
 exports.component = component;
+exports.isRecordType = isRecordType;
+exports.isInterface = isInterface;
 exports.make = make;
 /* component Not a pure module */

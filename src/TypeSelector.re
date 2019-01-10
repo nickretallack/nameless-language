@@ -41,6 +41,18 @@ let hasDefinitionID = (valueType: valueType, definitionID: definitionID) =>
 
 let component = ReasonReact.reducerComponent("TypeSelector");
 
+let isRecordType = (definition: definition): bool =>
+  switch (definition.implementation) {
+  | RecordTypeImplementation(_) => true
+  | _ => false
+  };
+
+let isInterface = (definition: definition): bool =>
+  switch (definition.implementation) {
+  | InterfaceImplementation(_) => true
+  | _ => false
+  };
+
 let make =
     (~valueType: valueType, ~definitions: definitions, ~changeType, _children) => {
   ...component,
@@ -70,6 +82,31 @@ let make =
         {ReasonReact.string(name)}
       </a>;
 
+    let definedTypeSelector =
+        (name: string, filterFunction: definition => bool) =>
+      <div className="type-selector-choices">
+        <h3> {ReasonReact.string(name ++ " Types")} </h3>
+        {ReasonReact.array(
+           Belt.Array.map(
+             Belt.Map.String.toArray(
+               Belt.Map.String.keep(
+                 definitions,
+                 (_definitionID: definitionID, definition: definition) =>
+                 filterFunction(definition)
+               ),
+             ),
+             ((definitionID: definitionID, definition: definition)) =>
+             <a
+               className={
+                 hasDefinitionID(valueType, definitionID) ? "selected" : ""
+               }
+               onClick={_event => changeType(DefinedValueType(definitionID))}>
+               {ReasonReact.string(getDisplayName(definition, "en"))}
+             </a>
+           ),
+         )}
+      </div>;
+
     <div className="type-selector">
       <a onClick={_event => self.send(Toggle)}>
         {ReasonReact.string(displayValueType(valueType, definitions, "en"))}
@@ -84,35 +121,8 @@ let make =
              {renderCategory("Function", FunctionCategory)}
            </div>
            {switch (self.state.category) {
-            | RecordCategory =>
-              <div className="type-selector-choices">
-                <h3> {ReasonReact.string("Record Types")} </h3>
-                {ReasonReact.array(
-                   Belt.Array.map(
-                     Belt.Array.keep(
-                       Belt.Map.String.toArray(definitions),
-                       (
-                         (_definitionID: definitionID, definition: definition),
-                       ) =>
-                       switch (definition.implementation) {
-                       | RecordTypeImplementation(_) => true
-                       | _ => false
-                       }
-                     ),
-                     ((definitionID: definitionID, definition: definition)) =>
-                     <a
-                       className={
-                         hasDefinitionID(valueType, definitionID) ?
-                           "selected" : ""
-                       }
-                       onClick={_event =>
-                         changeType(DefinedValueType(definitionID))
-                       }>
-                       {ReasonReact.string(getDisplayName(definition, "en"))}
-                     </a>
-                   ),
-                 )}
-              </div>
+            | RecordCategory => definedTypeSelector("Record", isRecordType)
+            | FunctionCategory => definedTypeSelector("Function", isInterface)
             | _ => ReasonReact.null
             }}
          </div> :
