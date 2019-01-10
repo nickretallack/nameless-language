@@ -5,7 +5,7 @@ var React = require("react");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var NibInterface$ReactTemplate = require("./NibInterface.bs.js");
+var TypedField$ReactTemplate = require("./TypedField.bs.js");
 
 var component = ReasonReact.statelessComponent("TypedFields");
 
@@ -22,7 +22,7 @@ function make(typedFields, nibDocumentations, isInput, ordering, emit, _children
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               return React.createElement("div", undefined, Belt_List.toArray(Belt_List.map(ordering, (function (nibID) {
-                                    return ReasonReact.element(undefined, undefined, NibInterface$ReactTemplate.make(nibID, isInput, Belt_MapString.getExn(typedFields, nibID), Belt_MapString.getExn(nibDocumentations, nibID), emit, /* array */[]));
+                                    return ReasonReact.element(undefined, undefined, TypedField$ReactTemplate.make(nibID, isInput, Belt_MapString.getExn(typedFields, nibID), Belt_MapString.getExn(nibDocumentations, nibID), emit, /* array */[]));
                                   }))));
             }),
           /* initialState */component[/* initialState */10],

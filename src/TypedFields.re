@@ -17,7 +17,7 @@ let make =
       {ReasonReact.array(
          Belt.List.toArray(
            Belt.List.map(ordering, nibID =>
-             <NibInterface
+             <TypedField
                valueType={Belt.Map.String.getExn(typedFields, nibID)}
                name={Belt.Map.String.getExn(nibDocumentations, nibID)}
                emit
