@@ -4,8 +4,30 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
+
+function categoryFromType(valueType, definitions) {
+  if (valueType.tag) {
+    var definition = Belt_MapString.getExn(definitions, valueType[0]);
+    var match = definition[/* implementation */0];
+    switch (match.tag | 0) {
+      case 1 : 
+          return /* FunctionCategory */3;
+      case 4 : 
+          return /* RecordCategory */2;
+      default:
+        throw Caml_builtin_exceptions.not_found;
+    }
+  } else if (valueType[0] >= 2) {
+    return /* TextCategory */1;
+  } else {
+    return /* NumberCategory */0;
+  }
+}
 
 var component = ReasonReact.reducerComponent("TypeSelector");
 
@@ -22,31 +44,88 @@ function make(valueType, definitions, changeType, _children) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               var match = self[/* state */1][/* opened */0];
+              var tmp;
+              if (match) {
+                var match$1 = self[/* state */1][/* category */1];
+                tmp = React.createElement("div", undefined, "categories:", React.createElement("a", {
+                          onClick: (function (_event) {
+                              return Curry._1(self[/* send */3], /* SelectCategory */[/* TextCategory */1]);
+                            })
+                        }, "Text"), React.createElement("a", {
+                          onClick: (function (_event) {
+                              return Curry._1(self[/* send */3], /* SelectCategory */[/* NumberCategory */0]);
+                            })
+                        }, "Number"), React.createElement("a", {
+                          onClick: (function (_event) {
+                              return Curry._1(self[/* send */3], /* SelectCategory */[/* RecordCategory */2]);
+                            })
+                        }, "Record"), React.createElement("a", {
+                          onClick: (function (_event) {
+                              return Curry._1(self[/* send */3], /* SelectCategory */[/* FunctionCategory */3]);
+                            })
+                        }, "Function"), match$1 !== 2 ? null : React.createElement("div", undefined, "Record", Belt_Array.map(Belt_Array.keep(Belt_MapString.toArray(definitions), (function (param) {
+                                      var match = param[1][/* implementation */0];
+                                      if (match.tag === 4) {
+                                        return true;
+                                      } else {
+                                        return false;
+                                      }
+                                    })), (function (param) {
+                                  var definitionID = param[0];
+                                  return React.createElement("a", {
+                                              onClick: (function (_event) {
+                                                  return Curry._1(changeType, /* DefinedValueType */Block.__(1, [definitionID]));
+                                                })
+                                            }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
+                                }))));
+              } else {
+                tmp = null;
+              }
               return React.createElement("div", undefined, React.createElement("a", {
                               onClick: (function (_event) {
                                   return Curry._1(self[/* send */3], /* Toggle */0);
                                 })
-                            }, Definition$ReactTemplate.displayValueType(valueType, definitions, "en")), match ? React.createElement("div", undefined, React.createElement("a", {
-                                    onClick: (function (_event) {
-                                        return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* TextType */2]));
-                                      })
-                                  }, "Text"), React.createElement("a", {
-                                    onClick: (function (_event) {
-                                        return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]));
-                                      })
-                                  }, "Number")) : null);
+                            }, Definition$ReactTemplate.displayValueType(valueType, definitions, "en")), tmp);
             }),
           /* initialState */(function (param) {
-              return /* record */[/* opened */false];
+              return /* record */[
+                      /* opened */false,
+                      /* category */categoryFromType(valueType, definitions)
+                    ];
             }),
           /* retainedProps */component[/* retainedProps */11],
           /* reducer */(function (action, state) {
-              return /* Update */Block.__(0, [/* record */[/* opened */!state[/* opened */0]]]);
+              if (action) {
+                var category = action[0];
+                return /* UpdateWithSideEffects */Block.__(2, [
+                          /* record */[
+                            /* opened */state[/* opened */0],
+                            /* category */category
+                          ],
+                          (function (param) {
+                              if (category !== 1) {
+                                if (category !== 0) {
+                                  return /* () */0;
+                                } else {
+                                  return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]));
+                                }
+                              } else {
+                                return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* TextType */2]));
+                              }
+                            })
+                        ]);
+              } else {
+                return /* Update */Block.__(0, [/* record */[
+                            /* opened */!state[/* opened */0],
+                            /* category */state[/* category */1]
+                          ]]);
+              }
             }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]
         ];
 }
 
+exports.categoryFromType = categoryFromType;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */

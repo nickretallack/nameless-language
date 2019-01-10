@@ -488,8 +488,8 @@ let displayDefinedType = (definition: definition, language: language): string =>
   ++ " "
   ++ (
     switch (definition.implementation) {
-    | InterfaceImplementation(_) => "record"
-    | RecordTypeImplementation(_) => "function"
+    | RecordTypeImplementation(_) => "record"
+    | InterfaceImplementation(_) => "function"
     | _ => raise(Not_found)
     }
   );

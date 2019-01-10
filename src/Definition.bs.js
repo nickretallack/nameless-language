@@ -320,10 +320,10 @@ function displayDefinedType(definition, language) {
   var tmp;
   switch (match.tag | 0) {
     case 1 : 
-        tmp = "record";
+        tmp = "function";
         break;
     case 4 : 
-        tmp = "function";
+        tmp = "record";
         break;
     default:
       throw Caml_builtin_exceptions.not_found;
