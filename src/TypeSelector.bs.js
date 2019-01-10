@@ -7,7 +7,7 @@ var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 
-var component = ReasonReact.statelessComponent("TypeSelector");
+var component = ReasonReact.reducerComponent("TypeSelector");
 
 function make(valueType, definitions, changeType, _children) {
   return /* record */[
@@ -20,20 +20,29 @@ function make(valueType, definitions, changeType, _children) {
           /* willUnmount */component[/* willUnmount */6],
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (_self) {
-              return React.createElement("div", undefined, React.createElement("div", undefined, Definition$ReactTemplate.displayValueType(valueType, definitions, "en")), React.createElement("a", {
+          /* render */(function (self) {
+              var match = self[/* state */1][/* opened */0];
+              return React.createElement("div", undefined, React.createElement("a", {
                               onClick: (function (_event) {
-                                  return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* TextType */2]));
+                                  return Curry._1(self[/* send */3], /* Toggle */0);
                                 })
-                            }, "Text"), React.createElement("a", {
-                              onClick: (function (_event) {
-                                  return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]));
-                                })
-                            }, "Number"));
+                            }, Definition$ReactTemplate.displayValueType(valueType, definitions, "en")), match ? React.createElement("div", undefined, React.createElement("a", {
+                                    onClick: (function (_event) {
+                                        return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* TextType */2]));
+                                      })
+                                  }, "Text"), React.createElement("a", {
+                                    onClick: (function (_event) {
+                                        return Curry._1(changeType, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]));
+                                      })
+                                  }, "Number")) : null);
             }),
-          /* initialState */component[/* initialState */10],
+          /* initialState */(function (param) {
+              return /* record */[/* opened */false];
+            }),
           /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
+          /* reducer */(function (action, state) {
+              return /* Update */Block.__(0, [/* record */[/* opened */!state[/* opened */0]]]);
+            }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]
         ];
 }
