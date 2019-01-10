@@ -198,6 +198,8 @@ type primitiveValueType =
   | NumberType
   | TextType;
 
+let primitiveValueTypes = [|TextType, NumberType|];
+
 let primitiveValueTypeToString =
     (primitiveValueType: primitiveValueType): string =>
   switch (primitiveValueType) {

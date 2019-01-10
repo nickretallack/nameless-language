@@ -4,6 +4,7 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var Caml_format = require("bs-platform/lib/js/caml_format.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Caml_js_exceptions = require("bs-platform/lib/js/caml_js_exceptions.js");
@@ -53,7 +54,7 @@ function convertPrimitiveValueType(primitiveValue, typeName) {
   }
 }
 
-function make(implementation, documentation, emit, _children) {
+function make(implementation, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -130,13 +131,11 @@ function make(implementation, documentation, emit, _children) {
               return React.createElement("div", undefined, React.createElement("h1", undefined, "Constant"), React.createElement("div", undefined, "Type:"), React.createElement("select", {
                               value: typeName,
                               onChange: changeType
-                            }, React.createElement("option", {
-                                  value: "text"
-                                }, "Text"), React.createElement("option", {
-                                  value: "number"
-                                }, "Number"), React.createElement("option", {
-                                  value: "integer"
-                                }, "Integer")), React.createElement("div", undefined, "Value:"), tmp);
+                            }, Belt_Array.map(Definition$ReactTemplate.primitiveValueTypes, (function (primitiveValueType) {
+                                    return React.createElement("option", {
+                                                value: Definition$ReactTemplate.primitiveValueTypeToString(primitiveValueType)
+                                              }, Definition$ReactTemplate.displayPrimitiveValueType(primitiveValueType));
+                                  }))), React.createElement("div", undefined, "Value:"), tmp);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

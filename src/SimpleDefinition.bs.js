@@ -28,7 +28,7 @@ function make(definition, definitions, emit, _children) {
               var tmp;
               switch (implementation.tag | 0) {
                 case 0 : 
-                    tmp = ReasonReact.element(undefined, undefined, ConstantImplementation$ReactTemplate.make(implementation[0], documentation, emit, /* array */[]));
+                    tmp = ReasonReact.element(undefined, undefined, ConstantImplementation$ReactTemplate.make(implementation[0], emit, /* array */[]));
                     break;
                 case 1 : 
                     tmp = ReasonReact.element(undefined, undefined, InterfaceImplementation$ReactTemplate.make(definitions, implementation[0], documentation, display, emit, /* array */[]));

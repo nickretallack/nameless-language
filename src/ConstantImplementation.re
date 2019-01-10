@@ -26,13 +26,7 @@ let convertPrimitiveValueType =
   | _ => raise(Not_found)
   };
 
-let make =
-    (
-      ~implementation: primitiveValue,
-      ~documentation: documentation,
-      ~emit,
-      _children,
-    ) => {
+let make = (~implementation: primitiveValue, ~emit, _children) => {
   ...component,
   render: _self => {
     let changeType = event =>
@@ -50,9 +44,15 @@ let make =
       <h1> {ReasonReact.string("Constant")} </h1>
       <div> {ReasonReact.string("Type:")} </div>
       <select value=typeName onChange=changeType>
-        <option value="text"> {ReasonReact.string("Text")} </option>
-        <option value="number"> {ReasonReact.string("Number")} </option>
-        <option value="integer"> {ReasonReact.string("Integer")} </option>
+        {ReasonReact.array(
+           Belt.Array.map(primitiveValueTypes, primitiveValueType =>
+             <option value={primitiveValueTypeToString(primitiveValueType)}>
+               {ReasonReact.string(
+                  displayPrimitiveValueType(primitiveValueType),
+                )}
+             </option>
+           ),
+         )}
       </select>
       <div> {ReasonReact.string("Value:")} </div>
       {switch (implementation) {

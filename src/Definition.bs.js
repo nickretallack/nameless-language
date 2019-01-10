@@ -58,6 +58,11 @@ function definedNodeKindHasValueOutput(kind) {
   }
 }
 
+var primitiveValueTypes = /* array */[
+  /* TextType */2,
+  /* NumberType */1
+];
+
 function primitiveValueTypeToString(primitiveValueType) {
   switch (primitiveValueType) {
     case 0 : 
@@ -359,6 +364,7 @@ exports.connectionSideToString = connectionSideToString;
 exports.ConnectionComparator = ConnectionComparator;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
+exports.primitiveValueTypes = primitiveValueTypes;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;
 exports.changeTypedFields = changeTypedFields;

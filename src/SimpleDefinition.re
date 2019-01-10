@@ -11,7 +11,7 @@ let make =
       <DefinitionHeader documentation emit />
       {switch (implementation) {
        | ConstantImplementation(implementation) =>
-         <ConstantImplementation implementation documentation emit />
+         <ConstantImplementation implementation emit />
        | RecordTypeImplementation(implementation) =>
          <RecordTypeImplementation
            definitions
