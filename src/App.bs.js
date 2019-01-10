@@ -12,7 +12,7 @@ var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
-var ConstantDefinition$ReactTemplate = require("./ConstantDefinition.bs.js");
+var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
 
 var component = ReasonReact.reducerComponent("App");
 
@@ -43,7 +43,6 @@ function make(size, definitions, _children) {
                 var match$1 = Belt_MapString.get(self[/* state */1][/* definitions */0], definitionID);
                 if (match$1 !== undefined) {
                   var definition = match$1;
-                  var documentation = definition[/* documentation */1];
                   var implementation = definition[/* implementation */0];
                   var emit = function (action) {
                     return Curry._1(self[/* send */3], /* DefinitionAction */Block.__(0, [/* record */[
@@ -51,13 +50,10 @@ function make(size, definitions, _children) {
                                     /* action */action
                                   ]]));
                   };
-                  switch (implementation.tag | 0) {
-                    case 0 : 
-                        return ReasonReact.element(undefined, undefined, ConstantDefinition$ReactTemplate.make(implementation[0], documentation, emit, /* array */[]));
-                    case 3 : 
-                        return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], documentation, size, emit, /* array */[]));
-                    default:
-                      return "TODO";
+                  if (implementation.tag === 3) {
+                    return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], definition[/* documentation */1], size, emit, /* array */[]));
+                  } else {
+                    return ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definition, emit, /* array */[]));
                   }
                 } else {
                   return "Not found";
@@ -162,6 +158,15 @@ function make(size, definitions, _children) {
                           ];
                         }
                         break;
+                    case 4 : 
+                        throw [
+                              Caml_builtin_exceptions.match_failure,
+                              /* tuple */[
+                                "App.re",
+                                32,
+                                8
+                              ]
+                            ];
                     
                   }
                 }

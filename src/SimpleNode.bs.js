@@ -10,7 +10,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 
-var component = ReasonReact.statelessComponent("Node");
+var component = ReasonReact.statelessComponent("SimpleNode");
 
 function nibKey(connectionNib) {
   if (typeof connectionNib === "number") {

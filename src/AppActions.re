@@ -5,9 +5,10 @@ type createConnection = {
   sink: connectionSide,
 };
 
-type changeInputName = {
+type changeNibName = {
   nibID,
   text: string,
+  isInput: bool,
 };
 
 type definitionAction =
@@ -15,6 +16,7 @@ type definitionAction =
   | ChangeName(string)
   | ChangeDescription(string)
   | ChangeConstantValue(primitiveValue)
+  | ChangeNibName(changeNibName)
   | AddInput;
 
 type definitionActionRecord = {

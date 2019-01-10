@@ -129,9 +129,7 @@ let make = (~size, ~definitions, _children) => {
             size
             emit
           />
-        | ConstantImplementation(implementation) =>
-          <ConstantDefinition implementation documentation emit />
-        | _ => ReasonReact.string("TODO")
+        | _ => <SimpleDefinition definition emit />
         };
       };
     },
