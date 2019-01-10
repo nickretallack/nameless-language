@@ -159,14 +159,37 @@ function make(size, definitions, _children) {
                         }
                         break;
                     case 4 : 
-                        throw [
-                              Caml_builtin_exceptions.match_failure,
-                              /* tuple */[
-                                "App.re",
-                                32,
-                                8
-                              ]
-                            ];
+                        var match$4 = action$1[0];
+                        var isInput = match$4[/* isInput */2];
+                        var nibID$1 = match$4[/* nibID */0];
+                        var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
+                        var nib = Belt_MapString.getExn(nibs, nibID$1);
+                        var newNib = Definition$ReactTemplate.setTranslated(nib, "en", match$4[/* text */1]);
+                        var newNibs = Belt_MapString.set(nibs, nibID$1, newNib);
+                        var documentation;
+                        if (isInput) {
+                          var init$3 = definition[/* documentation */1];
+                          documentation = /* record */[
+                            /* name */init$3[/* name */0],
+                            /* description */init$3[/* description */1],
+                            /* inputs */newNibs,
+                            /* outputs */init$3[/* outputs */3]
+                          ];
+                        } else {
+                          var init$4 = definition[/* documentation */1];
+                          documentation = /* record */[
+                            /* name */init$4[/* name */0],
+                            /* description */init$4[/* description */1],
+                            /* inputs */init$4[/* inputs */2],
+                            /* outputs */newNibs
+                          ];
+                        }
+                        newDefinition = /* record */[
+                          /* implementation */definition[/* implementation */0],
+                          /* documentation */documentation,
+                          /* display */definition[/* display */2]
+                        ];
+                        break;
                     
                   }
                 }
