@@ -3,17 +3,14 @@ open Helpers;
 
 let getNumber = (value: value): float =>
   switch (value) {
-  | PrimitiveValue(primitiveValue) =>
-    switch (primitiveValue) {
-    | NumberValue(number) => number
-    | _ => raise(Not_found)
-    }
+  | PrimitiveValue(NumberValue(number)) => number
   | _ => raise(Not_found)
   };
 
 let addNumbers = (inputs: list(unit => value)): list(value) => {
-  let [left, right] = Belt.List.map(inputs, input => input());
-  [PrimitiveValue(NumberValue(getNumber(left) +. getNumber(right)))];
+  let left = Belt.List.getExn(inputs, 0);
+  let right = Belt.List.getExn(inputs, 1);
+  [PrimitiveValue(NumberValue(getNumber(left()) +. getNumber(right())))];
 };
 
 let evaluateExternal =

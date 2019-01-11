@@ -13,10 +13,10 @@ function getNumber(value) {
   if (value.tag) {
     throw Caml_builtin_exceptions.not_found;
   } else {
-    var primitiveValue = value[0];
-    switch (primitiveValue.tag | 0) {
+    var match = value[0];
+    switch (match.tag | 0) {
       case 1 : 
-          return primitiveValue[0];
+          return match[0];
       case 0 : 
       case 2 : 
           throw Caml_builtin_exceptions.not_found;
@@ -26,34 +26,12 @@ function getNumber(value) {
 }
 
 function addNumbers(inputs) {
-  var exit = 0;
-  var match = Belt_List.map(inputs, (function (input) {
-          return Curry._1(input, /* () */0);
-        }));
-  if (match) {
-    var match$1 = match[1];
-    if (match$1 && !match$1[1]) {
-      return /* :: */[
-              /* PrimitiveValue */Block.__(0, [/* NumberValue */Block.__(1, [getNumber(match[0]) + getNumber(match$1[0])])]),
-              /* [] */0
-            ];
-    } else {
-      exit = 1;
-    }
-  } else {
-    exit = 1;
-  }
-  if (exit === 1) {
-    throw [
-          Caml_builtin_exceptions.match_failure,
-          /* tuple */[
-            "Evaluate.re",
-            15,
-            6
-          ]
+  var left = Belt_List.getExn(inputs, 0);
+  var right = Belt_List.getExn(inputs, 1);
+  return /* :: */[
+          /* PrimitiveValue */Block.__(0, [/* NumberValue */Block.__(1, [getNumber(Curry._1(left, /* () */0)) + getNumber(Curry._1(right, /* () */0))])]),
+          /* [] */0
         ];
-  }
-  
 }
 
 function evaluateExternal(name, outputIndex, inputs) {

@@ -2,7 +2,7 @@ open Definition;
 open AppActions;
 open Helpers;
 
-let component = ReasonReact.statelessComponent("ConstantDefinition");
+let component = ReasonReact.statelessComponent("ConstantImplementation");
 
 let round = (x: float) => int_of_float(x +. 0.5);
 
@@ -46,7 +46,9 @@ let make = (~implementation: primitiveValue, ~emit, _children) => {
       <select value=typeName onChange=changeType>
         {ReasonReact.array(
            Belt.Array.map(primitiveValueTypes, primitiveValueType =>
-             <option value={primitiveValueTypeToString(primitiveValueType)}>
+             <option
+               value={primitiveValueTypeToString(primitiveValueType)}
+               key={primitiveValueTypeToString(primitiveValueType)}>
                {ReasonReact.string(
                   displayPrimitiveValueType(primitiveValueType),
                 )}

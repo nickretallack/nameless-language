@@ -12,7 +12,7 @@ var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 
-var component = ReasonReact.statelessComponent("ConstantDefinition");
+var component = ReasonReact.statelessComponent("ConstantImplementation");
 
 function round(x) {
   return x + 0.5 | 0;
@@ -133,6 +133,7 @@ function make(implementation, emit, _children) {
                               onChange: changeType
                             }, Belt_Array.map(Definition$ReactTemplate.primitiveValueTypes, (function (primitiveValueType) {
                                     return React.createElement("option", {
+                                                key: Definition$ReactTemplate.primitiveValueTypeToString(primitiveValueType),
                                                 value: Definition$ReactTemplate.primitiveValueTypeToString(primitiveValueType)
                                               }, Definition$ReactTemplate.displayPrimitiveValueType(primitiveValueType));
                                   }))), React.createElement("div", undefined, "Value:"), tmp);
