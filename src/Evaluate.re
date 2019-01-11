@@ -57,9 +57,7 @@ let rec evaluateConnection =
           switch (source.nib) {
           | NibConnection(outputID) =>
             let outputIndex =
-              findByIndexExn(nodeDefinition.display.outputOrdering, nibID =>
-                nibID == outputID
-              );
+              findIndexExn(nodeDefinition.display.outputOrdering, outputID);
             let lazyInputs =
               Belt.List.map(nodeDefinition.display.inputOrdering, (nibID, ()) =>
                 evaluateConnection(
@@ -73,7 +71,51 @@ let rec evaluateConnection =
           }
         | _ => PrimitiveValue(TextValue("Value?"))
         }
-
+      | AccessorNode =>
+        switch (nodeDefinition.implementation) {
+        | RecordTypeImplementation(_) =>
+          switch (source.nib) {
+          | NibConnection(outputID) =>
+            let value =
+              evaluateConnection(
+                definitions,
+                graphImplementation,
+                {node: NodeConnection(nodeID), nib: ValueConnection},
+              );
+            switch (value) {
+            | DefinedValue(definedValue) =>
+              if (definedValue.definitionID != definitionID) {
+                raise(Not_found);
+              } else {
+                let fieldIndex =
+                  findIndexExn(
+                    nodeDefinition.display.inputOrdering,
+                    outputID,
+                  );
+                Belt.List.getExn(definedValue.values, fieldIndex);
+              }
+            | _ => raise(Not_found)
+            };
+          | _ => raise(Not_found)
+          }
+        | _ => PrimitiveValue(TextValue("Constructor?"))
+        }
+      | ConstructorNode =>
+        switch (nodeDefinition.implementation) {
+        | RecordTypeImplementation(_) =>
+          DefinedValue({
+            definitionID,
+            values:
+              Belt.List.map(nodeDefinition.display.inputOrdering, nibID =>
+                evaluateConnection(
+                  definitions,
+                  graphImplementation,
+                  {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
+                )
+              ),
+          })
+        | _ => PrimitiveValue(TextValue("Accessor?"))
+        }
       | _ => PrimitiveValue(TextValue("Defined node?"))
       };
     };
