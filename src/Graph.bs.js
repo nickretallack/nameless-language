@@ -15,6 +15,7 @@ var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
+var Evaluate$ReactTemplate = require("./Evaluate.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
@@ -198,7 +199,13 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                               }, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(false, /* record */[
                                                         /* node : GraphConnection */0,
                                                         /* nib : NibConnection */Block.__(0, [nibID])
-                                                      ], self[/* send */3], /* array */[])), name);
+                                                      ], self[/* send */3], /* array */[])), React.createElement("div", undefined, name), React.createElement("a", {
+                                                    onClick: (function (_event) {
+                                                        var outputID = nibID;
+                                                        console.log(Evaluate$ReactTemplate.evaluateGraphOutput(definitions, implementation, outputID));
+                                                        return /* () */0;
+                                                      })
+                                                  }, "Evaluate"));
                                   }))), Helpers$ReactTemplate.renderStringMap((function (param) {
                                 var nodeID = param[0];
                                 return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, Belt_MapString.getExn(nodePositions, nodeID), self[/* send */3], /* array */[]));

@@ -240,8 +240,10 @@ let make =
 
     let changeName = event => emit(ChangeName(getEventValue(event)));
 
-    /* let evaluate = output_id =>
-       Js.log(evaluateOutput(definitions, definitionID, output_id)); */
+    let evaluate = outputID =>
+      Js.log(
+        Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
+      );
     <div
       className="graph"
       onMouseMove={event => {
@@ -370,7 +372,10 @@ let make =
                    }
                    emit={self.send}
                  />
-                 {ReasonReact.string(name)}
+                 <div> {ReasonReact.string(name)} </div>
+                 <a onClick={_event => evaluate(nibID)}>
+                   {ReasonReact.string("Evaluate")}
+                 </a>
                </div>;
              },
            ),
