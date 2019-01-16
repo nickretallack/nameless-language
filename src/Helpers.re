@@ -30,7 +30,7 @@ let rec findByIndexExn: 'a. (Belt.List.t('a), 'a => bool) => int =
 Random.init(int_of_float(Js.Date.now()));
 
 let randomHex = () => Printf.sprintf("%x", Random.int(16));
-let randomId = () =>
+let randomID = () =>
   String.concat("", Belt.List.makeBy(32, _ => randomHex()));
 
 let floatToString = (x: float) => Printf.sprintf("%g", x);

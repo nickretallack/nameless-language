@@ -33,4 +33,5 @@ type definitionActionRecord = {
 
 type appAction =
   | DefinitionAction(definitionActionRecord)
+  | CreateDefinition(definition)
   | ChangeRoute(ReasonReact.Router.url);

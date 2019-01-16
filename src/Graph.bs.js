@@ -162,6 +162,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                             })
                         }, React.createElement("input", {
                               className: "graph-name",
+                              placeholder: "(nameless)",
                               type: "text",
                               value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
                               onChange: changeName

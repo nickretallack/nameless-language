@@ -65,7 +65,7 @@ function randomHex(param) {
                 ]), Random.$$int(16));
 }
 
-function randomId(param) {
+function randomID(param) {
   return $$String.concat("", Belt_List.makeBy(32, (function (param) {
                     return randomHex(/* () */0);
                   })));
@@ -138,7 +138,7 @@ exports.sortBy = sortBy;
 exports.findIndexExn = findIndexExn;
 exports.findByIndexExn = findByIndexExn;
 exports.randomHex = randomHex;
-exports.randomId = randomId;
+exports.randomID = randomID;
 exports.floatToString = floatToString;
 exports.pixels = pixels;
 exports.pointFromMouse = pointFromMouse;

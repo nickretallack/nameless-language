@@ -274,6 +274,7 @@ let make =
       <input
         type_="text"
         className="graph-name"
+        placeholder="(nameless)"
         value={getTranslated(documentation.name, "en")}
         onChange=changeName
       />

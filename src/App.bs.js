@@ -4,7 +4,9 @@
 var List = require("bs-platform/lib/js/list.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
+var React = require("react");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
+var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Graph$ReactTemplate = require("./Graph.bs.js");
@@ -13,6 +15,66 @@ var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exception
 var Definition$ReactTemplate = require("./Definition.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
 var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
+
+var makers = /* array */[
+  /* tuple */[
+    "Graph",
+    (function (param) {
+        return Definition$ReactTemplate.makeGraph(undefined, undefined, undefined, /* array */[/* tuple */[
+                      Helpers$ReactTemplate.randomID(/* () */0),
+                      ""
+                    ]], undefined, undefined, /* () */0);
+      })
+  ],
+  /* tuple */[
+    "Constant",
+    (function (param) {
+        return Definition$ReactTemplate.makeDefinition(undefined, undefined, undefined, undefined, /* ConstantImplementation */Block.__(0, [/* TextValue */Block.__(2, [""])]), /* () */0);
+      })
+  ],
+  /* tuple */[
+    "Interface",
+    (function (param) {
+        var outputID = Helpers$ReactTemplate.randomID(/* () */0);
+        return Definition$ReactTemplate.makeDefinition(undefined, undefined, undefined, /* array */[/* tuple */[
+                      outputID,
+                      ""
+                    ]], /* InterfaceImplementation */Block.__(1, [/* record */[
+                        /* inputTypes */Belt_MapString.empty,
+                        /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                                outputID,
+                                /* PrimitiveValueType */Block.__(0, [/* TextType */2])
+                              ]])
+                      ]]), /* () */0);
+      })
+  ],
+  /* tuple */[
+    "Record",
+    (function (param) {
+        var inputID1 = Helpers$ReactTemplate.randomID(/* () */0);
+        var inputID2 = Helpers$ReactTemplate.randomID(/* () */0);
+        return Definition$ReactTemplate.makeDefinition(undefined, undefined, /* array */[
+                    /* tuple */[
+                      inputID1,
+                      ""
+                    ],
+                    /* tuple */[
+                      inputID2,
+                      ""
+                    ]
+                  ], undefined, /* RecordTypeImplementation */Block.__(4, [Belt_MapString.fromArray(/* array */[
+                            /* tuple */[
+                              inputID1,
+                              /* PrimitiveValueType */Block.__(0, [/* TextType */2])
+                            ],
+                            /* tuple */[
+                              inputID2,
+                              /* PrimitiveValueType */Block.__(0, [/* TextType */2])
+                            ]
+                          ])]), /* () */0);
+      })
+  ]
+];
 
 var component = ReasonReact.reducerComponent("App");
 
@@ -24,7 +86,7 @@ function make(size, definitions, _children) {
           /* willReceiveProps */component[/* willReceiveProps */3],
           /* didMount */(function (self) {
               var watcherId = ReasonReact.Router[/* watchUrl */1]((function (url) {
-                      return Curry._1(self[/* send */3], /* ChangeRoute */Block.__(1, [url]));
+                      return Curry._1(self[/* send */3], /* ChangeRoute */Block.__(2, [url]));
                     }));
               return Curry._1(self[/* onUnmount */4], (function (param) {
                             return ReasonReact.Router[/* unwatchUrl */2](watcherId);
@@ -36,8 +98,9 @@ function make(size, definitions, _children) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               var match = self[/* state */1][/* definitionID */1];
+              var tmp;
               if (match === "") {
-                return ReasonReact.element(undefined, undefined, DefinitionList$ReactTemplate.make(self[/* state */1][/* definitions */0], /* array */[]));
+                tmp = ReasonReact.element(undefined, undefined, DefinitionList$ReactTemplate.make(self[/* state */1][/* definitions */0], /* array */[]));
               } else {
                 var definitionID = self[/* state */1][/* definitionID */1];
                 var match$1 = Belt_MapString.get(self[/* state */1][/* definitions */0], definitionID);
@@ -50,15 +113,23 @@ function make(size, definitions, _children) {
                                     /* action */action
                                   ]]));
                   };
-                  if (implementation.tag === 3) {
-                    return ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], definition[/* documentation */1], size, emit, /* array */[]));
-                  } else {
-                    return ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definition, definitions, emit, /* array */[]));
-                  }
+                  tmp = implementation.tag === 3 ? ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], definition[/* documentation */1], size, emit, /* array */[])) : ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definition, definitions, emit, /* array */[]));
                 } else {
-                  return "Not found";
+                  tmp = "Not found";
                 }
               }
+              return React.createElement("div", undefined, React.createElement("a", {
+                              href: "#"
+                            }, "Library"), " New:", Belt_Array.mapWithIndex(makers, (function (index, param) {
+                                var maker = param[1];
+                                return React.createElement("a", {
+                                            key: String(index),
+                                            className: "maker",
+                                            onClick: (function (_event) {
+                                                return Curry._1(self[/* send */3], /* CreateDefinition */Block.__(1, [Curry._1(maker, /* () */0)]));
+                                              })
+                                          }, param[0]);
+                              })), tmp);
             }),
           /* initialState */(function (param) {
               return /* record */[
@@ -68,177 +139,191 @@ function make(size, definitions, _children) {
             }),
           /* retainedProps */component[/* retainedProps */11],
           /* reducer */(function (action, state) {
-              if (action.tag) {
-                return /* Update */Block.__(0, [/* record */[
-                            /* definitions */state[/* definitions */0],
-                            /* definitionID */action[0][/* hash */1]
-                          ]]);
-              } else {
-                var match = action[0];
-                var action$1 = match[/* action */1];
-                var definitionID = match[/* definitionID */0];
-                var definition = Belt_MapString.getExn(state[/* definitions */0], definitionID);
-                var newDefinition;
-                if (typeof action$1 === "number") {
-                  var nibID = Helpers$ReactTemplate.randomId(/* () */0);
-                  var init = definition[/* documentation */1];
-                  newDefinition = /* record */[
-                    /* implementation */definition[/* implementation */0],
-                    /* documentation : record */[
-                      /* name */init[/* name */0],
-                      /* description */init[/* description */1],
-                      /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
-                      /* outputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable)
-                    ],
-                    /* display : record */[
-                      /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
-                            nibID,
-                            /* [] */0
-                          ]),
-                      /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
-                            nibID,
-                            /* [] */0
-                          ])
-                    ]
-                  ];
-                } else {
-                  switch (action$1.tag | 0) {
-                    case 0 : 
-                        var match$1 = action$1[0];
-                        var match$2 = definition[/* implementation */0];
-                        if (match$2.tag === 3) {
-                          var graphImplementation = match$2[0];
-                          newDefinition = /* record */[
-                            /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                  /* connections */Belt_Map.set(graphImplementation[/* connections */0], match$1[/* sink */1], match$1[/* source */0]),
-                                  /* nodes */graphImplementation[/* nodes */1]
-                                ]]),
-                            /* documentation */definition[/* documentation */1],
-                            /* display */definition[/* display */2]
-                          ];
-                        } else {
-                          newDefinition = definition;
-                        }
-                        break;
-                    case 1 : 
-                        var init$1 = definition[/* documentation */1];
-                        newDefinition = /* record */[
-                          /* implementation */definition[/* implementation */0],
-                          /* documentation : record */[
-                            /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* name */0], "en", action$1[0]),
-                            /* description */init$1[/* description */1],
-                            /* inputs */init$1[/* inputs */2],
-                            /* outputs */init$1[/* outputs */3]
-                          ],
-                          /* display */definition[/* display */2]
-                        ];
-                        break;
-                    case 2 : 
-                        var init$2 = definition[/* documentation */1];
-                        newDefinition = /* record */[
-                          /* implementation */definition[/* implementation */0],
-                          /* documentation : record */[
-                            /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* description */1], "en", action$1[0]),
-                            /* description */init$2[/* description */1],
-                            /* inputs */init$2[/* inputs */2],
-                            /* outputs */init$2[/* outputs */3]
-                          ],
-                          /* display */definition[/* display */2]
-                        ];
-                        break;
-                    case 3 : 
-                        var match$3 = definition[/* implementation */0];
-                        if (match$3.tag) {
-                          throw Caml_builtin_exceptions.not_found;
-                        } else {
-                          newDefinition = /* record */[
-                            /* implementation : ConstantImplementation */Block.__(0, [action$1[0]]),
-                            /* documentation */definition[/* documentation */1],
-                            /* display */definition[/* display */2]
-                          ];
-                        }
-                        break;
-                    case 4 : 
-                        var match$4 = action$1[0];
-                        var isInput = match$4[/* isInput */1];
-                        var nibID$1 = match$4[/* nibID */0];
-                        var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
-                        var nib = Belt_MapString.getExn(nibs, nibID$1);
-                        var newNib = Definition$ReactTemplate.setTranslated(nib, "en", match$4[/* text */2]);
-                        var newNibs = Belt_MapString.set(nibs, nibID$1, newNib);
-                        var documentation;
-                        if (isInput) {
-                          var init$3 = definition[/* documentation */1];
-                          documentation = /* record */[
-                            /* name */init$3[/* name */0],
-                            /* description */init$3[/* description */1],
-                            /* inputs */newNibs,
-                            /* outputs */init$3[/* outputs */3]
-                          ];
-                        } else {
-                          var init$4 = definition[/* documentation */1];
-                          documentation = /* record */[
-                            /* name */init$4[/* name */0],
-                            /* description */init$4[/* description */1],
-                            /* inputs */init$4[/* inputs */2],
-                            /* outputs */newNibs
-                          ];
-                        }
-                        newDefinition = /* record */[
-                          /* implementation */definition[/* implementation */0],
-                          /* documentation */documentation,
-                          /* display */definition[/* display */2]
-                        ];
-                        break;
-                    case 5 : 
-                        var match$5 = action$1[0];
-                        var valueType = match$5[/* valueType */2];
-                        var isInput$1 = match$5[/* isInput */1];
-                        var nibID$2 = match$5[/* nibID */0];
-                        var match$6 = definition[/* implementation */0];
-                        var tmp;
-                        switch (match$6.tag | 0) {
-                          case 1 : 
-                              var $$interface = match$6[0];
-                              tmp = /* InterfaceImplementation */Block.__(1, [isInput$1 ? /* record */[
-                                      /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* inputTypes */0], nibID$2, valueType),
-                                      /* outputTypes */$$interface[/* outputTypes */1]
-                                    ] : /* record */[
-                                      /* inputTypes */$$interface[/* inputTypes */0],
-                                      /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* outputTypes */1], nibID$2, valueType)
-                                    ]]);
-                              break;
-                          case 4 : 
-                              var tmp$1;
-                              if (isInput$1) {
-                                tmp$1 = Definition$ReactTemplate.changeTypedFields(match$6[0], nibID$2, valueType);
-                              } else {
+              switch (action.tag | 0) {
+                case 0 : 
+                    var match = action[0];
+                    var action$1 = match[/* action */1];
+                    var definitionID = match[/* definitionID */0];
+                    var definition = Belt_MapString.getExn(state[/* definitions */0], definitionID);
+                    var newDefinition;
+                    if (typeof action$1 === "number") {
+                      var nibID = Helpers$ReactTemplate.randomID(/* () */0);
+                      var init = definition[/* documentation */1];
+                      newDefinition = /* record */[
+                        /* implementation */definition[/* implementation */0],
+                        /* documentation : record */[
+                          /* name */init[/* name */0],
+                          /* description */init[/* description */1],
+                          /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
+                          /* outputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable)
+                        ],
+                        /* display : record */[
+                          /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
+                                nibID,
+                                /* [] */0
+                              ]),
+                          /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
+                                nibID,
+                                /* [] */0
+                              ])
+                        ]
+                      ];
+                    } else {
+                      switch (action$1.tag | 0) {
+                        case 0 : 
+                            var match$1 = action$1[0];
+                            var match$2 = definition[/* implementation */0];
+                            if (match$2.tag === 3) {
+                              var graphImplementation = match$2[0];
+                              newDefinition = /* record */[
+                                /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                      /* connections */Belt_Map.set(graphImplementation[/* connections */0], match$1[/* sink */1], match$1[/* source */0]),
+                                      /* nodes */graphImplementation[/* nodes */1]
+                                    ]]),
+                                /* documentation */definition[/* documentation */1],
+                                /* display */definition[/* display */2]
+                              ];
+                            } else {
+                              newDefinition = definition;
+                            }
+                            break;
+                        case 1 : 
+                            var init$1 = definition[/* documentation */1];
+                            newDefinition = /* record */[
+                              /* implementation */definition[/* implementation */0],
+                              /* documentation : record */[
+                                /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* name */0], "en", action$1[0]),
+                                /* description */init$1[/* description */1],
+                                /* inputs */init$1[/* inputs */2],
+                                /* outputs */init$1[/* outputs */3]
+                              ],
+                              /* display */definition[/* display */2]
+                            ];
+                            break;
+                        case 2 : 
+                            var init$2 = definition[/* documentation */1];
+                            newDefinition = /* record */[
+                              /* implementation */definition[/* implementation */0],
+                              /* documentation : record */[
+                                /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* description */1], "en", action$1[0]),
+                                /* description */init$2[/* description */1],
+                                /* inputs */init$2[/* inputs */2],
+                                /* outputs */init$2[/* outputs */3]
+                              ],
+                              /* display */definition[/* display */2]
+                            ];
+                            break;
+                        case 3 : 
+                            var match$3 = definition[/* implementation */0];
+                            if (match$3.tag) {
+                              throw Caml_builtin_exceptions.not_found;
+                            } else {
+                              newDefinition = /* record */[
+                                /* implementation : ConstantImplementation */Block.__(0, [action$1[0]]),
+                                /* documentation */definition[/* documentation */1],
+                                /* display */definition[/* display */2]
+                              ];
+                            }
+                            break;
+                        case 4 : 
+                            var match$4 = action$1[0];
+                            var isInput = match$4[/* isInput */1];
+                            var nibID$1 = match$4[/* nibID */0];
+                            var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
+                            var nib = Belt_MapString.getExn(nibs, nibID$1);
+                            var newNib = Definition$ReactTemplate.setTranslated(nib, "en", match$4[/* text */2]);
+                            var newNibs = Belt_MapString.set(nibs, nibID$1, newNib);
+                            var documentation;
+                            if (isInput) {
+                              var init$3 = definition[/* documentation */1];
+                              documentation = /* record */[
+                                /* name */init$3[/* name */0],
+                                /* description */init$3[/* description */1],
+                                /* inputs */newNibs,
+                                /* outputs */init$3[/* outputs */3]
+                              ];
+                            } else {
+                              var init$4 = definition[/* documentation */1];
+                              documentation = /* record */[
+                                /* name */init$4[/* name */0],
+                                /* description */init$4[/* description */1],
+                                /* inputs */init$4[/* inputs */2],
+                                /* outputs */newNibs
+                              ];
+                            }
+                            newDefinition = /* record */[
+                              /* implementation */definition[/* implementation */0],
+                              /* documentation */documentation,
+                              /* display */definition[/* display */2]
+                            ];
+                            break;
+                        case 5 : 
+                            var match$5 = action$1[0];
+                            var valueType = match$5[/* valueType */2];
+                            var isInput$1 = match$5[/* isInput */1];
+                            var nibID$2 = match$5[/* nibID */0];
+                            var match$6 = definition[/* implementation */0];
+                            var tmp;
+                            switch (match$6.tag | 0) {
+                              case 1 : 
+                                  var $$interface = match$6[0];
+                                  tmp = /* InterfaceImplementation */Block.__(1, [isInput$1 ? /* record */[
+                                          /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* inputTypes */0], nibID$2, valueType),
+                                          /* outputTypes */$$interface[/* outputTypes */1]
+                                        ] : /* record */[
+                                          /* inputTypes */$$interface[/* inputTypes */0],
+                                          /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* outputTypes */1], nibID$2, valueType)
+                                        ]]);
+                                  break;
+                              case 4 : 
+                                  var tmp$1;
+                                  if (isInput$1) {
+                                    tmp$1 = Definition$ReactTemplate.changeTypedFields(match$6[0], nibID$2, valueType);
+                                  } else {
+                                    throw Caml_builtin_exceptions.not_found;
+                                  }
+                                  tmp = /* RecordTypeImplementation */Block.__(4, [tmp$1]);
+                                  break;
+                              default:
                                 throw Caml_builtin_exceptions.not_found;
-                              }
-                              tmp = /* RecordTypeImplementation */Block.__(4, [tmp$1]);
-                              break;
-                          default:
-                            throw Caml_builtin_exceptions.not_found;
-                        }
-                        newDefinition = /* record */[
-                          /* implementation */tmp,
-                          /* documentation */definition[/* documentation */1],
-                          /* display */definition[/* display */2]
-                        ];
-                        break;
-                    
-                  }
-                }
-                return /* Update */Block.__(0, [/* record */[
-                            /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID, newDefinition),
-                            /* definitionID */state[/* definitionID */1]
-                          ]]);
+                            }
+                            newDefinition = /* record */[
+                              /* implementation */tmp,
+                              /* documentation */definition[/* documentation */1],
+                              /* display */definition[/* display */2]
+                            ];
+                            break;
+                        
+                      }
+                    }
+                    return /* Update */Block.__(0, [/* record */[
+                                /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID, newDefinition),
+                                /* definitionID */state[/* definitionID */1]
+                              ]]);
+                case 1 : 
+                    var definitionID$1 = Helpers$ReactTemplate.randomID(/* () */0);
+                    return /* UpdateWithSideEffects */Block.__(2, [
+                              /* record */[
+                                /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID$1, action[0]),
+                                /* definitionID */state[/* definitionID */1]
+                              ],
+                              (function (param) {
+                                  return ReasonReact.Router[/* push */0]("#" + definitionID$1);
+                                })
+                            ]);
+                case 2 : 
+                    return /* Update */Block.__(0, [/* record */[
+                                /* definitions */state[/* definitions */0],
+                                /* definitionID */action[0][/* hash */1]
+                              ]]);
+                
               }
             }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]
         ];
 }
 
+exports.makers = makers;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */

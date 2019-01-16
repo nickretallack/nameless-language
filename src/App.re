@@ -8,6 +8,54 @@ type appState = {
   definitionID,
 };
 
+let makers = [|
+  ("Graph", () => makeGraph(~outputs=[|(randomID(), "")|], ())),
+  (
+    "Constant",
+    () =>
+      makeDefinition(
+        ~implementation=ConstantImplementation(TextValue("")),
+        (),
+      ),
+  ),
+  (
+    "Interface",
+    () => {
+      let outputID = randomID();
+      makeDefinition(
+        ~outputs=[|(outputID, "")|],
+        ~implementation=
+          InterfaceImplementation({
+            inputTypes: Belt.Map.String.empty,
+            outputTypes:
+              Belt.Map.String.fromArray([|
+                (outputID, PrimitiveValueType(TextType)),
+              |]),
+          }),
+        (),
+      );
+    },
+  ),
+  (
+    "Record",
+    () => {
+      let inputID1 = randomID();
+      let inputID2 = randomID();
+      makeDefinition(
+        ~inputs=[|(inputID1, ""), (inputID2, "")|],
+        ~implementation=
+          RecordTypeImplementation(
+            Belt.Map.String.fromArray([|
+              (inputID1, PrimitiveValueType(TextType)),
+              (inputID2, PrimitiveValueType(TextType)),
+            |]),
+          ),
+        (),
+      );
+    },
+  ),
+|];
+
 let component = ReasonReact.reducerComponent("App");
 
 let make = (~size, ~definitions, _children) => {
@@ -25,6 +73,16 @@ let make = (~size, ~definitions, _children) => {
     switch (action) {
     | ChangeRoute(url) =>
       ReasonReact.Update({...state, definitionID: url.hash})
+    | CreateDefinition(definition) =>
+      let definitionID = randomID();
+      ReasonReact.UpdateWithSideEffects(
+        {
+          ...state,
+          definitions:
+            Belt.Map.String.set(state.definitions, definitionID, definition),
+        },
+        _ => ReasonReact.Router.push("#" ++ definitionID),
+      );
     | DefinitionAction({definitionID, action}) =>
       let definition =
         Belt.Map.String.getExn(state.definitions, definitionID);
@@ -75,7 +133,7 @@ let make = (~size, ~definitions, _children) => {
             },
           }
         | AddInput =>
-          let nibID = randomId();
+          let nibID = randomID();
           {
             ...definition,
             documentation: {
@@ -156,28 +214,42 @@ let make = (~size, ~definitions, _children) => {
       });
     },
   render: self =>
-    switch (self.state.definitionID) {
-    | "" => <DefinitionList definitions={self.state.definitions} />
-    | _ =>
-      let definitionID = self.state.definitionID;
-      switch (Belt.Map.String.get(self.state.definitions, definitionID)) {
-      | None => ReasonReact.string("Not found")
-      | Some(definition) =>
-        let {implementation, display, documentation} = definition;
-        let emit = (action: definitionAction) =>
-          self.send(DefinitionAction({definitionID, action}));
-        switch (implementation) {
-        | GraphImplementation(implementation) =>
-          <Graph
-            definitions={self.state.definitions}
-            implementation
-            display
-            documentation
-            size
-            emit
-          />
-        | _ => <SimpleDefinition definition definitions emit />
-        };
-      };
-    },
+    <div>
+      <a href="#"> {ReasonReact.string("Library")} </a>
+      {ReasonReact.string(" New:")}
+      {ReasonReact.array(
+         Belt.Array.mapWithIndex(makers, (index, (name, maker)) =>
+           <a
+             className="maker"
+             key={string_of_int(index)}
+             onClick={_event => self.send(CreateDefinition(maker()))}>
+             {ReasonReact.string(name)}
+           </a>
+         ),
+       )}
+      {switch (self.state.definitionID) {
+       | "" => <DefinitionList definitions={self.state.definitions} />
+       | _ =>
+         let definitionID = self.state.definitionID;
+         switch (Belt.Map.String.get(self.state.definitions, definitionID)) {
+         | None => ReasonReact.string("Not found")
+         | Some(definition) =>
+           let {implementation, display, documentation} = definition;
+           let emit = (action: definitionAction) =>
+             self.send(DefinitionAction({definitionID, action}));
+           switch (implementation) {
+           | GraphImplementation(implementation) =>
+             <Graph
+               definitions={self.state.definitions}
+               implementation
+               display
+               documentation
+               size
+               emit
+             />
+           | _ => <SimpleDefinition definition definitions emit />
+           };
+         };
+       }}
+    </div>,
 };

@@ -302,6 +302,15 @@ type implementation =
   | RecordTypeImplementation(typedFields)
   | UnionTypeImplementation(typedFields);
 
+/* type implementationType =
+    | ConstantImplementationType(primitiveValue)
+    | InterfaceImplementation(interface)
+    | ExternalImplementation(externalImplementation)
+    | GraphImplementation(graphImplementation)
+    | RecordTypeImplementation(typedFields)
+    | UnionTypeImplementation(typedFields);
+   */
+
 /* Documentation */
 
 type vettable = {
@@ -538,6 +547,59 @@ let displayValueType =
      Belt.List.length(nodeDisplay.inputs)
      + Belt.List.length(nodeDisplay.outputs);
    }; */
+
+let makeNibDocs = (nibs: array((nibID, string))) =>
+  Belt.Map.String.fromArray(
+    Belt.Array.map(nibs, ((nibID, text)) =>
+      (nibID, makeTranslatable(text, "en"))
+    ),
+  );
+
+let makeDefinition =
+    (
+      ~name="",
+      ~description="",
+      ~inputs=[||],
+      ~outputs=[||],
+      ~implementation,
+      _unit,
+    ) => {
+  documentation: {
+    name: makeTranslatable(name, "en"),
+    description: makeTranslatable(description, "en"),
+    inputs: makeNibDocs(inputs),
+    outputs: makeNibDocs(outputs),
+  },
+  display: {
+    inputOrdering: Array.to_list(Array.map(((id, _name)) => id, inputs)),
+    outputOrdering: Array.to_list(Array.map(((id, _name)) => id, outputs)),
+  },
+  implementation,
+};
+
+let makeGraph =
+    (
+      ~name="",
+      ~description="",
+      ~inputs=[||],
+      ~outputs=[||],
+      ~nodes=[||],
+      ~connections=[||],
+      _unit,
+    ) =>
+  makeDefinition(
+    ~name,
+    ~description,
+    ~inputs,
+    ~outputs,
+    ~implementation=
+      GraphImplementation({
+        nodes: Belt.Map.String.fromArray(nodes),
+        connections:
+          Belt.Map.fromArray(connections, ~id=(module ConnectionComparator)),
+      }),
+    (),
+  );
 
 exception InvalidConnection;
 
