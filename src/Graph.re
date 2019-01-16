@@ -1,6 +1,6 @@
 [%%debugger.chrome];
 open AppActions;
-open GraphActions;
+open! GraphActions;
 open Definition;
 open Helpers;
 
@@ -73,10 +73,15 @@ let make =
         })
       | None => ReasonReact.NoUpdate
       }
-    | FinishDrawing({connectionSide: endNib, isSource}) =>
+    | FinishDrawing({connectionSide: endNib, isSource: endIsSource}) =>
       switch (Belt.Map.get(state.pointers, pointerID)) {
-      | Some({startIsSource, connectionSide: startNib}) =>
-        startIsSource != isSource ?
+      | Some({
+          explicitConnectionSide: {
+            isSource: startIsSource,
+            connectionSide: startNib,
+          },
+        }) =>
+        startIsSource != endIsSource ?
           DetectCycles.detectCycles(
             Belt.Map.set(
               implementation.connections,
@@ -324,7 +329,13 @@ let make =
            (
              (
                pointerID: pointerID,
-               {connectionSide, startIsSource, point}: drawingConnection,
+               {
+                 point,
+                 explicitConnectionSide: {
+                   connectionSide,
+                   isSource: startIsSource,
+                 },
+               }: drawingConnection,
              ),
            ) =>
              <Connection

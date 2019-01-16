@@ -58,8 +58,10 @@ function make(isSource, connectionSide, emit, isHighlighted, _children) {
                               return Curry._1(emit, /* record */[
                                           /* pointerID : Mouse */0,
                                           /* action : StartDrawing */Block.__(0, [/* record */[
-                                                /* connectionSide */connectionSide,
-                                                /* startIsSource */isSource,
+                                                /* explicitConnectionSide : record */[
+                                                  /* connectionSide */connectionSide,
+                                                  /* isSource */isSource
+                                                ],
                                                 /* point */Helpers$ReactTemplate.pointFromMouse($$event)
                                               ]])
                                         ]);
@@ -88,8 +90,10 @@ function make(isSource, connectionSide, emit, isHighlighted, _children) {
                                             return Curry._1(emit, /* record */[
                                                         /* pointerID : Touch */[touch.identifier],
                                                         /* action : StartDrawing */Block.__(0, [/* record */[
-                                                              /* connectionSide */connectionSide,
-                                                              /* startIsSource */isSource,
+                                                              /* explicitConnectionSide : record */[
+                                                                /* connectionSide */connectionSide,
+                                                                /* isSource */isSource
+                                                              ],
                                                               /* point : record */[
                                                                 /* x */touch.clientX,
                                                                 /* y */touch.clientY

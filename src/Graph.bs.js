@@ -205,9 +205,10 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                     return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), getNibNudge(source), undefined, /* array */[]));
                                   }), implementation[/* connections */0]), Helpers$ReactTemplate.renderMap((function (param) {
                                     var match = param[1];
-                                    var point = match[/* point */2];
-                                    var startIsSource = match[/* startIsSource */1];
-                                    var connectionSide = match[/* connectionSide */0];
+                                    var point = match[/* point */1];
+                                    var match$1 = match[/* explicitConnectionSide */0];
+                                    var startIsSource = match$1[/* isSource */1];
+                                    var connectionSide = match$1[/* connectionSide */0];
                                     return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : point, startIsSource ? point : getNibPosition(connectionSide, true), startIsSource ? getNibNudge(connectionSide) : 0, undefined, /* array */[]));
                                   }), self[/* state */1][/* pointers */0]), Belt_List.toArray(Belt_List.map(display[/* inputOrdering */0], (function (nibID) {
                                         var name = Definition$ReactTemplate.getTranslated(Belt_MapString.getExn(documentation[/* inputs */2], nibID), "en");
@@ -290,11 +291,9 @@ function make(definitions, implementation, display, documentation, size, emit, _
                   case 1 : 
                       var match$1 = Belt_Map.get(state[/* pointers */0], pointerID);
                       if (match$1 !== undefined) {
-                        var drawingConnection = match$1;
                         return /* Update */Block.__(0, [/* record */[
                                     /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* record */[
-                                          /* connectionSide */drawingConnection[/* connectionSide */0],
-                                          /* startIsSource */drawingConnection[/* startIsSource */1],
+                                          /* explicitConnectionSide */match$1[/* explicitConnectionSide */0],
                                           /* point */action[0]
                                         ]),
                                     /* error */state[/* error */1],
@@ -308,8 +307,8 @@ function make(definitions, implementation, display, documentation, size, emit, _
                       var endNib = match$2[/* connectionSide */0];
                       var match$3 = Belt_Map.get(state[/* pointers */0], pointerID);
                       if (match$3 !== undefined) {
-                        var match$4 = match$3;
-                        var startIsSource = match$4[/* startIsSource */1];
+                        var match$4 = match$3[/* explicitConnectionSide */0];
+                        var startIsSource = match$4[/* isSource */1];
                         var startNib = match$4[/* connectionSide */0];
                         var match$5 = startIsSource !== match$2[/* isSource */1];
                         if (match$5) {

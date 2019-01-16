@@ -47,9 +47,11 @@ let make =
           pointerID: Mouse,
           action:
             StartDrawing({
-              connectionSide,
+              explicitConnectionSide: {
+                connectionSide,
+                isSource,
+              },
               point: pointFromMouse(event),
-              startIsSource: isSource,
             }),
         })
       }
@@ -59,12 +61,14 @@ let make =
             pointerID: Touch(touch##identifier),
             action:
               StartDrawing({
-                connectionSide,
+                explicitConnectionSide: {
+                  connectionSide,
+                  isSource,
+                },
                 point: {
                   x: touch##clientX,
                   y: touch##clientY,
                 },
-                startIsSource: isSource,
               }),
           })
         )
