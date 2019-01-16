@@ -94,7 +94,7 @@ function evaluateConnection(definitions, graphImplementation, sink) {
             if (match$5.tag === 4) {
               return /* DefinedValue */Block.__(1, [/* record */[
                           /* definitionID */definitionID,
-                          /* values */Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID) {
+                          /* values */Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID, param) {
                                   return evaluateConnection(definitions, graphImplementation, /* record */[
                                               /* node : NodeConnection */[nodeID],
                                               /* nib : NibConnection */Block.__(0, [nibID])
@@ -123,7 +123,7 @@ function evaluateConnection(definitions, graphImplementation, sink) {
                     throw Caml_builtin_exceptions.not_found;
                   } else {
                     var fieldIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* inputOrdering */0], match$7[0]);
-                    return Belt_List.getExn(definedValue[/* values */1], fieldIndex);
+                    return Curry._1(Belt_List.getExn(definedValue[/* values */1], fieldIndex), /* () */0);
                   }
                 } else {
                   throw Caml_builtin_exceptions.not_found;

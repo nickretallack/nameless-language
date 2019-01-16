@@ -291,7 +291,7 @@ let primitiveValueToTypeString = x =>
 
 type definedValue = {
   definitionID,
-  values: Belt.List.t(value),
+  values: Belt.List.t(unit => value),
 }
 and value =
   | PrimitiveValue(primitiveValue)

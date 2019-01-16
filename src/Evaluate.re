@@ -89,7 +89,7 @@ let rec evaluateConnection =
                     nodeDefinition.display.inputOrdering,
                     outputID,
                   );
-                Belt.List.getExn(definedValue.values, fieldIndex);
+                Belt.List.getExn(definedValue.values, fieldIndex, ());
               }
             | _ => raise(Not_found)
             };
@@ -103,7 +103,7 @@ let rec evaluateConnection =
           DefinedValue({
             definitionID,
             values:
-              Belt.List.map(nodeDefinition.display.inputOrdering, nibID =>
+              Belt.List.map(nodeDefinition.display.inputOrdering, (nibID, ()) =>
                 evaluateConnection(
                   definitions,
                   graphImplementation,
