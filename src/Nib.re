@@ -11,6 +11,7 @@ let make =
       ~isSource: bool,
       ~connectionSide: connectionSide,
       ~emit: graphAction => unit,
+      ~isHighlighted: bool,
       _children,
     ) => {
   ...component,
@@ -22,13 +23,10 @@ let make =
       Webapi.Dom.Element.addEventListener(
         "finish-drawing",
         event =>
-          emit(
-            FinishDrawing({
-              pointerID: Touch(getEventDetail(event)##identifier),
-              connectionSide,
-              isSource,
-            }),
-          ),
+          emit({
+            pointerID: Touch(getEventDetail(event)##identifier),
+            action: FinishDrawing({connectionSide, isSource}),
+          }),
         element,
       )
     | None => ()
@@ -36,38 +34,46 @@ let make =
   render: self =>
     <div
       ref={ref => self.state := Js.Nullable.toOption(ref)}
-      className={String.concat(" ", [isSource ? "source" : "sink", "nib"])}
+      className={String.concat(
+        " ",
+        [
+          isSource ? "source" : "sink",
+          isHighlighted ? "highlighted" : "",
+          "nib",
+        ],
+      )}
       onMouseDown={event =>
-        emit(
-          StartDrawing({
-            pointerID: Mouse,
-            drawingConnection: {
+        emit({
+          pointerID: Mouse,
+          action:
+            StartDrawing({
               connectionSide,
               point: pointFromMouse(event),
               startIsSource: isSource,
-            },
-          }),
-        )
+            }),
+        })
       }
       onTouchStart={event =>
         iterateTouches(event, touch =>
-          emit(
-            StartDrawing({
-              pointerID: Touch(touch##identifier),
-              drawingConnection: {
+          emit({
+            pointerID: Touch(touch##identifier),
+            action:
+              StartDrawing({
                 connectionSide,
                 point: {
                   x: touch##clientX,
                   y: touch##clientY,
                 },
                 startIsSource: isSource,
-              },
-            }),
-          )
+              }),
+          })
         )
       }
       onMouseUp={_ =>
-        emit(FinishDrawing({pointerID: Mouse, connectionSide, isSource}))
+        emit({
+          pointerID: Mouse,
+          action: FinishDrawing({connectionSide, isSource}),
+        })
       }
       onTouchEnd={event =>
         iterateTouches(event, touch =>

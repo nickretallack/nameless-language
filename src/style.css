@@ -11,6 +11,7 @@ body {
 .graph {
 	width: 100vw;
 	height: 100vh;
+	position: absolute;
 }
 
 .evaluate {
@@ -58,6 +59,10 @@ body {
 
 .nib.source {
 	background: gray;
+}
+
+.nib.highlighted {
+	border-color: red;
 }
 
 .node .input,

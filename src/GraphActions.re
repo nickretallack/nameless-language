@@ -17,26 +17,18 @@ type drawingConnection = {
   point,
 };
 
-type startDrawing = {
-  pointerID,
-  drawingConnection,
-};
-
-type continueDrawing = {
-  pointerID,
-  point,
-};
-
-type finishDrawing = {
-  pointerID,
+type explicitConnectionSide = {
   connectionSide,
   isSource: bool,
 };
 
-type stopDrawing = {pointerID};
+type pointerAction =
+  | StartDrawing(drawingConnection)
+  | ContinueDrawing(point)
+  | FinishDrawing(explicitConnectionSide)
+  | StopDrawing;
 
-type graphAction =
-  | StartDrawing(startDrawing)
-  | ContinueDrawing(continueDrawing)
-  | FinishDrawing(finishDrawing)
-  | StopDrawing(stopDrawing);
+type graphAction = {
+  pointerID,
+  action: pointerAction,
+};

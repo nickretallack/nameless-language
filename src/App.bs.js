@@ -18,7 +18,7 @@ var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
 
 var makers = /* array */[
   /* tuple */[
-    "Graph",
+    "Function",
     (function (param) {
         return Definition$ReactTemplate.makeGraph(undefined, undefined, undefined, /* array */[/* tuple */[
                       Helpers$ReactTemplate.randomID(/* () */0),

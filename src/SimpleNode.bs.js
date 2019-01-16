@@ -3,6 +3,7 @@
 
 var $$Array = require("bs-platform/lib/js/array.js");
 var React = require("react");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
@@ -22,7 +23,7 @@ function nibKey(connectionNib) {
   }
 }
 
-function renderNibs(nibs, className, isSource, nodeID, emit) {
+function renderNibs(nibs, className, isSource, nodeID, emit, highlightedNib) {
   return $$Array.of_list(Belt_List.map(nibs, (function (param) {
                     var nib = param[/* nib */1];
                     var name = param[/* name */0];
@@ -32,11 +33,11 @@ function renderNibs(nibs, className, isSource, nodeID, emit) {
                               }, isSource ? null : name, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(isSource, /* record */[
                                         /* node : NodeConnection */[nodeID],
                                         /* nib */nib
-                                      ], emit, /* array */[])), isSource ? name : null);
+                                      ], emit, Caml_obj.caml_equal(nib, highlightedNib), /* array */[])), isSource ? name : null);
                   })));
 }
 
-function make(nodeID, definitionID, name, inputs, outputs, position, emit, _children) {
+function make(nodeID, definitionID, name, inputs, outputs, position, highlightedNib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -60,7 +61,7 @@ function make(nodeID, definitionID, name, inputs, outputs, position, emit, _chil
               }
               return React.createElement("div", tmp, name !== undefined ? React.createElement("div", {
                                 className: "name"
-                              }, name) : null, renderNibs(inputs, "input", false, nodeID, emit), renderNibs(outputs, "output", true, nodeID, emit));
+                              }, name) : null, renderNibs(inputs, "input", false, nodeID, emit, highlightedNib), renderNibs(outputs, "output", true, nodeID, emit, highlightedNib));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

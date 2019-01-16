@@ -9,13 +9,23 @@ let make =
       ~node: node,
       ~definitions: definitions,
       ~position: point,
+      ~highlightedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
     ) => {
   ...component,
   render: _self => {
     let makeNode = (~outputs, ~inputs=[], ~definitionID=?, ~name=?, ()) =>
-      <SimpleNode nodeID position emit ?name inputs outputs ?definitionID />;
+      <SimpleNode
+        nodeID
+        position
+        emit
+        ?name
+        inputs
+        outputs
+        ?definitionID
+        ?highlightedNib
+      />;
 
     switch (node) {
     | ReferenceNode =>

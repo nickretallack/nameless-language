@@ -131,38 +131,69 @@ function make(definitions, implementation, display, documentation, size, emit, _
               var changeName = function ($$event) {
                 return Curry._1(emit, /* ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)]));
               };
+              var isGraphNibSelected = function (nibID, isSource) {
+                var match = self[/* state */1][/* selectedNib */2];
+                if (match !== undefined) {
+                  var match$1 = match;
+                  var connectionSide = match$1[/* connectionSide */0];
+                  var match$2 = isSource === match$1[/* isSource */1];
+                  if (match$2) {
+                    var match$3 = connectionSide[/* node */0];
+                    if (match$3) {
+                      return false;
+                    } else {
+                      var match$4 = connectionSide[/* nib */1];
+                      if (typeof match$4 === "number" || match$4.tag) {
+                        return false;
+                      } else {
+                        return match$4[0] === nibID;
+                      }
+                    }
+                  } else {
+                    return false;
+                  }
+                } else {
+                  return false;
+                }
+              };
               var match = self[/* state */1][/* error */1];
               return React.createElement("div", {
                           className: "graph",
                           onMouseMove: (function ($$event) {
                               $$event.preventDefault();
-                              return Curry._1(self[/* send */3], /* ContinueDrawing */Block.__(1, [/* record */[
-                                              /* pointerID : Mouse */0,
-                                              /* point */Helpers$ReactTemplate.pointFromMouse($$event)
-                                            ]]));
+                              return Curry._1(self[/* send */3], /* record */[
+                                          /* pointerID : Mouse */0,
+                                          /* action : ContinueDrawing */Block.__(1, [Helpers$ReactTemplate.pointFromMouse($$event)])
+                                        ]);
                             }),
                           onMouseUp: (function (param) {
-                              return Curry._1(self[/* send */3], /* StopDrawing */Block.__(3, [/* record */[/* pointerID : Mouse */0]]));
+                              return Curry._1(self[/* send */3], /* record */[
+                                          /* pointerID : Mouse */0,
+                                          /* action : StopDrawing */0
+                                        ]);
                             }),
                           onTouchEnd: (function ($$event) {
                               return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                            return Curry._1(self[/* send */3], /* StopDrawing */Block.__(3, [/* record */[/* pointerID : Touch */[touch.identifier]]]));
+                                            return Curry._1(self[/* send */3], /* record */[
+                                                        /* pointerID : Touch */[touch.identifier],
+                                                        /* action : StopDrawing */0
+                                                      ]);
                                           }));
                             }),
                           onTouchMove: (function ($$event) {
                               return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                            return Curry._1(self[/* send */3], /* ContinueDrawing */Block.__(1, [/* record */[
-                                                            /* pointerID : Touch */[touch.identifier],
-                                                            /* point : record */[
+                                            return Curry._1(self[/* send */3], /* record */[
+                                                        /* pointerID : Touch */[touch.identifier],
+                                                        /* action : ContinueDrawing */Block.__(1, [/* record */[
                                                               /* x */touch.clientX,
                                                               /* y */touch.clientY
-                                                            ]
-                                                          ]]));
+                                                            ]])
+                                                      ]);
                                           }));
                             })
                         }, React.createElement("input", {
                               className: "graph-name",
-                              placeholder: "(nameless)",
+                              placeholder: "(nameless function)",
                               type: "text",
                               value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
                               onChange: changeName
@@ -190,7 +221,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                               }, name, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(true, /* record */[
                                                         /* node : GraphConnection */0,
                                                         /* nib : NibConnection */Block.__(0, [nibID])
-                                                      ], self[/* send */3], /* array */[])));
+                                                      ], self[/* send */3], isGraphNibSelected(nibID, true), /* array */[])));
                                   }))), Belt_List.toArray(Belt_List.map(display[/* outputOrdering */1], (function (nibID) {
                                     var name = Definition$ReactTemplate.getTranslated(Belt_MapString.getExn(documentation[/* outputs */3], nibID), "en");
                                     return React.createElement("div", {
@@ -200,7 +231,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                               }, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(false, /* record */[
                                                         /* node : GraphConnection */0,
                                                         /* nib : NibConnection */Block.__(0, [nibID])
-                                                      ], self[/* send */3], /* array */[])), React.createElement("div", undefined, name), React.createElement("a", {
+                                                      ], self[/* send */3], isGraphNibSelected(nibID, false), /* array */[])), React.createElement("div", undefined, name), React.createElement("a", {
                                                     onClick: (function (_event) {
                                                         var outputID = nibID;
                                                         console.log(Evaluate$ReactTemplate.evaluateGraphOutput(definitions, implementation, outputID));
@@ -209,93 +240,125 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                                   }, "Evaluate"));
                                   }))), Helpers$ReactTemplate.renderStringMap((function (param) {
                                 var nodeID = param[0];
-                                return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, Belt_MapString.getExn(nodePositions, nodeID), self[/* send */3], /* array */[]));
+                                var match = self[/* state */1][/* selectedNib */2];
+                                var tmp;
+                                if (match !== undefined) {
+                                  var connectionSide = match[/* connectionSide */0];
+                                  var match$1 = connectionSide[/* node */0];
+                                  if (match$1) {
+                                    var match$2 = match$1[0] === nodeID;
+                                    tmp = match$2 ? connectionSide[/* nib */1] : undefined;
+                                  } else {
+                                    tmp = undefined;
+                                  }
+                                } else {
+                                  tmp = undefined;
+                                }
+                                return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, Belt_MapString.getExn(nodePositions, nodeID), tmp, self[/* send */3], /* array */[]));
                               }), implementation[/* nodes */1]));
             }),
           /* initialState */(function (param) {
               return /* record */[
                       /* pointers */Belt_Map.make(PointerComparator),
-                      /* error */undefined
+                      /* error */undefined,
+                      /* selectedNib */undefined
                     ];
             }),
           /* retainedProps */component[/* retainedProps */11],
-          /* reducer */(function (action, state) {
-              switch (action.tag | 0) {
-                case 0 : 
-                    var match = action[0];
-                    return /* Update */Block.__(0, [/* record */[
-                                /* pointers */Belt_Map.set(state[/* pointers */0], match[/* pointerID */0], match[/* drawingConnection */1]),
-                                /* error */state[/* error */1]
-                              ]]);
-                case 1 : 
-                    var match$1 = action[0];
-                    var pointerID = match$1[/* pointerID */0];
-                    var match$2 = Belt_Map.get(state[/* pointers */0], pointerID);
-                    if (match$2 !== undefined) {
-                      var drawingConnection = match$2;
+          /* reducer */(function (param, state) {
+              var action = param[/* action */1];
+              var pointerID = param[/* pointerID */0];
+              if (typeof action === "number") {
+                var match = Belt_Map.has(state[/* pointers */0], pointerID);
+                if (match) {
+                  return /* Update */Block.__(0, [/* record */[
+                              /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                              /* error */state[/* error */1],
+                              /* selectedNib */state[/* selectedNib */2]
+                            ]]);
+                } else {
+                  return /* NoUpdate */0;
+                }
+              } else {
+                switch (action.tag | 0) {
+                  case 0 : 
                       return /* Update */Block.__(0, [/* record */[
-                                  /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* record */[
-                                        /* connectionSide */drawingConnection[/* connectionSide */0],
-                                        /* startIsSource */drawingConnection[/* startIsSource */1],
-                                        /* point */match$1[/* point */1]
-                                      ]),
-                                  /* error */state[/* error */1]
+                                  /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, action[0]),
+                                  /* error */state[/* error */1],
+                                  /* selectedNib */state[/* selectedNib */2]
                                 ]]);
-                    } else {
-                      return /* NoUpdate */0;
-                    }
-                case 2 : 
-                    var match$3 = action[0];
-                    var end_nib = match$3[/* connectionSide */1];
-                    var pointerID$1 = match$3[/* pointerID */0];
-                    var match$4 = Belt_Map.get(state[/* pointers */0], pointerID$1);
-                    if (match$4 !== undefined) {
-                      var match$5 = match$4;
-                      var startIsSource = match$5[/* startIsSource */1];
-                      var start_nib = match$5[/* connectionSide */0];
-                      var match$6 = startIsSource !== match$3[/* isSource */2];
-                      if (match$6) {
-                        var match$7 = DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */0], startIsSource ? end_nib : start_nib, startIsSource ? start_nib : end_nib), implementation[/* nodes */1]);
-                        if (match$7) {
-                          return /* Update */Block.__(0, [/* record */[
-                                      /* pointers */state[/* pointers */0],
-                                      /* error */"Can't create cycles"
-                                    ]]);
+                  case 1 : 
+                      var match$1 = Belt_Map.get(state[/* pointers */0], pointerID);
+                      if (match$1 !== undefined) {
+                        var drawingConnection = match$1;
+                        return /* Update */Block.__(0, [/* record */[
+                                    /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* record */[
+                                          /* connectionSide */drawingConnection[/* connectionSide */0],
+                                          /* startIsSource */drawingConnection[/* startIsSource */1],
+                                          /* point */action[0]
+                                        ]),
+                                    /* error */state[/* error */1],
+                                    /* selectedNib */state[/* selectedNib */2]
+                                  ]]);
+                      } else {
+                        return /* NoUpdate */0;
+                      }
+                  case 2 : 
+                      var match$2 = action[0];
+                      var endNib = match$2[/* connectionSide */0];
+                      var match$3 = Belt_Map.get(state[/* pointers */0], pointerID);
+                      if (match$3 !== undefined) {
+                        var match$4 = match$3;
+                        var startIsSource = match$4[/* startIsSource */1];
+                        var startNib = match$4[/* connectionSide */0];
+                        var match$5 = startIsSource !== match$2[/* isSource */1];
+                        if (match$5) {
+                          var match$6 = DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */0], startIsSource ? endNib : startNib, startIsSource ? startNib : endNib), implementation[/* nodes */1]);
+                          if (match$6) {
+                            return /* Update */Block.__(0, [/* record */[
+                                        /* pointers */state[/* pointers */0],
+                                        /* error */"Can't create cycles",
+                                        /* selectedNib */state[/* selectedNib */2]
+                                      ]]);
+                          } else {
+                            return /* UpdateWithSideEffects */Block.__(2, [
+                                      /* record */[
+                                        /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                                        /* error */undefined,
+                                        /* selectedNib */state[/* selectedNib */2]
+                                      ],
+                                      (function (param) {
+                                          return Curry._1(emit, /* CreateConnection */Block.__(0, [/* record */[
+                                                          /* source */startIsSource ? startNib : endNib,
+                                                          /* sink */startIsSource ? endNib : startNib
+                                                        ]]));
+                                        })
+                                    ]);
+                          }
                         } else {
-                          return /* UpdateWithSideEffects */Block.__(2, [
-                                    /* record */[
-                                      /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID$1),
-                                      /* error */undefined
-                                    ],
-                                    (function (param) {
-                                        return Curry._1(emit, /* CreateConnection */Block.__(0, [/* record */[
-                                                        /* source */startIsSource ? start_nib : end_nib,
-                                                        /* sink */startIsSource ? end_nib : start_nib
-                                                      ]]));
-                                      })
-                                  ]);
+                          var match$7 = Caml_obj.caml_equal(startNib, endNib);
+                          if (match$7) {
+                            return /* Update */Block.__(0, [/* record */[
+                                        /* pointers */state[/* pointers */0],
+                                        /* error */undefined,
+                                        /* selectedNib *//* record */[
+                                          /* connectionSide */startNib,
+                                          /* isSource */startIsSource
+                                        ]
+                                      ]]);
+                          } else {
+                            return /* Update */Block.__(0, [/* record */[
+                                        /* pointers */state[/* pointers */0],
+                                        /* error */startIsSource ? "Can't connect a source to a source" : "Can't connect a sink to a sink",
+                                        /* selectedNib */state[/* selectedNib */2]
+                                      ]]);
+                          }
                         }
                       } else {
-                        return /* Update */Block.__(0, [/* record */[
-                                    /* pointers */state[/* pointers */0],
-                                    /* error */startIsSource ? "Can't connect a source to a source" : "Can't connect a sink to a sink"
-                                  ]]);
+                        return /* NoUpdate */0;
                       }
-                    } else {
-                      return /* NoUpdate */0;
-                    }
-                case 3 : 
-                    var pointerID$2 = action[0][/* pointerID */0];
-                    var match$8 = Belt_Map.has(state[/* pointers */0], pointerID$2);
-                    if (match$8) {
-                      return /* Update */Block.__(0, [/* record */[
-                                  /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID$2),
-                                  /* error */state[/* error */1]
-                                ]]);
-                    } else {
-                      return /* NoUpdate */0;
-                    }
-                
+                  
+                }
               }
             }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]

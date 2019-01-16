@@ -16,6 +16,7 @@ type pointerMap('a) =
 type graphState = {
   pointers: pointerMap(drawingConnection),
   error: option(string),
+  selectedNib: option(explicitConnectionSide),
 };
 
 let document = Webapi.Dom.Document.asEventTarget(Webapi.Dom.document);
@@ -47,17 +48,18 @@ let make =
       document,
     ),
   initialState: () => {
-    error: None,
     pointers: Belt.Map.make(~id=(module PointerComparator)),
+    error: None,
+    selectedNib: None,
   },
-  reducer: (action: graphAction, state: graphState) =>
+  reducer: ({pointerID, action}: graphAction, state: graphState) =>
     switch (action) {
-    | StartDrawing({pointerID, drawingConnection}) =>
+    | StartDrawing(drawingConnection) =>
       ReasonReact.Update({
         ...state,
         pointers: Belt.Map.set(state.pointers, pointerID, drawingConnection),
       })
-    | ContinueDrawing({pointerID, point}) =>
+    | ContinueDrawing(point) =>
       switch (Belt.Map.get(state.pointers, pointerID)) {
       | Some(drawingConnection) =>
         ReasonReact.Update({
@@ -71,15 +73,15 @@ let make =
         })
       | None => ReasonReact.NoUpdate
       }
-    | FinishDrawing({pointerID, connectionSide: end_nib, isSource}) =>
+    | FinishDrawing({connectionSide: endNib, isSource}) =>
       switch (Belt.Map.get(state.pointers, pointerID)) {
-      | Some({startIsSource, connectionSide: start_nib}) =>
+      | Some({startIsSource, connectionSide: startNib}) =>
         startIsSource != isSource ?
           DetectCycles.detectCycles(
             Belt.Map.set(
               implementation.connections,
-              startIsSource ? end_nib : start_nib,
-              startIsSource ? start_nib : end_nib,
+              startIsSource ? endNib : startNib,
+              startIsSource ? startNib : endNib,
             ),
             implementation.nodes,
           ) ?
@@ -89,30 +91,38 @@ let make =
             }) :
             ReasonReact.UpdateWithSideEffects(
               {
+                ...state,
                 error: None,
                 pointers: Belt.Map.remove(state.pointers, pointerID),
               },
               _ =>
                 emit(
                   CreateConnection({
-                    source: startIsSource ? start_nib : end_nib,
-                    sink: startIsSource ? end_nib : start_nib,
+                    source: startIsSource ? startNib : endNib,
+                    sink: startIsSource ? endNib : startNib,
                   }),
                 ),
             ) :
-          ReasonReact.Update({
-            ...state,
-            error:
-              Some(
-                startIsSource ?
-                  "Can't connect a source to a source" :
-                  "Can't connect a sink to a sink",
-              ),
-          })
+          startNib == endNib ?
+            ReasonReact.Update({
+              ...state,
+              error: None,
+              selectedNib:
+                Some({connectionSide: startNib, isSource: startIsSource}),
+            }) :
+            ReasonReact.Update({
+              ...state,
+              error:
+                Some(
+                  startIsSource ?
+                    "Can't connect a source to a source" :
+                    "Can't connect a sink to a sink",
+                ),
+            })
 
       | None => ReasonReact.NoUpdate
       }
-    | StopDrawing({pointerID}) =>
+    | StopDrawing =>
       Belt.Map.has(state.pointers, pointerID) ?
         ReasonReact.Update({
           ...state,
@@ -240,6 +250,22 @@ let make =
 
     let changeName = event => emit(ChangeName(getEventValue(event)));
 
+    let isGraphNibSelected = (nibID: nibID, isSource: bool): bool =>
+      switch (self.state.selectedNib) {
+      | None => false
+      | Some({connectionSide, isSource: selectionIsSource}) =>
+        isSource == selectionIsSource ?
+          switch (connectionSide.node) {
+          | NodeConnection(_) => false
+          | GraphConnection =>
+            switch (connectionSide.nib) {
+            | NibConnection(highlightedNibID) => highlightedNibID == nibID
+            | _ => false
+            }
+          } :
+          false
+      };
+
     let evaluate = outputID =>
       Js.log(
         Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
@@ -248,33 +274,32 @@ let make =
       className="graph"
       onMouseMove={event => {
         ReactEvent.Mouse.preventDefault(event);
-        self.send(
-          ContinueDrawing({pointerID: Mouse, point: pointFromMouse(event)}),
-        );
+        self.send({
+          pointerID: Mouse,
+          action: ContinueDrawing(pointFromMouse(event)),
+        });
       }}
       onTouchMove={event =>
         iterateTouches(event, touch =>
-          self.send(
-            ContinueDrawing({
-              pointerID: Touch(touch##identifier),
-              point: {
-                x: touch##clientX,
-                y: touch##clientY,
-              },
-            }),
-          )
+          self.send({
+            pointerID: Touch(touch##identifier),
+            action: ContinueDrawing({x: touch##clientX, y: touch##clientY}),
+          })
         )
       }
-      onMouseUp={_ => self.send(StopDrawing({pointerID: Mouse}))}
+      onMouseUp={_ => self.send({pointerID: Mouse, action: StopDrawing})}
       onTouchEnd={event =>
         iterateTouches(event, touch =>
-          self.send(StopDrawing({pointerID: Touch(touch##identifier)}))
+          self.send({
+            pointerID: Touch(touch##identifier),
+            action: StopDrawing,
+          })
         )
       }>
       <input
         type_="text"
         className="graph-name"
-        placeholder="(nameless)"
+        placeholder="(nameless function)"
         value={getTranslated(documentation.name, "en")}
         onChange=changeName
       />
@@ -334,6 +359,7 @@ let make =
                  {ReasonReact.string(name)}
                  <Nib
                    isSource=true
+                   isHighlighted={isGraphNibSelected(nibID, true)}
                    connectionSide={
                      node: GraphConnection,
                      nib: NibConnection(nibID),
@@ -367,6 +393,7 @@ let make =
                  )}>
                  <Nib
                    isSource=false
+                   isHighlighted={isGraphNibSelected(nibID, false)}
                    connectionSide={
                      node: GraphConnection,
                      nib: NibConnection(nibID),
@@ -389,6 +416,18 @@ let make =
              nodeID
              definitions
              node
+             highlightedNib=?{
+               switch (self.state.selectedNib) {
+               | None => None
+               | Some({connectionSide}) =>
+                 switch (connectionSide.node) {
+                 | GraphConnection => None
+                 | NodeConnection(highlightedNodeID) =>
+                   highlightedNodeID == nodeID ?
+                     Some(connectionSide.nib) : None
+                 }
+               }
+             }
              position={Belt.Map.String.getExn(nodePositions, nodeID)}
              emit={self.send}
            />,

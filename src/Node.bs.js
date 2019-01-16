@@ -11,7 +11,7 @@ var FunctionDefinitionNode$ReactTemplate = require("./FunctionDefinitionNode.bs.
 
 var component = ReasonReact.statelessComponent("Node");
 
-function make(nodeID, node, definitions, position, emit, _children) {
+function make(nodeID, node, definitions, position, highlightedNib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -25,7 +25,7 @@ function make(nodeID, node, definitions, position, emit, _children) {
           /* render */(function (_self) {
               var makeNode = function (outputs, $staropt$star, definitionID, name, param) {
                 var inputs = $staropt$star !== undefined ? $staropt$star : /* [] */0;
-                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, emit, /* array */[]));
+                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, highlightedNib, emit, /* array */[]));
               };
               if (typeof node === "number") {
                 return makeNode(/* :: */[

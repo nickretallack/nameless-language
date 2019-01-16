@@ -11,7 +11,7 @@ var Helpers$ReactTemplate = require("./Helpers.bs.js");
 
 var component = ReasonReact.reducerComponent("Nib");
 
-function make(isSource, connectionSide, emit, _children) {
+function make(isSource, connectionSide, emit, isHighlighted, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -21,11 +21,13 @@ function make(isSource, connectionSide, emit, _children) {
               var match = self[/* state */1][0];
               if (match !== undefined) {
                 Caml_option.valFromOption(match).addEventListener("finish-drawing", (function ($$event) {
-                        return Curry._1(emit, /* FinishDrawing */Block.__(2, [/* record */[
-                                        /* pointerID : Touch */[$$event.detail.identifier],
-                                        /* connectionSide */connectionSide,
-                                        /* isSource */isSource
-                                      ]]));
+                        return Curry._1(emit, /* record */[
+                                    /* pointerID : Touch */[$$event.detail.identifier],
+                                    /* action : FinishDrawing */Block.__(2, [/* record */[
+                                          /* connectionSide */connectionSide,
+                                          /* isSource */isSource
+                                        ]])
+                                  ]);
                       }));
                 return /* () */0;
               } else {
@@ -45,26 +47,31 @@ function make(isSource, connectionSide, emit, _children) {
                           className: $$String.concat(" ", /* :: */[
                                 isSource ? "source" : "sink",
                                 /* :: */[
-                                  "nib",
-                                  /* [] */0
+                                  isHighlighted ? "highlighted" : "",
+                                  /* :: */[
+                                    "nib",
+                                    /* [] */0
+                                  ]
                                 ]
                               ]),
                           onMouseDown: (function ($$event) {
-                              return Curry._1(emit, /* StartDrawing */Block.__(0, [/* record */[
-                                              /* pointerID : Mouse */0,
-                                              /* drawingConnection : record */[
+                              return Curry._1(emit, /* record */[
+                                          /* pointerID : Mouse */0,
+                                          /* action : StartDrawing */Block.__(0, [/* record */[
                                                 /* connectionSide */connectionSide,
                                                 /* startIsSource */isSource,
                                                 /* point */Helpers$ReactTemplate.pointFromMouse($$event)
-                                              ]
-                                            ]]));
+                                              ]])
+                                        ]);
                             }),
                           onMouseUp: (function (param) {
-                              return Curry._1(emit, /* FinishDrawing */Block.__(2, [/* record */[
-                                              /* pointerID : Mouse */0,
-                                              /* connectionSide */connectionSide,
-                                              /* isSource */isSource
-                                            ]]));
+                              return Curry._1(emit, /* record */[
+                                          /* pointerID : Mouse */0,
+                                          /* action : FinishDrawing */Block.__(2, [/* record */[
+                                                /* connectionSide */connectionSide,
+                                                /* isSource */isSource
+                                              ]])
+                                        ]);
                             }),
                           onTouchEnd: (function ($$event) {
                               return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
@@ -78,17 +85,17 @@ function make(isSource, connectionSide, emit, _children) {
                             }),
                           onTouchStart: (function ($$event) {
                               return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                            return Curry._1(emit, /* StartDrawing */Block.__(0, [/* record */[
-                                                            /* pointerID : Touch */[touch.identifier],
-                                                            /* drawingConnection : record */[
+                                            return Curry._1(emit, /* record */[
+                                                        /* pointerID : Touch */[touch.identifier],
+                                                        /* action : StartDrawing */Block.__(0, [/* record */[
                                                               /* connectionSide */connectionSide,
                                                               /* startIsSource */isSource,
                                                               /* point : record */[
                                                                 /* x */touch.clientX,
                                                                 /* y */touch.clientY
                                                               ]
-                                                            ]
-                                                          ]]));
+                                                            ]])
+                                                      ]);
                                           }));
                             })
                         });

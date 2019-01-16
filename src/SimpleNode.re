@@ -18,6 +18,7 @@ let renderNibs =
       isSource: bool,
       nodeID: nodeID,
       emit: GraphActions.graphAction => unit,
+      highlightedNib: option(connectionNib),
     ) =>
   ReasonReact.array(
     Array.of_list(
@@ -26,6 +27,7 @@ let renderNibs =
           {isSource ? ReasonReact.null : ReasonReact.string(name)}
           <Nib
             isSource
+            isHighlighted={Some(nib) == highlightedNib}
             connectionSide={node: NodeConnection(nodeID), nib}
             emit
           />
@@ -43,6 +45,7 @@ let make =
       ~inputs: list(displayNib),
       ~outputs: list(displayNib),
       ~position: point,
+      ~highlightedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
     ) => {
@@ -61,7 +64,7 @@ let make =
          <div className="name"> {ReasonReact.string(name)} </div>
        | None => ReasonReact.null
        }}
-      {renderNibs(inputs, "input", false, nodeID, emit)}
-      {renderNibs(outputs, "output", true, nodeID, emit)}
+      {renderNibs(inputs, "input", false, nodeID, emit, highlightedNib)}
+      {renderNibs(outputs, "output", true, nodeID, emit, highlightedNib)}
     </div>,
 };

@@ -121,6 +121,24 @@ function primitiveValueToTypeString(x) {
   return primitiveValueTypeToString(primitiveValueToType(x));
 }
 
+function implementationName(implementation) {
+  switch (implementation.tag | 0) {
+    case 0 : 
+        return "constant";
+    case 1 : 
+        return "interface";
+    case 2 : 
+        return "external";
+    case 3 : 
+        return "function";
+    case 4 : 
+        return "record type";
+    case 5 : 
+        return "union type";
+    
+  }
+}
+
 function getTranslated(translatable, language) {
   return Belt_MapString.getExn(translatable[/* translations */1], language)[/* text */0];
 }
@@ -170,7 +188,7 @@ function getDisplayName(definition, language) {
   } else {
     var match = definition[/* implementation */0];
     if (match.tag) {
-      return "(nameless)";
+      return "(nameless " + (implementationName(definition[/* implementation */0]) + ")");
     } else {
       return primitiveValueToString(match[0]);
     }
@@ -420,6 +438,7 @@ exports.changeTypedFields = changeTypedFields;
 exports.primitiveValueToType = primitiveValueToType;
 exports.primitiveValueToString = primitiveValueToString;
 exports.primitiveValueToTypeString = primitiveValueToTypeString;
+exports.implementationName = implementationName;
 exports.getTranslated = getTranslated;
 exports.setTranslated = setTranslated;
 exports.makeTranslatable = makeTranslatable;

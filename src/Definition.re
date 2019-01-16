@@ -302,6 +302,16 @@ type implementation =
   | RecordTypeImplementation(typedFields)
   | UnionTypeImplementation(typedFields);
 
+let implementationName = (implementation: implementation): string =>
+  switch (implementation) {
+  | ConstantImplementation(_) => "constant"
+  | InterfaceImplementation(_) => "interface"
+  | ExternalImplementation(_) => "external"
+  | GraphImplementation(_) => "function"
+  | RecordTypeImplementation(_) => "record type"
+  | UnionTypeImplementation(_) => "union type"
+  };
+
 /* type implementationType =
     | ConstantImplementationType(primitiveValue)
     | InterfaceImplementation(interface)
@@ -379,7 +389,8 @@ let getDisplayName = (definition: definition, language: language) => {
   } else {
     switch (definition.implementation) {
     | ConstantImplementation(value) => primitiveValueToString(value)
-    | _ => "(nameless)"
+    | _ =>
+      "(nameless " ++ implementationName(definition.implementation) ++ ")"
     };
   };
 };

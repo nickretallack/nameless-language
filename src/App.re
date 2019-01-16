@@ -9,7 +9,7 @@ type appState = {
 };
 
 let makers = [|
-  ("Graph", () => makeGraph(~outputs=[|(randomID(), "")|], ())),
+  ("Function", () => makeGraph(~outputs=[|(randomID(), "")|], ())),
   (
     "Constant",
     () =>
