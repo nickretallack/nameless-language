@@ -259,7 +259,7 @@ let make =
           | NodeConnection(_) => false
           | GraphConnection =>
             switch (connectionSide.nib) {
-            | NibConnection(highlightedNibID) => highlightedNibID == nibID
+            | NibConnection(selectedNibID) => selectedNibID == nibID
             | _ => false
             }
           } :
@@ -270,32 +270,8 @@ let make =
       Js.log(
         Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
       );
-    <div
-      className="graph"
-      onMouseMove={event => {
-        ReactEvent.Mouse.preventDefault(event);
-        self.send({
-          pointerID: Mouse,
-          action: ContinueDrawing(pointFromMouse(event)),
-        });
-      }}
-      onTouchMove={event =>
-        iterateTouches(event, touch =>
-          self.send({
-            pointerID: Touch(touch##identifier),
-            action: ContinueDrawing({x: touch##clientX, y: touch##clientY}),
-          })
-        )
-      }
-      onMouseUp={_ => self.send({pointerID: Mouse, action: StopDrawing})}
-      onTouchEnd={event =>
-        iterateTouches(event, touch =>
-          self.send({
-            pointerID: Touch(touch##identifier),
-            action: StopDrawing,
-          })
-        )
-      }>
+
+    <div>
       <input
         type_="text"
         className="graph-name"
@@ -308,131 +284,160 @@ let make =
          <div className="error-message"> {ReasonReact.string(error)} </div>
        | None => ReasonReact.null
        }}
-      {renderMap(
-         ((sink, source)) =>
-           <Connection
-             key={connectionSideToString(sink)}
-             sinkPosition={getNibPosition(sink, true)}
-             sourcePosition={getNibPosition(source, false)}
-             nudge={getNibNudge(source)}
-           />,
-         implementation.connections,
-       )}
-      {renderMap(
-         (
+      <div
+        className="graph"
+        onMouseMove={event => {
+          ReactEvent.Mouse.preventDefault(event);
+          self.send({
+            pointerID: Mouse,
+            action: ContinueDrawing(pointFromMouse(event)),
+          });
+        }}
+        onTouchMove={event =>
+          iterateTouches(event, touch =>
+            self.send({
+              pointerID: Touch(touch##identifier),
+              action: ContinueDrawing({x: touch##clientX, y: touch##clientY}),
+            })
+          )
+        }
+        onMouseUp={_ => self.send({pointerID: Mouse, action: StopDrawing})}
+        onTouchEnd={event =>
+          iterateTouches(event, touch =>
+            self.send({
+              pointerID: Touch(touch##identifier),
+              action: StopDrawing,
+            })
+          )
+        }>
+        {renderMap(
+           ((sink, source)) =>
+             <Connection
+               key={connectionSideToString(sink)}
+               sinkPosition={getNibPosition(sink, true)}
+               sourcePosition={getNibPosition(source, false)}
+               nudge={getNibNudge(source)}
+             />,
+           implementation.connections,
+         )}
+        {renderMap(
            (
-             pointerID: pointerID,
-             {connectionSide, startIsSource, point}: drawingConnection,
+             (
+               pointerID: pointerID,
+               {connectionSide, startIsSource, point}: drawingConnection,
+             ),
+           ) =>
+             <Connection
+               key={pointerIDToString(pointerID)}
+               sourcePosition={
+                 startIsSource ? getNibPosition(connectionSide, false) : point
+               }
+               sinkPosition={
+                 startIsSource ? point : getNibPosition(connectionSide, true)
+               }
+               nudge={startIsSource ? getNibNudge(connectionSide) : 0}
+             />,
+           self.state.pointers,
+         )}
+        {ReasonReact.array(
+           Belt.List.toArray(
+             Belt.List.map(
+               display.inputOrdering,
+               (nibID: nibID) => {
+                 let name =
+                   getTranslated(
+                     Belt.Map.String.getExn(documentation.inputs, nibID),
+                     "en",
+                   );
+                 <div
+                   className="graph-input input"
+                   key=nibID
+                   style={ReactDOMRe.Style.make(
+                     ~right=pixels(10.0),
+                     ~top=
+                       pixels(
+                         Belt.Map.String.getExn(inputPositions, nibID).y,
+                       ),
+                     (),
+                   )}>
+                   {ReasonReact.string(name)}
+                   <Nib
+                     isSource=true
+                     isHighlighted={isGraphNibSelected(nibID, true)}
+                     connectionSide={
+                       node: GraphConnection,
+                       nib: NibConnection(nibID),
+                     }
+                     emit={self.send}
+                   />
+                 </div>;
+               },
+             ),
            ),
-         ) =>
-           <Connection
-             key={pointerIDToString(pointerID)}
-             sourcePosition={
-               startIsSource ? getNibPosition(connectionSide, false) : point
-             }
-             sinkPosition={
-               startIsSource ? point : getNibPosition(connectionSide, true)
-             }
-             nudge={startIsSource ? getNibNudge(connectionSide) : 0}
-           />,
-         self.state.pointers,
-       )}
-      {ReasonReact.array(
-         Belt.List.toArray(
-           Belt.List.map(
-             display.inputOrdering,
-             (nibID: nibID) => {
-               let name =
-                 getTranslated(
-                   Belt.Map.String.getExn(documentation.inputs, nibID),
-                   "en",
-                 );
-               <div
-                 className="graph-input input"
-                 key=nibID
-                 style={ReactDOMRe.Style.make(
-                   ~right=pixels(10.0),
-                   ~top=
-                     pixels(Belt.Map.String.getExn(inputPositions, nibID).y),
-                   (),
-                 )}>
-                 {ReasonReact.string(name)}
-                 <Nib
-                   isSource=true
-                   isHighlighted={isGraphNibSelected(nibID, true)}
-                   connectionSide={
-                     node: GraphConnection,
-                     nib: NibConnection(nibID),
-                   }
-                   emit={self.send}
-                 />
-               </div>;
-             },
-           ),
-         ),
-       )}
-      /* <a onClick={_ => emit(AddInput({definitionID: definitionID}))}>
-           {ReasonReact.string("Add Input")}
-         </a> */
-      {ReasonReact.array(
-         Belt.List.toArray(
-           Belt.List.map(
-             display.outputOrdering,
-             (nibID: nibID) => {
-               let name =
-                 getTranslated(
-                   Belt.Map.String.getExn(documentation.outputs, nibID),
-                   "en",
-                 );
+         )}
+        /* <a onClick={_ => emit(AddInput({definitionID: definitionID}))}>
+             {ReasonReact.string("Add Input")}
+           </a> */
+        {ReasonReact.array(
+           Belt.List.toArray(
+             Belt.List.map(
+               display.outputOrdering,
+               (nibID: nibID) => {
+                 let name =
+                   getTranslated(
+                     Belt.Map.String.getExn(documentation.outputs, nibID),
+                     "en",
+                   );
 
-               <div
-                 className="graph-output output"
-                 key=nibID
-                 style={positionStyle(
-                   Belt.Map.String.getExn(outputPositions, nibID),
-                 )}>
-                 <Nib
-                   isSource=false
-                   isHighlighted={isGraphNibSelected(nibID, false)}
-                   connectionSide={
-                     node: GraphConnection,
-                     nib: NibConnection(nibID),
-                   }
-                   emit={self.send}
-                 />
-                 <div> {ReasonReact.string(name)} </div>
-                 <a onClick={_event => evaluate(nibID)}>
-                   {ReasonReact.string("Evaluate")}
-                 </a>
-               </div>;
-             },
+                 <div
+                   className="graph-output output"
+                   key=nibID
+                   style={positionStyle(
+                     Belt.Map.String.getExn(outputPositions, nibID),
+                   )}>
+                   <Nib
+                     isSource=false
+                     isHighlighted={isGraphNibSelected(nibID, false)}
+                     connectionSide={
+                       node: GraphConnection,
+                       nib: NibConnection(nibID),
+                     }
+                     emit={self.send}
+                   />
+                   <div> {ReasonReact.string(name)} </div>
+                   <a onClick={_event => evaluate(nibID)}>
+                     {ReasonReact.string("Evaluate")}
+                   </a>
+                 </div>;
+               },
+             ),
            ),
-         ),
-       )}
-      {renderStringMap(
-         ((nodeID: nodeID, node: node)) =>
-           <Node
-             key=nodeID
-             nodeID
-             definitions
-             node
-             highlightedNib=?{
-               switch (self.state.selectedNib) {
-               | None => None
-               | Some({connectionSide}) =>
-                 switch (connectionSide.node) {
-                 | GraphConnection => None
-                 | NodeConnection(highlightedNodeID) =>
-                   highlightedNodeID == nodeID ?
-                     Some(connectionSide.nib) : None
+         )}
+        {renderStringMap(
+           ((nodeID: nodeID, node: node)) =>
+             <Node
+               key=nodeID
+               nodeID
+               definitions
+               node
+               selectedNib=?{
+                 switch (self.state.selectedNib) {
+                 | None => None
+                 | Some({connectionSide}) =>
+                   switch (connectionSide.node) {
+                   | GraphConnection => None
+                   | NodeConnection(selectedNodeID) =>
+                     selectedNodeID == nodeID ?
+                       Some(connectionSide.nib) : None
+                   }
                  }
                }
-             }
-             position={Belt.Map.String.getExn(nodePositions, nodeID)}
-             emit={self.send}
-           />,
-         implementation.nodes,
-       )}
+               position={Belt.Map.String.getExn(nodePositions, nodeID)}
+               emit={self.send}
+             />,
+           implementation.nodes,
+         )}
+      </div>
     </div>;
   },
 };

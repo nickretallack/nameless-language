@@ -47,7 +47,7 @@ function make(isSource, connectionSide, emit, isHighlighted, _children) {
                           className: $$String.concat(" ", /* :: */[
                                 isSource ? "source" : "sink",
                                 /* :: */[
-                                  isHighlighted ? "highlighted" : "",
+                                  isHighlighted ? "selected" : "",
                                   /* :: */[
                                     "nib",
                                     /* [] */0

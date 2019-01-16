@@ -157,41 +157,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                 }
               };
               var match = self[/* state */1][/* error */1];
-              return React.createElement("div", {
-                          className: "graph",
-                          onMouseMove: (function ($$event) {
-                              $$event.preventDefault();
-                              return Curry._1(self[/* send */3], /* record */[
-                                          /* pointerID : Mouse */0,
-                                          /* action : ContinueDrawing */Block.__(1, [Helpers$ReactTemplate.pointFromMouse($$event)])
-                                        ]);
-                            }),
-                          onMouseUp: (function (param) {
-                              return Curry._1(self[/* send */3], /* record */[
-                                          /* pointerID : Mouse */0,
-                                          /* action : StopDrawing */0
-                                        ]);
-                            }),
-                          onTouchEnd: (function ($$event) {
-                              return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                            return Curry._1(self[/* send */3], /* record */[
-                                                        /* pointerID : Touch */[touch.identifier],
-                                                        /* action : StopDrawing */0
-                                                      ]);
-                                          }));
-                            }),
-                          onTouchMove: (function ($$event) {
-                              return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                            return Curry._1(self[/* send */3], /* record */[
-                                                        /* pointerID : Touch */[touch.identifier],
-                                                        /* action : ContinueDrawing */Block.__(1, [/* record */[
-                                                              /* x */touch.clientX,
-                                                              /* y */touch.clientY
-                                                            ]])
-                                                      ]);
-                                          }));
-                            })
-                        }, React.createElement("input", {
+              return React.createElement("div", undefined, React.createElement("input", {
                               className: "graph-name",
                               placeholder: "(nameless function)",
                               type: "text",
@@ -199,63 +165,97 @@ function make(definitions, implementation, display, documentation, size, emit, _
                               onChange: changeName
                             }), match !== undefined ? React.createElement("div", {
                                 className: "error-message"
-                              }, match) : null, Helpers$ReactTemplate.renderMap((function (param) {
-                                var source = param[1];
-                                var sink = param[0];
-                                return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), getNibNudge(source), undefined, /* array */[]));
-                              }), implementation[/* connections */0]), Helpers$ReactTemplate.renderMap((function (param) {
-                                var match = param[1];
-                                var point = match[/* point */2];
-                                var startIsSource = match[/* startIsSource */1];
-                                var connectionSide = match[/* connectionSide */0];
-                                return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : point, startIsSource ? point : getNibPosition(connectionSide, true), startIsSource ? getNibNudge(connectionSide) : 0, undefined, /* array */[]));
-                              }), self[/* state */1][/* pointers */0]), Belt_List.toArray(Belt_List.map(display[/* inputOrdering */0], (function (nibID) {
-                                    var name = Definition$ReactTemplate.getTranslated(Belt_MapString.getExn(documentation[/* inputs */2], nibID), "en");
-                                    return React.createElement("div", {
-                                                key: nibID,
-                                                className: "graph-input input",
-                                                style: {
-                                                  right: Helpers$ReactTemplate.pixels(10.0),
-                                                  top: Helpers$ReactTemplate.pixels(Belt_MapString.getExn(inputPositions, nibID)[/* y */1])
-                                                }
-                                              }, name, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(true, /* record */[
-                                                        /* node : GraphConnection */0,
-                                                        /* nib : NibConnection */Block.__(0, [nibID])
-                                                      ], self[/* send */3], isGraphNibSelected(nibID, true), /* array */[])));
-                                  }))), Belt_List.toArray(Belt_List.map(display[/* outputOrdering */1], (function (nibID) {
-                                    var name = Definition$ReactTemplate.getTranslated(Belt_MapString.getExn(documentation[/* outputs */3], nibID), "en");
-                                    return React.createElement("div", {
-                                                key: nibID,
-                                                className: "graph-output output",
-                                                style: Helpers$ReactTemplate.positionStyle(Belt_MapString.getExn(outputPositions, nibID))
-                                              }, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(false, /* record */[
-                                                        /* node : GraphConnection */0,
-                                                        /* nib : NibConnection */Block.__(0, [nibID])
-                                                      ], self[/* send */3], isGraphNibSelected(nibID, false), /* array */[])), React.createElement("div", undefined, name), React.createElement("a", {
-                                                    onClick: (function (_event) {
-                                                        var outputID = nibID;
-                                                        console.log(Evaluate$ReactTemplate.evaluateGraphOutput(definitions, implementation, outputID));
-                                                        return /* () */0;
-                                                      })
-                                                  }, "Evaluate"));
-                                  }))), Helpers$ReactTemplate.renderStringMap((function (param) {
-                                var nodeID = param[0];
-                                var match = self[/* state */1][/* selectedNib */2];
-                                var tmp;
-                                if (match !== undefined) {
-                                  var connectionSide = match[/* connectionSide */0];
-                                  var match$1 = connectionSide[/* node */0];
-                                  if (match$1) {
-                                    var match$2 = match$1[0] === nodeID;
-                                    tmp = match$2 ? connectionSide[/* nib */1] : undefined;
-                                  } else {
-                                    tmp = undefined;
-                                  }
-                                } else {
-                                  tmp = undefined;
-                                }
-                                return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, Belt_MapString.getExn(nodePositions, nodeID), tmp, self[/* send */3], /* array */[]));
-                              }), implementation[/* nodes */1]));
+                              }, match) : null, React.createElement("div", {
+                              className: "graph",
+                              onMouseMove: (function ($$event) {
+                                  $$event.preventDefault();
+                                  return Curry._1(self[/* send */3], /* record */[
+                                              /* pointerID : Mouse */0,
+                                              /* action : ContinueDrawing */Block.__(1, [Helpers$ReactTemplate.pointFromMouse($$event)])
+                                            ]);
+                                }),
+                              onMouseUp: (function (param) {
+                                  return Curry._1(self[/* send */3], /* record */[
+                                              /* pointerID : Mouse */0,
+                                              /* action : StopDrawing */0
+                                            ]);
+                                }),
+                              onTouchEnd: (function ($$event) {
+                                  return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
+                                                return Curry._1(self[/* send */3], /* record */[
+                                                            /* pointerID : Touch */[touch.identifier],
+                                                            /* action : StopDrawing */0
+                                                          ]);
+                                              }));
+                                }),
+                              onTouchMove: (function ($$event) {
+                                  return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
+                                                return Curry._1(self[/* send */3], /* record */[
+                                                            /* pointerID : Touch */[touch.identifier],
+                                                            /* action : ContinueDrawing */Block.__(1, [/* record */[
+                                                                  /* x */touch.clientX,
+                                                                  /* y */touch.clientY
+                                                                ]])
+                                                          ]);
+                                              }));
+                                })
+                            }, Helpers$ReactTemplate.renderMap((function (param) {
+                                    var source = param[1];
+                                    var sink = param[0];
+                                    return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), getNibNudge(source), undefined, /* array */[]));
+                                  }), implementation[/* connections */0]), Helpers$ReactTemplate.renderMap((function (param) {
+                                    var match = param[1];
+                                    var point = match[/* point */2];
+                                    var startIsSource = match[/* startIsSource */1];
+                                    var connectionSide = match[/* connectionSide */0];
+                                    return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : point, startIsSource ? point : getNibPosition(connectionSide, true), startIsSource ? getNibNudge(connectionSide) : 0, undefined, /* array */[]));
+                                  }), self[/* state */1][/* pointers */0]), Belt_List.toArray(Belt_List.map(display[/* inputOrdering */0], (function (nibID) {
+                                        var name = Definition$ReactTemplate.getTranslated(Belt_MapString.getExn(documentation[/* inputs */2], nibID), "en");
+                                        return React.createElement("div", {
+                                                    key: nibID,
+                                                    className: "graph-input input",
+                                                    style: {
+                                                      right: Helpers$ReactTemplate.pixels(10.0),
+                                                      top: Helpers$ReactTemplate.pixels(Belt_MapString.getExn(inputPositions, nibID)[/* y */1])
+                                                    }
+                                                  }, name, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(true, /* record */[
+                                                            /* node : GraphConnection */0,
+                                                            /* nib : NibConnection */Block.__(0, [nibID])
+                                                          ], self[/* send */3], isGraphNibSelected(nibID, true), /* array */[])));
+                                      }))), Belt_List.toArray(Belt_List.map(display[/* outputOrdering */1], (function (nibID) {
+                                        var name = Definition$ReactTemplate.getTranslated(Belt_MapString.getExn(documentation[/* outputs */3], nibID), "en");
+                                        return React.createElement("div", {
+                                                    key: nibID,
+                                                    className: "graph-output output",
+                                                    style: Helpers$ReactTemplate.positionStyle(Belt_MapString.getExn(outputPositions, nibID))
+                                                  }, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(false, /* record */[
+                                                            /* node : GraphConnection */0,
+                                                            /* nib : NibConnection */Block.__(0, [nibID])
+                                                          ], self[/* send */3], isGraphNibSelected(nibID, false), /* array */[])), React.createElement("div", undefined, name), React.createElement("a", {
+                                                        onClick: (function (_event) {
+                                                            var outputID = nibID;
+                                                            console.log(Evaluate$ReactTemplate.evaluateGraphOutput(definitions, implementation, outputID));
+                                                            return /* () */0;
+                                                          })
+                                                      }, "Evaluate"));
+                                      }))), Helpers$ReactTemplate.renderStringMap((function (param) {
+                                    var nodeID = param[0];
+                                    var match = self[/* state */1][/* selectedNib */2];
+                                    var tmp;
+                                    if (match !== undefined) {
+                                      var connectionSide = match[/* connectionSide */0];
+                                      var match$1 = connectionSide[/* node */0];
+                                      if (match$1) {
+                                        var match$2 = match$1[0] === nodeID;
+                                        tmp = match$2 ? connectionSide[/* nib */1] : undefined;
+                                      } else {
+                                        tmp = undefined;
+                                      }
+                                    } else {
+                                      tmp = undefined;
+                                    }
+                                    return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, Belt_MapString.getExn(nodePositions, nodeID), tmp, self[/* send */3], /* array */[]));
+                                  }), implementation[/* nodes */1])));
             }),
           /* initialState */(function (param) {
               return /* record */[

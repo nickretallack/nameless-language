@@ -23,7 +23,7 @@ function nibKey(connectionNib) {
   }
 }
 
-function renderNibs(nibs, className, isSource, nodeID, emit, highlightedNib) {
+function renderNibs(nibs, className, isSource, nodeID, emit, selectedNib) {
   return $$Array.of_list(Belt_List.map(nibs, (function (param) {
                     var nib = param[/* nib */1];
                     var name = param[/* name */0];
@@ -33,11 +33,11 @@ function renderNibs(nibs, className, isSource, nodeID, emit, highlightedNib) {
                               }, isSource ? null : name, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(isSource, /* record */[
                                         /* node : NodeConnection */[nodeID],
                                         /* nib */nib
-                                      ], emit, Caml_obj.caml_equal(nib, highlightedNib), /* array */[])), isSource ? name : null);
+                                      ], emit, Caml_obj.caml_equal(nib, selectedNib), /* array */[])), isSource ? name : null);
                   })));
 }
 
-function make(nodeID, definitionID, name, inputs, outputs, position, highlightedNib, emit, _children) {
+function make(nodeID, definitionID, name, inputs, outputs, position, selectedNib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -61,7 +61,7 @@ function make(nodeID, definitionID, name, inputs, outputs, position, highlighted
               }
               return React.createElement("div", tmp, name !== undefined ? React.createElement("div", {
                                 className: "name"
-                              }, name) : null, renderNibs(inputs, "input", false, nodeID, emit, highlightedNib), renderNibs(outputs, "output", true, nodeID, emit, highlightedNib));
+                              }, name) : null, renderNibs(inputs, "input", false, nodeID, emit, selectedNib), renderNibs(outputs, "output", true, nodeID, emit, selectedNib));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

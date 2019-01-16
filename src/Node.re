@@ -9,7 +9,7 @@ let make =
       ~node: node,
       ~definitions: definitions,
       ~position: point,
-      ~highlightedNib: option(connectionNib)=?,
+      ~selectedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
     ) => {
@@ -24,7 +24,7 @@ let make =
         inputs
         outputs
         ?definitionID
-        ?highlightedNib
+        ?selectedNib
       />;
 
     switch (node) {

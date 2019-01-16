@@ -38,7 +38,7 @@ let make =
         " ",
         [
           isSource ? "source" : "sink",
-          isHighlighted ? "highlighted" : "",
+          isHighlighted ? "selected" : "",
           "nib",
         ],
       )}
