@@ -17,6 +17,12 @@ type changeNibType = {
   valueType,
 };
 
+type addNode = {
+  node,
+  explicitConnectionSide,
+  connectionNib,
+};
+
 type definitionAction =
   | CreateConnection(createConnection)
   | ChangeName(string)
@@ -24,6 +30,7 @@ type definitionAction =
   | ChangeConstantValue(primitiveValue)
   | ChangeNibName(changeNibName)
   | ChangeNibType(changeNibType)
+  | AddNode(addNode)
   | AddInput;
 
 type definitionActionRecord = {

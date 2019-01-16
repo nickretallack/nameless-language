@@ -11,11 +11,6 @@ let pointerIDToString = (pointerID: pointerID) =>
   | Touch(id) => "touch-" ++ string_of_int(id)
   };
 
-type explicitConnectionSide = {
-  connectionSide,
-  isSource: bool,
-};
-
 type drawingConnection = {
   explicitConnectionSide,
   point,

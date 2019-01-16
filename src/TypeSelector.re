@@ -75,7 +75,7 @@ let make =
       )
     },
   render: self => {
-    let renderCategory = (name, category) =>
+    let renderCategory = (name: string, category: category) =>
       <a
         onClick={_event => self.send(SelectCategory(category))}
         className={self.state.category == category ? "selected" : ""}>

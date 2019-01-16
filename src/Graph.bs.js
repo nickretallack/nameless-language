@@ -16,6 +16,7 @@ var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Evaluate$ReactTemplate = require("./Evaluate.bs.js");
+var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
@@ -157,6 +158,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                 }
               };
               var match = self[/* state */1][/* error */1];
+              var match$1 = self[/* state */1][/* selectedNib */2];
               return React.createElement("div", undefined, React.createElement("input", {
                               className: "graph-name",
                               placeholder: "(nameless function)",
@@ -256,7 +258,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                       tmp = undefined;
                                     }
                                     return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, Belt_MapString.getExn(nodePositions, nodeID), tmp, self[/* send */3], /* array */[]));
-                                  }), implementation[/* nodes */1])));
+                                  }), implementation[/* nodes */1])), match$1 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, match$1, emit, /* array */[])) : null);
             }),
           /* initialState */(function (param) {
               return /* record */[

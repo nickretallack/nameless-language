@@ -293,6 +293,40 @@ function make(size, definitions, _children) {
                               /* display */definition[/* display */2]
                             ];
                             break;
+                        case 6 : 
+                            var match$7 = action$1[0];
+                            var explicitConnectionSide = match$7[/* explicitConnectionSide */1];
+                            console.log("WOO");
+                            var nodeID = Helpers$ReactTemplate.randomID(/* () */0);
+                            var nodeConnectionSide_000 = /* node : NodeConnection */[nodeID];
+                            var nodeConnectionSide_001 = /* nib */match$7[/* connectionNib */2];
+                            var nodeConnectionSide = /* record */[
+                              nodeConnectionSide_000,
+                              nodeConnectionSide_001
+                            ];
+                            var match$8 = explicitConnectionSide[/* isSource */1];
+                            var match$9 = match$8 ? /* tuple */[
+                                explicitConnectionSide[/* connectionSide */0],
+                                nodeConnectionSide
+                              ] : /* tuple */[
+                                nodeConnectionSide,
+                                explicitConnectionSide[/* connectionSide */0]
+                              ];
+                            var match$10 = definition[/* implementation */0];
+                            if (match$10.tag === 3) {
+                              var graphImplementation$1 = match$10[0];
+                              newDefinition = /* record */[
+                                /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                      /* connections */Belt_Map.set(graphImplementation$1[/* connections */0], match$9[1], match$9[0]),
+                                      /* nodes */Belt_MapString.set(graphImplementation$1[/* nodes */1], nodeID, match$7[/* node */0])
+                                    ]]),
+                                /* documentation */definition[/* documentation */1],
+                                /* display */definition[/* display */2]
+                              ];
+                            } else {
+                              newDefinition = definition;
+                            }
+                            break;
                         
                       }
                     }

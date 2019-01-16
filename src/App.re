@@ -105,6 +105,39 @@ let make = (~size, ~definitions, _children) => {
             }
           | _ => definition
           }
+
+        | AddNode({node, explicitConnectionSide, connectionNib}) =>
+          Js.log("WOO");
+          let nodeID = randomID();
+          let nodeConnectionSide: connectionSide = {
+            node: NodeConnection(nodeID),
+            nib: connectionNib,
+          };
+          let (source, sink) =
+            explicitConnectionSide.isSource ?
+              (explicitConnectionSide.connectionSide, nodeConnectionSide) :
+              (nodeConnectionSide, explicitConnectionSide.connectionSide);
+          switch (definition.implementation) {
+          | GraphImplementation(graphImplementation) => {
+              ...definition,
+              implementation:
+                GraphImplementation({
+                  nodes:
+                    Belt.Map.String.set(
+                      graphImplementation.nodes,
+                      nodeID,
+                      node,
+                    ),
+                  connections:
+                    Belt.Map.set(
+                      graphImplementation.connections,
+                      sink,
+                      source,
+                    ),
+                }),
+            }
+          | _ => definition
+          };
         | ChangeConstantValue(implementation) =>
           switch (definition.implementation) {
           | ConstantImplementation(_) => {

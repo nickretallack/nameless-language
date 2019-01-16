@@ -37,6 +37,11 @@ type connectionSide = {
   nib: connectionNib,
 };
 
+type explicitConnectionSide = {
+  connectionSide,
+  isSource: bool,
+};
+
 let connectionSideToString = (connectionSide: connectionSide) =>
   connectionNodeToString(connectionSide.node)
   ++ "-"
