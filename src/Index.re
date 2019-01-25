@@ -9,15 +9,24 @@ let example =
     ~nodes=[|
       (
         "node1",
-        DefinedNode({kind: FunctionCallNode, definitionID: "example"}),
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "example"}),
+          scope: GraphScope,
+        },
       ),
       (
         "node2",
-        DefinedNode({kind: FunctionCallNode, definitionID: "example"}),
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "example"}),
+          scope: GraphScope,
+        },
       ),
       (
         "node3",
-        DefinedNode({kind: FunctionCallNode, definitionID: "example"}),
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "example"}),
+          scope: GraphScope,
+        },
       ),
     |],
     ~connections=[|
@@ -48,9 +57,27 @@ let simple =
     ~inputs=[|("in1", "In 1"), ("in2", "In 2")|],
     ~outputs=[|("out1", "Out 1"), ("out2", "Out 2")|],
     ~nodes=[|
-      ("node1", DefinedNode({kind: ValueNode, definitionID: "one"})),
-      ("node2", DefinedNode({kind: ValueNode, definitionID: "one"})),
-      ("node3", DefinedNode({kind: FunctionCallNode, definitionID: "plus"})),
+      (
+        "node1",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "node2",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "node3",
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
+          scope: GraphScope,
+        },
+      ),
     |],
     ~connections=[|
       (
@@ -123,14 +150,32 @@ let pointExample =
     ~nodes=[|
       (
         "constructor",
-        DefinedNode({kind: ConstructorNode, definitionID: "point"}),
+        {
+          kind: DefinedNode({kind: ConstructorNode, definitionID: "point"}),
+          scope: GraphScope,
+        },
       ),
       (
         "destructure",
-        DefinedNode({kind: AccessorNode, definitionID: "point"}),
+        {
+          kind: DefinedNode({kind: AccessorNode, definitionID: "point"}),
+          scope: GraphScope,
+        },
       ),
-      ("x", DefinedNode({kind: ValueNode, definitionID: "one"})),
-      ("y", DefinedNode({kind: ValueNode, definitionID: "one"})),
+      (
+        "x",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "y",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
     |],
     ~connections=[|
       (
@@ -163,7 +208,7 @@ let referenceExample =
     ~description="",
     ~inputs=[||],
     ~outputs=[|("reference", "Reference")|],
-    ~nodes=[|("reference", ReferenceNode)|],
+    ~nodes=[|("reference", {kind: ReferenceNode, scope: GraphScope})|],
     ~connections=[|
       (
         {node: GraphConnection, nib: NibConnection("reference")},

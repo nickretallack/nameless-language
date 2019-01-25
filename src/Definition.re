@@ -85,10 +85,19 @@ type definedNode = {
   definitionID,
 };
 
-type node =
+type nodeKind =
   | ReferenceNode
   | ListNode(int)
   | DefinedNode(definedNode);
+
+type nodeScope =
+  | GraphScope
+  | NodeScope(nodeID);
+
+type node = {
+  scope: nodeScope,
+  kind: nodeKind,
+};
 
 /*
  variant Yes
@@ -463,7 +472,7 @@ let displayDefinedNode =
   };
 
 let displayNode = (node: node, definitions: definitions, language: language) =>
-  switch (node) {
+  switch (node.kind) {
   | ReferenceNode => {
       outputs: [{nib: ValueConnection, name: "Reference"}],
       inputs: [],
@@ -500,7 +509,7 @@ let getOutputIndex =
 };
 
 let countNodeNibs = (node: node, definitions: definitions) =>
-  switch (node) {
+  switch (node.kind) {
   | ReferenceNode => 1
   | ListNode(length) => length
   | DefinedNode({kind, definitionID}) =>

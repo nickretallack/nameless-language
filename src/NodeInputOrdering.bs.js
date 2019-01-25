@@ -28,7 +28,7 @@ function visitConnection(graph, dependencies, connectionSide, nodes) {
           nodeID,
           nodes
         ];
-        var match$1 = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
+        var match$1 = Belt_MapString.getExn(graph[/* nodes */1], nodeID)[/* kind */1];
         if (typeof match$1 === "number") {
           return nodeAcc;
         } else if (match$1.tag) {

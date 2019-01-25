@@ -1,6 +1,6 @@
 open Definition;
 
-let listHas: 'a .(Belt.List.t('a), 'a) => bool =
+let listHas: 'a. (Belt.List.t('a), 'a) => bool =
   (haystack, needle) => Belt.List.has(haystack, needle, (a, b) => a == b);
 
 let id = x => x;
@@ -23,7 +23,7 @@ let rec visitConnection =
         nodes;
       } else {
         let nodeAcc = [nodeID, ...nodes];
-        switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
+        switch (Belt.Map.String.getExn(graph.nodes, nodeID).kind) {
         | ReferenceNode => nodeAcc
         | ListNode(length) =>
           Belt.List.reduce(

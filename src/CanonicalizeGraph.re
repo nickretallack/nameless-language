@@ -101,7 +101,7 @@ let canonicalizeConnectionSide =
         | PositionalConnection(index) =>
           isSink ? PublishingNibConnection(index) : raise(InvalidConnection)
         | NibConnection(nibID) =>
-          switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
+          switch (Belt.Map.String.getExn(graph.nodes, nodeID).kind) {
           | ReferenceNode => raise(InvalidConnection)
           | ListNode(_) => raise(InvalidConnection)
           | DefinedNode({definitionID}) =>
@@ -137,7 +137,7 @@ let canonicalizeGraph =
     outputCount: Belt.List.size(display.outputOrdering),
     nodes:
       Belt.List.map(nodeOrdering, nodeID =>
-        switch (Belt.Map.String.getExn(graph.nodes, nodeID)) {
+        switch (Belt.Map.String.getExn(graph.nodes, nodeID).kind) {
         | ReferenceNode => PublishingReferenceNode
         | ListNode(length) => PublishingListNode(length)
         | DefinedNode({kind, definitionID}) =>

@@ -213,7 +213,7 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
         throw Definition$ReactTemplate.InvalidConnection;
       }
     } else {
-      var match$2 = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
+      var match$2 = Belt_MapString.getExn(graph[/* nodes */1], nodeID)[/* kind */1];
       if (typeof match$2 === "number") {
         throw Definition$ReactTemplate.InvalidConnection;
       } else if (match$2.tag) {
@@ -248,7 +248,7 @@ function canonicalizeGraph(graph, dependencies, display) {
   var nodeOrdering = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies, display[/* outputOrdering */1]);
   return /* record */[
           /* nodes */Belt_List.map(nodeOrdering, (function (nodeID) {
-                  var match = Belt_MapString.getExn(graph[/* nodes */1], nodeID);
+                  var match = Belt_MapString.getExn(graph[/* nodes */1], nodeID)[/* kind */1];
                   if (typeof match === "number") {
                     return /* PublishingReferenceNode */0;
                   } else if (match.tag) {

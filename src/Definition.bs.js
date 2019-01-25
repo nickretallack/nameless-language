@@ -273,7 +273,8 @@ function displayDefinedNode(definition, kind, language) {
 }
 
 function displayNode(node, definitions, language) {
-  if (typeof node === "number") {
+  var match = node[/* kind */1];
+  if (typeof match === "number") {
     return /* record */[
             /* inputs : [] */0,
             /* outputs : :: */[
@@ -284,13 +285,13 @@ function displayNode(node, definitions, language) {
               /* [] */0
             ]
           ];
-  } else if (node.tag) {
-    var match = node[0];
-    var definition = Belt_MapString.getExn(definitions, match[/* definitionID */1]);
-    return displayDefinedNode(definition, match[/* kind */0], language);
+  } else if (match.tag) {
+    var match$1 = match[0];
+    var definition = Belt_MapString.getExn(definitions, match$1[/* definitionID */1]);
+    return displayDefinedNode(definition, match$1[/* kind */0], language);
   } else {
     return /* record */[
-            /* inputs */Belt_List.makeBy(node[0], (function (index) {
+            /* inputs */Belt_List.makeBy(match[0], (function (index) {
                     return /* record */[
                             /* name */String(index),
                             /* nib : PositionalConnection */Block.__(1, [index])
@@ -329,15 +330,16 @@ function getOutputIndex(node, definitions, connectionNib) {
 }
 
 function countNodeNibs(node, definitions) {
-  if (typeof node === "number") {
+  var match = node[/* kind */1];
+  if (typeof match === "number") {
     return 1;
-  } else if (node.tag) {
-    var match = node[0];
-    var nodeDefinition = Belt_MapString.getExn(definitions, match[/* definitionID */1]);
-    var nodeDisplay = displayDefinedNode(nodeDefinition, match[/* kind */0], "en");
+  } else if (match.tag) {
+    var match$1 = match[0];
+    var nodeDefinition = Belt_MapString.getExn(definitions, match$1[/* definitionID */1]);
+    var nodeDisplay = displayDefinedNode(nodeDefinition, match$1[/* kind */0], "en");
     return Belt_List.length(nodeDisplay[/* inputs */0]) + Belt_List.length(nodeDisplay[/* outputs */1]) | 0;
   } else {
-    return node[0];
+    return match[0];
   }
 }
 

@@ -36,7 +36,7 @@ let rec evaluateConnection =
   | GraphConnection => PrimitiveValue(TextValue("Input!"))
   | NodeConnection(nodeID) =>
     let node = Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
-    switch (node) {
+    switch (node.kind) {
     | ReferenceNode => PrimitiveValue(TextValue("Reference!"))
     | ListNode(_length) => PrimitiveValue(TextValue("List!"))
     | DefinedNode({kind, definitionID}) =>

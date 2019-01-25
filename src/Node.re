@@ -27,7 +27,7 @@ let make =
         ?selectedNib
       />;
 
-    switch (node) {
+    switch (node.kind) {
     | ReferenceNode =>
       makeNode(
         ~outputs=[{nib: ValueConnection, name: ""}],

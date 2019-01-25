@@ -30,24 +30,33 @@ var example = Definition$ReactTemplate.makeGraph("Example Definition", "An examp
     ], /* array */[
       /* tuple */[
         "node1",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : FunctionCallNode */0,
-              /* definitionID */"example"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"example"
+              ]])
+        ]
       ],
       /* tuple */[
         "node2",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : FunctionCallNode */0,
-              /* definitionID */"example"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"example"
+              ]])
+        ]
       ],
       /* tuple */[
         "node3",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : FunctionCallNode */0,
-              /* definitionID */"example"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"example"
+              ]])
+        ]
       ]
     ], /* array */[
       /* tuple */[
@@ -113,24 +122,33 @@ var simple = Definition$ReactTemplate.makeGraph("Simple Definition", "A simple f
     ], /* array */[
       /* tuple */[
         "node1",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : ValueNode */1,
-              /* definitionID */"one"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
       ],
       /* tuple */[
         "node2",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : ValueNode */1,
-              /* definitionID */"one"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
       ],
       /* tuple */[
         "node3",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : FunctionCallNode */0,
-              /* definitionID */"plus"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"plus"
+              ]])
+        ]
       ]
     ], /* array */[
       /* tuple */[
@@ -231,31 +249,43 @@ var pointExample = Definition$ReactTemplate.makeGraph("Point Example", "", /* ar
     ], /* array */[
       /* tuple */[
         "constructor",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : ConstructorNode */4,
-              /* definitionID */"point"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ConstructorNode */4,
+                /* definitionID */"point"
+              ]])
+        ]
       ],
       /* tuple */[
         "destructure",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : AccessorNode */5,
-              /* definitionID */"point"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : AccessorNode */5,
+                /* definitionID */"point"
+              ]])
+        ]
       ],
       /* tuple */[
         "x",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : ValueNode */1,
-              /* definitionID */"one"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
       ],
       /* tuple */[
         "y",
-        /* DefinedNode */Block.__(1, [/* record */[
-              /* kind : ValueNode */1,
-              /* definitionID */"one"
-            ]])
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
       ]
     ], /* array */[
       /* tuple */[
@@ -315,7 +345,10 @@ var referenceExample = Definition$ReactTemplate.makeGraph("Reference example", "
         "Reference"
       ]], /* array */[/* tuple */[
         "reference",
-        /* ReferenceNode */0
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : ReferenceNode */0
+        ]
       ]], /* array */[/* tuple */[
         /* record */[
           /* node : GraphConnection */0,

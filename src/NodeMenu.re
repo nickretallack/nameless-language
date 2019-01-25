@@ -34,7 +34,10 @@ let make =
         onClick={_event =>
           emit(
             AddNode({
-              node: ReferenceNode,
+              node: {
+                kind: ReferenceNode,
+                scope: GraphScope,
+              },
               explicitConnectionSide: nib,
               connectionNib: ValueConnection,
             }),

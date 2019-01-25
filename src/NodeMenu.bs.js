@@ -23,7 +23,10 @@ function make(definitions, nib, emit, _children) {
               return React.createElement("div", undefined, React.createElement("a", {
                               onClick: (function (_event) {
                                   return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
-                                                  /* node : ReferenceNode */0,
+                                                  /* node : record */[
+                                                    /* scope : GraphScope */0,
+                                                    /* kind : ReferenceNode */0
+                                                  ],
                                                   /* explicitConnectionSide */nib,
                                                   /* connectionNib : ValueConnection */0
                                                 ]]));

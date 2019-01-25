@@ -27,7 +27,8 @@ function make(nodeID, node, definitions, position, selectedNib, emit, _children)
                 var inputs = $staropt$star !== undefined ? $staropt$star : /* [] */0;
                 return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, selectedNib, emit, /* array */[]));
               };
-              if (typeof node === "number") {
+              var match = node[/* kind */1];
+              if (typeof match === "number") {
                 return makeNode(/* :: */[
                             /* record */[
                               /* name */"",
@@ -35,14 +36,14 @@ function make(nodeID, node, definitions, position, selectedNib, emit, _children)
                             ],
                             /* [] */0
                           ], undefined, undefined, "Reference", /* () */0);
-              } else if (node.tag) {
-                var match = node[0];
-                var definitionID = match[/* definitionID */1];
-                var kind = match[/* kind */0];
+              } else if (match.tag) {
+                var match$1 = match[0];
+                var definitionID = match$1[/* definitionID */1];
+                var kind = match$1[/* kind */0];
                 var definition = Belt_MapString.getExn(definitions, definitionID);
-                var match$1 = Definition$ReactTemplate.displayDefinedNode(definition, kind, "en");
+                var match$2 = Definition$ReactTemplate.displayDefinedNode(definition, kind, "en");
                 if (kind !== 3) {
-                  return makeNode(match$1[/* outputs */1], match$1[/* inputs */0], definitionID, Definition$ReactTemplate.getDisplayName(definition, "en"), /* () */0);
+                  return makeNode(match$2[/* outputs */1], match$2[/* inputs */0], definitionID, Definition$ReactTemplate.getDisplayName(definition, "en"), /* () */0);
                 } else {
                   return ReasonReact.element(undefined, undefined, FunctionDefinitionNode$ReactTemplate.make(nodeID, definition, position, emit, /* array */[]));
                 }
@@ -53,7 +54,7 @@ function make(nodeID, node, definitions, position, selectedNib, emit, _children)
                               /* nib : ValueConnection */0
                             ],
                             /* [] */0
-                          ], Belt_List.makeBy(node[0], (function (index) {
+                          ], Belt_List.makeBy(match[0], (function (index) {
                                   return /* record */[
                                           /* name */String(index),
                                           /* nib : PositionalConnection */Block.__(1, [index])

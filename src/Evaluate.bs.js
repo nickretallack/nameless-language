@@ -51,47 +51,48 @@ function evaluateConnection(definitions, graphImplementation, sink) {
   if (match) {
     var nodeID = match[0];
     var node = Belt_MapString.getExn(graphImplementation[/* nodes */1], nodeID);
-    if (typeof node === "number") {
+    var match$1 = node[/* kind */1];
+    if (typeof match$1 === "number") {
       return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Reference!"])]);
-    } else if (node.tag) {
-      var match$1 = node[0];
-      var definitionID = match$1[/* definitionID */1];
+    } else if (match$1.tag) {
+      var match$2 = match$1[0];
+      var definitionID = match$2[/* definitionID */1];
       var nodeDefinition = Belt_MapString.getExn(definitions, definitionID);
-      switch (match$1[/* kind */0]) {
+      switch (match$2[/* kind */0]) {
         case 0 : 
-            var match$2 = nodeDefinition[/* implementation */0];
-            if (match$2.tag === 2) {
-              var match$3 = source[/* nib */1];
-              if (typeof match$3 === "number") {
+            var match$3 = nodeDefinition[/* implementation */0];
+            if (match$3.tag === 2) {
+              var match$4 = source[/* nib */1];
+              if (typeof match$4 === "number") {
                 throw Caml_builtin_exceptions.not_found;
-              } else if (match$3.tag) {
+              } else if (match$4.tag) {
                 throw Caml_builtin_exceptions.not_found;
               } else {
-                var outputIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* outputOrdering */1], match$3[0]);
+                var outputIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* outputOrdering */1], match$4[0]);
                 var lazyInputs = Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID, param) {
                         return evaluateConnection(definitions, graphImplementation, /* record */[
                                     /* node : NodeConnection */[nodeID],
                                     /* nib : NibConnection */Block.__(0, [nibID])
                                   ]);
                       }));
-                return evaluateExternal(match$2[0][/* name */0], outputIndex, lazyInputs);
+                return evaluateExternal(match$3[0][/* name */0], outputIndex, lazyInputs);
               }
             } else {
               return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Value?"])]);
             }
         case 1 : 
-            var match$4 = nodeDefinition[/* implementation */0];
-            if (match$4.tag) {
+            var match$5 = nodeDefinition[/* implementation */0];
+            if (match$5.tag) {
               return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Value?"])]);
             } else {
-              return /* PrimitiveValue */Block.__(0, [match$4[0]]);
+              return /* PrimitiveValue */Block.__(0, [match$5[0]]);
             }
         case 2 : 
         case 3 : 
             return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Defined node?"])]);
         case 4 : 
-            var match$5 = nodeDefinition[/* implementation */0];
-            if (match$5.tag === 4) {
+            var match$6 = nodeDefinition[/* implementation */0];
+            if (match$6.tag === 4) {
               return /* DefinedValue */Block.__(1, [/* record */[
                           /* definitionID */definitionID,
                           /* values */Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID, param) {
@@ -105,12 +106,12 @@ function evaluateConnection(definitions, graphImplementation, sink) {
               return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Accessor?"])]);
             }
         case 5 : 
-            var match$6 = nodeDefinition[/* implementation */0];
-            if (match$6.tag === 4) {
-              var match$7 = source[/* nib */1];
-              if (typeof match$7 === "number") {
+            var match$7 = nodeDefinition[/* implementation */0];
+            if (match$7.tag === 4) {
+              var match$8 = source[/* nib */1];
+              if (typeof match$8 === "number") {
                 throw Caml_builtin_exceptions.not_found;
-              } else if (match$7.tag) {
+              } else if (match$8.tag) {
                 throw Caml_builtin_exceptions.not_found;
               } else {
                 var value = evaluateConnection(definitions, graphImplementation, /* record */[
@@ -122,7 +123,7 @@ function evaluateConnection(definitions, graphImplementation, sink) {
                   if (definedValue[/* definitionID */0] !== definitionID) {
                     throw Caml_builtin_exceptions.not_found;
                   } else {
-                    var fieldIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* inputOrdering */0], match$7[0]);
+                    var fieldIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* inputOrdering */0], match$8[0]);
                     return Curry._1(Belt_List.getExn(definedValue[/* values */1], fieldIndex), /* () */0);
                   }
                 } else {
