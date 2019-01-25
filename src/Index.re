@@ -238,6 +238,26 @@ let exampleInterface =
     (),
   );
 
+let interfaceExample =
+  makeGraph(
+    ~name="Interface Example",
+    ~outputs=[|("result", "Result")|],
+    ~nodes=[|
+      (
+        "definition",
+        {
+          scope: GraphScope,
+          kind:
+            DefinedNode({
+              kind: FunctionDefinitionNode,
+              definitionID: "example-interface",
+            }),
+        },
+      ),
+    |],
+    (),
+  );
+
 let definitions =
   Belt.Map.String.fromArray([|
     ("example", example),
@@ -248,6 +268,7 @@ let definitions =
     ("point-example", pointExample),
     ("reference-example", referenceExample),
     ("example-interface", exampleInterface),
+    ("interface-example", interfaceExample),
   |]);
 
 ReactDOMRe.renderToElementWithId(

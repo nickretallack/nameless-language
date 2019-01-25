@@ -314,6 +314,7 @@ type implementation =
   | ExternalImplementation(externalImplementation)
   | GraphImplementation(graphImplementation)
   | RecordTypeImplementation(typedFields)
+  | LabeledTypeImplementation(valueType)
   | UnionTypeImplementation(typedFields);
 
 let implementationName = (implementation: implementation): string =>
@@ -323,6 +324,7 @@ let implementationName = (implementation: implementation): string =>
   | ExternalImplementation(_) => "external"
   | GraphImplementation(_) => "function"
   | RecordTypeImplementation(_) => "record type"
+  | LabeledTypeImplementation(_) => "labeled type"
   | UnionTypeImplementation(_) => "union type"
   };
 

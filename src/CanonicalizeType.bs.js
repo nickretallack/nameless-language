@@ -54,14 +54,17 @@ function encodeTypedFields(fields) {
   return Json_encode.list(encodeValueType, fields);
 }
 
+function canonicalizeType(valueType, dependencies) {
+  if (valueType.tag) {
+    return /* PublishingDefinedValueType */Block.__(1, [Belt_MapString.getExn(dependencies, valueType[0])[/* contentID */0]]);
+  } else {
+    return /* PublishingPrimitiveValueType */Block.__(0, [valueType[0]]);
+  }
+}
+
 function canonicalizeTypedFields(typedFields, dependencies, fieldOrdering) {
   return Belt_List.map(fieldOrdering, (function (nibID) {
-                var match = Belt_MapString.getExn(typedFields, nibID);
-                if (match.tag) {
-                  return /* PublishingDefinedValueType */Block.__(1, [Belt_MapString.getExn(dependencies, match[0])[/* contentID */0]]);
-                } else {
-                  return /* PublishingPrimitiveValueType */Block.__(0, [match[0]]);
-                }
+                return canonicalizeType(Belt_MapString.getExn(typedFields, nibID), dependencies);
               }));
 }
 
@@ -97,12 +100,38 @@ function encodeUnionType(fields) {
             ]);
 }
 
+function encodeLabeledType(id, valueType) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "type",
+                "label"
+              ],
+              /* :: */[
+                /* tuple */[
+                  "id",
+                  id
+                ],
+                /* :: */[
+                  /* tuple */[
+                    "type",
+                    encodeValueType(valueType)
+                  ],
+                  /* [] */0
+                ]
+              ]
+            ]);
+}
+
 function encodeCanonicalRecordType(typedFields, dependencies, fieldOrdering) {
   return encodeRecordType(canonicalizeTypedFields(typedFields, dependencies, fieldOrdering));
 }
 
 function encodeCanonicalUnionType(typedFields, dependencies, fieldOrdering) {
   return encodeUnionType(canonicalizeTypedFields(typedFields, dependencies, fieldOrdering));
+}
+
+function encodeCanonicalLabeledType(id, valueType, dependencies) {
+  return encodeLabeledType(id, canonicalizeType(valueType, dependencies));
 }
 
 function canonicalizeInterface($$interface, dependencies, display) {
@@ -170,11 +199,14 @@ function encodeCanonicalExternal(externalImplementation, dependencies, display) 
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.encodeValueType = encodeValueType;
 exports.encodeTypedFields = encodeTypedFields;
+exports.canonicalizeType = canonicalizeType;
 exports.canonicalizeTypedFields = canonicalizeTypedFields;
 exports.encodeRecordType = encodeRecordType;
 exports.encodeUnionType = encodeUnionType;
+exports.encodeLabeledType = encodeLabeledType;
 exports.encodeCanonicalRecordType = encodeCanonicalRecordType;
 exports.encodeCanonicalUnionType = encodeCanonicalUnionType;
+exports.encodeCanonicalLabeledType = encodeCanonicalLabeledType;
 exports.canonicalizeInterface = canonicalizeInterface;
 exports.encodeInterface = encodeInterface;
 exports.encodeCanonicalInterface = encodeCanonicalInterface;

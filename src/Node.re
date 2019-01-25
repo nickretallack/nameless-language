@@ -49,7 +49,7 @@ let make =
       let {inputs, outputs} = displayDefinedNode(definition, kind, "en");
       switch (kind) {
       | FunctionDefinitionNode =>
-        <FunctionDefinitionNode nodeID definition position emit />
+        <FunctionDefinitionNode nodeID definition position ?selectedNib emit />
       | _ =>
         makeNode(
           ~name=getDisplayName(definition, "en"),

@@ -134,6 +134,8 @@ function implementationName(implementation) {
     case 4 : 
         return "record type";
     case 5 : 
+        return "labeled type";
+    case 6 : 
         return "union type";
     
   }

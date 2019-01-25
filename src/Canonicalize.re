@@ -1,15 +1,8 @@
 open Definition;
 
-/* let encodeRecord = (typedFields: typedFields, dependencies: publishingDependencies, fieldOrdering: Belt.List.t(nibID)) => */
-
-/* let canonicalizeRecord = (typedFields: typedFields) => {
-     let (canonical, nibOrdering) =
-   } */
-
-/* let canonicalizeInterface = (interface: interface) => */
-
 let canonicalizeImplementation =
     (
+      id: definitionID, /* only used for labels */
       implementation: implementation,
       display: display,
       dependencies: publishingDependencies,
@@ -49,5 +42,7 @@ let canonicalizeImplementation =
         dependencies,
         display,
       )
+    | LabeledTypeImplementation(valueType) =>
+      CanonicalizeType.encodeCanonicalLabeledType(id, valueType, dependencies)
     },
   );

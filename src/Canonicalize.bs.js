@@ -6,7 +6,7 @@ var CanonicalizeType$ReactTemplate = require("./CanonicalizeType.bs.js");
 var CanonicalizeGraph$ReactTemplate = require("./CanonicalizeGraph.bs.js");
 var CanonicalizeConstant$ReactTemplate = require("./CanonicalizeConstant.bs.js");
 
-function canonicalizeImplementation(implementation, display, dependencies) {
+function canonicalizeImplementation(id, implementation, display, dependencies) {
   var tmp;
   switch (implementation.tag | 0) {
     case 0 : 
@@ -25,6 +25,9 @@ function canonicalizeImplementation(implementation, display, dependencies) {
         tmp = CanonicalizeType$ReactTemplate.encodeCanonicalRecordType(implementation[0], dependencies, display[/* inputOrdering */0]);
         break;
     case 5 : 
+        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalLabeledType(id, implementation[0], dependencies);
+        break;
+    case 6 : 
         tmp = CanonicalizeType$ReactTemplate.encodeCanonicalUnionType(implementation[0], dependencies, display[/* inputOrdering */0]);
         break;
     

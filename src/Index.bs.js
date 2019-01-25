@@ -389,6 +389,20 @@ var exampleInterface = Definition$ReactTemplate.makeDefinition("Example Interfac
                 ]])
         ]]), /* () */0);
 
+var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", undefined, undefined, /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* array */[/* tuple */[
+        "definition",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionDefinitionNode */3,
+                /* definitionID */"example-interface"
+              ]])
+        ]
+      ]], undefined, /* () */0);
+
 var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "example",
@@ -421,6 +435,10 @@ var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "example-interface",
         exampleInterface
+      ],
+      /* tuple */[
+        "interface-example",
+        interfaceExample
       ]
     ]);
 
@@ -436,5 +454,6 @@ exports.plus = plus;
 exports.pointExample = pointExample;
 exports.referenceExample = referenceExample;
 exports.exampleInterface = exampleInterface;
+exports.interfaceExample = interfaceExample;
 exports.definitions = definitions;
 /* example Not a pure module */

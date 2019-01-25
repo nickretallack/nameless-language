@@ -56,6 +56,7 @@ body {
 	border: 1px solid gray;
 	vertical-align: middle;
 	margin: calc((var(--row-size) - var(--nib-size)) / 2);
+	z-index: 10;
 }
 
 .nib.sink {
@@ -72,21 +73,35 @@ body {
 
 .node .input,
 .node .output {
-	width: 100%;
+	width: 80px;
 	height: 20px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
 
-.node .input {
+.node.definition-node {
+	width: auto;
+}
+
+.node.definition-node .external {
+	flex: 0 0 0;
+}
+
+.node .input,
+.node.definition-node .output {
 	text-align: right;
 }
 
-.node .input .nib {
+.node .output,
+.node.definition-node .input {
+	text-align: left;
+}
+
+.node .nib.sink {
 	margin-right: var(--nega-half-nib);
 }
 
-.node .output .nib {
+.node .nib.source {
 	margin-left: var(--nega-half-nib);
 }
 
@@ -125,4 +140,17 @@ a {
 
 .maker {
 	margin-left: 1ex;
+}
+
+.definition-node {
+	display: flex;
+}
+
+.definition-body {
+	background: pink;
+}
+
+.definition-node .inputs,
+.definition-node .outputs {
+	z-index: 1;
 }

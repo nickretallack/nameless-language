@@ -1,8 +1,7 @@
 open Definition;
 
 let primitiveValueTypeToString =
-    (primitiveValueType: primitiveValueType)
-    : string =>
+    (primitiveValueType: primitiveValueType): string =>
   switch (primitiveValueType) {
   | IntegerType => "integer"
   | NumberType => "number"
@@ -31,6 +30,18 @@ let encodeValueType = (valueType: publishingValueType) =>
 let encodeTypedFields = (fields: Belt.List.t(publishingValueType)) =>
   Json.Encode.list(encodeValueType, fields);
 
+let canonicalizeType =
+    (valueType: valueType, dependencies: publishingDependencies)
+    : publishingValueType =>
+  switch (valueType) {
+  | DefinedValueType(definitionID) =>
+    PublishingDefinedValueType(
+      Belt.Map.String.getExn(dependencies, definitionID).contentID,
+    )
+  | PrimitiveValueType(primitiveValueType) =>
+    PublishingPrimitiveValueType(primitiveValueType)
+  };
+
 let canonicalizeTypedFields =
     (
       typedFields: typedFields,
@@ -39,17 +50,13 @@ let canonicalizeTypedFields =
     )
     : Belt.List.t(publishingValueType) =>
   Belt.List.map(fieldOrdering, nibID =>
-    switch (Belt.Map.String.getExn(typedFields, nibID)) {
-    | DefinedValueType(definitionID) =>
-      PublishingDefinedValueType(
-        Belt.Map.String.getExn(dependencies, definitionID).contentID,
-      )
-    | PrimitiveValueType(primitiveValueType) =>
-      PublishingPrimitiveValueType(primitiveValueType)
-    }
+    canonicalizeType(
+      Belt.Map.String.getExn(typedFields, nibID),
+      dependencies,
+    )
   );
 
-let encodeRecordType = (fields: Belt.List.t(publishingValueType)) : Js.Json.t =>
+let encodeRecordType = (fields: Belt.List.t(publishingValueType)): Js.Json.t =>
   Json.Encode.(
     object_([
       ("type", string("record")),
@@ -57,11 +64,21 @@ let encodeRecordType = (fields: Belt.List.t(publishingValueType)) : Js.Json.t =>
     ])
   );
 
-let encodeUnionType = (fields: Belt.List.t(publishingValueType)) : Js.Json.t =>
+let encodeUnionType = (fields: Belt.List.t(publishingValueType)): Js.Json.t =>
   Json.Encode.(
     object_([
       ("type", string("union")),
       ("types", encodeTypedFields(fields)),
+    ])
+  );
+
+let encodeLabeledType =
+    (id: definitionID, valueType: publishingValueType): Js.Json.t =>
+  Json.Encode.(
+    object_([
+      ("type", string("label")),
+      ("id", string(id)),
+      ("type", encodeValueType(valueType)),
     ])
   );
 
@@ -87,6 +104,15 @@ let encodeCanonicalUnionType =
     canonicalizeTypedFields(typedFields, dependencies, fieldOrdering),
   );
 
+let encodeCanonicalLabeledType =
+    (
+      id: definitionID,
+      valueType: valueType,
+      dependencies: publishingDependencies,
+    )
+    : Js.Json.t =>
+  encodeLabeledType(id, canonicalizeType(valueType, dependencies));
+
 let canonicalizeInterface =
     (
       interface: interface,
@@ -108,7 +134,7 @@ let canonicalizeInterface =
     ),
 };
 
-let encodeInterface = (interface: publishingInterface) : Js.Json.t =>
+let encodeInterface = (interface: publishingInterface): Js.Json.t =>
   Json.Encode.(
     object_([
       ("type", string("interface")),
@@ -126,7 +152,7 @@ let encodeCanonicalInterface =
     : Js.Json.t =>
   encodeInterface(canonicalizeInterface(interface, dependencies, display));
 
-let encodeExternal = (publishingExternal: publishingExternal) : Js.Json.t =>
+let encodeExternal = (publishingExternal: publishingExternal): Js.Json.t =>
   Json.Encode.(
     object_([
       ("type", string("interface")),

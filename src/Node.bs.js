@@ -45,7 +45,7 @@ function make(nodeID, node, definitions, position, selectedNib, emit, _children)
                 if (kind !== 3) {
                   return makeNode(match$2[/* outputs */1], match$2[/* inputs */0], definitionID, Definition$ReactTemplate.getDisplayName(definition, "en"), /* () */0);
                 } else {
-                  return ReasonReact.element(undefined, undefined, FunctionDefinitionNode$ReactTemplate.make(nodeID, definition, position, emit, /* array */[]));
+                  return ReasonReact.element(undefined, undefined, FunctionDefinitionNode$ReactTemplate.make(nodeID, definition, position, selectedNib, emit, /* array */[]));
                 }
               } else {
                 return makeNode(/* :: */[
