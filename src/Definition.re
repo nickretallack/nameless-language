@@ -498,10 +498,26 @@ let getNodeNibIndex =
       connectionNib: connectionNib,
       isSink: bool,
     ) => {
-  let {inputs, outputs} = displayNode(node, definitions, "en");
-  let nibs = isSink ? inputs : outputs;
-  let nibIndex = findByIndexExn(nibs, ({nib}) => nib == connectionNib);
-  isSink ? nibIndex : nibIndex + Belt.List.length(inputs);
+  switch (node.kind) {
+  | DefinedNode({definitionID, kind: FunctionDefinitionNode}) =>
+    switch (connectionNib) {
+    | ValueConnection => 0
+    | PositionalConnection(_) => raise(Not_found)
+    | NibConnection(_) =>
+      let nibs =
+        displayKeywordNibs(
+          Belt.Map.String.getExn(definitions, definitionID),
+          "en",
+          !isSink,
+        );
+      findByIndexExn(nibs, ({nib}) => nib == connectionNib);
+    }
+  | _ =>
+    let {inputs, outputs} = displayNode(node, definitions, "en");
+    let nibs = isSink ? inputs : outputs;
+    let nibIndex = findByIndexExn(nibs, ({nib}) => nib == connectionNib);
+    (isSink ? nibIndex : nibIndex + Belt.List.length(inputs)) + 1;
+  };
 };
 
 let getOutputIndex =

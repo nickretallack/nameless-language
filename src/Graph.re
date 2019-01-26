@@ -1,7 +1,7 @@
 [%%debugger.chrome];
 open AppActions;
 open! GraphActions;
-open Definition;
+open! Definition;
 open Helpers;
 
 module PointerComparator =
@@ -222,8 +222,7 @@ let make =
           x: nodePosition.x +. (isSink ? 80.0 : 0.0),
           y:
             float_of_int(
-              getNodeNibIndex(node, definitions, connectionSide.nib, isSink)
-              + 1,
+              getNodeNibIndex(node, definitions, connectionSide.nib, isSink),
             )
             *. textHeight
             +. textHeight

@@ -222,7 +222,7 @@ let exampleInterface =
   makeDefinition(
     ~name="Example Interface",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
-    ~outputs=[|("result", "Result")|],
+    ~outputs=[|("left", "Left"), ("right", "Right")|],
     ~implementation=
       InterfaceImplementation({
         inputTypes:
@@ -232,7 +232,8 @@ let exampleInterface =
           |]),
         outputTypes:
           Belt.Map.String.fromArray([|
-            ("result", PrimitiveValueType(NumberType)),
+            ("left", PrimitiveValueType(NumberType)),
+            ("right", PrimitiveValueType(NumberType)),
           |]),
       }),
     (),
@@ -253,6 +254,23 @@ let interfaceExample =
               definitionID: "example-interface",
             }),
         },
+      ),
+      (
+        "plus1",
+        {
+          scope: NodeScope("definition"),
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
+        },
+      ),
+    |],
+    ~connections=[|
+      (
+        {node: GraphConnection, nib: NibConnection("result")},
+        {node: NodeConnection("definition"), nib: ValueConnection},
+      ),
+      (
+        {node: NodeConnection("definition"), nib: NibConnection("left")},
+        {node: NodeConnection("plus1"), nib: NibConnection("result")},
       ),
     |],
     (),

@@ -1,5 +1,5 @@
 open Definition;
-open AppActions;
+open! AppActions;
 
 /* type category =
    | ReferenceCategory

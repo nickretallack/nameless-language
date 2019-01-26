@@ -100,7 +100,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                           /* x */nodePosition[/* x */0] + (
                             isSink ? 80.0 : 0.0
                           ),
-                          /* y */(Definition$ReactTemplate.getNodeNibIndex(node, definitions, connectionSide[/* nib */1], isSink) + 1 | 0) * 20.0 + 20.0 / 2.0 + nodePosition[/* y */1]
+                          /* y */Definition$ReactTemplate.getNodeNibIndex(node, definitions, connectionSide[/* nib */1], isSink) * 20.0 + 20.0 / 2.0 + nodePosition[/* y */1]
                         ];
                 } else {
                   var match$1 = connectionSide[/* nib */1];
