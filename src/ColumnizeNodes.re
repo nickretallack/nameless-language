@@ -1,6 +1,6 @@
 open Definition;
 
-let isRootNode = (nodeID: nodeID, connections: connections): bool =>
+let isRootNode = (nodeID: nodeID, connections: connections, node: node): bool =>
   !
     Belt.Map.some(connections, (sink: connectionSide, source: connectionSide) =>
       switch (source.node) {
@@ -9,9 +9,18 @@ let isRootNode = (nodeID: nodeID, connections: connections): bool =>
         nodeID != connectionNodeID ?
           false :
           (
-            switch (sink.node) {
-            | NodeConnection(_) => true
-            | GraphConnection => false
+            switch (node.kind) {
+            | DefinedNode({kind: FunctionDefinitionNode}) =>
+              switch (source.nib) {
+              | ValueConnection => true
+              | NibConnection(_) => false
+              | _ => raise(Not_found)
+              }
+            | _ =>
+              switch (sink.node) {
+              | NodeConnection(_) => true
+              | GraphConnection => false
+              }
             }
           )
       }
@@ -20,7 +29,7 @@ let isRootNode = (nodeID: nodeID, connections: connections): bool =>
 let rec topoSort = (nodes: nodes, connections: connections) => {
   let (availableNodes, unavailableNodes) =
     Belt.Map.String.partition(nodes, (nodeID, _node) =>
-      isRootNode(nodeID, connections)
+      isRootNode(nodeID, connections, Belt.Map.String.getExn(nodes, nodeID))
     );
   let remainingConnections =
     Belt.Map.keep(connections, (sink, _source) =>

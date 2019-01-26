@@ -445,6 +445,16 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
           /* node : NodeConnection */["plus1"],
           /* nib : NibConnection */Block.__(0, ["result"])
         ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["plus1"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["definition"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ]
       ]
     ], /* () */0);
 

@@ -310,6 +310,19 @@ function displayNode(node, definitions, language) {
   }
 }
 
+function functionDefinitionNibIndex(definition, connectionNib, isSink) {
+  if (typeof connectionNib === "number") {
+    return 0;
+  } else if (connectionNib.tag) {
+    throw Caml_builtin_exceptions.not_found;
+  } else {
+    var nibs = displayKeywordNibs(definition, "en", !isSink);
+    return Helpers$ReactTemplate.findByIndexExn(nibs, (function (param) {
+                  return Caml_obj.caml_equal(param[/* nib */1], connectionNib);
+                }));
+  }
+}
+
 function getNodeNibIndex(node, definitions, connectionNib, isSink) {
   var match = node[/* kind */1];
   var exit = 0;
@@ -319,22 +332,15 @@ function getNodeNibIndex(node, definitions, connectionNib, isSink) {
     var match$1 = match[0];
     if (match$1[/* kind */0] !== 3) {
       exit = 1;
-    } else if (typeof connectionNib === "number") {
-      return 0;
-    } else if (connectionNib.tag) {
-      throw Caml_builtin_exceptions.not_found;
     } else {
-      var nibs = displayKeywordNibs(Belt_MapString.getExn(definitions, match$1[/* definitionID */1]), "en", !isSink);
-      return Helpers$ReactTemplate.findByIndexExn(nibs, (function (param) {
-                    return Caml_obj.caml_equal(param[/* nib */1], connectionNib);
-                  }));
+      return functionDefinitionNibIndex(Belt_MapString.getExn(definitions, match$1[/* definitionID */1]), connectionNib, isSink);
     }
   }
   if (exit === 1) {
     var match$2 = displayNode(node, definitions, "en");
     var inputs = match$2[/* inputs */0];
-    var nibs$1 = isSink ? inputs : match$2[/* outputs */1];
-    var nibIndex = Helpers$ReactTemplate.findByIndexExn(nibs$1, (function (param) {
+    var nibs = isSink ? inputs : match$2[/* outputs */1];
+    var nibIndex = Helpers$ReactTemplate.findByIndexExn(nibs, (function (param) {
             return Caml_obj.caml_equal(param[/* nib */1], connectionNib);
           }));
     return (
@@ -345,10 +351,25 @@ function getNodeNibIndex(node, definitions, connectionNib, isSink) {
 }
 
 function getOutputIndex(node, definitions, connectionNib) {
-  var match = displayNode(node, definitions, "en");
-  return Helpers$ReactTemplate.findByIndexExn(match[/* outputs */1], (function (param) {
-                return Caml_obj.caml_equal(param[/* nib */1], connectionNib);
-              }));
+  var match = node[/* kind */1];
+  var exit = 0;
+  if (typeof match === "number" || !match.tag) {
+    exit = 1;
+  } else {
+    var match$1 = match[0];
+    if (match$1[/* kind */0] !== 3) {
+      exit = 1;
+    } else {
+      return functionDefinitionNibIndex(Belt_MapString.getExn(definitions, match$1[/* definitionID */1]), connectionNib, true);
+    }
+  }
+  if (exit === 1) {
+    var match$2 = displayNode(node, definitions, "en");
+    return Helpers$ReactTemplate.findByIndexExn(match$2[/* outputs */1], (function (param) {
+                  return Caml_obj.caml_equal(param[/* nib */1], connectionNib);
+                }));
+  }
+  
 }
 
 function countNodeNibs(node, definitions) {
@@ -473,6 +494,7 @@ exports.displayKeywordInputs = displayKeywordInputs;
 exports.displayKeywordOutputs = displayKeywordOutputs;
 exports.displayDefinedNode = displayDefinedNode;
 exports.displayNode = displayNode;
+exports.functionDefinitionNibIndex = functionDefinitionNibIndex;
 exports.getNodeNibIndex = getNodeNibIndex;
 exports.getOutputIndex = getOutputIndex;
 exports.countNodeNibs = countNodeNibs;

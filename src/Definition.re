@@ -491,6 +491,16 @@ let displayNode = (node: node, definitions: definitions, language: language) =>
     displayDefinedNode(definition, kind, language);
   };
 
+let functionDefinitionNibIndex =
+    (definition: definition, connectionNib: connectionNib, isSink: bool) =>
+  switch (connectionNib) {
+  | ValueConnection => 0
+  | PositionalConnection(_) => raise(Not_found)
+  | NibConnection(_) =>
+    let nibs = displayKeywordNibs(definition, "en", !isSink);
+    findByIndexExn(nibs, ({nib}) => nib == connectionNib);
+  };
+
 let getNodeNibIndex =
     (
       node: node,
@@ -500,18 +510,11 @@ let getNodeNibIndex =
     ) => {
   switch (node.kind) {
   | DefinedNode({definitionID, kind: FunctionDefinitionNode}) =>
-    switch (connectionNib) {
-    | ValueConnection => 0
-    | PositionalConnection(_) => raise(Not_found)
-    | NibConnection(_) =>
-      let nibs =
-        displayKeywordNibs(
-          Belt.Map.String.getExn(definitions, definitionID),
-          "en",
-          !isSink,
-        );
-      findByIndexExn(nibs, ({nib}) => nib == connectionNib);
-    }
+    functionDefinitionNibIndex(
+      Belt.Map.String.getExn(definitions, definitionID),
+      connectionNib,
+      isSink,
+    )
   | _ =>
     let {inputs, outputs} = displayNode(node, definitions, "en");
     let nibs = isSink ? inputs : outputs;
@@ -522,8 +525,17 @@ let getNodeNibIndex =
 
 let getOutputIndex =
     (node: node, definitions: definitions, connectionNib: connectionNib) => {
-  let {outputs} = displayNode(node, definitions, "en");
-  findByIndexExn(outputs, ({nib}) => nib == connectionNib);
+  switch (node.kind) {
+  | DefinedNode({definitionID, kind: FunctionDefinitionNode}) =>
+    functionDefinitionNibIndex(
+      Belt.Map.String.getExn(definitions, definitionID),
+      connectionNib,
+      true,
+    )
+  | _ =>
+    let {outputs} = displayNode(node, definitions, "en");
+    findByIndexExn(outputs, ({nib}) => nib == connectionNib);
+  };
 };
 
 let countNodeNibs = (node: node, definitions: definitions) =>

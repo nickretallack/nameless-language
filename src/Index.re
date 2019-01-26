@@ -272,6 +272,10 @@ let interfaceExample =
         {node: NodeConnection("definition"), nib: NibConnection("left")},
         {node: NodeConnection("plus1"), nib: NibConnection("result")},
       ),
+      (
+        {node: NodeConnection("plus1"), nib: NibConnection("left")},
+        {node: NodeConnection("definition"), nib: NibConnection("left")},
+      ),
     |],
     (),
   );
