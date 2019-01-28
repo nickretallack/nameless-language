@@ -61,6 +61,10 @@ function definedNodeKindHasValueOutput(kind) {
   }
 }
 
+var cmp$1 = Caml_obj.caml_compare;
+
+var ScopeComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp$1]);
+
 var primitiveValueTypes = /* array */[
   /* TextType */2,
   /* NumberType */1
@@ -476,6 +480,7 @@ exports.connectionSideToString = connectionSideToString;
 exports.ConnectionComparator = ConnectionComparator;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
+exports.ScopeComparator = ScopeComparator;
 exports.primitiveValueTypes = primitiveValueTypes;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;

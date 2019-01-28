@@ -143,6 +143,26 @@ let make =
         implementation.nodes,
         implementation.connections,
       );
+
+    let definitionNodes: list(nodes) = DepthSort.sort(implementation.nodes);
+
+    /* Belt.List.reduce(
+         definitionNodes,
+         Belt.Map.make(~id=(module ScopeComparator)),
+         (acc: nodeScopes(node), node: node) =>
+         Belt.Map.set(acc, node.scope, node)
+       ); */
+
+    /* Next steps:
+       - invert the columns to map node ids to their column number.
+        - width:
+          - first column: check direct connections as well as children
+          - last column: check direct connections as well as children
+        - height: group children by column and add up their heights, finding the max.
+       - starting with the deepest cohort and moving up, calculate the node's size by counting its rows or laying out its contents
+         - convert the code below into library functions for this
+        */
+
     let columnWidth = size.x /. float_of_int(List.length(columns) + 1);
     let nodeWidth = 80.0;
     let textHeight = 20.0;

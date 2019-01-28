@@ -94,6 +94,13 @@ type nodeScope =
   | GraphScope
   | NodeScope(nodeID);
 
+module ScopeComparator =
+  Belt.Id.MakeComparable({
+    type t = nodeScope;
+    let cmp = compare;
+  });
+type nodeScopes('a) = Belt.Map.t(nodeScope, 'a, ScopeComparator.identity);
+
 type node = {
   scope: nodeScope,
   kind: nodeKind,

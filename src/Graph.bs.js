@@ -18,6 +18,7 @@ var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Evaluate$ReactTemplate = require("./Evaluate.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
+var DepthSort$ReactTemplate = require("./DepthSort.bs.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("./Definition.bs.js");
 var DetectCycles$ReactTemplate = require("./DetectCycles.bs.js");
@@ -60,6 +61,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               var columns = ColumnizeNodes$ReactTemplate.topoSort(implementation[/* nodes */1], implementation[/* connections */0]);
+              DepthSort$ReactTemplate.sort(implementation[/* nodes */1]);
               var columnWidth = size[/* x */0] / (List.length(columns) + 1 | 0);
               var nodeHeight = function (node) {
                 return 20.0 * (1 + Definition$ReactTemplate.countNodeNibs(node, definitions) | 0);
