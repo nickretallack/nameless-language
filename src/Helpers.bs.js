@@ -51,6 +51,10 @@ function findByIndexExn(list, check) {
   }
 }
 
+function simpleMergeMaps(map1, map2) {
+  return Belt_MapString.reduce(map1, map2, Belt_MapString.set);
+}
+
 Random.init(Date.now() | 0);
 
 function randomHex(param) {
@@ -137,6 +141,7 @@ var renderArray = $$Array.map;
 exports.sortBy = sortBy;
 exports.findIndexExn = findIndexExn;
 exports.findByIndexExn = findByIndexExn;
+exports.simpleMergeMaps = simpleMergeMaps;
 exports.randomHex = randomHex;
 exports.randomID = randomID;
 exports.floatToString = floatToString;

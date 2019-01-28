@@ -106,6 +106,11 @@ type node = {
   kind: nodeKind,
 };
 
+type nodeWithID = {
+  id: nodeID,
+  node,
+};
+
 /*
  variant Yes
  variant No

@@ -10,17 +10,19 @@ var Belt_Id = require("bs-platform/lib/js/belt_Id.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Evaluate$ReactTemplate = require("../Evaluate.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
-var DepthSort$ReactTemplate = require("../display/DepthSort.bs.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
+var LayoutGraph$ReactTemplate = require("../display/LayoutGraph.bs.js");
 var DetectCycles$ReactTemplate = require("../display/DetectCycles.bs.js");
 var GraphActions$ReactTemplate = require("./GraphActions.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
@@ -61,23 +63,28 @@ function make(definitions, implementation, display, documentation, size, emit, _
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               var columns = ColumnizeNodes$ReactTemplate.topoSort(implementation[/* nodes */1], implementation[/* connections */0]);
-              DepthSort$ReactTemplate.sort(implementation[/* nodes */1]);
+              var columnizedNodes = Belt_List.map(columns, (function (nodes) {
+                      return Belt_List.map(Belt_List.fromArray(Belt_MapString.toArray(nodes)), (function (param) {
+                                    return /* record */[
+                                            /* id */param[0],
+                                            /* node */param[1]
+                                          ];
+                                  }));
+                    }));
+              var scopedNodeIDs = Belt_MapString.reduce(implementation[/* nodes */1], Belt_Map.make(Definition$ReactTemplate.ScopeComparator), (function (scopes, id, node) {
+                      return Belt_Map.update(scopes, node[/* scope */0], (function (nodeIDs) {
+                                    return Caml_option.some(Belt_SetString.add(nodeIDs !== undefined ? Caml_option.valFromOption(nodeIDs) : Belt_SetString.empty, id));
+                                  }));
+                    }));
+              var nodeLayouts = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
               var columnWidth = size[/* x */0] / (List.length(columns) + 1 | 0);
-              var nodeHeight = function (node) {
-                return 20.0 * (1 + Definition$ReactTemplate.countNodeNibs(node, definitions) | 0);
+              var getNodePosition = function (nodeID) {
+                var position = Belt_MapString.getExn(nodeLayouts, nodeID)[/* position */0];
+                return /* record */[
+                        /* x */(position[/* columns */0] + 0.5) * columnWidth,
+                        /* y */(position[/* rows */1] + 0.5) * 20.0
+                      ];
               };
-              var nodePositions = Belt_MapString.mergeMany(Belt_MapString.empty, $$Array.of_list(List.flatten(List.mapi((function (column, nodes) {
-                                  var rowHeight = size[/* y */1] / (Belt_MapString.size(nodes) + 1 | 0);
-                                  return Belt_List.mapWithIndex(Belt_MapString.toList(nodes), (function (row, param) {
-                                                return /* tuple */[
-                                                        param[0],
-                                                        /* record */[
-                                                          /* x */columnWidth * (column + 1 | 0) - 80.0 / 2.0,
-                                                          /* y */rowHeight * (row + 1 | 0) - nodeHeight(param[1]) / 2.0
-                                                        ]
-                                                      ];
-                                              }));
-                                }), columns))));
               var nibPositions = function (nibIds, isInput) {
                 var rowHeight = size[/* y */1] / (List.length(nibIds) + 1 | 0);
                 return Belt_MapString.fromArray($$Array.of_list(List.mapi((function (index, nibID) {
@@ -96,7 +103,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                 var match = connectionSide[/* node */0];
                 if (match) {
                   var nodeID = match[0];
-                  var nodePosition = Belt_MapString.getExn(nodePositions, nodeID);
+                  var nodePosition = getNodePosition(nodeID);
                   var node = Belt_MapString.getExn(implementation[/* nodes */1], nodeID);
                   return /* record */[
                           /* x */nodePosition[/* x */0] + (
@@ -259,7 +266,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                     } else {
                                       tmp = undefined;
                                     }
-                                    return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, Belt_MapString.getExn(nodePositions, nodeID), tmp, self[/* send */3], /* array */[]));
+                                    return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, getNodePosition(nodeID), tmp, self[/* send */3], /* array */[]));
                                   }), implementation[/* nodes */1])), match$1 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, match$1, emit, /* array */[])) : null);
             }),
           /* initialState */(function (param) {

@@ -138,20 +138,47 @@ let make =
   render: self => {
     let getNode = (nodeID: nodeID) =>
       Belt.Map.String.getExn(implementation.nodes, nodeID);
+
     let columns: list(nodes) =
       ColumnizeNodes.topoSort(
         implementation.nodes,
         implementation.connections,
       );
 
-    let definitionNodes: list(nodes) = DepthSort.sort(implementation.nodes);
+    /* TODO: ColumnizeNodes should output this format */
+    let columnizedNodes =
+      Belt.List.map(columns, nodes =>
+        Belt.List.map(
+          Belt.List.fromArray(Belt.Map.String.toArray(nodes)), ((id, node)) =>
+          {id, node}
+        )
+      );
 
-    /* Belt.List.reduce(
-         definitionNodes,
-         Belt.Map.make(~id=(module ScopeComparator)),
-         (acc: nodeScopes(node), node: node) =>
-         Belt.Map.set(acc, node.scope, node)
-       ); */
+    let scopedNodeIDs =
+      Belt.Map.String.reduce(
+        implementation.nodes,
+        Belt.Map.make(~id=(module ScopeComparator)),
+        (scopes, id, node) =>
+        Belt.Map.update(scopes, node.scope, nodeIDs =>
+          Some(
+            Belt.Set.String.add(
+              switch (nodeIDs) {
+              | None => Belt.Set.String.empty
+              | Some(nodeIDs) => nodeIDs
+              },
+              id,
+            ),
+          )
+        )
+      );
+
+    let nodeLayouts =
+      LayoutGraph.layoutGraph(
+        scopedNodeIDs,
+        columnizedNodes,
+        definitions,
+        implementation.connections,
+      );
 
     /* Next steps:
        - invert the columns to map node ids to their column number.
@@ -166,45 +193,13 @@ let make =
     let columnWidth = size.x /. float_of_int(List.length(columns) + 1);
     let nodeWidth = 80.0;
     let textHeight = 20.0;
-    let nodeHeight = (node: node) =>
-      textHeight *. float_of_int(1 + countNodeNibs(node, definitions));
-
-    let nodePositions: Belt.Map.String.t(point) =
-      Belt.Map.String.mergeMany(
-        Belt.Map.String.empty,
-        Array.of_list(
-          List.flatten(
-            List.mapi(
-              (column, nodes: Belt.Map.String.t(node)) => {
-                let rowHeight =
-                  size.y /. float_of_int(Belt.Map.String.size(nodes) + 1);
-                Belt.List.mapWithIndex(
-                  Belt.Map.String.toList(nodes),
-                  (row, (nodeID: nodeID, node: node)) =>
-                  (
-                    nodeID,
-                    {
-                      x:
-                        columnWidth
-                        *. float_of_int(column + 1)
-                        -. nodeWidth
-                        /. 2.0,
-                      y:
-                        rowHeight
-                        *. float_of_int(row + 1)
-                        -. nodeHeight(node)
-                        /. 2.0,
-                    },
-                  )
-                );
-              },
-              columns,
-            ),
-          ),
-        ),
-      );
-    let getNodePosition = nodeID =>
-      Belt.Map.String.getExn(nodePositions, nodeID);
+    let getNodePosition = nodeID => {
+      let position = Belt.Map.String.getExn(nodeLayouts, nodeID).position;
+      {
+        x: (float_of_int(position.columns) +. 0.5) *. columnWidth,
+        y: (float_of_int(position.rows) +. 0.5) *. textHeight,
+      };
+    };
 
     let nibOffset = 10.0;
     let nibPositions = (nibIds, isInput) => {
@@ -462,7 +457,7 @@ let make =
                    }
                  }
                }
-               position={Belt.Map.String.getExn(nodePositions, nodeID)}
+               position={getNodePosition(nodeID)}
                emit={self.send}
              />,
            implementation.nodes,
