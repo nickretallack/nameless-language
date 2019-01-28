@@ -210,7 +210,18 @@ and layoutSubGraph =
       definitions,
       connections,
     );
-  ({columns: lastColumn - firstColumn + 2, rows}, subLayout);
+  (
+    {columns: lastColumn - firstColumn + 2, rows: rows + 1},
+    Belt.Map.String.map(subLayout, nodeLayout =>
+      {
+        ...nodeLayout,
+        position: {
+          ...nodeLayout.position,
+          rows: nodeLayout.position.rows + 1,
+        },
+      }
+    ),
+  );
   /* TODO: call layoutGraph's body again but with a different scope. */
 };
 
