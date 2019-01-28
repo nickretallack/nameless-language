@@ -14,16 +14,16 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
-var Evaluate$ReactTemplate = require("./Evaluate.bs.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
+var Evaluate$ReactTemplate = require("../Evaluate.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
-var DepthSort$ReactTemplate = require("./DepthSort.bs.js");
+var DepthSort$ReactTemplate = require("../display/DepthSort.bs.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
-var DetectCycles$ReactTemplate = require("./DetectCycles.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
+var DetectCycles$ReactTemplate = require("../display/DetectCycles.bs.js");
 var GraphActions$ReactTemplate = require("./GraphActions.bs.js");
-var ColumnizeNodes$ReactTemplate = require("./ColumnizeNodes.bs.js");
+var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
 
 var cmp = Caml_obj.caml_compare;
 

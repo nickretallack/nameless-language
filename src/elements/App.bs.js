@@ -10,9 +10,9 @@ var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Graph$ReactTemplate = require("./Graph.bs.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
 var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
 

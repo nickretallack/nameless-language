@@ -7,8 +7,8 @@ var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 var NodeInputOrdering$ReactTemplate = require("./NodeInputOrdering.bs.js");
 
 function definedNodeKindToString(kind) {

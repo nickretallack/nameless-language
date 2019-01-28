@@ -5,8 +5,8 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 var TypeSelector$ReactTemplate = require("./TypeSelector.bs.js");
 
 var component = ReasonReact.statelessComponent("NibInterface");

@@ -5,7 +5,7 @@ var Block = require("bs-platform/lib/js/block.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 var FunctionDefinitionNode$ReactTemplate = require("./FunctionDefinitionNode.bs.js");
 

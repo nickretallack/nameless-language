@@ -8,9 +8,9 @@ var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var Caml_format = require("bs-platform/lib/js/caml_format.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Caml_js_exceptions = require("bs-platform/lib/js/caml_js_exceptions.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 
 var component = ReasonReact.statelessComponent("ConstantImplementation");
 

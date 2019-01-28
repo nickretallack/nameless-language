@@ -8,7 +8,7 @@ var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 
 function categoryFromType(valueType, definitions) {
   if (valueType.tag) {

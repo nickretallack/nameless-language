@@ -4,8 +4,8 @@
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
-var Definition$ReactTemplate = require("./Definition.bs.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 
 var component = ReasonReact.statelessComponent("FunctionDefinitionNode");

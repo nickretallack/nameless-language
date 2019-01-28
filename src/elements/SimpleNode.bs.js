@@ -9,7 +9,7 @@ var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
-var Helpers$ReactTemplate = require("./Helpers.bs.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
 
 var component = ReasonReact.statelessComponent("SimpleNode");
 
