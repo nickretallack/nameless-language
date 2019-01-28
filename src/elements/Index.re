@@ -221,19 +221,19 @@ let referenceExample =
 let exampleInterface =
   makeDefinition(
     ~name="Example Interface",
-    ~inputs=[|("left", "Left"), ("right", "Right")|],
-    ~outputs=[|("left", "Left"), ("right", "Right")|],
+    ~inputs=[|("in-left", "Left"), ("in-right", "Right")|],
+    ~outputs=[|("out-left", "Left"), ("out-right", "Right")|],
     ~implementation=
       InterfaceImplementation({
         inputTypes:
           Belt.Map.String.fromArray([|
-            ("left", PrimitiveValueType(NumberType)),
-            ("right", PrimitiveValueType(NumberType)),
+            ("in-left", PrimitiveValueType(NumberType)),
+            ("in-right", PrimitiveValueType(NumberType)),
           |]),
         outputTypes:
           Belt.Map.String.fromArray([|
-            ("left", PrimitiveValueType(NumberType)),
-            ("right", PrimitiveValueType(NumberType)),
+            ("out-left", PrimitiveValueType(NumberType)),
+            ("out-right", PrimitiveValueType(NumberType)),
           |]),
       }),
     (),
@@ -269,12 +269,12 @@ let interfaceExample =
         {node: NodeConnection("definition"), nib: ValueConnection},
       ),
       (
-        {node: NodeConnection("definition"), nib: NibConnection("left")},
+        {node: NodeConnection("definition"), nib: NibConnection("out-left")},
         {node: NodeConnection("plus1"), nib: NibConnection("result")},
       ),
       (
         {node: NodeConnection("plus1"), nib: NibConnection("left")},
-        {node: NodeConnection("definition"), nib: NibConnection("left")},
+        {node: NodeConnection("definition"), nib: NibConnection("in-left")},
       ),
     |],
     (),

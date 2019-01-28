@@ -542,7 +542,7 @@ let getOutputIndex =
     functionDefinitionNibIndex(
       Belt.Map.String.getExn(definitions, definitionID),
       connectionNib,
-      true,
+      false,
     )
   | _ =>
     let {outputs} = displayNode(node, definitions, "en");

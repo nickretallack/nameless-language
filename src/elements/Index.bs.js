@@ -362,40 +362,40 @@ var referenceExample = Definition$ReactTemplate.makeGraph("Reference example", "
 
 var exampleInterface = Definition$ReactTemplate.makeDefinition("Example Interface", undefined, /* array */[
       /* tuple */[
-        "left",
+        "in-left",
         "Left"
       ],
       /* tuple */[
-        "right",
+        "in-right",
         "Right"
       ]
     ], /* array */[
       /* tuple */[
-        "left",
+        "out-left",
         "Left"
       ],
       /* tuple */[
-        "right",
+        "out-right",
         "Right"
       ]
     ], /* InterfaceImplementation */Block.__(1, [/* record */[
           /* inputTypes */Belt_MapString.fromArray(/* array */[
                 /* tuple */[
-                  "left",
+                  "in-left",
                   /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
                 ],
                 /* tuple */[
-                  "right",
+                  "in-right",
                   /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
                 ]
               ]),
           /* outputTypes */Belt_MapString.fromArray(/* array */[
                 /* tuple */[
-                  "left",
+                  "out-left",
                   /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
                 ],
                 /* tuple */[
-                  "right",
+                  "out-right",
                   /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
                 ]
               ])
@@ -439,7 +439,7 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
       /* tuple */[
         /* record */[
           /* node : NodeConnection */["definition"],
-          /* nib : NibConnection */Block.__(0, ["left"])
+          /* nib : NibConnection */Block.__(0, ["out-left"])
         ],
         /* record */[
           /* node : NodeConnection */["plus1"],
@@ -453,7 +453,7 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
         ],
         /* record */[
           /* node : NodeConnection */["definition"],
-          /* nib : NibConnection */Block.__(0, ["left"])
+          /* nib : NibConnection */Block.__(0, ["in-left"])
         ]
       ]
     ], /* () */0);

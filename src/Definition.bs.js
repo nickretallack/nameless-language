@@ -364,7 +364,7 @@ function getOutputIndex(node, definitions, connectionNib) {
     if (match$1[/* kind */0] !== 3) {
       exit = 1;
     } else {
-      return functionDefinitionNibIndex(Belt_MapString.getExn(definitions, match$1[/* definitionID */1]), connectionNib, true);
+      return functionDefinitionNibIndex(Belt_MapString.getExn(definitions, match$1[/* definitionID */1]), connectionNib, false);
     }
   }
   if (exit === 1) {
