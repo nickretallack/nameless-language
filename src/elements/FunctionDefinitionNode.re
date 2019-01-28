@@ -8,13 +8,22 @@ let make =
       ~nodeID: nodeID,
       ~definition: definition,
       ~position: point,
+      ~size: point,
       ~selectedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
     ) => {
   ...component,
   render: _self => {
-    <div className="node definition-node" style={positionStyle(position)}>
+    <div
+      className="node definition-node"
+      style={ReactDOMRe.Style.make(
+        ~left=pixels(position.x),
+        ~top=pixels(position.y),
+        ~width=pixels(size.x),
+        ~height=pixels(size.y),
+        (),
+      )}>
       <div className="output external">
         <Nib
           isSource=true
@@ -33,7 +42,7 @@ let make =
            selectedNib,
          )}
       </div>
-      <div className="definition-body"> {ReasonReact.string("todo")} </div>
+      <div className="definition-body" />
       <div className="inputs">
         {SimpleNode.renderNibs(
            displayKeywordInputs(definition, "en"),

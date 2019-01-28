@@ -76,13 +76,22 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                     return Caml_option.some(Belt_SetString.add(nodeIDs !== undefined ? Caml_option.valFromOption(nodeIDs) : Belt_SetString.empty, id));
                                   }));
                     }));
-              var nodeLayouts = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
-              var columnWidth = size[/* x */0] / (List.length(columns) + 1 | 0);
+              var match = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
+              var nodeLayouts = match[0];
+              var columnWidth = size[/* x */0] / (List.length(columns) + 3 | 0);
+              var padding = (size[/* y */1] - match[1] * 20.0) / 2.0;
               var getNodePosition = function (nodeID) {
                 var position = Belt_MapString.getExn(nodeLayouts, nodeID)[/* position */0];
                 return /* record */[
                         /* x */(position[/* columns */0] + 0.5) * columnWidth,
-                        /* y */(position[/* rows */1] + 0.5) * 20.0
+                        /* y */position[/* rows */1] * 20.0 + padding
+                      ];
+              };
+              var getNodeSize = function (nodeID) {
+                var size = Belt_MapString.getExn(nodeLayouts, nodeID)[/* size */1];
+                return /* record */[
+                        /* x */size[/* columns */0] * columnWidth,
+                        /* y */size[/* rows */1] * 20.0
                       ];
               };
               var nibPositions = function (nibIds, isInput) {
@@ -166,17 +175,17 @@ function make(definitions, implementation, display, documentation, size, emit, _
                   return false;
                 }
               };
-              var match = self[/* state */1][/* error */1];
-              var match$1 = self[/* state */1][/* selectedNib */2];
+              var match$1 = self[/* state */1][/* error */1];
+              var match$2 = self[/* state */1][/* selectedNib */2];
               return React.createElement("div", undefined, React.createElement("input", {
                               className: "graph-name",
                               placeholder: "(nameless function)",
                               type: "text",
                               value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
                               onChange: changeName
-                            }), match !== undefined ? React.createElement("div", {
+                            }), match$1 !== undefined ? React.createElement("div", {
                                 className: "error-message"
-                              }, match) : null, React.createElement("div", {
+                              }, match$1) : null, React.createElement("div", {
                               className: "graph",
                               onMouseMove: (function ($$event) {
                                   $$event.preventDefault();
@@ -266,8 +275,8 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                     } else {
                                       tmp = undefined;
                                     }
-                                    return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, getNodePosition(nodeID), tmp, self[/* send */3], /* array */[]));
-                                  }), implementation[/* nodes */1])), match$1 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, match$1, emit, /* array */[])) : null);
+                                    return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), tmp, self[/* send */3], /* array */[]));
+                                  }), implementation[/* nodes */1])), match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, match$2, emit, /* array */[])) : null);
             }),
           /* initialState */(function (param) {
               return /* record */[

@@ -2,6 +2,7 @@
 'use strict';
 
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
@@ -49,6 +50,63 @@ function getMaxColumn(definitionNodeID, connections, childNodeIDs, nodeColumns) 
   return getMaxColumnFromNodeIDs(Belt_SetString.union(getNodeIDsConnectedToInternalInputs(definitionNodeID, connections), childNodeIDs), nodeColumns);
 }
 
+function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions, connections) {
+  var childNodeIDs = Belt_Map.getExn(scopedNodeIDs, nodeScope);
+  var columnCount = Belt_List.length(columnizedNodes) + 2 | 0;
+  var match = Belt_List.reduceWithIndex(columnizedNodes, /* tuple */[
+        Belt_Array.make(columnCount, 0),
+        Belt_MapString.empty
+      ], (function (acc, nodes, columns) {
+          return Belt_List.reduce(Belt_List.keep(nodes, (function (node) {
+                            return Belt_SetString.has(childNodeIDs, node[/* id */0]);
+                          })), acc, (function (param, node) {
+                        var columnsFilledness = param[0];
+                        var match = node[/* node */1][/* kind */1];
+                        var match$1;
+                        var exit = 0;
+                        if (typeof match === "number" || !(match.tag && match[0][/* kind */0] === 3)) {
+                          exit = 1;
+                        } else {
+                          match$1 = layoutSubGraph(node, scopedNodeIDs, columnizedNodes, definitions, connections);
+                        }
+                        if (exit === 1) {
+                          match$1 = /* tuple */[
+                            /* record */[
+                              /* columns */1,
+                              /* rows */Definition$ReactTemplate.countNodeNibs(node[/* node */1], definitions) + 2 | 0
+                            ],
+                            Belt_MapString.empty
+                          ];
+                        }
+                        var size = match$1[0];
+                        var rows = Belt_Array.reduce(Belt_Array.range(columns, (columns + size[/* columns */0] | 0) - 1 | 0), 0, (function (row, column) {
+                                return Caml_primitive.caml_int_max(row, Belt_Array.getExn(columnsFilledness, column));
+                              }));
+                        return /* tuple */[
+                                Belt_Array.mapWithIndex(columnsFilledness, (function (index, filledness) {
+                                        var match = index >= columns && index < (columns + size[/* columns */0] | 0);
+                                        if (match) {
+                                          return rows + size[/* rows */1] | 0;
+                                        } else {
+                                          return filledness;
+                                        }
+                                      })),
+                                Helpers$ReactTemplate.simpleMergeMaps(Belt_MapString.set(param[1], node[/* id */0], /* record */[
+                                          /* position : record */[
+                                            /* columns */columns,
+                                            /* rows */rows
+                                          ],
+                                          /* size */size
+                                        ]), match$1[1])
+                              ];
+                      }));
+        }));
+  return /* tuple */[
+          match[1],
+          Belt_Array.reduce(match[0], 0, Caml_obj.caml_max)
+        ];
+}
+
 function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definitions, connections) {
   var childNodeIDs = Belt_Map.getExn(scopedNodeIDs, /* NodeScope */[definitionNode[/* id */0]]);
   var nodeColumns = Belt_List.reduceWithIndex(columnizedNodes, Belt_MapString.empty, (function (acc, nodes, column) {
@@ -62,71 +120,24 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
                       }));
         }));
   var lastColumn = getMaxColumn(definitionNode[/* id */0], connections, childNodeIDs, nodeColumns);
+  var match = layoutDefinition(/* NodeScope */[definitionNode[/* id */0]], scopedNodeIDs, columnizedNodes, definitions, connections);
   return /* tuple */[
           /* record */[
-            /* columns */lastColumn - firstColumn | 0,
-            /* rows */5
+            /* columns */(lastColumn - firstColumn | 0) + 2 | 0,
+            /* rows */match[1]
           ],
-          Belt_MapString.empty
+          match[0]
         ];
 }
 
 function layoutGraph(scopedNodeIDs, columnizedNodes, definitions, connections) {
-  var childNodeIDs = Belt_Map.getExn(scopedNodeIDs, /* GraphScope */0);
-  var columnCount = Belt_List.length(columnizedNodes);
-  return Belt_List.reduceWithIndex(columnizedNodes, /* tuple */[
-                Belt_Array.make(columnCount, 0),
-                Belt_MapString.empty
-              ], (function (acc, nodes, columns) {
-                  return Belt_List.reduce(Belt_List.keep(nodes, (function (node) {
-                                    return Belt_SetString.has(childNodeIDs, node[/* id */0]);
-                                  })), acc, (function (param, node) {
-                                var columnsFilledness = param[0];
-                                var match = node[/* node */1][/* kind */1];
-                                var match$1;
-                                var exit = 0;
-                                if (typeof match === "number" || !(match.tag && match[0][/* kind */0] === 3)) {
-                                  exit = 1;
-                                } else {
-                                  match$1 = layoutSubGraph(node, scopedNodeIDs, columnizedNodes, definitions, connections);
-                                }
-                                if (exit === 1) {
-                                  match$1 = /* tuple */[
-                                    /* record */[
-                                      /* columns */1,
-                                      /* rows */Definition$ReactTemplate.countNodeNibs(node[/* node */1], definitions) + 2 | 0
-                                    ],
-                                    Belt_MapString.empty
-                                  ];
-                                }
-                                var size = match$1[0];
-                                var rows = Belt_Array.reduce(Belt_Array.range(columns, (columns + size[/* columns */0] | 0) - 1 | 0), 0, (function (row, column) {
-                                        return Caml_primitive.caml_int_max(row, Belt_Array.getExn(columnsFilledness, column));
-                                      }));
-                                return /* tuple */[
-                                        Belt_Array.mapWithIndex(columnsFilledness, (function (index, filledness) {
-                                                var match = index >= columns && index < (columns + size[/* columns */0] | 0);
-                                                if (match) {
-                                                  return rows + size[/* rows */1] | 0;
-                                                } else {
-                                                  return filledness;
-                                                }
-                                              })),
-                                        Helpers$ReactTemplate.simpleMergeMaps(Belt_MapString.set(param[1], node[/* id */0], /* record */[
-                                                  /* position : record */[
-                                                    /* columns */columns,
-                                                    /* rows */rows
-                                                  ],
-                                                  /* size */size
-                                                ]), match$1[1])
-                                      ];
-                              }));
-                }))[1];
+  return layoutDefinition(/* GraphScope */0, scopedNodeIDs, columnizedNodes, definitions, connections);
 }
 
 exports.getNodeIDsConnectedToInternalInputs = getNodeIDsConnectedToInternalInputs;
 exports.getMaxColumnFromNodeIDs = getMaxColumnFromNodeIDs;
 exports.getMaxColumn = getMaxColumn;
+exports.layoutDefinition = layoutDefinition;
 exports.layoutSubGraph = layoutSubGraph;
 exports.layoutGraph = layoutGraph;
 /* Helpers-ReactTemplate Not a pure module */

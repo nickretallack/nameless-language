@@ -9,6 +9,7 @@ let make =
       ~node: node,
       ~definitions: definitions,
       ~position: point,
+      ~size: point,
       ~selectedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
@@ -49,7 +50,14 @@ let make =
       let {inputs, outputs} = displayDefinedNode(definition, kind, "en");
       switch (kind) {
       | FunctionDefinitionNode =>
-        <FunctionDefinitionNode nodeID definition position ?selectedNib emit />
+        <FunctionDefinitionNode
+          nodeID
+          definition
+          position
+          size
+          ?selectedNib
+          emit
+        />
       | _ =>
         makeNode(
           ~name=getDisplayName(definition, "en"),

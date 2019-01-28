@@ -10,7 +10,7 @@ var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 
 var component = ReasonReact.statelessComponent("FunctionDefinitionNode");
 
-function make(nodeID, definition, position, selectedNib, emit, _children) {
+function make(nodeID, definition, position, size, selectedNib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -24,7 +24,12 @@ function make(nodeID, definition, position, selectedNib, emit, _children) {
           /* render */(function (_self) {
               return React.createElement("div", {
                           className: "node definition-node",
-                          style: Helpers$ReactTemplate.positionStyle(position)
+                          style: {
+                            height: Helpers$ReactTemplate.pixels(size[/* y */1]),
+                            left: Helpers$ReactTemplate.pixels(position[/* x */0]),
+                            top: Helpers$ReactTemplate.pixels(position[/* y */1]),
+                            width: Helpers$ReactTemplate.pixels(size[/* x */0])
+                          }
                         }, React.createElement("div", {
                               className: "output external"
                             }, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(true, /* record */[
@@ -34,7 +39,7 @@ function make(nodeID, definition, position, selectedNib, emit, _children) {
                               className: "outputs"
                             }, SimpleNode$ReactTemplate.renderNibs(Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), "output internal", false, nodeID, emit, selectedNib)), React.createElement("div", {
                               className: "definition-body"
-                            }, "todo"), React.createElement("div", {
+                            }), React.createElement("div", {
                               className: "inputs"
                             }, SimpleNode$ReactTemplate.renderNibs(Definition$ReactTemplate.displayKeywordInputs(definition, "en"), "input internal", true, nodeID, emit, selectedNib)));
             }),

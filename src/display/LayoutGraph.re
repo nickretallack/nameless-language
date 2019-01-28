@@ -98,48 +98,18 @@ type nodeLayout = {
   size: nodePosition,
 };
 
-let layoutSubGraph =
-    (
-      definitionNode: nodeWithID,
-      scopedNodeIDs: nodeScopes(Belt.Set.String.t),
-      columnizedNodes: list(list(nodeWithID)),
-      definitions: definitions,
-      connections: connections,
-    ) => {
-  let childNodeIDs =
-    Belt.Map.getExn(scopedNodeIDs, NodeScope(definitionNode.id));
-
-  let nodeColumns =
-    Belt.List.reduceWithIndex(
-      columnizedNodes, Belt.Map.String.empty, (acc, nodes, column) =>
-      Belt.List.reduce(nodes, acc, (acc, node) =>
-        Belt.Map.String.set(acc, node.id, column)
-      )
-    );
-
-  let firstColumn =
-    findByIndexExn(columnizedNodes, nodes =>
-      Belt.List.some(nodes, node => node.id == definitionNode.id)
-    );
-
-  let lastColumn =
-    getMaxColumn(definitionNode.id, connections, childNodeIDs, nodeColumns);
-
-  ({columns: lastColumn - firstColumn, rows: 5}, Belt.Map.String.empty);
-  /* TODO: call layoutGraph's body again but with a different scope. */
-};
-
-let layoutGraph =
-    (
-      scopedNodeIDs: nodeScopes(Belt.Set.String.t),
-      columnizedNodes: list(list(nodeWithID)),
-      definitions: definitions,
-      connections: connections,
-    )
-    : Belt.Map.String.t(nodeLayout) => {
-  let childNodeIDs = Belt.Map.getExn(scopedNodeIDs, GraphScope);
-  let columnCount = Belt.List.length(columnizedNodes);
-  snd(
+let rec layoutDefinition =
+        (
+          nodeScope: nodeScope,
+          scopedNodeIDs: nodeScopes(Belt.Set.String.t),
+          columnizedNodes: list(list(nodeWithID)),
+          definitions: definitions,
+          connections: connections,
+        )
+        : (Belt.Map.String.t(nodeLayout), int) => {
+  let childNodeIDs = Belt.Map.getExn(scopedNodeIDs, nodeScope);
+  let columnCount = Belt.List.length(columnizedNodes) + 2;
+  let (columnFilledness, nodeLayouts) =
     Belt.List.reduceWithIndex(
       columnizedNodes,
       (Belt.Array.make(columnCount, 0), Belt.Map.String.empty),
@@ -202,6 +172,60 @@ let layoutGraph =
           );
         },
       )
-    ),
-  );
+    );
+  (nodeLayouts, Belt.Array.reduce(columnFilledness, 0, max));
+}
+and layoutSubGraph =
+    (
+      definitionNode: nodeWithID,
+      scopedNodeIDs: nodeScopes(Belt.Set.String.t),
+      columnizedNodes: list(list(nodeWithID)),
+      definitions: definitions,
+      connections: connections,
+    ) => {
+  let childNodeIDs =
+    Belt.Map.getExn(scopedNodeIDs, NodeScope(definitionNode.id));
+
+  let nodeColumns =
+    Belt.List.reduceWithIndex(
+      columnizedNodes, Belt.Map.String.empty, (acc, nodes, column) =>
+      Belt.List.reduce(nodes, acc, (acc, node) =>
+        Belt.Map.String.set(acc, node.id, column)
+      )
+    );
+
+  let firstColumn =
+    findByIndexExn(columnizedNodes, nodes =>
+      Belt.List.some(nodes, node => node.id == definitionNode.id)
+    );
+
+  let lastColumn =
+    getMaxColumn(definitionNode.id, connections, childNodeIDs, nodeColumns);
+
+  let (subLayout, rows) =
+    layoutDefinition(
+      NodeScope(definitionNode.id),
+      scopedNodeIDs,
+      columnizedNodes,
+      definitions,
+      connections,
+    );
+  ({columns: lastColumn - firstColumn + 2, rows}, subLayout);
+  /* TODO: call layoutGraph's body again but with a different scope. */
 };
+
+let layoutGraph =
+    (
+      scopedNodeIDs: nodeScopes(Belt.Set.String.t),
+      columnizedNodes: list(list(nodeWithID)),
+      definitions: definitions,
+      connections: connections,
+    )
+    : (Belt.Map.String.t(nodeLayout), int) =>
+  layoutDefinition(
+    GraphScope,
+    scopedNodeIDs,
+    columnizedNodes,
+    definitions,
+    connections,
+  );

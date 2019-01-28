@@ -144,13 +144,25 @@ a {
 
 .definition-node {
 	display: flex;
-}
-
-.definition-body {
-	background: pink;
+	background: rgba(0, 0, 0, 0.1);
 }
 
 .definition-node .inputs,
 .definition-node .outputs {
 	z-index: 1;
+	width: 80px;
+	background: lightgray;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+}
+.definition-node .external {
+	z-index: 2;
+}
+
+.definition-node .inputs {
+	right: 0;
+}
+.definition-node .outputs {
+	left: 0;
 }

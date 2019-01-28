@@ -172,7 +172,7 @@ let make =
         )
       );
 
-    let nodeLayouts =
+    let (nodeLayouts, rows) =
       LayoutGraph.layoutGraph(
         scopedNodeIDs,
         columnizedNodes,
@@ -190,14 +190,23 @@ let make =
          - convert the code below into library functions for this
         */
 
-    let columnWidth = size.x /. float_of_int(List.length(columns) + 1);
+    let columnWidth = size.x /. float_of_int(List.length(columns) + 3);
     let nodeWidth = 80.0;
     let textHeight = 20.0;
+    let padding = (size.y -. float_of_int(rows) *. textHeight) /. 2.0;
     let getNodePosition = nodeID => {
       let position = Belt.Map.String.getExn(nodeLayouts, nodeID).position;
       {
         x: (float_of_int(position.columns) +. 0.5) *. columnWidth,
-        y: (float_of_int(position.rows) +. 0.5) *. textHeight,
+        y: float_of_int(position.rows) *. textHeight +. padding,
+      };
+    };
+
+    let getNodeSize = nodeID => {
+      let size = Belt.Map.String.getExn(nodeLayouts, nodeID).size;
+      {
+        x: float_of_int(size.columns) *. columnWidth,
+        y: float_of_int(size.rows) *. textHeight,
       };
     };
 
@@ -458,6 +467,7 @@ let make =
                  }
                }
                position={getNodePosition(nodeID)}
+               size={getNodeSize(nodeID)}
                emit={self.send}
              />,
            implementation.nodes,
