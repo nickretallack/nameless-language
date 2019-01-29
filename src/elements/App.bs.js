@@ -296,7 +296,6 @@ function make(size, definitions, _children) {
                         case 6 : 
                             var match$7 = action$1[0];
                             var explicitConnectionSide = match$7[/* explicitConnectionSide */1];
-                            console.log("WOO");
                             var nodeID = Helpers$ReactTemplate.randomID(/* () */0);
                             var nodeConnectionSide_000 = /* node : NodeConnection */[nodeID];
                             var nodeConnectionSide_001 = /* nib */match$7[/* connectionNib */2];

@@ -107,7 +107,6 @@ let make = (~size, ~definitions, _children) => {
           }
 
         | AddNode({node, explicitConnectionSide, connectionNib}) =>
-          Js.log("WOO");
           let nodeID = randomID();
           let nodeConnectionSide: connectionSide = {
             node: NodeConnection(nodeID),

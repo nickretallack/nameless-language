@@ -3,8 +3,8 @@ open Definition;
 let isRootNode =
     (
       nodeID: nodeID,
-      connections: connections,
       node: node,
+      connections: connections,
       scopes: nodeScopeSet,
     )
     : bool =>
@@ -21,7 +21,11 @@ let isRootNode =
                switch (node.kind) {
                | DefinedNode({kind: FunctionDefinitionNode}) =>
                  switch (source.nib) {
-                 | ValueConnection => true
+                 | ValueConnection =>
+                   switch (sink.node) {
+                   | NodeConnection(_) => true
+                   | GraphConnection => false
+                   }
                  | NibConnection(_) => false
                  | _ => raise(Not_found)
                  }
@@ -41,8 +45,8 @@ let rec topoSort =
     Belt.Map.String.partition(nodes, (nodeID, _node) =>
       isRootNode(
         nodeID,
-        connections,
         Belt.Map.String.getExn(nodes, nodeID),
+        connections,
         scopes,
       )
     );

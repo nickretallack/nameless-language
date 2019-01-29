@@ -144,7 +144,6 @@ let make =
         implementation.nodes,
         implementation.connections,
       );
-    Js.log(columns);
 
     /* TODO: ColumnizeNodes should output this format */
     let columnizedNodes =
@@ -206,8 +205,6 @@ let make =
 
     let getNodeSize = nodeID => {
       let size = Belt.Map.String.getExn(nodeLayouts, nodeID).size;
-      Js.log(size.columns);
-
       {
         x: float_of_int(size.columns) *. columnWidth -. xPadding,
         y: float_of_int(size.rows) *. textHeight,

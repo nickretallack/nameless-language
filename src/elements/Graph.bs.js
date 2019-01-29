@@ -63,7 +63,6 @@ function make(definitions, implementation, display, documentation, size, emit, _
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               var columns = ColumnizeNodes$ReactTemplate.columnizeNodes(implementation[/* nodes */1], implementation[/* connections */0]);
-              console.log(columns);
               var columnizedNodes = Belt_List.map(columns, (function (nodes) {
                       return Belt_List.map(Belt_List.fromArray(Belt_MapString.toArray(nodes)), (function (param) {
                                     return /* record */[
@@ -91,7 +90,6 @@ function make(definitions, implementation, display, documentation, size, emit, _
               };
               var getNodeSize = function (nodeID) {
                 var size = Belt_MapString.getExn(nodeLayouts, nodeID)[/* size */1];
-                console.log(size[/* columns */0]);
                 return /* record */[
                         /* x */size[/* columns */0] * columnWidth - 60.0,
                         /* y */size[/* rows */1] * 20.0

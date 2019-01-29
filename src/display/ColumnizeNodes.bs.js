@@ -7,7 +7,7 @@ var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 
-function isRootNode(nodeID, connections, node, scopes) {
+function isRootNode(nodeID, node, connections, scopes) {
   if (Belt_Set.has(scopes, node[/* scope */0])) {
     return !Belt_Map.some(connections, (function (sink, source) {
                   var match = source[/* node */0];
@@ -23,7 +23,12 @@ function isRootNode(nodeID, connections, node, scopes) {
                       } else {
                         var match$3 = source[/* nib */1];
                         if (typeof match$3 === "number") {
-                          return true;
+                          var match$4 = sink[/* node */0];
+                          if (match$4) {
+                            return true;
+                          } else {
+                            return false;
+                          }
                         } else if (match$3.tag) {
                           throw Caml_builtin_exceptions.not_found;
                         } else {
@@ -31,8 +36,8 @@ function isRootNode(nodeID, connections, node, scopes) {
                         }
                       }
                       if (exit === 1) {
-                        var match$4 = sink[/* node */0];
-                        if (match$4) {
+                        var match$5 = sink[/* node */0];
+                        if (match$5) {
                           return true;
                         } else {
                           return false;
@@ -51,7 +56,7 @@ function isRootNode(nodeID, connections, node, scopes) {
 
 function topoSort(nodes, connections, scopes) {
   var match = Belt_MapString.partition(nodes, (function (nodeID, _node) {
-          return isRootNode(nodeID, connections, Belt_MapString.getExn(nodes, nodeID), scopes);
+          return isRootNode(nodeID, Belt_MapString.getExn(nodes, nodeID), connections, scopes);
         }));
   var unavailableNodes = match[1];
   var availableNodes = match[0];

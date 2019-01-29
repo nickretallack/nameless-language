@@ -28,7 +28,7 @@ body {
 .node {
 	position: absolute;
 	/* width: 80px; */
-	background: lightgray;
+	background: rgba(0, 0, 0, 0.1);
 	top: 0;
 	left: 0;
 }
@@ -151,7 +151,7 @@ a {
 .definition-node .outputs {
 	z-index: 1;
 	width: 120px;
-	background: lightgray;
+	background: rgba(0, 0, 0, 0.1);
 	position: absolute;
 	top: 0;
 	bottom: 0;
