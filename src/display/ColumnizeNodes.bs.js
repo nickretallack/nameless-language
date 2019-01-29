@@ -61,9 +61,6 @@ function topoSort(nodes, connections, scopes) {
         }));
   var unavailableNodes = match[1];
   var availableNodes = match[0];
-  if (Caml_obj.caml_equal(nodes, unavailableNodes)) {
-    throw Definition$ReactTemplate.CycleDetected;
-  }
   var remainingConnections = Belt_Map.keep(connections, (function (sink, _source) {
           var match = sink[/* node */0];
           if (match) {
@@ -89,6 +86,9 @@ function topoSort(nodes, connections, scopes) {
             /* [] */0
           ];
   } else {
+    if (Caml_obj.caml_equal(nodes, unavailableNodes)) {
+      throw Definition$ReactTemplate.CycleDetected;
+    }
     return /* :: */[
             availableNodes,
             topoSort(unavailableNodes, remainingConnections, newScopes)

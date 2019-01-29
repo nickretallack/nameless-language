@@ -50,9 +50,6 @@ let rec topoSort =
         scopes,
       )
     );
-  if (nodes == unavailableNodes) {
-    raise(CycleDetected);
-  };
   let remainingConnections =
     Belt.Map.keep(connections, (sink, _source) =>
       switch (sink.node) {
@@ -76,6 +73,9 @@ let rec topoSort =
   if (Belt.Map.String.isEmpty(unavailableNodes)) {
     [availableNodes];
   } else {
+    if (nodes == unavailableNodes) {
+      raise(CycleDetected);
+    };
     [
       availableNodes,
       ...topoSort(unavailableNodes, remainingConnections, newScopes),
