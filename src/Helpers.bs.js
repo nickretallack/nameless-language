@@ -11,6 +11,8 @@ var $$String = require("bs-platform/lib/js/string.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
+var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
@@ -53,6 +55,15 @@ function findByIndexExn(list, check) {
 
 function simpleMergeMaps(map1, map2) {
   return Belt_MapString.reduce(map1, map2, Belt_MapString.set);
+}
+
+function arrayGetWithDefault(array, index, $$default) {
+  var match = Belt_Array.get(array, index);
+  if (match !== undefined) {
+    return Caml_option.valFromOption(match);
+  } else {
+    return $$default;
+  }
 }
 
 Random.init(Date.now() | 0);
@@ -142,6 +153,7 @@ exports.sortBy = sortBy;
 exports.findIndexExn = findIndexExn;
 exports.findByIndexExn = findByIndexExn;
 exports.simpleMergeMaps = simpleMergeMaps;
+exports.arrayGetWithDefault = arrayGetWithDefault;
 exports.randomHex = randomHex;
 exports.randomID = randomID;
 exports.floatToString = floatToString;

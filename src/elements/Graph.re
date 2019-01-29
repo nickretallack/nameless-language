@@ -172,13 +172,14 @@ let make =
         )
       );
 
-    let (nodeLayouts, _graphSize) =
+    let (nodeLayouts, graphSize) =
       LayoutGraph.layoutGraph(
         scopedNodeIDs,
         columnizedNodes,
         definitions,
         implementation.connections,
       );
+    Js.log2(graphSize.columns, graphSize.rows);
 
     let nodeWidth = 120.0;
     let textHeight = 20.0;

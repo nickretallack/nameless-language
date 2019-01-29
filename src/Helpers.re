@@ -36,6 +36,13 @@ let simpleMergeMaps:
       Belt.Map.String.set(acc, key, value)
     );
 
+let arrayGetWithDefault: 'a. (array('a), int, 'a) => 'a =
+  (array, index, default) =>
+    switch (Belt.Array.get(array, index)) {
+    | None => default
+    | Some(value) => value
+    };
+
 Random.init(int_of_float(Js.Date.now()));
 
 let randomHex = () => Printf.sprintf("%x", Random.int(16));

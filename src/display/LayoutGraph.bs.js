@@ -52,7 +52,7 @@ function getMaxColumn(definitionNodeID, connections, childNodeIDs, nodeColumns) 
 
 function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions, connections) {
   var childNodeIDs = Belt_Map.getWithDefault(scopedNodeIDs, nodeScope, Belt_SetString.empty);
-  var columnCount = Belt_List.length(columnizedNodes) + 1 | 0;
+  var columnCount = Belt_List.length(columnizedNodes);
   var match = Belt_List.reduceWithIndex(columnizedNodes, /* tuple */[
         Belt_Array.make(columnCount, 0),
         Belt_MapString.empty
@@ -79,18 +79,20 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                           ];
                         }
                         var size = match$1[0];
+                        var lastColumn = (columns + size[/* columns */0] | 0) - 1 | 0;
                         var rows = Belt_Array.reduce(Belt_Array.range(columns, (columns + size[/* columns */0] | 0) - 1 | 0), 0, (function (row, column) {
-                                return Caml_primitive.caml_int_max(row, Belt_Array.getExn(columnsFilledness, column));
+                                return Caml_primitive.caml_int_max(row, Helpers$ReactTemplate.arrayGetWithDefault(columnsFilledness, column, 0));
+                              }));
+                        var newFilledness = Belt_Array.makeBy(Caml_primitive.caml_int_max(columnsFilledness.length, lastColumn + 1 | 0), (function (index) {
+                                var match = index >= columns && index < (columns + size[/* columns */0] | 0);
+                                if (match) {
+                                  return (rows + size[/* rows */1] | 0) + 1 | 0;
+                                } else {
+                                  return Helpers$ReactTemplate.arrayGetWithDefault(columnsFilledness, index, 0);
+                                }
                               }));
                         return /* tuple */[
-                                Belt_Array.mapWithIndex(columnsFilledness, (function (index, filledness) {
-                                        var match = index >= columns && index < (columns + size[/* columns */0] | 0);
-                                        if (match) {
-                                          return (rows + size[/* rows */1] | 0) + 1 | 0;
-                                        } else {
-                                          return filledness;
-                                        }
-                                      })),
+                                newFilledness,
                                 Helpers$ReactTemplate.simpleMergeMaps(Belt_MapString.set(param[1], node[/* id */0], /* record */[
                                           /* position : record */[
                                             /* columns */columns,
@@ -101,11 +103,12 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                               ];
                       }));
         }));
+  var columnFilledness = match[0];
   return /* tuple */[
           match[1],
           /* record */[
-            /* columns */columnCount,
-            /* rows */Belt_Array.reduce(match[0], 0, Caml_obj.caml_max)
+            /* columns */columnFilledness.length - 1 | 0,
+            /* rows */Belt_Array.reduce(columnFilledness, 0, Caml_obj.caml_max)
           ]
         ];
 }
@@ -134,10 +137,11 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
     throw Caml_builtin_exceptions.not_found;
   }
   var match$1 = layoutDefinition(/* NodeScope */[definitionNode[/* id */0]], scopedNodeIDs, columnizedNodes, definitions, connections);
+  var position = match$1[1];
   return /* tuple */[
           /* record */[
-            /* columns */(lastColumn - firstColumn | 0) + 2 | 0,
-            /* rows */Caml_primitive.caml_int_max(mostNibs, match$1[1][/* rows */1] + 1 | 0)
+            /* columns */Caml_primitive.caml_int_max(0, Caml_primitive.caml_int_max(lastColumn, position[/* columns */0]) - firstColumn | 0) + 2 | 0,
+            /* rows */Caml_primitive.caml_int_max(mostNibs, position[/* rows */1] + 1 | 0)
           ],
           Belt_MapString.map(match$1[0], (function (nodeLayout) {
                   var init = nodeLayout[/* position */0];

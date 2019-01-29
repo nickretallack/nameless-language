@@ -306,14 +306,70 @@ let interfaceExample =
         {node: NodeConnection("plus2"), nib: NibConnection("result")},
       ),
       (
-        {node: NodeConnection("definition"), nib: NibConnection("out-right")},
+        {
+          node: NodeConnection("definition"),
+          nib: NibConnection("out-right"),
+        },
         {node: NodeConnection("plus4"), nib: NibConnection("result")},
       ),
       (
         {node: NodeConnection("plus3"), nib: NibConnection("right")},
-        {node: NodeConnection("definition"), nib: NibConnection("in-right")},
+        {
+          node: NodeConnection("definition"),
+          nib: NibConnection("in-right"),
+        },
       ),
     |],
+    (),
+  );
+
+let nestedInlineExample =
+  makeGraph(
+    ~name="Nested Inline Functions Example",
+    ~outputs=[|("result", "Result")|],
+    ~nodes=[|
+      (
+        "definition",
+        {
+          scope: GraphScope,
+          kind:
+            DefinedNode({
+              kind: FunctionDefinitionNode,
+              definitionID: "example-interface",
+            }),
+        },
+      ),
+      (
+        "definition2",
+        {
+          scope: NodeScope("definition"),
+          kind:
+            DefinedNode({
+              kind: FunctionDefinitionNode,
+              definitionID: "example-interface",
+            }),
+        },
+      ),
+      (
+        "definition3",
+        {
+          scope: NodeScope("definition2"),
+          kind:
+            DefinedNode({
+              kind: FunctionDefinitionNode,
+              definitionID: "example-interface",
+            }),
+        },
+      ),
+      (
+        "plus",
+        {
+          scope: NodeScope("definition3"),
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
+        },
+      ),
+    |],
+    ~connections=[||],
     (),
   );
 
@@ -328,6 +384,7 @@ let definitions =
     ("reference-example", referenceExample),
     ("example-interface", exampleInterface),
     ("interface-example", interfaceExample),
+    ("nested-inline-example", nestedInlineExample),
   |]);
 
 ReactDOMRe.renderToElementWithId(

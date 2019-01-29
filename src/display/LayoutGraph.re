@@ -109,7 +109,7 @@ let rec layoutDefinition =
         : (Belt.Map.String.t(nodeLayout), nodePosition) => {
   let childNodeIDs =
     Belt.Map.getWithDefault(scopedNodeIDs, nodeScope, Belt.Set.String.empty);
-  let columnCount = Belt.List.length(columnizedNodes) + 1;
+  let columnCount = Belt.List.length(columnizedNodes);
   let (columnFilledness, nodeLayouts) =
     Belt.List.reduceWithIndex(
       columnizedNodes,
@@ -143,19 +143,24 @@ let rec layoutDefinition =
                 Belt.Map.String.empty,
               )
             };
+          let lastColumn = columns + size.columns - 1;
           let rows =
             Belt.Array.reduce(
               Belt.Array.range(columns, columns + size.columns - 1),
               0,
               (row, column) =>
-              max(row, Belt.Array.getExn(columnsFilledness, column))
+              max(row, arrayGetWithDefault(columnsFilledness, column, 0))
+            );
+          let newFilledness =
+            Belt.Array.makeBy(
+              max(Belt.Array.length(columnsFilledness), lastColumn + 1),
+              (index: int) =>
+              index >= columns && index < columns + size.columns ?
+                rows + size.rows + 1 :
+                arrayGetWithDefault(columnsFilledness, index, 0)
             );
           (
-            Belt.Array.mapWithIndex(
-              columnsFilledness, (index: int, filledness: int) =>
-              index >= columns && index < columns + size.columns ?
-                rows + size.rows + 1 : filledness
-            ),
+            newFilledness,
             simpleMergeMaps(
               Belt.Map.String.set(
                 nodePositions,
@@ -178,7 +183,7 @@ let rec layoutDefinition =
     nodeLayouts,
     {
       rows: Belt.Array.reduce(columnFilledness, 0, max),
-      columns: columnCount,
+      columns: Belt.Array.length(columnFilledness) - 1,
     },
   );
 }
@@ -234,9 +239,13 @@ and layoutSubGraph =
     );
   (
     {
-      columns: lastColumn - firstColumn + 2,
+      /* inline function is at least 2 columns (for the inputs and outputs).
+         It expands depending on the subset of the graph that needs to occur inside/beside it. */
+      columns: max(0, max(lastColumn, position.columns) - firstColumn) + 2,
+      /* inline function needs to be tall enough to contain its inputs/outputs as well as its subgraph */
       rows: max(mostNibs, position.rows + 1),
     },
+    /* Move each subgraph node down one row as padding */
     Belt.Map.String.map(subLayout, nodeLayout =>
       {
         ...nodeLayout,

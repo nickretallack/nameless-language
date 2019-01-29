@@ -528,6 +528,52 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
       ]
     ], /* () */0);
 
+var nestedInlineExample = Definition$ReactTemplate.makeGraph("Nested Inline Functions Example", undefined, undefined, /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* array */[
+      /* tuple */[
+        "definition",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionDefinitionNode */3,
+                /* definitionID */"example-interface"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "definition2",
+        /* record */[
+          /* scope : NodeScope */["definition"],
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionDefinitionNode */3,
+                /* definitionID */"example-interface"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "definition3",
+        /* record */[
+          /* scope : NodeScope */["definition2"],
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionDefinitionNode */3,
+                /* definitionID */"example-interface"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "plus",
+        /* record */[
+          /* scope : NodeScope */["definition3"],
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"plus"
+              ]])
+        ]
+      ]
+    ], /* array */[], /* () */0);
+
 var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "example",
@@ -564,6 +610,10 @@ var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "interface-example",
         interfaceExample
+      ],
+      /* tuple */[
+        "nested-inline-example",
+        nestedInlineExample
       ]
     ]);
 
@@ -580,5 +630,6 @@ exports.pointExample = pointExample;
 exports.referenceExample = referenceExample;
 exports.exampleInterface = exampleInterface;
 exports.interfaceExample = interfaceExample;
+exports.nestedInlineExample = nestedInlineExample;
 exports.definitions = definitions;
 /* example Not a pure module */
