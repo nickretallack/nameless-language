@@ -180,7 +180,6 @@ let make =
         implementation.connections,
       );
 
-    Js.log(graphSize.columns);
     let nodeWidth = 120.0;
     let textHeight = 20.0;
     let xPadding = 60.0;

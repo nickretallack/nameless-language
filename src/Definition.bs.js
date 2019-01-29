@@ -474,6 +474,8 @@ function makeGraph($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$sta
 
 var InvalidConnection = Caml_exceptions.create("Definition-ReactTemplate.InvalidConnection");
 
+var CycleDetected = Caml_exceptions.create("Definition-ReactTemplate.CycleDetected");
+
 exports.connectionNodeToString = connectionNodeToString;
 exports.connectionNibToString = connectionNibToString;
 exports.connectionSideToString = connectionSideToString;
@@ -510,4 +512,5 @@ exports.makeNibDocs = makeNibDocs;
 exports.makeDefinition = makeDefinition;
 exports.makeGraph = makeGraph;
 exports.InvalidConnection = InvalidConnection;
+exports.CycleDetected = CycleDetected;
 /* ConnectionComparator Not a pure module */

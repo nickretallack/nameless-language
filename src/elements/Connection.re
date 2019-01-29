@@ -13,7 +13,7 @@ let make =
   ...component,
   render: _self => {
     let strokeWidth = 5.0;
-    let nudgeMagnitude = 20.0;
+    let nudgeMagnitude = 5.0;
     let left = min(sourcePosition.x, sinkPosition.x);
     let top = min(sourcePosition.y, sinkPosition.y) -. strokeWidth /. 2.0;
     let width = abs_float(sourcePosition.x -. sinkPosition.x);
@@ -39,6 +39,7 @@ let make =
         ~borderStyle="solid",
         ~borderColor=palette[nudge mod Array.length(palette)],
         ~borderWidth="0",
+        ~opacity="0.7",
         (),
       );
 

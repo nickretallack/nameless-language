@@ -3,6 +3,7 @@
 
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Belt_Set = require("bs-platform/lib/js/belt_Set.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
@@ -60,6 +61,9 @@ function topoSort(nodes, connections, scopes) {
         }));
   var unavailableNodes = match[1];
   var availableNodes = match[0];
+  if (Caml_obj.caml_equal(nodes, unavailableNodes)) {
+    throw Definition$ReactTemplate.CycleDetected;
+  }
   var remainingConnections = Belt_Map.keep(connections, (function (sink, _source) {
           var match = sink[/* node */0];
           if (match) {

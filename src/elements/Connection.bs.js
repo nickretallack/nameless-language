@@ -49,11 +49,12 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
                 borderWidth: "0",
                 height: Helpers$ReactTemplate.pixels(height / 2.0),
                 position: "absolute",
-                width: Helpers$ReactTemplate.pixels(width / 2.0)
+                width: Helpers$ReactTemplate.pixels(width / 2.0),
+                opacity: "0.7"
               };
               var centeredNudge = nudge - (maxNudge - 1 | 0) / 2.0;
-              var match = maxNudge * 20.0 < width;
-              var clampedNudgeMagnitude = match ? 20.0 : width / maxNudge;
+              var match = maxNudge * 5.0 < width;
+              var clampedNudgeMagnitude = match ? 5.0 : width / maxNudge;
               var actualNudge = centeredNudge * clampedNudgeMagnitude;
               var match$1 = 8.0 * 2.0 < height;
               var actualRoundness = match$1 ? 8.0 : height / 2.0;

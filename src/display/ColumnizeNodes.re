@@ -50,6 +50,9 @@ let rec topoSort =
         scopes,
       )
     );
+  if (nodes == unavailableNodes) {
+    raise(CycleDetected);
+  };
   let remainingConnections =
     Belt.Map.keep(connections, (sink, _source) =>
       switch (sink.node) {

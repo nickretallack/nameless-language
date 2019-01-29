@@ -309,6 +309,10 @@ let interfaceExample =
         {node: NodeConnection("definition"), nib: NibConnection("out-right")},
         {node: NodeConnection("plus4"), nib: NibConnection("result")},
       ),
+      (
+        {node: NodeConnection("plus3"), nib: NibConnection("right")},
+        {node: NodeConnection("definition"), nib: NibConnection("in-right")},
+      ),
     |],
     (),
   );

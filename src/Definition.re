@@ -670,6 +670,7 @@ let makeGraph =
   );
 
 exception InvalidConnection;
+exception CycleDetected;
 
 /* Publishing.
    These types are used ephemerally during publishing.  They won't be retained in the state.

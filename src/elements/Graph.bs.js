@@ -78,7 +78,6 @@ function make(definitions, implementation, display, documentation, size, emit, _
                     }));
               var match = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
               var nodeLayouts = match[0];
-              console.log(match[1][/* columns */0]);
               var columnWidth = 120.0 + 60.0;
               var yMargin = 20.0 * 4.0;
               var getNodePosition = function (nodeID) {
