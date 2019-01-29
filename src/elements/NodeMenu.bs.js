@@ -5,10 +5,12 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 
 var component = ReasonReact.statelessComponent("NodeMenu");
 
-function make(definitions, nib, emit, _children) {
+function make(definitions, nodes, nib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -20,18 +22,29 @@ function make(definitions, nib, emit, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
-              return React.createElement("div", undefined, React.createElement("a", {
-                              onClick: (function (_event) {
-                                  return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
-                                                  /* node : record */[
-                                                    /* scope : GraphScope */0,
-                                                    /* kind : ReferenceNode */0
-                                                  ],
-                                                  /* explicitConnectionSide */nib,
-                                                  /* connectionNib : ValueConnection */0
-                                                ]]));
-                                })
-                            }, "Reference"));
+              var match = nib[/* connectionSide */0][/* node */0];
+              var scope;
+              if (match) {
+                var nodeID = match[0];
+                var node = Belt_MapString.getExn(nodes, nodeID);
+                var match$1 = Definition$ReactTemplate.isFunctionDefinitionNode(node);
+                scope = match$1 ? /* NodeScope */[nodeID] : node[/* scope */0];
+              } else {
+                scope = /* GraphScope */0;
+              }
+              var match$2 = nib[/* isSource */1];
+              return React.createElement("div", undefined, match$2 ? null : React.createElement("a", {
+                                onClick: (function (_event) {
+                                    return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
+                                                    /* node : record */[
+                                                      /* scope */scope,
+                                                      /* kind : ReferenceNode */0
+                                                    ],
+                                                    /* explicitConnectionSide */nib,
+                                                    /* connectionNib : ValueConnection */0
+                                                  ]]));
+                                  })
+                              }, "Reference"));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

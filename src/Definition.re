@@ -112,6 +112,12 @@ type nodeWithID = {
   node,
 };
 
+let isFunctionDefinitionNode = (node: node) =>
+  switch (node.kind) {
+  | DefinedNode({kind: FunctionDefinitionNode}) => true
+  | _ => false
+  };
+
 /*
  variant Yes
  variant No

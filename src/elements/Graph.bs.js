@@ -291,7 +291,7 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                       tmp = undefined;
                                     }
                                     return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), tmp, self[/* send */3], /* array */[]));
-                                  }), implementation[/* nodes */1])), match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, match$2, emit, /* array */[])) : null);
+                                  }), implementation[/* nodes */1])), match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */1], match$2, emit, /* array */[])) : null);
             }),
           /* initialState */(function (param) {
               return /* record */[

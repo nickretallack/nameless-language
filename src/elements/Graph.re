@@ -488,7 +488,12 @@ let make =
       {switch (self.state.selectedNib) {
        | None => ReasonReact.null
        | Some(explicitConnectionSide) =>
-         <NodeMenu emit definitions nib=explicitConnectionSide />
+         <NodeMenu
+           emit
+           definitions
+           nodes={implementation.nodes}
+           nib=explicitConnectionSide
+         />
        }}
     </div>;
   },

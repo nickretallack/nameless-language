@@ -65,6 +65,15 @@ var cmp$1 = Caml_obj.caml_compare;
 
 var ScopeComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp$1]);
 
+function isFunctionDefinitionNode(node) {
+  var match = node[/* kind */1];
+  if (typeof match === "number" || !match.tag) {
+    return false;
+  } else {
+    return match[0][/* kind */0] === 3;
+  }
+}
+
 var primitiveValueTypes = /* array */[
   /* TextType */2,
   /* NumberType */1
@@ -483,6 +492,7 @@ exports.ConnectionComparator = ConnectionComparator;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
 exports.ScopeComparator = ScopeComparator;
+exports.isFunctionDefinitionNode = isFunctionDefinitionNode;
 exports.primitiveValueTypes = primitiveValueTypes;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;
