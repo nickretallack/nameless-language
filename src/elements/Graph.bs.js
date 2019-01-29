@@ -62,7 +62,8 @@ function make(definitions, implementation, display, documentation, size, emit, _
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
-              var columns = ColumnizeNodes$ReactTemplate.topoSort(implementation[/* nodes */1], implementation[/* connections */0]);
+              var columns = ColumnizeNodes$ReactTemplate.columnizeNodes(implementation[/* nodes */1], implementation[/* connections */0]);
+              console.log(columns);
               var columnizedNodes = Belt_List.map(columns, (function (nodes) {
                       return Belt_List.map(Belt_List.fromArray(Belt_MapString.toArray(nodes)), (function (param) {
                                     return /* record */[
@@ -78,19 +79,21 @@ function make(definitions, implementation, display, documentation, size, emit, _
                     }));
               var match = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
               var nodeLayouts = match[0];
-              var columnWidth = size[/* x */0] / (List.length(columns) + 3 | 0);
-              var padding = (size[/* y */1] - match[1] * 20.0) / 2.0;
+              var columnWidth = 120.0 + 60.0;
+              var yMargin = (size[/* y */1] - match[1] * 20.0 - 20.0) / 2.0;
+              var xMargin = (size[/* x */0] - (List.length(columns) + 2 | 0) * columnWidth - 60.0) / 2.0;
               var getNodePosition = function (nodeID) {
                 var position = Belt_MapString.getExn(nodeLayouts, nodeID)[/* position */0];
                 return /* record */[
-                        /* x */(position[/* columns */0] + 0.5) * columnWidth,
-                        /* y */position[/* rows */1] * 20.0 + padding
+                        /* x */position[/* columns */0] * columnWidth + xMargin,
+                        /* y */position[/* rows */1] * 20.0 + yMargin
                       ];
               };
               var getNodeSize = function (nodeID) {
                 var size = Belt_MapString.getExn(nodeLayouts, nodeID)[/* size */1];
+                console.log(size[/* columns */0]);
                 return /* record */[
-                        /* x */size[/* columns */0] * columnWidth,
+                        /* x */size[/* columns */0] * columnWidth - 60.0,
                         /* y */size[/* rows */1] * 20.0
                       ];
               };
@@ -108,15 +111,30 @@ function make(definitions, implementation, display, documentation, size, emit, _
               };
               var inputPositions = nibPositions(display[/* inputOrdering */0], true);
               var outputPositions = nibPositions(display[/* outputOrdering */1], false);
+              var isNibInternal = function (node, nib) {
+                var match = node[/* kind */1];
+                if (typeof match === "number" || !(match.tag && !(match[0][/* kind */0] !== 3 || typeof nib === "number" || nib.tag))) {
+                  return false;
+                } else {
+                  return true;
+                }
+              };
               var getNibPosition = function (connectionSide, isSink) {
                 var match = connectionSide[/* node */0];
                 if (match) {
                   var nodeID = match[0];
                   var nodePosition = getNodePosition(nodeID);
+                  var nodeSize = getNodeSize(nodeID);
                   var node = Belt_MapString.getExn(implementation[/* nodes */1], nodeID);
+                  var isInternal = isNibInternal(node, connectionSide[/* nib */1]);
+                  var rightSide = isInternal ? !isSink : isSink;
                   return /* record */[
                           /* x */nodePosition[/* x */0] + (
-                            isSink ? 80.0 : 0.0
+                            isInternal ? (
+                                rightSide ? nodeSize[/* x */0] - 120.0 : 120.0
+                              ) : (
+                                rightSide ? nodeSize[/* x */0] : 0.0
+                              )
                           ),
                           /* y */Definition$ReactTemplate.getNodeNibIndex(node, definitions, connectionSide[/* nib */1], isSink) * 20.0 + 20.0 / 2.0 + nodePosition[/* y */1]
                         ];

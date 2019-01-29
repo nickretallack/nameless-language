@@ -20,6 +20,7 @@ let make =
       <SimpleNode
         nodeID
         position
+        size
         emit
         ?name
         inputs

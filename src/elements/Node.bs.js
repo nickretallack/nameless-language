@@ -25,7 +25,7 @@ function make(nodeID, node, definitions, position, size, selectedNib, emit, _chi
           /* render */(function (_self) {
               var makeNode = function (outputs, $staropt$star, definitionID, name, param) {
                 var inputs = $staropt$star !== undefined ? $staropt$star : /* [] */0;
-                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, selectedNib, emit, /* array */[]));
+                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, size, selectedNib, emit, /* array */[]));
               };
               var match = node[/* kind */1];
               if (typeof match === "number") {

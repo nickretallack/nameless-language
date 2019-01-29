@@ -1,35 +1,50 @@
 open Definition;
 
-let isRootNode = (nodeID: nodeID, connections: connections, node: node): bool =>
-  !
-    Belt.Map.some(connections, (sink: connectionSide, source: connectionSide) =>
-      switch (source.node) {
-      | GraphConnection => false
-      | NodeConnection(connectionNodeID) =>
-        nodeID != connectionNodeID ?
-          false :
-          (
-            switch (node.kind) {
-            | DefinedNode({kind: FunctionDefinitionNode}) =>
-              switch (source.nib) {
-              | ValueConnection => true
-              | NibConnection(_) => false
-              | _ => raise(Not_found)
-              }
-            | _ =>
-              switch (sink.node) {
-              | NodeConnection(_) => true
-              | GraphConnection => false
-              }
-            }
-          )
-      }
-    );
+let isRootNode =
+    (
+      nodeID: nodeID,
+      connections: connections,
+      node: node,
+      scopes: nodeScopeSet,
+    )
+    : bool =>
+  Belt.Set.has(scopes, node.scope)
+  && !
+       Belt.Map.some(
+         connections, (sink: connectionSide, source: connectionSide) =>
+         switch (source.node) {
+         | GraphConnection => false
+         | NodeConnection(connectionNodeID) =>
+           nodeID != connectionNodeID ?
+             false :
+             (
+               switch (node.kind) {
+               | DefinedNode({kind: FunctionDefinitionNode}) =>
+                 switch (source.nib) {
+                 | ValueConnection => true
+                 | NibConnection(_) => false
+                 | _ => raise(Not_found)
+                 }
+               | _ =>
+                 switch (sink.node) {
+                 | NodeConnection(_) => true
+                 | GraphConnection => false
+                 }
+               }
+             )
+         }
+       );
 
-let rec topoSort = (nodes: nodes, connections: connections) => {
+let rec topoSort =
+        (nodes: nodes, connections: connections, scopes: nodeScopeSet) => {
   let (availableNodes, unavailableNodes) =
     Belt.Map.String.partition(nodes, (nodeID, _node) =>
-      isRootNode(nodeID, connections, Belt.Map.String.getExn(nodes, nodeID))
+      isRootNode(
+        nodeID,
+        connections,
+        Belt.Map.String.getExn(nodes, nodeID),
+        scopes,
+      )
     );
   let remainingConnections =
     Belt.Map.keep(connections, (sink, _source) =>
@@ -42,9 +57,28 @@ let rec topoSort = (nodes: nodes, connections: connections) => {
           )
       }
     );
+  let newScopes =
+    Belt.Map.String.reduce(
+      availableNodes, scopes, (acc: nodeScopeSet, nodeID: nodeID, node: node) =>
+      switch (node.kind) {
+      | DefinedNode({kind: FunctionDefinitionNode}) =>
+        Belt.Set.add(acc, NodeScope(nodeID))
+      | _ => acc
+      }
+    );
   if (Belt.Map.String.isEmpty(unavailableNodes)) {
     [availableNodes];
   } else {
-    [availableNodes, ...topoSort(unavailableNodes, remainingConnections)];
+    [
+      availableNodes,
+      ...topoSort(unavailableNodes, remainingConnections, newScopes),
+    ];
   };
 };
+
+let columnizeNodes = (nodes: nodes, connections: connections) =>
+  topoSort(
+    nodes,
+    connections,
+    Belt.Set.fromArray([|GraphScope|], ~id=(module ScopeComparator)),
+  );

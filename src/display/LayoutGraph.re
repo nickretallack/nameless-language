@@ -136,7 +136,7 @@ let rec layoutDefinition =
               )
             | _ => (
                 {
-                  rows: countNodeNibs(node.node, definitions) + 2,
+                  rows: countNodeNibs(node.node, definitions) + 1,
                   columns: 1,
                 },
                 Belt.Map.String.empty,
@@ -153,7 +153,7 @@ let rec layoutDefinition =
             Belt.Array.mapWithIndex(
               columnsFilledness, (index: int, filledness: int) =>
               index >= columns && index < columns + size.columns ?
-                rows + size.rows : filledness
+                rows + size.rows + 1 : filledness
             ),
             simpleMergeMaps(
               Belt.Map.String.set(

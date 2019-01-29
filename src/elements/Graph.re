@@ -140,10 +140,11 @@ let make =
       Belt.Map.String.getExn(implementation.nodes, nodeID);
 
     let columns: list(nodes) =
-      ColumnizeNodes.topoSort(
+      ColumnizeNodes.columnizeNodes(
         implementation.nodes,
         implementation.connections,
       );
+    Js.log(columns);
 
     /* TODO: ColumnizeNodes should output this format */
     let columnizedNodes =
@@ -180,32 +181,35 @@ let make =
         implementation.connections,
       );
 
-    /* Next steps:
-       - invert the columns to map node ids to their column number.
-        - width:
-          - first column: check direct connections as well as children
-          - last column: check direct connections as well as children
-        - height: group children by column and add up their heights, finding the max.
-       - starting with the deepest cohort and moving up, calculate the node's size by counting its rows or laying out its contents
-         - convert the code below into library functions for this
-        */
-
-    let columnWidth = size.x /. float_of_int(List.length(columns) + 3);
-    let nodeWidth = 80.0;
+    let nodeWidth = 120.0;
     let textHeight = 20.0;
-    let padding = (size.y -. float_of_int(rows) *. textHeight) /. 2.0;
+    let xPadding = 60.0;
+    let yPadding = 20.0;
+    let columnWidth = nodeWidth +. xPadding;
+    let yMargin =
+      (size.y -. float_of_int(rows) *. textHeight -. yPadding) /. 2.0;
+    let xMargin =
+      (
+        size.x
+        -. float_of_int(List.length(columns) + 2)
+        *. columnWidth
+        -. xPadding
+      )
+      /. 2.0;
     let getNodePosition = nodeID => {
       let position = Belt.Map.String.getExn(nodeLayouts, nodeID).position;
       {
-        x: (float_of_int(position.columns) +. 0.5) *. columnWidth,
-        y: float_of_int(position.rows) *. textHeight +. padding,
+        x: float_of_int(position.columns) *. columnWidth +. xMargin,
+        y: float_of_int(position.rows) *. textHeight +. yMargin,
       };
     };
 
     let getNodeSize = nodeID => {
       let size = Belt.Map.String.getExn(nodeLayouts, nodeID).size;
+      Js.log(size.columns);
+
       {
-        x: float_of_int(size.columns) *. columnWidth,
+        x: float_of_int(size.columns) *. columnWidth -. xPadding,
         y: float_of_int(size.rows) *. textHeight,
       };
     };
@@ -237,13 +241,32 @@ let make =
     let inputPositions = nibPositions(display.inputOrdering, true);
     let outputPositions = nibPositions(display.outputOrdering, false);
 
+    let isNibInternal = (node: node, nib: connectionNib) =>
+      switch (node.kind) {
+      | DefinedNode({kind: FunctionDefinitionNode}) =>
+        switch (nib) {
+        | NibConnection(_) => true
+        | _ => false
+        }
+      | _ => false
+      };
+
     let getNibPosition = (connectionSide: connectionSide, isSink: bool) =>
       switch (connectionSide.node) {
       | NodeConnection(nodeID) =>
         let nodePosition = getNodePosition(nodeID);
+        let nodeSize = getNodeSize(nodeID);
         let node = getNode(nodeID);
+        let isInternal = isNibInternal(node, connectionSide.nib);
+        let rightSide = isInternal ? !isSink : isSink;
         {
-          x: nodePosition.x +. (isSink ? 80.0 : 0.0),
+          x:
+            nodePosition.x
+            +. (
+              isInternal ?
+                rightSide ? nodeSize.x -. nodeWidth : nodeWidth :
+                rightSide ? nodeSize.x : 0.0
+            ),
           y:
             float_of_int(
               getNodeNibIndex(node, definitions, connectionSide.nib, isSink),

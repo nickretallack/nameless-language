@@ -73,7 +73,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                           match$1 = /* tuple */[
                             /* record */[
                               /* columns */1,
-                              /* rows */Definition$ReactTemplate.countNodeNibs(node[/* node */1], definitions) + 2 | 0
+                              /* rows */Definition$ReactTemplate.countNodeNibs(node[/* node */1], definitions) + 1 | 0
                             ],
                             Belt_MapString.empty
                           ];
@@ -86,7 +86,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                                 Belt_Array.mapWithIndex(columnsFilledness, (function (index, filledness) {
                                         var match = index >= columns && index < (columns + size[/* columns */0] | 0);
                                         if (match) {
-                                          return rows + size[/* rows */1] | 0;
+                                          return (rows + size[/* rows */1] | 0) + 1 | 0;
                                         } else {
                                           return filledness;
                                         }

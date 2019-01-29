@@ -45,6 +45,7 @@ let make =
       ~inputs: list(displayNib),
       ~outputs: list(displayNib),
       ~position: point,
+      ~size: point,
       ~selectedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
@@ -53,7 +54,13 @@ let make =
   render: _self =>
     <div
       className="node"
-      style={positionStyle(position)}
+      style={ReactDOMRe.Style.make(
+        ~left=pixels(position.x),
+        ~top=pixels(position.y),
+        ~width=pixels(size.x),
+        ~height=pixels(size.y),
+        (),
+      )}
       onDoubleClick=?{
         Belt.Option.map(definitionID, (definitionID: definitionID, _event) =>
           ReasonReact.Router.push("#" ++ definitionID)

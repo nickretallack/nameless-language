@@ -27,7 +27,7 @@ body {
 
 .node {
 	position: absolute;
-	width: 80px;
+	/* width: 80px; */
 	background: lightgray;
 	top: 0;
 	left: 0;
@@ -73,7 +73,7 @@ body {
 
 .node .input,
 .node .output {
-	width: 80px;
+	/* width: 80px; */
 	height: 20px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -150,7 +150,7 @@ a {
 .definition-node .inputs,
 .definition-node .outputs {
 	z-index: 1;
-	width: 80px;
+	width: 120px;
 	background: lightgray;
 	position: absolute;
 	top: 0;

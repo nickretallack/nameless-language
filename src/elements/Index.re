@@ -262,19 +262,33 @@ let interfaceExample =
           kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
         },
       ),
+      (
+        "plus2",
+        {
+          scope: NodeScope("definition"),
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
+        },
+      ),
+      (
+        "plus3",
+        {
+          scope: NodeScope("definition"),
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
+        },
+      ),
     |],
     ~connections=[|
       (
         {node: GraphConnection, nib: NibConnection("result")},
         {node: NodeConnection("definition"), nib: ValueConnection},
       ),
-      (
-        {node: NodeConnection("definition"), nib: NibConnection("out-left")},
-        {node: NodeConnection("plus1"), nib: NibConnection("result")},
-      ),
+      /* (
+           {node: NodeConnection("definition"), nib: NibConnection("out-left")},
+           {node: NodeConnection("plus1"), nib: NibConnection("result")},
+         ), */
       (
         {node: NodeConnection("plus1"), nib: NibConnection("left")},
-        {node: NodeConnection("definition"), nib: NibConnection("in-left")},
+        {node: NodeConnection("plus3"), nib: NibConnection("result")},
       ),
     |],
     (),

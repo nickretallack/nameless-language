@@ -100,6 +100,7 @@ module ScopeComparator =
     let cmp = compare;
   });
 type nodeScopes('a) = Belt.Map.t(nodeScope, 'a, ScopeComparator.identity);
+type nodeScopeSet = Belt.Set.t(nodeScope, ScopeComparator.identity);
 
 type node = {
   scope: nodeScope,

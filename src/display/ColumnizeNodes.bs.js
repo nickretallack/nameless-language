@@ -2,50 +2,56 @@
 'use strict';
 
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
+var Belt_Set = require("bs-platform/lib/js/belt_Set.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 
-function isRootNode(nodeID, connections, node) {
-  return !Belt_Map.some(connections, (function (sink, source) {
-                var match = source[/* node */0];
-                if (match) {
-                  var match$1 = nodeID !== match[0];
-                  if (match$1) {
-                    return false;
-                  } else {
-                    var match$2 = node[/* kind */1];
-                    var exit = 0;
-                    if (typeof match$2 === "number" || !(match$2.tag && match$2[0][/* kind */0] === 3)) {
-                      exit = 1;
+function isRootNode(nodeID, connections, node, scopes) {
+  if (Belt_Set.has(scopes, node[/* scope */0])) {
+    return !Belt_Map.some(connections, (function (sink, source) {
+                  var match = source[/* node */0];
+                  if (match) {
+                    var match$1 = nodeID !== match[0];
+                    if (match$1) {
+                      return false;
                     } else {
-                      var match$3 = source[/* nib */1];
-                      if (typeof match$3 === "number") {
-                        return true;
-                      } else if (match$3.tag) {
-                        throw Caml_builtin_exceptions.not_found;
+                      var match$2 = node[/* kind */1];
+                      var exit = 0;
+                      if (typeof match$2 === "number" || !(match$2.tag && match$2[0][/* kind */0] === 3)) {
+                        exit = 1;
                       } else {
-                        return false;
+                        var match$3 = source[/* nib */1];
+                        if (typeof match$3 === "number") {
+                          return true;
+                        } else if (match$3.tag) {
+                          throw Caml_builtin_exceptions.not_found;
+                        } else {
+                          return false;
+                        }
                       }
-                    }
-                    if (exit === 1) {
-                      var match$4 = sink[/* node */0];
-                      if (match$4) {
-                        return true;
-                      } else {
-                        return false;
+                      if (exit === 1) {
+                        var match$4 = sink[/* node */0];
+                        if (match$4) {
+                          return true;
+                        } else {
+                          return false;
+                        }
                       }
+                      
                     }
-                    
+                  } else {
+                    return false;
                   }
-                } else {
-                  return false;
-                }
-              }));
+                }));
+  } else {
+    return false;
+  }
 }
 
-function topoSort(nodes, connections) {
+function topoSort(nodes, connections, scopes) {
   var match = Belt_MapString.partition(nodes, (function (nodeID, _node) {
-          return isRootNode(nodeID, connections, Belt_MapString.getExn(nodes, nodeID));
+          return isRootNode(nodeID, connections, Belt_MapString.getExn(nodes, nodeID), scopes);
         }));
   var unavailableNodes = match[1];
   var availableNodes = match[0];
@@ -60,6 +66,14 @@ function topoSort(nodes, connections) {
             return false;
           }
         }));
+  var newScopes = Belt_MapString.reduce(availableNodes, scopes, (function (acc, nodeID, node) {
+          var match = node[/* kind */1];
+          if (typeof match === "number" || !(match.tag && match[0][/* kind */0] === 3)) {
+            return acc;
+          } else {
+            return Belt_Set.add(acc, /* NodeScope */[nodeID]);
+          }
+        }));
   if (Belt_MapString.isEmpty(unavailableNodes)) {
     return /* :: */[
             availableNodes,
@@ -68,11 +82,16 @@ function topoSort(nodes, connections) {
   } else {
     return /* :: */[
             availableNodes,
-            topoSort(unavailableNodes, remainingConnections)
+            topoSort(unavailableNodes, remainingConnections, newScopes)
           ];
   }
 }
 
+function columnizeNodes(nodes, connections) {
+  return topoSort(nodes, connections, Belt_Set.fromArray(/* array */[/* GraphScope */0], Definition$ReactTemplate.ScopeComparator));
+}
+
 exports.isRootNode = isRootNode;
 exports.topoSort = topoSort;
-/* No side effect */
+exports.columnizeNodes = columnizeNodes;
+/* Definition-ReactTemplate Not a pure module */

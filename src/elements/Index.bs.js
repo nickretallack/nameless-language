@@ -424,6 +424,26 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
                 /* definitionID */"plus"
               ]])
         ]
+      ],
+      /* tuple */[
+        "plus2",
+        /* record */[
+          /* scope : NodeScope */["definition"],
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"plus"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "plus3",
+        /* record */[
+          /* scope : NodeScope */["definition"],
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"plus"
+              ]])
+        ]
       ]
     ], /* array */[
       /* tuple */[
@@ -438,22 +458,12 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
       ],
       /* tuple */[
         /* record */[
-          /* node : NodeConnection */["definition"],
-          /* nib : NibConnection */Block.__(0, ["out-left"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["plus1"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
-      ],
-      /* tuple */[
-        /* record */[
           /* node : NodeConnection */["plus1"],
           /* nib : NibConnection */Block.__(0, ["left"])
         ],
         /* record */[
-          /* node : NodeConnection */["definition"],
-          /* nib : NibConnection */Block.__(0, ["in-left"])
+          /* node : NodeConnection */["plus3"],
+          /* nib : NibConnection */Block.__(0, ["result"])
         ]
       ]
     ], /* () */0);
