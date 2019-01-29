@@ -109,11 +109,10 @@ let rec layoutDefinition =
         : (Belt.Map.String.t(nodeLayout), nodePosition) => {
   let childNodeIDs =
     Belt.Map.getWithDefault(scopedNodeIDs, nodeScope, Belt.Set.String.empty);
-  let columnCount = Belt.List.length(columnizedNodes);
   let (columnFilledness, nodeLayouts) =
     Belt.List.reduceWithIndex(
       columnizedNodes,
-      (Belt.Array.make(columnCount, 0), Belt.Map.String.empty),
+      ([||], Belt.Map.String.empty),
       (
         acc: (array(int), Belt.Map.String.t(nodeLayout)),
         nodes: list(nodeWithID),
@@ -151,6 +150,18 @@ let rec layoutDefinition =
               (row, column) =>
               max(row, arrayGetWithDefault(columnsFilledness, column, 0))
             );
+          /* Move each subgraph node down one row as padding */
+          let adjustedChildren =
+            Belt.Map.String.map(children, nodeLayout =>
+              {
+                ...nodeLayout,
+                position: {
+                  ...nodeLayout.position,
+                  rows: nodeLayout.position.rows + 1 + rows,
+                },
+              }
+            );
+
           let newFilledness =
             Belt.Array.makeBy(
               max(Belt.Array.length(columnsFilledness), lastColumn + 1),
@@ -173,7 +184,7 @@ let rec layoutDefinition =
                   },
                 },
               ),
-              children,
+              adjustedChildren,
             ),
           );
         },
@@ -245,16 +256,7 @@ and layoutSubGraph =
       /* inline function needs to be tall enough to contain its inputs/outputs as well as its subgraph */
       rows: max(mostNibs, position.rows),
     },
-    /* Move each subgraph node down one row as padding */
-    Belt.Map.String.map(subLayout, nodeLayout =>
-      {
-        ...nodeLayout,
-        position: {
-          ...nodeLayout.position,
-          rows: nodeLayout.position.rows + 1,
-        },
-      }
-    ),
+    subLayout,
   );
 };
 

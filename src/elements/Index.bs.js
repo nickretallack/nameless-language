@@ -555,7 +555,7 @@ var nestedInlineExample = Definition$ReactTemplate.makeGraph("Nested Inline Func
       /* tuple */[
         "definition3",
         /* record */[
-          /* scope : NodeScope */["definition2"],
+          /* scope : GraphScope */0,
           /* kind : DefinedNode */Block.__(1, [/* record */[
                 /* kind : FunctionDefinitionNode */3,
                 /* definitionID */"example-interface"
@@ -571,8 +571,27 @@ var nestedInlineExample = Definition$ReactTemplate.makeGraph("Nested Inline Func
                 /* definitionID */"plus"
               ]])
         ]
+      ],
+      /* tuple */[
+        "plus2",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"plus"
+              ]])
+        ]
       ]
-    ], /* array */[], /* () */0);
+    ], /* array */[/* tuple */[
+        /* record */[
+          /* node : NodeConnection */["plus"],
+          /* nib : NibConnection */Block.__(0, ["right"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["plus2"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ]], /* () */0);
 
 var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[

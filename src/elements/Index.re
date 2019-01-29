@@ -353,7 +353,7 @@ let nestedInlineExample =
       (
         "definition3",
         {
-          scope: NodeScope("definition2"),
+          scope: GraphScope,
           kind:
             DefinedNode({
               kind: FunctionDefinitionNode,
@@ -368,8 +368,20 @@ let nestedInlineExample =
           kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
         },
       ),
+      (
+        "plus2",
+        {
+          scope: GraphScope,
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "plus"}),
+        },
+      ),
     |],
-    ~connections=[||],
+    ~connections=[|
+      (
+        {node: NodeConnection("plus"), nib: NibConnection("right")},
+        {node: NodeConnection("plus2"), nib: NibConnection("result")},
+      ),
+    |],
     (),
   );
 

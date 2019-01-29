@@ -52,9 +52,8 @@ function getMaxColumn(definitionNodeID, connections, childNodeIDs, nodeColumns) 
 
 function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions, connections) {
   var childNodeIDs = Belt_Map.getWithDefault(scopedNodeIDs, nodeScope, Belt_SetString.empty);
-  var columnCount = Belt_List.length(columnizedNodes);
   var match = Belt_List.reduceWithIndex(columnizedNodes, /* tuple */[
-        Belt_Array.make(columnCount, 0),
+        /* array */[],
         Belt_MapString.empty
       ], (function (acc, nodes, columns) {
           return Belt_List.reduce(Belt_List.keep(nodes, (function (node) {
@@ -83,6 +82,16 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                         var rows = Belt_Array.reduce(Belt_Array.range(columns, (columns + size[/* columns */0] | 0) - 1 | 0), 0, (function (row, column) {
                                 return Caml_primitive.caml_int_max(row, Helpers$ReactTemplate.arrayGetWithDefault(columnsFilledness, column, 0));
                               }));
+                        var adjustedChildren = Belt_MapString.map(match$1[1], (function (nodeLayout) {
+                                var init = nodeLayout[/* position */0];
+                                return /* record */[
+                                        /* position : record */[
+                                          /* columns */init[/* columns */0],
+                                          /* rows */(nodeLayout[/* position */0][/* rows */1] + 1 | 0) + rows | 0
+                                        ],
+                                        /* size */nodeLayout[/* size */1]
+                                      ];
+                              }));
                         var newFilledness = Belt_Array.makeBy(Caml_primitive.caml_int_max(columnsFilledness.length, lastColumn + 1 | 0), (function (index) {
                                 var match = index >= columns && index < (columns + size[/* columns */0] | 0);
                                 if (match) {
@@ -99,7 +108,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                                             /* rows */rows
                                           ],
                                           /* size */size
-                                        ]), match$1[1])
+                                        ]), adjustedChildren)
                               ];
                       }));
         }));
@@ -143,16 +152,7 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
             /* columns */Caml_primitive.caml_int_max(0, Caml_primitive.caml_int_max(lastColumn, position[/* columns */0]) - firstColumn | 0) + 2 | 0,
             /* rows */Caml_primitive.caml_int_max(mostNibs, position[/* rows */1])
           ],
-          Belt_MapString.map(match$1[0], (function (nodeLayout) {
-                  var init = nodeLayout[/* position */0];
-                  return /* record */[
-                          /* position : record */[
-                            /* columns */init[/* columns */0],
-                            /* rows */nodeLayout[/* position */0][/* rows */1] + 1 | 0
-                          ],
-                          /* size */nodeLayout[/* size */1]
-                        ];
-                }))
+          match$1[0]
         ];
 }
 
