@@ -272,6 +272,7 @@ let make = (~size, ~definitions, _children) => {
            switch (implementation) {
            | GraphImplementation(implementation) =>
              <Graph
+               key=definitionID
                definitions={self.state.definitions}
                implementation
                display

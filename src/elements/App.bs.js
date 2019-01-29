@@ -113,7 +113,7 @@ function make(size, definitions, _children) {
                                     /* action */action
                                   ]]));
                   };
-                  tmp = implementation.tag === 3 ? ReasonReact.element(undefined, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], definition[/* documentation */1], size, emit, /* array */[])) : ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definition, definitions, emit, /* array */[]));
+                  tmp = implementation.tag === 3 ? ReasonReact.element(definitionID, undefined, Graph$ReactTemplate.make(self[/* state */1][/* definitions */0], implementation[0], definition[/* display */2], definition[/* documentation */1], size, emit, /* array */[])) : ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definition, definitions, emit, /* array */[]));
                 } else {
                   tmp = "Not found";
                 }
