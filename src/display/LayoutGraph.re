@@ -107,7 +107,8 @@ let rec layoutDefinition =
           connections: connections,
         )
         : (Belt.Map.String.t(nodeLayout), int) => {
-  let childNodeIDs = Belt.Map.getExn(scopedNodeIDs, nodeScope);
+  let childNodeIDs =
+    Belt.Map.getWithDefault(scopedNodeIDs, nodeScope, Belt.Set.String.empty);
   let columnCount = Belt.List.length(columnizedNodes) + 2;
   let (columnFilledness, nodeLayouts) =
     Belt.List.reduceWithIndex(
@@ -184,7 +185,11 @@ and layoutSubGraph =
       connections: connections,
     ) => {
   let childNodeIDs =
-    Belt.Map.getExn(scopedNodeIDs, NodeScope(definitionNode.id));
+    Belt.Map.getWithDefault(
+      scopedNodeIDs,
+      NodeScope(definitionNode.id),
+      Belt.Set.String.empty,
+    );
 
   let nodeColumns =
     Belt.List.reduceWithIndex(
@@ -202,6 +207,17 @@ and layoutSubGraph =
   let lastColumn =
     getMaxColumn(definitionNode.id, connections, childNodeIDs, nodeColumns);
 
+  let mostNibs =
+    switch (definitionNode.node.kind) {
+    | DefinedNode({definitionID}) =>
+      let display = Belt.Map.String.getExn(definitions, definitionID).display;
+      max(
+        Belt.List.length(display.inputOrdering),
+        Belt.List.length(display.outputOrdering),
+      );
+    | _ => raise(Not_found)
+    };
+
   let (subLayout, rows) =
     layoutDefinition(
       NodeScope(definitionNode.id),
@@ -211,7 +227,7 @@ and layoutSubGraph =
       connections,
     );
   (
-    {columns: lastColumn - firstColumn + 2, rows: rows + 1},
+    {columns: lastColumn - firstColumn + 2, rows: max(mostNibs, rows + 1)},
     Belt.Map.String.map(subLayout, nodeLayout =>
       {
         ...nodeLayout,
@@ -222,7 +238,6 @@ and layoutSubGraph =
       }
     ),
   );
-  /* TODO: call layoutGraph's body again but with a different scope. */
 };
 
 let layoutGraph =

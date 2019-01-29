@@ -404,8 +404,7 @@ var exampleInterface = Definition$ReactTemplate.makeDefinition("Example Interfac
 var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", undefined, undefined, /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* array */[
-      /* tuple */[
+      ]], /* array */[/* tuple */[
         "definition",
         /* record */[
           /* scope : GraphScope */0,
@@ -414,89 +413,7 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
                 /* definitionID */"example-interface"
               ]])
         ]
-      ],
-      /* tuple */[
-        "plus1",
-        /* record */[
-          /* scope : NodeScope */["definition"],
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
-      ],
-      /* tuple */[
-        "plus2",
-        /* record */[
-          /* scope : NodeScope */["definition"],
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
-      ],
-      /* tuple */[
-        "plus3",
-        /* record */[
-          /* scope : NodeScope */["definition"],
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
-      ],
-      /* tuple */[
-        "plus4",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
-      ]
-    ], /* array */[
-      /* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["definition"],
-          /* nib : ValueConnection */0
-        ]
-      ],
-      /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["definition"],
-          /* nib : NibConnection */Block.__(0, ["out-left"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["plus1"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
-      ],
-      /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["plus1"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["plus3"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
-      ],
-      /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["plus1"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["definition"],
-          /* nib : NibConnection */Block.__(0, ["in-left"])
-        ]
-      ]
-    ], /* () */0);
+      ]], /* array */[], /* () */0);
 
 var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[

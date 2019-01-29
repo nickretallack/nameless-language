@@ -51,7 +51,7 @@ function getMaxColumn(definitionNodeID, connections, childNodeIDs, nodeColumns) 
 }
 
 function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions, connections) {
-  var childNodeIDs = Belt_Map.getExn(scopedNodeIDs, nodeScope);
+  var childNodeIDs = Belt_Map.getWithDefault(scopedNodeIDs, nodeScope, Belt_SetString.empty);
   var columnCount = Belt_List.length(columnizedNodes) + 2 | 0;
   var match = Belt_List.reduceWithIndex(columnizedNodes, /* tuple */[
         Belt_Array.make(columnCount, 0),
@@ -108,7 +108,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
 }
 
 function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definitions, connections) {
-  var childNodeIDs = Belt_Map.getExn(scopedNodeIDs, /* NodeScope */[definitionNode[/* id */0]]);
+  var childNodeIDs = Belt_Map.getWithDefault(scopedNodeIDs, /* NodeScope */[definitionNode[/* id */0]], Belt_SetString.empty);
   var nodeColumns = Belt_List.reduceWithIndex(columnizedNodes, Belt_MapString.empty, (function (acc, nodes, column) {
           return Belt_List.reduce(nodes, acc, (function (acc, node) {
                         return Belt_MapString.set(acc, node[/* id */0], column);
@@ -120,13 +120,23 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
                       }));
         }));
   var lastColumn = getMaxColumn(definitionNode[/* id */0], connections, childNodeIDs, nodeColumns);
-  var match = layoutDefinition(/* NodeScope */[definitionNode[/* id */0]], scopedNodeIDs, columnizedNodes, definitions, connections);
+  var match = definitionNode[/* node */1][/* kind */1];
+  var mostNibs;
+  if (typeof match === "number") {
+    throw Caml_builtin_exceptions.not_found;
+  } else if (match.tag) {
+    var display = Belt_MapString.getExn(definitions, match[0][/* definitionID */1])[/* display */2];
+    mostNibs = Caml_primitive.caml_int_max(Belt_List.length(display[/* inputOrdering */0]), Belt_List.length(display[/* outputOrdering */1]));
+  } else {
+    throw Caml_builtin_exceptions.not_found;
+  }
+  var match$1 = layoutDefinition(/* NodeScope */[definitionNode[/* id */0]], scopedNodeIDs, columnizedNodes, definitions, connections);
   return /* tuple */[
           /* record */[
             /* columns */(lastColumn - firstColumn | 0) + 2 | 0,
-            /* rows */match[1] + 1 | 0
+            /* rows */Caml_primitive.caml_int_max(mostNibs, match$1[1] + 1 | 0)
           ],
-          Belt_MapString.map(match[0], (function (nodeLayout) {
+          Belt_MapString.map(match$1[0], (function (nodeLayout) {
                   var init = nodeLayout[/* position */0];
                   return /* record */[
                           /* position : record */[
