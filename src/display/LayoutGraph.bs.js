@@ -52,7 +52,7 @@ function getMaxColumn(definitionNodeID, connections, childNodeIDs, nodeColumns) 
 
 function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions, connections) {
   var childNodeIDs = Belt_Map.getWithDefault(scopedNodeIDs, nodeScope, Belt_SetString.empty);
-  var columnCount = Belt_List.length(columnizedNodes) + 2 | 0;
+  var columnCount = Belt_List.length(columnizedNodes) + 1 | 0;
   var match = Belt_List.reduceWithIndex(columnizedNodes, /* tuple */[
         Belt_Array.make(columnCount, 0),
         Belt_MapString.empty
@@ -103,7 +103,10 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
         }));
   return /* tuple */[
           match[1],
-          Belt_Array.reduce(match[0], 0, Caml_obj.caml_max)
+          /* record */[
+            /* columns */columnCount,
+            /* rows */Belt_Array.reduce(match[0], 0, Caml_obj.caml_max)
+          ]
         ];
 }
 
@@ -134,7 +137,7 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
   return /* tuple */[
           /* record */[
             /* columns */(lastColumn - firstColumn | 0) + 2 | 0,
-            /* rows */Caml_primitive.caml_int_max(mostNibs, match$1[1] + 1 | 0)
+            /* rows */Caml_primitive.caml_int_max(mostNibs, match$1[1][/* rows */1] + 1 | 0)
           ],
           Belt_MapString.map(match$1[0], (function (nodeLayout) {
                   var init = nodeLayout[/* position */0];

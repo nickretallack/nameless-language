@@ -23,8 +23,8 @@ var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exception
 var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var LayoutGraph$ReactTemplate = require("../display/LayoutGraph.bs.js");
-var DetectCycles$ReactTemplate = require("../display/DetectCycles.bs.js");
-var GraphActions$ReactTemplate = require("./GraphActions.bs.js");
+var DetectCycles$ReactTemplate = require("../edit/DetectCycles.bs.js");
+var GraphActions$ReactTemplate = require("../edit/GraphActions.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
 
 var cmp = Caml_obj.caml_compare;
@@ -78,13 +78,13 @@ function make(definitions, implementation, display, documentation, size, emit, _
                     }));
               var match = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
               var nodeLayouts = match[0];
+              console.log(match[1][/* columns */0]);
               var columnWidth = 120.0 + 60.0;
-              var yMargin = (size[/* y */1] - match[1] * 20.0 - 20.0) / 2.0;
-              var xMargin = (size[/* x */0] - (List.length(columns) + 2 | 0) * columnWidth - 60.0) / 2.0;
+              var yMargin = 20.0 * 4.0;
               var getNodePosition = function (nodeID) {
                 var position = Belt_MapString.getExn(nodeLayouts, nodeID)[/* position */0];
                 return /* record */[
-                        /* x */position[/* columns */0] * columnWidth + xMargin,
+                        /* x */position[/* columns */0] * columnWidth + columnWidth,
                         /* y */position[/* rows */1] * 20.0 + yMargin
                       ];
               };

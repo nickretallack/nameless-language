@@ -172,7 +172,7 @@ let make =
         )
       );
 
-    let (nodeLayouts, rows) =
+    let (nodeLayouts, graphSize) =
       LayoutGraph.layoutGraph(
         scopedNodeIDs,
         columnizedNodes,
@@ -180,21 +180,14 @@ let make =
         implementation.connections,
       );
 
+    Js.log(graphSize.columns);
     let nodeWidth = 120.0;
     let textHeight = 20.0;
     let xPadding = 60.0;
     let yPadding = 20.0;
     let columnWidth = nodeWidth +. xPadding;
-    let yMargin =
-      (size.y -. float_of_int(rows) *. textHeight -. yPadding) /. 2.0;
-    let xMargin =
-      (
-        size.x
-        -. float_of_int(List.length(columns) + 2)
-        *. columnWidth
-        -. xPadding
-      )
-      /. 2.0;
+    let yMargin = textHeight *. 4.0;
+    let xMargin = columnWidth;
     let getNodePosition = nodeID => {
       let position = Belt.Map.String.getExn(nodeLayouts, nodeID).position;
       {
