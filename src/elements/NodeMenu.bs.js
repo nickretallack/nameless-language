@@ -4,11 +4,29 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
+var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 
-var component = ReasonReact.statelessComponent("NodeMenu");
+function isNumberConstant(definition) {
+  var match = definition[/* implementation */0];
+  if (match.tag) {
+    return false;
+  } else {
+    switch (match[0].tag | 0) {
+      case 1 : 
+          return true;
+      case 0 : 
+      case 2 : 
+          return false;
+      
+    }
+  }
+}
+
+var component = ReasonReact.reducerComponent("NodeMenu");
 
 function make(definitions, nodes, nib, emit, _children) {
   return /* record */[
@@ -32,27 +50,71 @@ function make(definitions, nodes, nib, emit, _children) {
               } else {
                 scope = /* GraphScope */0;
               }
+              var renderCategory = function (name, category) {
+                var match = Caml_obj.caml_equal(self[/* state */1][/* category */0], category);
+                return React.createElement("a", {
+                            className: match ? "selected" : "",
+                            onClick: (function (_event) {
+                                return Curry._1(self[/* send */3], /* SelectCategory */[category]);
+                              })
+                          }, name);
+              };
+              var nodeSelector = function (name, filterFunction) {
+                return React.createElement("div", {
+                            className: "type-selector-choices"
+                          }, React.createElement("h3", undefined, name + "s"), Belt_Array.map(Belt_MapString.toArray(Belt_MapString.keep(definitions, (function (_definitionID, definition) {
+                                          return Curry._1(filterFunction, definition);
+                                        }))), (function (param) {
+                                  var definitionID = param[0];
+                                  return React.createElement("a", {
+                                              key: definitionID,
+                                              onClick: (function (_event) {
+                                                  return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
+                                                                  /* node : record */[
+                                                                    /* scope */scope,
+                                                                    /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                                          /* kind : ValueNode */1,
+                                                                          /* definitionID */definitionID
+                                                                        ]])
+                                                                  ],
+                                                                  /* explicitConnectionSide */nib,
+                                                                  /* connectionNib : ValueConnection */0
+                                                                ]]));
+                                                })
+                                            }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
+                                })));
+              };
               var match$2 = nib[/* isSource */1];
-              return React.createElement("div", undefined, match$2 ? null : React.createElement("a", {
-                                onClick: (function (_event) {
-                                    return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
-                                                    /* node : record */[
-                                                      /* scope */scope,
-                                                      /* kind : ReferenceNode */0
-                                                    ],
-                                                    /* explicitConnectionSide */nib,
-                                                    /* connectionNib : ValueConnection */0
-                                                  ]]));
-                                  })
-                              }, "Reference"));
+              var match$3 = self[/* state */1][/* category */0];
+              return React.createElement("div", {
+                          className: "type-selector-menu"
+                        }, React.createElement("div", {
+                              className: "type-selector-categories"
+                            }, match$2 ? null : React.createElement(React.Fragment, undefined, React.createElement("a", {
+                                        onClick: (function (_event) {
+                                            return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
+                                                            /* node : record */[
+                                                              /* scope */scope,
+                                                              /* kind : ReferenceNode */0
+                                                            ],
+                                                            /* explicitConnectionSide */nib,
+                                                            /* connectionNib : ValueConnection */0
+                                                          ]]));
+                                          })
+                                      }, "Reference"), renderCategory("Number", /* NumberCategory */0))), match$3 !== undefined ? nodeSelector("Number", isNumberConstant) : null);
             }),
-          /* initialState */component[/* initialState */10],
+          /* initialState */(function (param) {
+              return /* record */[/* category */undefined];
+            }),
           /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
+          /* reducer */(function (action, state) {
+              return /* Update */Block.__(0, [/* record */[/* category */action[0]]]);
+            }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]
         ];
 }
 
+exports.isNumberConstant = isNumberConstant;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */
