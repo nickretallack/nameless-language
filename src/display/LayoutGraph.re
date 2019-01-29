@@ -182,7 +182,7 @@ let rec layoutDefinition =
   (
     nodeLayouts,
     {
-      rows: Belt.Array.reduce(columnFilledness, 0, max),
+      rows: Belt.Array.reduce(columnFilledness, 0, max) + 1,
       columns: Belt.Array.length(columnFilledness) - 1,
     },
   );
@@ -243,7 +243,7 @@ and layoutSubGraph =
          It expands depending on the subset of the graph that needs to occur inside/beside it. */
       columns: max(0, max(lastColumn, position.columns) - firstColumn) + 2,
       /* inline function needs to be tall enough to contain its inputs/outputs as well as its subgraph */
-      rows: max(mostNibs, position.rows + 1),
+      rows: max(mostNibs, position.rows),
     },
     /* Move each subgraph node down one row as padding */
     Belt.Map.String.map(subLayout, nodeLayout =>

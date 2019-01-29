@@ -108,7 +108,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
           match[1],
           /* record */[
             /* columns */columnFilledness.length - 1 | 0,
-            /* rows */Belt_Array.reduce(columnFilledness, 0, Caml_obj.caml_max)
+            /* rows */Belt_Array.reduce(columnFilledness, 0, Caml_obj.caml_max) + 1 | 0
           ]
         ];
 }
@@ -141,7 +141,7 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
   return /* tuple */[
           /* record */[
             /* columns */Caml_primitive.caml_int_max(0, Caml_primitive.caml_int_max(lastColumn, position[/* columns */0]) - firstColumn | 0) + 2 | 0,
-            /* rows */Caml_primitive.caml_int_max(mostNibs, position[/* rows */1] + 1 | 0)
+            /* rows */Caml_primitive.caml_int_max(mostNibs, position[/* rows */1])
           ],
           Belt_MapString.map(match$1[0], (function (nodeLayout) {
                   var init = nodeLayout[/* position */0];
