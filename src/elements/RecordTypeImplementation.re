@@ -24,6 +24,9 @@ let make =
         definitions
         emit
       />
+      <a onClick={_event => emit(AddInput)}>
+        {ReasonReact.string("Add Field")}
+      </a>
     </div>;
   },
 };

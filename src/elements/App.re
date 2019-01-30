@@ -190,9 +190,17 @@ let make = (~size, ~definitions, _children) => {
                     Belt.Map.String.set(
                       interface.inputTypes,
                       nibID,
-                      PrimitiveValueType(NumberType),
+                      PrimitiveValueType(TextType),
                     ),
                 })
+              | RecordTypeImplementation(typedFields) =>
+                RecordTypeImplementation(
+                  Belt.Map.String.set(
+                    typedFields,
+                    nibID,
+                    PrimitiveValueType(TextType),
+                  ),
+                )
               | _ => definition.implementation
               },
           };

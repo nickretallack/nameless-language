@@ -151,14 +151,19 @@ function make(size, definitions, _children) {
                         var nibID = Helpers$ReactTemplate.randomID(/* () */0);
                         var match$1 = definition[/* implementation */0];
                         var tmp;
-                        if (match$1.tag === 1) {
-                          var $$interface = match$1[0];
-                          tmp = /* InterfaceImplementation */Block.__(1, [/* record */[
-                                /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, /* PrimitiveValueType */Block.__(0, [/* NumberType */1])),
-                                /* outputTypes */$$interface[/* outputTypes */1]
-                              ]]);
-                        } else {
-                          tmp = definition[/* implementation */0];
+                        switch (match$1.tag | 0) {
+                          case 1 : 
+                              var $$interface = match$1[0];
+                              tmp = /* InterfaceImplementation */Block.__(1, [/* record */[
+                                    /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2])),
+                                    /* outputTypes */$$interface[/* outputTypes */1]
+                                  ]]);
+                              break;
+                          case 4 : 
+                              tmp = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$1[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
+                              break;
+                          default:
+                            tmp = definition[/* implementation */0];
                         }
                         var init = definition[/* documentation */1];
                         var init$1 = definition[/* display */2];
