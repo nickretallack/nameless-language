@@ -147,27 +147,47 @@ function make(size, definitions, _children) {
                     var definition = Belt_MapString.getExn(state[/* definitions */0], definitionID);
                     var newDefinition;
                     if (typeof action$1 === "number") {
-                      var nibID = Helpers$ReactTemplate.randomID(/* () */0);
-                      var init = definition[/* documentation */1];
-                      newDefinition = /* record */[
-                        /* implementation */definition[/* implementation */0],
-                        /* documentation : record */[
-                          /* name */init[/* name */0],
-                          /* description */init[/* description */1],
-                          /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
-                          /* outputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable)
-                        ],
-                        /* display : record */[
-                          /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
-                                nibID,
-                                /* [] */0
-                              ]),
-                          /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
-                                nibID,
-                                /* [] */0
-                              ])
-                        ]
-                      ];
+                      if (action$1 === 0) {
+                        var nibID = Helpers$ReactTemplate.randomID(/* () */0);
+                        var init = definition[/* documentation */1];
+                        var init$1 = definition[/* display */2];
+                        newDefinition = /* record */[
+                          /* implementation */definition[/* implementation */0],
+                          /* documentation : record */[
+                            /* name */init[/* name */0],
+                            /* description */init[/* description */1],
+                            /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
+                            /* outputs */init[/* outputs */3]
+                          ],
+                          /* display : record */[
+                            /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
+                                  nibID,
+                                  /* [] */0
+                                ]),
+                            /* outputOrdering */init$1[/* outputOrdering */1]
+                          ]
+                        ];
+                      } else {
+                        var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
+                        var init$2 = definition[/* documentation */1];
+                        var init$3 = definition[/* display */2];
+                        newDefinition = /* record */[
+                          /* implementation */definition[/* implementation */0],
+                          /* documentation : record */[
+                            /* name */init$2[/* name */0],
+                            /* description */init$2[/* description */1],
+                            /* inputs */init$2[/* inputs */2],
+                            /* outputs */Belt_MapString.set(definition[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
+                          ],
+                          /* display : record */[
+                            /* inputOrdering */init$3[/* inputOrdering */0],
+                            /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
+                                  nibID$1,
+                                  /* [] */0
+                                ])
+                          ]
+                        ];
+                      }
                     } else {
                       switch (action$1.tag | 0) {
                         case 0 : 
@@ -188,27 +208,27 @@ function make(size, definitions, _children) {
                             }
                             break;
                         case 1 : 
-                            var init$1 = definition[/* documentation */1];
+                            var init$4 = definition[/* documentation */1];
                             newDefinition = /* record */[
                               /* implementation */definition[/* implementation */0],
                               /* documentation : record */[
                                 /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* name */0], "en", action$1[0]),
-                                /* description */init$1[/* description */1],
-                                /* inputs */init$1[/* inputs */2],
-                                /* outputs */init$1[/* outputs */3]
+                                /* description */init$4[/* description */1],
+                                /* inputs */init$4[/* inputs */2],
+                                /* outputs */init$4[/* outputs */3]
                               ],
                               /* display */definition[/* display */2]
                             ];
                             break;
                         case 2 : 
-                            var init$2 = definition[/* documentation */1];
+                            var init$5 = definition[/* documentation */1];
                             newDefinition = /* record */[
                               /* implementation */definition[/* implementation */0],
                               /* documentation : record */[
                                 /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* description */1], "en", action$1[0]),
-                                /* description */init$2[/* description */1],
-                                /* inputs */init$2[/* inputs */2],
-                                /* outputs */init$2[/* outputs */3]
+                                /* description */init$5[/* description */1],
+                                /* inputs */init$5[/* inputs */2],
+                                /* outputs */init$5[/* outputs */3]
                               ],
                               /* display */definition[/* display */2]
                             ];
@@ -228,26 +248,26 @@ function make(size, definitions, _children) {
                         case 4 : 
                             var match$4 = action$1[0];
                             var isInput = match$4[/* isInput */1];
-                            var nibID$1 = match$4[/* nibID */0];
+                            var nibID$2 = match$4[/* nibID */0];
                             var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
-                            var nib = Belt_MapString.getExn(nibs, nibID$1);
+                            var nib = Belt_MapString.getExn(nibs, nibID$2);
                             var newNib = Definition$ReactTemplate.setTranslated(nib, "en", match$4[/* text */2]);
-                            var newNibs = Belt_MapString.set(nibs, nibID$1, newNib);
+                            var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
                             var documentation;
                             if (isInput) {
-                              var init$3 = definition[/* documentation */1];
+                              var init$6 = definition[/* documentation */1];
                               documentation = /* record */[
-                                /* name */init$3[/* name */0],
-                                /* description */init$3[/* description */1],
+                                /* name */init$6[/* name */0],
+                                /* description */init$6[/* description */1],
                                 /* inputs */newNibs,
-                                /* outputs */init$3[/* outputs */3]
+                                /* outputs */init$6[/* outputs */3]
                               ];
                             } else {
-                              var init$4 = definition[/* documentation */1];
+                              var init$7 = definition[/* documentation */1];
                               documentation = /* record */[
-                                /* name */init$4[/* name */0],
-                                /* description */init$4[/* description */1],
-                                /* inputs */init$4[/* inputs */2],
+                                /* name */init$7[/* name */0],
+                                /* description */init$7[/* description */1],
+                                /* inputs */init$7[/* inputs */2],
                                 /* outputs */newNibs
                               ];
                             }
@@ -261,24 +281,24 @@ function make(size, definitions, _children) {
                             var match$5 = action$1[0];
                             var valueType = match$5[/* valueType */2];
                             var isInput$1 = match$5[/* isInput */1];
-                            var nibID$2 = match$5[/* nibID */0];
+                            var nibID$3 = match$5[/* nibID */0];
                             var match$6 = definition[/* implementation */0];
                             var tmp;
                             switch (match$6.tag | 0) {
                               case 1 : 
                                   var $$interface = match$6[0];
                                   tmp = /* InterfaceImplementation */Block.__(1, [isInput$1 ? /* record */[
-                                          /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* inputTypes */0], nibID$2, valueType),
+                                          /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* inputTypes */0], nibID$3, valueType),
                                           /* outputTypes */$$interface[/* outputTypes */1]
                                         ] : /* record */[
                                           /* inputTypes */$$interface[/* inputTypes */0],
-                                          /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* outputTypes */1], nibID$2, valueType)
+                                          /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* outputTypes */1], nibID$3, valueType)
                                         ]]);
                                   break;
                               case 4 : 
                                   var tmp$1;
                                   if (isInput$1) {
-                                    tmp$1 = Definition$ReactTemplate.changeTypedFields(match$6[0], nibID$2, valueType);
+                                    tmp$1 = Definition$ReactTemplate.changeTypedFields(match$6[0], nibID$3, valueType);
                                   } else {
                                     throw Caml_builtin_exceptions.not_found;
                                   }
