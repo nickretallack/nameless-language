@@ -26,6 +26,7 @@ let make =
     (
       ~definitions: definitions,
       ~implementation: graphImplementation,
+      ~definition: definition,
       ~display: display,
       ~documentation: documentation,
       ~size: point,
@@ -204,34 +205,6 @@ let make =
     let getNodeSize = nodeID =>
       sizeToPixels(Belt.Map.String.getExn(nodeLayouts, nodeID).size);
 
-    let nibOffset = 10.0;
-    let nibPositions = (nibIds, isInput) => {
-      let rowHeight =
-        graphSizePixels.y /. float_of_int(List.length(nibIds) + 1);
-      Belt.Map.String.fromArray(
-        Array.of_list(
-          List.mapi(
-            (index, nibID) =>
-              (
-                nibID,
-                {
-                  x:
-                    if (isInput) {
-                      size.x -. nibOffset;
-                    } else {
-                      nibOffset;
-                    },
-                  y: float_of_int(index + 1) *. rowHeight,
-                },
-              ),
-            nibIds,
-          ),
-        ),
-      );
-    };
-    let inputPositions = nibPositions(display.inputOrdering, true);
-    let outputPositions = nibPositions(display.outputOrdering, false);
-
     let isNibInternal = (node: node, nib: connectionNib) =>
       switch (node.kind) {
       | DefinedNode({kind: FunctionDefinitionNode}) =>
@@ -242,6 +215,26 @@ let make =
       | _ => false
       };
 
+    let nibPositionFormula =
+        (isInternal, isSink, nodePosition, nodeSize, nibIndex) => {
+      let rightSide = isInternal ? !isSink : isSink;
+      {
+        x:
+          nodePosition.x
+          +. (
+            isInternal ?
+              rightSide ? nodeSize.x -. nodeWidth : nodeWidth :
+              rightSide ? nodeSize.x : 0.0
+          ),
+        y:
+          float_of_int(nibIndex)
+          *. textHeight
+          +. textHeight
+          /. 2.0
+          +. nodePosition.y,
+      };
+    };
+
     let getNibPosition = (connectionSide: connectionSide, isSink: bool) =>
       switch (connectionSide.node) {
       | NodeConnection(nodeID) =>
@@ -249,33 +242,31 @@ let make =
         let nodeSize = getNodeSize(nodeID);
         let node = getNode(nodeID);
         let isInternal = isNibInternal(node, connectionSide.nib);
-        let rightSide = isInternal ? !isSink : isSink;
-        {
-          x:
-            nodePosition.x
-            +. (
-              isInternal ?
-                rightSide ? nodeSize.x -. nodeWidth : nodeWidth :
-                rightSide ? nodeSize.x : 0.0
-            ),
-          y:
-            float_of_int(
-              getNodeNibIndex(node, definitions, connectionSide.nib, isSink),
-            )
-            *. textHeight
-            +. textHeight
-            /. 2.0
-            +. nodePosition.y,
-        };
+        let nibIndex =
+          getNodeNibIndex(node, definitions, connectionSide.nib, isSink);
+        nibPositionFormula(
+          isInternal,
+          isSink,
+          nodePosition,
+          nodeSize,
+          nibIndex,
+        );
       | GraphConnection =>
-        switch (connectionSide.nib) {
-        | NibConnection(nibID) =>
-          Belt.Map.String.getExn(
-            isSink ? outputPositions : inputPositions,
-            nibID,
-          )
-        | _ => raise(Not_found)
-        }
+        let nibIndex =
+          findByIndexExn(
+            isSink ?
+              definition.display.outputOrdering :
+              definition.display.inputOrdering,
+            nibID =>
+            NibConnection(nibID) == connectionSide.nib
+          );
+        nibPositionFormula(
+          true,
+          isSink,
+          {x: 0.0, y: 0.0},
+          graphSizePixels,
+          nibIndex,
+        );
       };
 
     let getNibNudge = (source: connectionSide) =>
@@ -292,21 +283,22 @@ let make =
 
     let changeName = event => emit(ChangeName(getEventValue(event)));
 
-    let isGraphNibSelected = (nibID: nibID, isSource: bool): bool =>
+    let selectedGraphNib = isSource =>
       switch (self.state.selectedNib) {
-      | None => false
+      | None => None
       | Some({connectionSide, isSource: selectionIsSource}) =>
-        isSource == selectionIsSource ?
-          switch (connectionSide.node) {
-          | NodeConnection(_) => false
-          | GraphConnection =>
-            switch (connectionSide.nib) {
-            | NibConnection(selectedNibID) => selectedNibID == nibID
-            | _ => false
+        isSource != selectionIsSource ?
+          None :
+          (
+            switch (connectionSide.node) {
+            | NodeConnection(_) => None
+            | GraphConnection => Some(connectionSide.nib)
             }
-          } :
-          false
+          )
       };
+
+    let selectedGraphInputNib = selectedGraphNib(true);
+    let selectedGraphOutputNib = selectedGraphNib(false);
 
     let evaluate = outputID =>
       Js.log(
@@ -392,80 +384,26 @@ let make =
              />,
            self.state.pointers,
          )}
-        {ReasonReact.array(
-           Belt.List.toArray(
-             Belt.List.map(
-               display.inputOrdering,
-               (nibID: nibID) => {
-                 let name =
-                   getTranslated(
-                     Belt.Map.String.getExn(documentation.inputs, nibID),
-                     "en",
-                   );
-                 <div
-                   className="graph-input input"
-                   key=nibID
-                   style={ReactDOMRe.Style.make(
-                     ~right=pixels(10.0),
-                     ~top=
-                       pixels(
-                         Belt.Map.String.getExn(inputPositions, nibID).y,
-                       ),
-                     (),
-                   )}>
-                   {ReasonReact.string(name)}
-                   <Nib
-                     isSource=true
-                     isHighlighted={isGraphNibSelected(nibID, true)}
-                     connectionSide={
-                       node: GraphConnection,
-                       nib: NibConnection(nibID),
-                     }
-                     emit={self.send}
-                   />
-                 </div>;
-               },
-             ),
-           ),
-         )}
-        <a onClick={_ => emit(AddInput)}>
-          {ReasonReact.string("Add Input")}
-        </a>
-        {ReasonReact.array(
-           Belt.List.toArray(
-             Belt.List.map(
-               display.outputOrdering,
-               (nibID: nibID) => {
-                 let name =
-                   getTranslated(
-                     Belt.Map.String.getExn(documentation.outputs, nibID),
-                     "en",
-                   );
-
-                 <div
-                   className="graph-output output"
-                   key=nibID
-                   style={positionStyle(
-                     Belt.Map.String.getExn(outputPositions, nibID),
-                   )}>
-                   <Nib
-                     isSource=false
-                     isHighlighted={isGraphNibSelected(nibID, false)}
-                     connectionSide={
-                       node: GraphConnection,
-                       nib: NibConnection(nibID),
-                     }
-                     emit={self.send}
-                   />
-                   <div> {ReasonReact.string(name)} </div>
-                   <a onClick={_event => evaluate(nibID)}>
-                     {ReasonReact.string("Evaluate")}
-                   </a>
-                 </div>;
-               },
-             ),
-           ),
-         )}
+        <div className="outputs">
+          {SimpleNode.renderNibs(
+             displayKeywordOutputs(definition, "en"),
+             "output internal",
+             false,
+             GraphConnection,
+             self.send,
+             selectedGraphOutputNib,
+           )}
+        </div>
+        <div className="inputs">
+          {SimpleNode.renderNibs(
+             displayKeywordInputs(definition, "en"),
+             "input internal",
+             true,
+             GraphConnection,
+             self.send,
+             selectedGraphInputNib,
+           )}
+        </div>
         {renderStringMap(
            ((nodeID: nodeID, node: node)) =>
              <Node

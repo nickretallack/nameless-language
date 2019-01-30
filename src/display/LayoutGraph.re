@@ -61,7 +61,7 @@ let rec layoutDefinition =
               Belt.Array.range(columns, lastColumn), 0, (row, column) =>
               max(row, arrayGetWithDefault(columnsFilledness, column, 0))
             );
-          /* Move each subgraph node down one row as padding */
+          /* Move each subgraph node down into the subgraph */
           let adjustedChildren =
             Belt.Map.String.map(children, nodeLayout =>
               {
@@ -172,5 +172,16 @@ let layoutGraph =
       definitions,
       connections,
     );
-  (layout, {columns: dimensions.columns + 2, rows: dimensions.rows + 1});
+  (
+    Belt.Map.String.map(layout, nodeLayout =>
+      {
+        ...nodeLayout,
+        position: {
+          ...nodeLayout.position,
+          rows: nodeLayout.position.rows + 1,
+        },
+      }
+    ),
+    {columns: dimensions.columns + 2, rows: dimensions.rows},
+  );
 };

@@ -286,6 +286,7 @@ let make = (~size, ~definitions, _children) => {
              <Graph
                key=definitionID
                definitions={self.state.definitions}
+               definition
                implementation
                display
                documentation

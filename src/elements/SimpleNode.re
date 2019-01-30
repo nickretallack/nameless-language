@@ -16,7 +16,7 @@ let renderNibs =
       nibs: list(displayNib),
       className: string,
       isSource: bool,
-      nodeID: nodeID,
+      connectionNode: connectionNode,
       emit: GraphActions.graphAction => unit,
       selectedNib: option(connectionNib),
     ) =>
@@ -28,7 +28,7 @@ let renderNibs =
           <Nib
             isSource
             isHighlighted={Some(nib) == selectedNib}
-            connectionSide={node: NodeConnection(nodeID), nib}
+            connectionSide={node: connectionNode, nib}
             emit
           />
           {isSource ? ReasonReact.string(name) : ReasonReact.null}
@@ -71,7 +71,21 @@ let make =
          <div className="name"> {ReasonReact.string(name)} </div>
        | None => ReasonReact.null
        }}
-      {renderNibs(inputs, "input", false, nodeID, emit, selectedNib)}
-      {renderNibs(outputs, "output", true, nodeID, emit, selectedNib)}
+      {renderNibs(
+         inputs,
+         "input",
+         false,
+         NodeConnection(nodeID),
+         emit,
+         selectedNib,
+       )}
+      {renderNibs(
+         outputs,
+         "output",
+         true,
+         NodeConnection(nodeID),
+         emit,
+         selectedNib,
+       )}
     </div>,
 };

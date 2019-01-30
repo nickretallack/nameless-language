@@ -81,21 +81,21 @@ body {
 	flex: 0 0 0;
 }
 
-.node .input,
-.node.definition-node .output {
+.input,
+.output.internal {
 	text-align: right;
 }
 
-.node .output,
-.node.definition-node .input {
+.output,
+.input.internal {
 	text-align: left;
 }
 
-.node .nib.sink {
+.nib.sink {
 	margin-right: var(--nega-half-nib);
 }
 
-.node .nib.source {
+.nib.source {
 	margin-left: var(--nega-half-nib);
 }
 
@@ -141,8 +141,8 @@ a {
 	background: rgba(0, 0, 0, 0.1);
 }
 
-.definition-node .inputs,
-.definition-node .outputs {
+.inputs,
+.outputs {
 	z-index: 1;
 	width: 120px;
 	background: rgba(0, 0, 0, 0.1);
@@ -154,9 +154,9 @@ a {
 	z-index: 2;
 }
 
-.definition-node .inputs {
+.inputs {
 	right: 0;
 }
-.definition-node .outputs {
+.outputs {
 	left: 0;
 }

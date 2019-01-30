@@ -37,11 +37,11 @@ function make(nodeID, definition, position, size, selectedNib, emit, _children) 
                                       /* nib : ValueConnection */0
                                     ], emit, false, /* array */[]))), React.createElement("div", {
                               className: "outputs"
-                            }, SimpleNode$ReactTemplate.renderNibs(Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), "output internal", false, nodeID, emit, selectedNib)), React.createElement("div", {
+                            }, SimpleNode$ReactTemplate.renderNibs(Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), "output internal", false, /* NodeConnection */[nodeID], emit, selectedNib)), React.createElement("div", {
                               className: "definition-body"
                             }), React.createElement("div", {
                               className: "inputs"
-                            }, SimpleNode$ReactTemplate.renderNibs(Definition$ReactTemplate.displayKeywordInputs(definition, "en"), "input internal", true, nodeID, emit, selectedNib)));
+                            }, SimpleNode$ReactTemplate.renderNibs(Definition$ReactTemplate.displayKeywordInputs(definition, "en"), "input internal", true, /* NodeConnection */[nodeID], emit, selectedNib)));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

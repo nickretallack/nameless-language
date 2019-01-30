@@ -37,7 +37,7 @@ let make =
            displayKeywordOutputs(definition, "en"),
            "output internal",
            false,
-           nodeID,
+           NodeConnection(nodeID),
            emit,
            selectedNib,
          )}
@@ -48,7 +48,7 @@ let make =
            displayKeywordInputs(definition, "en"),
            "input internal",
            true,
-           nodeID,
+           NodeConnection(nodeID),
            emit,
            selectedNib,
          )}

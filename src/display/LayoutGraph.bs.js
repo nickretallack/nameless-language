@@ -117,10 +117,19 @@ function layoutGraph(scopedNodeIDs, columnizedNodes, definitions, connections) {
   var match = layoutDefinition(/* GraphScope */0, scopedNodeIDs, columnizedNodes, definitions, connections);
   var dimensions = match[1];
   return /* tuple */[
-          match[0],
+          Belt_MapString.map(match[0], (function (nodeLayout) {
+                  var init = nodeLayout[/* position */0];
+                  return /* record */[
+                          /* position : record */[
+                            /* columns */init[/* columns */0],
+                            /* rows */nodeLayout[/* position */0][/* rows */1] + 1 | 0
+                          ],
+                          /* size */nodeLayout[/* size */1]
+                        ];
+                })),
           /* record */[
             /* columns */dimensions[/* columns */0] + 2 | 0,
-            /* rows */dimensions[/* rows */1] + 1 | 0
+            /* rows */dimensions[/* rows */1]
           ]
         ];
 }
