@@ -77,7 +77,6 @@ let make =
       ~definition: definition,
       ~display: display,
       ~documentation: documentation,
-      ~size: point,
       ~emit: definitionAction => unit,
       _children,
     ) => {
@@ -348,10 +347,10 @@ let make =
     let selectedGraphInputNib = selectedGraphNib(true);
     let selectedGraphOutputNib = selectedGraphNib(false);
 
-    let evaluate = outputID =>
-      Js.log(
-        Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
-      );
+    /* let evaluate = outputID =>
+       Js.log(
+         Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
+       ); */
 
     <div>
       <input

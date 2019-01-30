@@ -107,7 +107,7 @@ function make(definitions, nodes, nib, emit, _children) {
               return /* record */[/* category */undefined];
             }),
           /* retainedProps */component[/* retainedProps */11],
-          /* reducer */(function (action, state) {
+          /* reducer */(function (action, _state) {
               return /* Update */Block.__(0, [/* record */[/* category */action[0]]]);
             }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]

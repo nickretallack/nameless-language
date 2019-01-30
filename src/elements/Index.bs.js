@@ -7,7 +7,6 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var App$ReactTemplate = require("./App.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
-var WindowSize$ReactTemplate = require("./WindowSize.bs.js");
 
 var example = Definition$ReactTemplate.makeGraph("Example Definition", "An example function", /* array */[
       /* tuple */[
@@ -636,9 +635,7 @@ var definitions = Belt_MapString.fromArray(/* array */[
       ]
     ]);
 
-ReactDOMRe.renderToElementWithId(ReasonReact.element(undefined, undefined, WindowSize$ReactTemplate.make((function (size) {
-                return ReasonReact.element(undefined, undefined, App$ReactTemplate.make(size, definitions, /* array */[]));
-              }), /* array */[])), "graph");
+ReactDOMRe.renderToElementWithId(ReasonReact.element(undefined, undefined, App$ReactTemplate.make(definitions, /* array */[])), "graph");
 
 exports.example = example;
 exports.simple = simple;

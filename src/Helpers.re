@@ -27,18 +27,6 @@ let rec findByIndexExn: 'a. (Belt.List.t('a), 'a => bool) => int =
     | [head, ...rest] => check(head) ? 0 : 1 + findByIndexExn(rest, check)
     };
 
-let moveToListIndex: 'a. (list('a), 'a, int) => list('a) =
-  (list, needle, newIndex) =>
-    Belt.List.reduceWithIndex(list, [], (newList, item, index) =>
-      if (item == needle) {
-        newList;
-      } else if (index == newIndex) {
-        List.append(newList, [needle, item]);
-      } else {
-        List.append(newList, [item]);
-      }
-    );
-
 let removeElementFromList = (list, element) =>
   Belt.List.keep(list, listElement => element != listElement);
 

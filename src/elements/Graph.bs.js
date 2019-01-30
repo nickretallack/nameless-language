@@ -16,7 +16,6 @@ var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
-var Evaluate$ReactTemplate = require("../Evaluate.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
@@ -71,7 +70,7 @@ function preventDefault($$event) {
 
 var component = ReasonReact.reducerComponent("Graph");
 
-function make(definitions, implementation, definition, display, documentation, size, emit, _children) {
+function make(definitions, implementation, definition, display, documentation, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],

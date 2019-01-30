@@ -34,7 +34,7 @@ let make =
     ) => {
   ...component,
   initialState: () => {category: None},
-  reducer: (action: action, state: state) =>
+  reducer: (action: action, _state: state) =>
     switch (action) {
     | SelectCategory(category) =>
       ReasonReact.Update({category: Some(category)})

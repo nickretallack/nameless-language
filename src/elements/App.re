@@ -58,7 +58,7 @@ let makers = [|
 
 let component = ReasonReact.reducerComponent("App");
 
-let make = (~size, ~definitions, _children) => {
+let make = (~definitions, _children) => {
   ...component,
   initialState: () => {
     definitions,
@@ -350,7 +350,6 @@ let make = (~size, ~definitions, _children) => {
                implementation
                display
                documentation
-               size
                emit
              />
            | _ => <SimpleDefinition definition definitions emit />

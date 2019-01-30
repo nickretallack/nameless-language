@@ -399,7 +399,4 @@ let definitions =
     ("nested-inline-example", nestedInlineExample),
   |]);
 
-ReactDOMRe.renderToElementWithId(
-  <WindowSize render={size => <App definitions size />} />,
-  "graph",
-);
+ReactDOMRe.renderToElementWithId(<App definitions />, "graph");
