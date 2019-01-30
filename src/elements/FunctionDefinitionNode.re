@@ -7,6 +7,7 @@ let make =
     (
       ~nodeID: nodeID,
       ~definition: definition,
+      ~definitionID: definitionID,
       ~position: point,
       ~size: point,
       ~selectedNib: option(connectionNib)=?,
@@ -23,7 +24,8 @@ let make =
         ~width=pixels(size.x),
         ~height=pixels(size.y),
         (),
-      )}>
+      )}
+      onDoubleClick={_event => ReasonReact.Router.push("#" ++ definitionID)}>
       <div className="output external">
         <Nib
           isSource=true

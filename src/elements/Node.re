@@ -54,6 +54,7 @@ let make =
         <FunctionDefinitionNode
           nodeID
           definition
+          definitionID
           position
           size
           ?selectedNib
