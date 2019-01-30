@@ -79,25 +79,27 @@ function make(definitions, implementation, display, documentation, size, emit, _
               var match = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
               var graphSize = match[1];
               var nodeLayouts = match[0];
-              console.log(graphSize[/* columns */0], graphSize[/* rows */1]);
+              console.log("graph dimensions", graphSize[/* columns */0], graphSize[/* rows */1]);
               var columnWidth = 120.0 + 60.0;
-              var yMargin = 20.0 * 4.0;
               var getNodePosition = function (nodeID) {
                 var position = Belt_MapString.getExn(nodeLayouts, nodeID)[/* position */0];
                 return /* record */[
-                        /* x */position[/* columns */0] * columnWidth + columnWidth,
-                        /* y */position[/* rows */1] * 20.0 + yMargin
+                        /* x */(position[/* columns */0] + 1 | 0) * columnWidth,
+                        /* y */position[/* rows */1] * 20.0
                       ];
               };
-              var getNodeSize = function (nodeID) {
-                var size = Belt_MapString.getExn(nodeLayouts, nodeID)[/* size */1];
+              var sizeToPixels = function (size) {
                 return /* record */[
                         /* x */size[/* columns */0] * columnWidth - 60.0,
                         /* y */size[/* rows */1] * 20.0
                       ];
               };
+              var graphSizePixels = sizeToPixels(graphSize);
+              var getNodeSize = function (nodeID) {
+                return sizeToPixels(Belt_MapString.getExn(nodeLayouts, nodeID)[/* size */1]);
+              };
               var nibPositions = function (nibIds, isInput) {
-                var rowHeight = size[/* y */1] / (List.length(nibIds) + 1 | 0);
+                var rowHeight = graphSizePixels[/* y */1] / (List.length(nibIds) + 1 | 0);
                 return Belt_MapString.fromArray($$Array.of_list(List.mapi((function (index, nibID) {
                                       return /* tuple */[
                                               nibID,
@@ -204,6 +206,10 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                 className: "error-message"
                               }, match$1) : null, React.createElement("div", {
                               className: "graph",
+                              style: {
+                                height: Helpers$ReactTemplate.pixels(graphSizePixels[/* y */1]),
+                                width: Helpers$ReactTemplate.pixels(graphSizePixels[/* x */0])
+                              },
                               onMouseMove: (function ($$event) {
                                   $$event.preventDefault();
                                   return Curry._1(self[/* send */3], /* record */[
@@ -260,7 +266,11 @@ function make(definitions, implementation, display, documentation, size, emit, _
                                                             /* node : GraphConnection */0,
                                                             /* nib : NibConnection */Block.__(0, [nibID])
                                                           ], self[/* send */3], isGraphNibSelected(nibID, true), /* array */[])));
-                                      }))), Belt_List.toArray(Belt_List.map(display[/* outputOrdering */1], (function (nibID) {
+                                      }))), React.createElement("a", {
+                                  onClick: (function (param) {
+                                      return Curry._1(emit, /* AddInput */0);
+                                    })
+                                }, "Add Input"), Belt_List.toArray(Belt_List.map(display[/* outputOrdering */1], (function (nibID) {
                                         var name = Definition$ReactTemplate.getTranslated(Belt_MapString.getExn(documentation[/* outputs */3], nibID), "en");
                                         return React.createElement("div", {
                                                     key: nibID,

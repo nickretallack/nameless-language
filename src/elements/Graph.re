@@ -179,34 +179,35 @@ let make =
         definitions,
         implementation.connections,
       );
-    Js.log2(graphSize.columns, graphSize.rows);
+    Js.log3("graph dimensions", graphSize.columns, graphSize.rows);
 
     let nodeWidth = 120.0;
     let textHeight = 20.0;
     let xPadding = 60.0;
     /* let yPadding = 20.0; */
     let columnWidth = nodeWidth +. xPadding;
-    let yMargin = textHeight *. 4.0;
-    let xMargin = columnWidth;
     let getNodePosition = nodeID => {
       let position = Belt.Map.String.getExn(nodeLayouts, nodeID).position;
       {
-        x: float_of_int(position.columns) *. columnWidth +. xMargin,
-        y: float_of_int(position.rows) *. textHeight +. yMargin,
+        x: float_of_int(position.columns + 1) *. columnWidth,
+        y: float_of_int(position.rows) *. textHeight,
       };
     };
 
-    let getNodeSize = nodeID => {
-      let size = Belt.Map.String.getExn(nodeLayouts, nodeID).size;
-      {
-        x: float_of_int(size.columns) *. columnWidth -. xPadding,
-        y: float_of_int(size.rows) *. textHeight,
-      };
+    let sizeToPixels = (size: LayoutGraph.nodePosition) => {
+      x: float_of_int(size.columns) *. columnWidth -. xPadding,
+      y: float_of_int(size.rows) *. textHeight,
     };
+
+    let graphSizePixels = sizeToPixels(graphSize);
+
+    let getNodeSize = nodeID =>
+      sizeToPixels(Belt.Map.String.getExn(nodeLayouts, nodeID).size);
 
     let nibOffset = 10.0;
     let nibPositions = (nibIds, isInput) => {
-      let rowHeight = size.y /. float_of_int(List.length(nibIds) + 1);
+      let rowHeight =
+        graphSizePixels.y /. float_of_int(List.length(nibIds) + 1);
       Belt.Map.String.fromArray(
         Array.of_list(
           List.mapi(
@@ -327,6 +328,11 @@ let make =
        }}
       <div
         className="graph"
+        style={ReactDOMRe.Style.make(
+          ~width=pixels(graphSizePixels.x),
+          ~height=pixels(graphSizePixels.y),
+          (),
+        )}
         onMouseMove={event => {
           ReactEvent.Mouse.preventDefault(event);
           self.send({
@@ -422,9 +428,9 @@ let make =
              ),
            ),
          )}
-        /* <a onClick={_ => emit(AddInput({definitionID: definitionID}))}>
-             {ReasonReact.string("Add Input")}
-           </a> */
+        <a onClick={_ => emit(AddInput)}>
+          {ReasonReact.string("Add Input")}
+        </a>
         {ReasonReact.array(
            Belt.List.toArray(
              Belt.List.map(

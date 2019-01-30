@@ -145,9 +145,7 @@ let rec layoutDefinition =
           let lastColumn = columns + size.columns - 1;
           let rows =
             Belt.Array.reduce(
-              Belt.Array.range(columns, columns + size.columns - 1),
-              0,
-              (row, column) =>
+              Belt.Array.range(columns, lastColumn), 0, (row, column) =>
               max(row, arrayGetWithDefault(columnsFilledness, column, 0))
             );
           /* Move each subgraph node down one row as padding */
@@ -170,6 +168,7 @@ let rec layoutDefinition =
                 rows + size.rows + 1 :
                 arrayGetWithDefault(columnsFilledness, index, 0)
             );
+          Js.log(lastColumn);
           (
             newFilledness,
             simpleMergeMaps(
@@ -190,11 +189,12 @@ let rec layoutDefinition =
         },
       )
     );
+  Js.log2("filledness", columnFilledness);
   (
     nodeLayouts,
     {
       rows: Belt.Array.reduce(columnFilledness, 0, max) + 1,
-      columns: Belt.Array.length(columnFilledness) - 1,
+      columns: Belt.Array.length(columnFilledness),
     },
   );
 }
@@ -248,11 +248,13 @@ and layoutSubGraph =
       definitions,
       connections,
     );
+
+  Js.log3("graph", position.columns, firstColumn);
   (
     {
       /* inline function is at least 2 columns (for the inputs and outputs).
          It expands depending on the subset of the graph that needs to occur inside/beside it. */
-      columns: max(0, max(lastColumn, position.columns) - firstColumn) + 2,
+      columns: max(0, position.columns - 1 - firstColumn) + 2,
       /* inline function needs to be tall enough to contain its inputs/outputs as well as its subgraph */
       rows: max(mostNibs, position.rows),
     },
@@ -267,11 +269,14 @@ let layoutGraph =
       definitions: definitions,
       connections: connections,
     )
-    : (Belt.Map.String.t(nodeLayout), nodePosition) =>
-  layoutDefinition(
-    GraphScope,
-    scopedNodeIDs,
-    columnizedNodes,
-    definitions,
-    connections,
-  );
+    : (Belt.Map.String.t(nodeLayout), nodePosition) => {
+  let (layout, dimensions) =
+    layoutDefinition(
+      GraphScope,
+      scopedNodeIDs,
+      columnizedNodes,
+      definitions,
+      connections,
+    );
+  (layout, {columns: dimensions.columns + 2, rows: dimensions.rows + 1});
+};

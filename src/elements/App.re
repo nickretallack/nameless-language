@@ -176,16 +176,28 @@ let make = (~size, ~definitions, _children) => {
                   nibID,
                   emptyTranslatable,
                 ),
+            },
+            display: {
+              ...definition.display,
+              inputOrdering:
+                List.append(definition.display.inputOrdering, [nibID]),
+            },
+          };
+        | AddOutput =>
+          let nibID = randomID();
+          {
+            ...definition,
+            documentation: {
+              ...definition.documentation,
               outputs:
                 Belt.Map.String.set(
-                  definition.documentation.inputs,
+                  definition.documentation.outputs,
                   nibID,
                   emptyTranslatable,
                 ),
             },
             display: {
-              inputOrdering:
-                List.append(definition.display.inputOrdering, [nibID]),
+              ...definition.display,
               outputOrdering:
                 List.append(definition.display.outputOrdering, [nibID]),
             },

@@ -79,7 +79,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                         }
                         var size = match$1[0];
                         var lastColumn = (columns + size[/* columns */0] | 0) - 1 | 0;
-                        var rows = Belt_Array.reduce(Belt_Array.range(columns, (columns + size[/* columns */0] | 0) - 1 | 0), 0, (function (row, column) {
+                        var rows = Belt_Array.reduce(Belt_Array.range(columns, lastColumn), 0, (function (row, column) {
                                 return Caml_primitive.caml_int_max(row, Helpers$ReactTemplate.arrayGetWithDefault(columnsFilledness, column, 0));
                               }));
                         var adjustedChildren = Belt_MapString.map(match$1[1], (function (nodeLayout) {
@@ -100,6 +100,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                                   return Helpers$ReactTemplate.arrayGetWithDefault(columnsFilledness, index, 0);
                                 }
                               }));
+                        console.log(lastColumn);
                         return /* tuple */[
                                 newFilledness,
                                 Helpers$ReactTemplate.simpleMergeMaps(Belt_MapString.set(param[1], node[/* id */0], /* record */[
@@ -113,10 +114,11 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                       }));
         }));
   var columnFilledness = match[0];
+  console.log("filledness", columnFilledness);
   return /* tuple */[
           match[1],
           /* record */[
-            /* columns */columnFilledness.length - 1 | 0,
+            /* columns */columnFilledness.length,
             /* rows */Belt_Array.reduce(columnFilledness, 0, Caml_obj.caml_max) + 1 | 0
           ]
         ];
@@ -134,7 +136,7 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
                         return node[/* id */0] === definitionNode[/* id */0];
                       }));
         }));
-  var lastColumn = getMaxColumn(definitionNode[/* id */0], connections, childNodeIDs, nodeColumns);
+  getMaxColumn(definitionNode[/* id */0], connections, childNodeIDs, nodeColumns);
   var match = definitionNode[/* node */1][/* kind */1];
   var mostNibs;
   if (typeof match === "number") {
@@ -147,9 +149,10 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
   }
   var match$1 = layoutDefinition(/* NodeScope */[definitionNode[/* id */0]], scopedNodeIDs, columnizedNodes, definitions, connections);
   var position = match$1[1];
+  console.log("graph", position[/* columns */0], firstColumn);
   return /* tuple */[
           /* record */[
-            /* columns */Caml_primitive.caml_int_max(0, Caml_primitive.caml_int_max(lastColumn, position[/* columns */0]) - firstColumn | 0) + 2 | 0,
+            /* columns */Caml_primitive.caml_int_max(0, (position[/* columns */0] - 1 | 0) - firstColumn | 0) + 2 | 0,
             /* rows */Caml_primitive.caml_int_max(mostNibs, position[/* rows */1])
           ],
           match$1[0]
@@ -157,7 +160,15 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
 }
 
 function layoutGraph(scopedNodeIDs, columnizedNodes, definitions, connections) {
-  return layoutDefinition(/* GraphScope */0, scopedNodeIDs, columnizedNodes, definitions, connections);
+  var match = layoutDefinition(/* GraphScope */0, scopedNodeIDs, columnizedNodes, definitions, connections);
+  var dimensions = match[1];
+  return /* tuple */[
+          match[0],
+          /* record */[
+            /* columns */dimensions[/* columns */0] + 2 | 0,
+            /* rows */dimensions[/* rows */1] + 1 | 0
+          ]
+        ];
 }
 
 exports.getNodeIDsConnectedToInternalInputs = getNodeIDsConnectedToInternalInputs;

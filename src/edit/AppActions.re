@@ -31,7 +31,8 @@ type definitionAction =
   | ChangeNibName(changeNibName)
   | ChangeNibType(changeNibType)
   | AddNode(addNode)
-  | AddInput;
+  | AddInput
+  | AddOutput;
 
 type definitionActionRecord = {
   definitionID,
