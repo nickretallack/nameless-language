@@ -125,35 +125,27 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
 }
 
 function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definitions, connections) {
-  var childNodeIDs = Belt_Map.getWithDefault(scopedNodeIDs, /* NodeScope */[definitionNode[/* id */0]], Belt_SetString.empty);
-  var nodeColumns = Belt_List.reduceWithIndex(columnizedNodes, Belt_MapString.empty, (function (acc, nodes, column) {
-          return Belt_List.reduce(nodes, acc, (function (acc, node) {
-                        return Belt_MapString.set(acc, node[/* id */0], column);
-                      }));
-        }));
   var firstColumn = Helpers$ReactTemplate.findByIndexExn(columnizedNodes, (function (nodes) {
           return Belt_List.some(nodes, (function (node) {
                         return node[/* id */0] === definitionNode[/* id */0];
                       }));
         }));
-  getMaxColumn(definitionNode[/* id */0], connections, childNodeIDs, nodeColumns);
   var match = definitionNode[/* node */1][/* kind */1];
-  var mostNibs;
+  var nibRows;
   if (typeof match === "number") {
     throw Caml_builtin_exceptions.not_found;
   } else if (match.tag) {
     var display = Belt_MapString.getExn(definitions, match[0][/* definitionID */1])[/* display */2];
-    mostNibs = Caml_primitive.caml_int_max(Belt_List.length(display[/* inputOrdering */0]), Belt_List.length(display[/* outputOrdering */1]));
+    nibRows = Caml_primitive.caml_int_max(Belt_List.length(display[/* inputOrdering */0]), Belt_List.length(display[/* outputOrdering */1]));
   } else {
     throw Caml_builtin_exceptions.not_found;
   }
   var match$1 = layoutDefinition(/* NodeScope */[definitionNode[/* id */0]], scopedNodeIDs, columnizedNodes, definitions, connections);
   var position = match$1[1];
-  console.log("graph", position[/* columns */0], firstColumn);
   return /* tuple */[
           /* record */[
             /* columns */Caml_primitive.caml_int_max(0, (position[/* columns */0] - 1 | 0) - firstColumn | 0) + 2 | 0,
-            /* rows */Caml_primitive.caml_int_max(mostNibs, position[/* rows */1])
+            /* rows */Caml_primitive.caml_int_max(nibRows, position[/* rows */1])
           ],
           match$1[0]
         ];

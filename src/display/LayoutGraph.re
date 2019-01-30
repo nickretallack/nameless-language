@@ -206,30 +206,12 @@ and layoutSubGraph =
       definitions: definitions,
       connections: connections,
     ) => {
-  let childNodeIDs =
-    Belt.Map.getWithDefault(
-      scopedNodeIDs,
-      NodeScope(definitionNode.id),
-      Belt.Set.String.empty,
-    );
-
-  let nodeColumns =
-    Belt.List.reduceWithIndex(
-      columnizedNodes, Belt.Map.String.empty, (acc, nodes, column) =>
-      Belt.List.reduce(nodes, acc, (acc, node) =>
-        Belt.Map.String.set(acc, node.id, column)
-      )
-    );
-
   let firstColumn =
     findByIndexExn(columnizedNodes, nodes =>
       Belt.List.some(nodes, node => node.id == definitionNode.id)
     );
 
-  let lastColumn =
-    getMaxColumn(definitionNode.id, connections, childNodeIDs, nodeColumns);
-
-  let mostNibs =
+  let nibRows =
     switch (definitionNode.node.kind) {
     | DefinedNode({definitionID}) =>
       let display = Belt.Map.String.getExn(definitions, definitionID).display;
@@ -249,14 +231,13 @@ and layoutSubGraph =
       connections,
     );
 
-  Js.log3("graph", position.columns, firstColumn);
   (
     {
       /* inline function is at least 2 columns (for the inputs and outputs).
          It expands depending on the subset of the graph that needs to occur inside/beside it. */
       columns: max(0, position.columns - 1 - firstColumn) + 2,
       /* inline function needs to be tall enough to contain its inputs/outputs as well as its subgraph */
-      rows: max(mostNibs, position.rows),
+      rows: max(nibRows, position.rows),
     },
     subLayout,
   );
