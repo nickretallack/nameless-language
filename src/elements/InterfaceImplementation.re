@@ -24,6 +24,9 @@ let make =
         definitions
         emit
       />
+      <a onClick={_event => emit(AddInput)}>
+        {ReasonReact.string("Add Input")}
+      </a>
       <h2> {ReasonReact.string("Outputs:")} </h2>
       <TypedFields
         typedFields={implementation.outputTypes}
@@ -33,6 +36,9 @@ let make =
         definitions
         emit
       />
+      <a onClick={_event => emit(AddOutput)}>
+        {ReasonReact.string("Add Output")}
+      </a>
     </div>;
   },
 };

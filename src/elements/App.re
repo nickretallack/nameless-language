@@ -167,7 +167,6 @@ let make = (~size, ~definitions, _children) => {
         | AddInput =>
           let nibID = randomID();
           {
-            ...definition,
             documentation: {
               ...definition.documentation,
               inputs:
@@ -182,11 +181,24 @@ let make = (~size, ~definitions, _children) => {
               inputOrdering:
                 List.append(definition.display.inputOrdering, [nibID]),
             },
+            implementation:
+              switch (definition.implementation) {
+              | InterfaceImplementation(interface) =>
+                InterfaceImplementation({
+                  ...interface,
+                  inputTypes:
+                    Belt.Map.String.set(
+                      interface.inputTypes,
+                      nibID,
+                      PrimitiveValueType(NumberType),
+                    ),
+                })
+              | _ => definition.implementation
+              },
           };
         | AddOutput =>
           let nibID = randomID();
           {
-            ...definition,
             documentation: {
               ...definition.documentation,
               outputs:
@@ -201,6 +213,20 @@ let make = (~size, ~definitions, _children) => {
               outputOrdering:
                 List.append(definition.display.outputOrdering, [nibID]),
             },
+            implementation:
+              switch (definition.implementation) {
+              | InterfaceImplementation(interface) =>
+                InterfaceImplementation({
+                  ...interface,
+                  outputTypes:
+                    Belt.Map.String.set(
+                      interface.outputTypes,
+                      nibID,
+                      PrimitiveValueType(NumberType),
+                    ),
+                })
+              | _ => definition.implementation
+              },
           };
         | NibAction({nibID, isInput, action}) =>
           switch (action) {
