@@ -11,7 +11,7 @@ var TypeSelector$ReactTemplate = require("./TypeSelector.bs.js");
 
 var component = ReasonReact.statelessComponent("NibInterface");
 
-function make(nibID, definitions, isInput, valueType, name, emit, _children) {
+function make(nibID, definitions, isInput, valueType, name, index, count, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -23,26 +23,35 @@ function make(nibID, definitions, isInput, valueType, name, emit, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              var changeName = function ($$event) {
+              var emitNibAction = function (action) {
                 return Curry._1(emit, /* NibAction */Block.__(5, [/* record */[
                                 /* nibID */nibID,
                                 /* isInput */isInput,
-                                /* action : ChangeNibName */Block.__(0, [Helpers$ReactTemplate.getEventValue($$event)])
+                                /* action */action
                               ]]));
+              };
+              var changeName = function ($$event) {
+                return emitNibAction(/* ChangeNibName */Block.__(0, [Helpers$ReactTemplate.getEventValue($$event)]));
               };
               var changeType = function (valueType) {
-                return Curry._1(emit, /* NibAction */Block.__(5, [/* record */[
-                                /* nibID */nibID,
-                                /* isInput */isInput,
-                                /* action : ChangeNibType */Block.__(1, [valueType])
-                              ]]));
+                return emitNibAction(/* ChangeNibType */Block.__(1, [valueType]));
               };
-              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, TypeSelector$ReactTemplate.make(valueType, definitions, changeType, /* array */[])), React.createElement("input", {
-                              className: "name",
-                              type: "text",
-                              value: Definition$ReactTemplate.getTranslated(name, "en"),
-                              onChange: changeName
-                            }));
+              var match = index !== 0;
+              var match$1 = index !== (count - 1 | 0);
+              return React.createElement("tr", undefined, React.createElement("td", undefined, match ? React.createElement("a", {
+                                    onClick: (function (_event) {
+                                        return emitNibAction(/* ChangeNibOrdering */Block.__(2, [index - 1 | 0]));
+                                      })
+                                  }, "^") : null), React.createElement("td", undefined, match$1 ? React.createElement("a", {
+                                    onClick: (function (_event) {
+                                        return emitNibAction(/* ChangeNibOrdering */Block.__(2, [index + 1 | 0]));
+                                      })
+                                  }, "v") : null), React.createElement("td", undefined, React.createElement("input", {
+                                  className: "name",
+                                  type: "text",
+                                  value: Definition$ReactTemplate.getTranslated(name, "en"),
+                                  onChange: changeName
+                                })), React.createElement("td", undefined, ReasonReact.element(undefined, undefined, TypeSelector$ReactTemplate.make(valueType, definitions, changeType, /* array */[]))));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

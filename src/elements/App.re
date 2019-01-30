@@ -286,6 +286,29 @@ let make = (~size, ~definitions, _children) => {
                 | _ => raise(Not_found)
                 },
             }
+          | ChangeNibOrdering(index) => {
+              ...definition,
+              display:
+                isInput ?
+                  {
+                    ...definition.display,
+                    inputOrdering:
+                      moveToListIndex(
+                        definition.display.inputOrdering,
+                        nibID,
+                        index,
+                      ),
+                  } :
+                  {
+                    ...definition.display,
+                    outputOrdering:
+                      moveToListIndex(
+                        definition.display.outputOrdering,
+                        nibID,
+                        index,
+                      ),
+                  },
+            }
           }
         };
       ReasonReact.Update({

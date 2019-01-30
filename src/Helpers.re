@@ -27,6 +27,37 @@ let rec findByIndexExn: 'a. (Belt.List.t('a), 'a => bool) => int =
     | [head, ...rest] => check(head) ? 0 : 1 + findByIndexExn(rest, check)
     };
 
+let moveToListIndex: 'a. (list('a), 'a, int) => list('a) =
+  (list, needle, newIndex) =>
+    Belt.List.reduceWithIndex(list, [], (newList, item, index) =>
+      if (item == needle) {
+        newList;
+      } else if (index == newIndex) {
+        List.append(newList, [needle, item]);
+      } else {
+        List.append(newList, [item]);
+      }
+    );
+
+let removeElementFromList = (list, element) =>
+  Belt.List.keep(list, listElement => element != listElement);
+
+let moveToListIndex: 'a. (list('a), 'a, int) => list('a) =
+  (list, needle, newIndex) => {
+    let oldIndex = findIndexExn(list, needle);
+    let (left, right) =
+      switch (
+        Belt.List.splitAt(list, newIndex + (newIndex > oldIndex ? 1 : 0))
+      ) {
+      | None => raise(Not_found)
+      | Some(tuple) => tuple
+      };
+    Belt.List.concat(
+      removeElementFromList(left, needle),
+      [needle, ...removeElementFromList(right, needle)],
+    );
+  };
+
 let simpleMergeMaps:
   'a.
   (Belt.Map.String.t('a), Belt.Map.String.t('a)) => Belt.Map.String.t('a)

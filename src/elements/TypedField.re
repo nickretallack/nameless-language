@@ -10,37 +10,49 @@ let make =
       ~isInput: bool,
       ~valueType: valueType,
       ~name: translatable,
+      ~index: int,
+      ~count: int,
       ~emit: AppActions.definitionAction => unit,
       _children,
     ) => {
   ...component,
   render: _self => {
+    let emitNibAction = action =>
+      emit(AppActions.NibAction({nibID, isInput, action}));
+
     let changeName = event =>
-      emit(
-        AppActions.NibAction({
-          nibID,
-          isInput,
-          action: ChangeNibName(getEventValue(event)),
-        }),
-      );
+      emitNibAction(AppActions.ChangeNibName(getEventValue(event)));
 
     let changeType = (valueType: valueType) =>
-      emit(
-        AppActions.NibAction({
-          nibID,
-          isInput,
-          action: AppActions.ChangeNibType(valueType),
-        }),
-      );
+      emitNibAction(AppActions.ChangeNibType(valueType));
 
-    <div>
-      <TypeSelector valueType definitions changeType />
-      <input
-        type_="text"
-        className="name"
-        value={getTranslated(name, "en")}
-        onChange=changeName
-      />
-    </div>;
+    let changeOrdering = (index: int) =>
+      emitNibAction(AppActions.ChangeNibOrdering(index));
+
+    <tr>
+      <td>
+        {index != 0 ?
+           <a onClick={_event => changeOrdering(index - 1)}>
+             {ReasonReact.string("^")}
+           </a> :
+           ReasonReact.null}
+      </td>
+      <td>
+        {index != count - 1 ?
+           <a onClick={_event => changeOrdering(index + 1)}>
+             {ReasonReact.string("v")}
+           </a> :
+           ReasonReact.null}
+      </td>
+      <td>
+        <input
+          type_="text"
+          className="name"
+          value={getTranslated(name, "en")}
+          onChange=changeName
+        />
+      </td>
+      <td> <TypeSelector valueType definitions changeType /> </td>
+    </tr>;
   },
 };

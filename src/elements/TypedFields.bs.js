@@ -21,9 +21,9 @@ function make(definitions, typedFields, nibDocumentations, isInput, ordering, em
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement("div", undefined, Belt_List.toArray(Belt_List.map(ordering, (function (nibID) {
-                                    return ReasonReact.element(nibID, undefined, TypedField$ReactTemplate.make(nibID, definitions, isInput, Belt_MapString.getExn(typedFields, nibID), Belt_MapString.getExn(nibDocumentations, nibID), emit, /* array */[]));
-                                  }))));
+              return React.createElement("table", undefined, React.createElement("tbody", undefined, Belt_List.toArray(Belt_List.mapWithIndex(ordering, (function (index, nibID) {
+                                        return ReasonReact.element(nibID, undefined, TypedField$ReactTemplate.make(nibID, definitions, isInput, Belt_MapString.getExn(typedFields, nibID), Belt_MapString.getExn(nibDocumentations, nibID), index, Belt_List.length(ordering), emit, /* array */[]));
+                                      })))));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

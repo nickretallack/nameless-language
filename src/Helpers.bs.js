@@ -53,6 +53,30 @@ function findByIndexExn(list, check) {
   }
 }
 
+function removeElementFromList(list, element) {
+  return Belt_List.keep(list, (function (listElement) {
+                return Caml_obj.caml_notequal(element, listElement);
+              }));
+}
+
+function moveToListIndex(list, needle, newIndex) {
+  var oldIndex = findIndexExn(list, needle);
+  var match = newIndex > oldIndex;
+  var match$1 = Belt_List.splitAt(list, newIndex + (
+        match ? 1 : 0
+      ) | 0);
+  var match$2;
+  if (match$1 !== undefined) {
+    match$2 = match$1;
+  } else {
+    throw Caml_builtin_exceptions.not_found;
+  }
+  return Belt_List.concat(removeElementFromList(match$2[0], needle), /* :: */[
+              needle,
+              removeElementFromList(match$2[1], needle)
+            ]);
+}
+
 function simpleMergeMaps(map1, map2) {
   return Belt_MapString.reduce(map1, map2, Belt_MapString.set);
 }
@@ -152,6 +176,8 @@ var renderArray = $$Array.map;
 exports.sortBy = sortBy;
 exports.findIndexExn = findIndexExn;
 exports.findByIndexExn = findByIndexExn;
+exports.removeElementFromList = removeElementFromList;
+exports.moveToListIndex = moveToListIndex;
 exports.simpleMergeMaps = simpleMergeMaps;
 exports.arrayGetWithDefault = arrayGetWithDefault;
 exports.randomHex = randomHex;

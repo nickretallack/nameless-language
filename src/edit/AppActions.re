@@ -19,7 +19,8 @@ type changeNibType = {
 
 type nibAction =
   | ChangeNibName(string)
-  | ChangeNibType(valueType);
+  | ChangeNibType(valueType)
+  | ChangeNibOrdering(int);
 
 type nibActionRecord = {
   nibID,

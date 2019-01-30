@@ -14,22 +14,26 @@ let make =
     ) => {
   ...component,
   render: _self => {
-    <div>
-      {ReasonReact.array(
-         Belt.List.toArray(
-           Belt.List.map(ordering, nibID =>
-             <TypedField
-               key=nibID
-               valueType={Belt.Map.String.getExn(typedFields, nibID)}
-               name={Belt.Map.String.getExn(nibDocumentations, nibID)}
-               definitions
-               emit
-               isInput
-               nibID
-             />
+    <table>
+      <tbody>
+        {ReasonReact.array(
+           Belt.List.toArray(
+             Belt.List.mapWithIndex(ordering, (index, nibID) =>
+               <TypedField
+                 key=nibID
+                 valueType={Belt.Map.String.getExn(typedFields, nibID)}
+                 name={Belt.Map.String.getExn(nibDocumentations, nibID)}
+                 index
+                 count={Belt.List.length(ordering)}
+                 definitions
+                 emit
+                 isInput
+                 nibID
+               />
+             ),
            ),
-         ),
-       )}
-    </div>;
+         )}
+      </tbody>
+    </table>;
   },
 };
