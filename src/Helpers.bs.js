@@ -115,8 +115,8 @@ function pixels(x) {
 
 function pointFromMouse($$event) {
   return /* record */[
-          /* x */$$event.clientX,
-          /* y */$$event.clientY
+          /* x */$$event.pageX - $$event.currentTarget.offsetLeft,
+          /* y */$$event.pageY - $$event.currentTarget.offsetTop
         ];
 }
 

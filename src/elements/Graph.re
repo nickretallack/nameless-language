@@ -336,7 +336,17 @@ let make =
           iterateTouches(event, touch =>
             self.send({
               pointerID: Touch(touch##identifier),
-              action: ContinueDrawing({x: touch##clientX, y: touch##clientY}),
+              action:
+                ContinueDrawing({
+                  x:
+                    touch##clientX
+                    -.
+                    ReactEvent.Touch.currentTarget(event)##offsetLeft,
+                  y:
+                    touch##clientY
+                    -.
+                    ReactEvent.Touch.currentTarget(event)##offsetTop,
+                }),
             })
           )
         }

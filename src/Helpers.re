@@ -53,8 +53,15 @@ let floatToString = (x: float) => Printf.sprintf("%g", x);
 let pixels = (x: float) => Printf.sprintf("%gpx", x);
 
 let pointFromMouse = event => {
-  x: float_of_int(ReactEvent.Mouse.clientX(event)),
-  y: float_of_int(ReactEvent.Mouse.clientY(event)),
+  x:
+    float_of_int(ReactEvent.Mouse.pageX(event))
+    -.
+    ReactEvent.Mouse.currentTarget(event)##offsetLeft,
+
+  y:
+    float_of_int(ReactEvent.Mouse.pageY(event))
+    -.
+    ReactEvent.Mouse.currentTarget(event)##offsetTop,
 };
 
 let positionStyle = (position: point) =>

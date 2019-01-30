@@ -219,8 +219,8 @@ function make(definitions, implementation, definition, display, documentation, s
                                                 return Curry._1(self[/* send */3], /* record */[
                                                             /* pointerID : Touch */[touch.identifier],
                                                             /* action : ContinueDrawing */Block.__(1, [/* record */[
-                                                                  /* x */touch.clientX,
-                                                                  /* y */touch.clientY
+                                                                  /* x */touch.clientX - $$event.currentTarget.offsetLeft,
+                                                                  /* y */touch.clientY - $$event.currentTarget.offsetTop
                                                                 ]])
                                                           ]);
                                               }));
