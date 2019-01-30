@@ -24,17 +24,17 @@ function make(nibID, definitions, isInput, valueType, name, emit, _children) {
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               var changeName = function ($$event) {
-                return Curry._1(emit, /* ChangeNibName */Block.__(4, [/* record */[
+                return Curry._1(emit, /* NibAction */Block.__(5, [/* record */[
                                 /* nibID */nibID,
                                 /* isInput */isInput,
-                                /* text */Helpers$ReactTemplate.getEventValue($$event)
+                                /* action : ChangeNibName */Block.__(0, [Helpers$ReactTemplate.getEventValue($$event)])
                               ]]));
               };
               var changeType = function (valueType) {
-                return Curry._1(emit, /* ChangeNibType */Block.__(5, [/* record */[
+                return Curry._1(emit, /* NibAction */Block.__(5, [/* record */[
                                 /* nibID */nibID,
                                 /* isInput */isInput,
-                                /* valueType */valueType
+                                /* action : ChangeNibType */Block.__(1, [valueType])
                               ]]));
               };
               return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, TypeSelector$ReactTemplate.make(valueType, definitions, changeType, /* array */[])), React.createElement("input", {

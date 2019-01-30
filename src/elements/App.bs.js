@@ -247,103 +247,102 @@ function make(size, definitions, _children) {
                             break;
                         case 4 : 
                             var match$4 = action$1[0];
-                            var isInput = match$4[/* isInput */1];
-                            var nibID$2 = match$4[/* nibID */0];
-                            var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
-                            var nib = Belt_MapString.getExn(nibs, nibID$2);
-                            var newNib = Definition$ReactTemplate.setTranslated(nib, "en", match$4[/* text */2]);
-                            var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
-                            var documentation;
-                            if (isInput) {
-                              var init$6 = definition[/* documentation */1];
-                              documentation = /* record */[
-                                /* name */init$6[/* name */0],
-                                /* description */init$6[/* description */1],
-                                /* inputs */newNibs,
-                                /* outputs */init$6[/* outputs */3]
-                              ];
-                            } else {
-                              var init$7 = definition[/* documentation */1];
-                              documentation = /* record */[
-                                /* name */init$7[/* name */0],
-                                /* description */init$7[/* description */1],
-                                /* inputs */init$7[/* inputs */2],
-                                /* outputs */newNibs
-                              ];
-                            }
-                            newDefinition = /* record */[
-                              /* implementation */definition[/* implementation */0],
-                              /* documentation */documentation,
-                              /* display */definition[/* display */2]
-                            ];
-                            break;
-                        case 5 : 
-                            var match$5 = action$1[0];
-                            var valueType = match$5[/* valueType */2];
-                            var isInput$1 = match$5[/* isInput */1];
-                            var nibID$3 = match$5[/* nibID */0];
-                            var match$6 = definition[/* implementation */0];
-                            var tmp;
-                            switch (match$6.tag | 0) {
-                              case 1 : 
-                                  var $$interface = match$6[0];
-                                  tmp = /* InterfaceImplementation */Block.__(1, [isInput$1 ? /* record */[
-                                          /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* inputTypes */0], nibID$3, valueType),
-                                          /* outputTypes */$$interface[/* outputTypes */1]
-                                        ] : /* record */[
-                                          /* inputTypes */$$interface[/* inputTypes */0],
-                                          /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* outputTypes */1], nibID$3, valueType)
-                                        ]]);
-                                  break;
-                              case 4 : 
-                                  var tmp$1;
-                                  if (isInput$1) {
-                                    tmp$1 = Definition$ReactTemplate.changeTypedFields(match$6[0], nibID$3, valueType);
-                                  } else {
-                                    throw Caml_builtin_exceptions.not_found;
-                                  }
-                                  tmp = /* RecordTypeImplementation */Block.__(4, [tmp$1]);
-                                  break;
-                              default:
-                                throw Caml_builtin_exceptions.not_found;
-                            }
-                            newDefinition = /* record */[
-                              /* implementation */tmp,
-                              /* documentation */definition[/* documentation */1],
-                              /* display */definition[/* display */2]
-                            ];
-                            break;
-                        case 6 : 
-                            var match$7 = action$1[0];
-                            var explicitConnectionSide = match$7[/* explicitConnectionSide */1];
+                            var explicitConnectionSide = match$4[/* explicitConnectionSide */1];
                             var nodeID = Helpers$ReactTemplate.randomID(/* () */0);
                             var nodeConnectionSide_000 = /* node : NodeConnection */[nodeID];
-                            var nodeConnectionSide_001 = /* nib */match$7[/* connectionNib */2];
+                            var nodeConnectionSide_001 = /* nib */match$4[/* connectionNib */2];
                             var nodeConnectionSide = /* record */[
                               nodeConnectionSide_000,
                               nodeConnectionSide_001
                             ];
-                            var match$8 = explicitConnectionSide[/* isSource */1];
-                            var match$9 = match$8 ? /* tuple */[
+                            var match$5 = explicitConnectionSide[/* isSource */1];
+                            var match$6 = match$5 ? /* tuple */[
                                 explicitConnectionSide[/* connectionSide */0],
                                 nodeConnectionSide
                               ] : /* tuple */[
                                 nodeConnectionSide,
                                 explicitConnectionSide[/* connectionSide */0]
                               ];
-                            var match$10 = definition[/* implementation */0];
-                            if (match$10.tag === 3) {
-                              var graphImplementation$1 = match$10[0];
+                            var match$7 = definition[/* implementation */0];
+                            if (match$7.tag === 3) {
+                              var graphImplementation$1 = match$7[0];
                               newDefinition = /* record */[
                                 /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                      /* connections */Belt_Map.set(graphImplementation$1[/* connections */0], match$9[1], match$9[0]),
-                                      /* nodes */Belt_MapString.set(graphImplementation$1[/* nodes */1], nodeID, match$7[/* node */0])
+                                      /* connections */Belt_Map.set(graphImplementation$1[/* connections */0], match$6[1], match$6[0]),
+                                      /* nodes */Belt_MapString.set(graphImplementation$1[/* nodes */1], nodeID, match$4[/* node */0])
                                     ]]),
                                 /* documentation */definition[/* documentation */1],
                                 /* display */definition[/* display */2]
                               ];
                             } else {
                               newDefinition = definition;
+                            }
+                            break;
+                        case 5 : 
+                            var match$8 = action$1[0];
+                            var action$2 = match$8[/* action */2];
+                            var isInput = match$8[/* isInput */1];
+                            var nibID$2 = match$8[/* nibID */0];
+                            if (action$2.tag) {
+                              var valueType = action$2[0];
+                              var match$9 = definition[/* implementation */0];
+                              var tmp;
+                              switch (match$9.tag | 0) {
+                                case 1 : 
+                                    var $$interface = match$9[0];
+                                    tmp = /* InterfaceImplementation */Block.__(1, [isInput ? /* record */[
+                                            /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* inputTypes */0], nibID$2, valueType),
+                                            /* outputTypes */$$interface[/* outputTypes */1]
+                                          ] : /* record */[
+                                            /* inputTypes */$$interface[/* inputTypes */0],
+                                            /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface[/* outputTypes */1], nibID$2, valueType)
+                                          ]]);
+                                    break;
+                                case 4 : 
+                                    var tmp$1;
+                                    if (isInput) {
+                                      tmp$1 = Definition$ReactTemplate.changeTypedFields(match$9[0], nibID$2, valueType);
+                                    } else {
+                                      throw Caml_builtin_exceptions.not_found;
+                                    }
+                                    tmp = /* RecordTypeImplementation */Block.__(4, [tmp$1]);
+                                    break;
+                                default:
+                                  throw Caml_builtin_exceptions.not_found;
+                              }
+                              newDefinition = /* record */[
+                                /* implementation */tmp,
+                                /* documentation */definition[/* documentation */1],
+                                /* display */definition[/* display */2]
+                              ];
+                            } else {
+                              var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
+                              var nib = Belt_MapString.getExn(nibs, nibID$2);
+                              var newNib = Definition$ReactTemplate.setTranslated(nib, "en", action$2[0]);
+                              var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
+                              var documentation;
+                              if (isInput) {
+                                var init$6 = definition[/* documentation */1];
+                                documentation = /* record */[
+                                  /* name */init$6[/* name */0],
+                                  /* description */init$6[/* description */1],
+                                  /* inputs */newNibs,
+                                  /* outputs */init$6[/* outputs */3]
+                                ];
+                              } else {
+                                var init$7 = definition[/* documentation */1];
+                                documentation = /* record */[
+                                  /* name */init$7[/* name */0],
+                                  /* description */init$7[/* description */1],
+                                  /* inputs */init$7[/* inputs */2],
+                                  /* outputs */newNibs
+                                ];
+                              }
+                              newDefinition = /* record */[
+                                /* implementation */definition[/* implementation */0],
+                                /* documentation */documentation,
+                                /* display */definition[/* display */2]
+                              ];
                             }
                             break;
                         

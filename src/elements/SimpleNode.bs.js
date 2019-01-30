@@ -26,14 +26,16 @@ function nibKey(connectionNib) {
 function renderNibs(nibs, className, isSource, connectionNode, emit, selectedNib) {
   return $$Array.of_list(Belt_List.map(nibs, (function (param) {
                     var nib = param[/* nib */1];
-                    var name = param[/* name */0];
+                    var nameElement = React.createElement("div", {
+                          className: "nib-name"
+                        }, param[/* name */0]);
                     return React.createElement("div", {
                                 key: nibKey(nib),
                                 className: className
-                              }, isSource ? null : name, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(isSource, /* record */[
+                              }, isSource ? null : nameElement, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(isSource, /* record */[
                                         /* node */connectionNode,
                                         /* nib */nib
-                                      ], emit, Caml_obj.caml_equal(nib, selectedNib), /* array */[])), isSource ? name : null);
+                                      ], emit, Caml_obj.caml_equal(nib, selectedNib), /* array */[])), isSource ? nameElement : null);
                   })));
 }
 

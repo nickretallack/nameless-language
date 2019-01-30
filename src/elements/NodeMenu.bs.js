@@ -69,7 +69,7 @@ function make(definitions, nodes, nib, emit, _children) {
                                   return React.createElement("a", {
                                               key: definitionID,
                                               onClick: (function (_event) {
-                                                  return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
+                                                  return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
                                                                   /* node : record */[
                                                                     /* scope */scope,
                                                                     /* kind : DefinedNode */Block.__(1, [/* record */[
@@ -92,7 +92,7 @@ function make(definitions, nodes, nib, emit, _children) {
                               className: "type-selector-categories"
                             }, match$2 ? null : React.createElement(React.Fragment, undefined, React.createElement("a", {
                                         onClick: (function (_event) {
-                                            return Curry._1(emit, /* AddNode */Block.__(6, [/* record */[
+                                            return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
                                                             /* node : record */[
                                                               /* scope */scope,
                                                               /* kind : ReferenceNode */0

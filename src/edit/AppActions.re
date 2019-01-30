@@ -17,6 +17,16 @@ type changeNibType = {
   valueType,
 };
 
+type nibAction =
+  | ChangeNibName(string)
+  | ChangeNibType(valueType);
+
+type nibActionRecord = {
+  nibID,
+  isInput: bool,
+  action: nibAction,
+};
+
 type addNode = {
   node,
   explicitConnectionSide,
@@ -28,11 +38,10 @@ type definitionAction =
   | ChangeName(string)
   | ChangeDescription(string)
   | ChangeConstantValue(primitiveValue)
-  | ChangeNibName(changeNibName)
-  | ChangeNibType(changeNibType)
   | AddNode(addNode)
   | AddInput
-  | AddOutput;
+  | AddOutput
+  | NibAction(nibActionRecord);
 
 type definitionActionRecord = {
   definitionID,

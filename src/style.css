@@ -67,10 +67,16 @@ body {
 
 .node .input,
 .node .output {
-	/* width: 80px; */
 	height: 20px;
 	white-space: nowrap;
+}
+
+.nib-name {
+	width: calc(115px + var(--nega-half-nib));
 	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
 }
 
 .node.definition-node {
@@ -159,4 +165,10 @@ a {
 }
 .outputs {
 	left: 0;
+}
+
+.input input,
+.output input {
+	width: 110px;
+	text-align: inherit;
 }

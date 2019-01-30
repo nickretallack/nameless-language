@@ -17,15 +17,21 @@ let make =
   render: _self => {
     let changeName = event =>
       emit(
-        AppActions.ChangeNibName({
+        AppActions.NibAction({
           nibID,
           isInput,
-          text: getEventValue(event),
+          action: ChangeNibName(getEventValue(event)),
         }),
       );
 
     let changeType = (valueType: valueType) =>
-      emit(AppActions.ChangeNibType({nibID, isInput, valueType}));
+      emit(
+        AppActions.NibAction({
+          nibID,
+          isInput,
+          action: AppActions.ChangeNibType(valueType),
+        }),
+      );
 
     <div>
       <TypeSelector valueType definitions changeType />

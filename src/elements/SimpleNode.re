@@ -22,17 +22,22 @@ let renderNibs =
     ) =>
   ReasonReact.array(
     Array.of_list(
-      Belt.List.map(nibs, ({name, nib}) =>
-        <div className key={nibKey(nib)}>
-          {isSource ? ReasonReact.null : ReasonReact.string(name)}
-          <Nib
-            isSource
-            isHighlighted={Some(nib) == selectedNib}
-            connectionSide={node: connectionNode, nib}
-            emit
-          />
-          {isSource ? ReasonReact.string(name) : ReasonReact.null}
-        </div>
+      Belt.List.map(
+        nibs,
+        ({name, nib}) => {
+          let nameElement =
+            <div className="nib-name"> {ReasonReact.string(name)} </div>;
+          <div className key={nibKey(nib)}>
+            {isSource ? ReasonReact.null : nameElement}
+            <Nib
+              isSource
+              isHighlighted={Some(nib) == selectedNib}
+              connectionSide={node: connectionNode, nib}
+              emit
+            />
+            {isSource ? nameElement : ReasonReact.null}
+          </div>;
+        },
       ),
     ),
   );
