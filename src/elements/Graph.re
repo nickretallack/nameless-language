@@ -157,7 +157,7 @@ let make =
               ...state,
               error:
                 Some(
-                  "You can only connect a source in a parent scope to a sink in a child scope.",
+                  "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.",
                 ),
             });
           } else if (DetectCycles.detectCycles(

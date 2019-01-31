@@ -39,19 +39,23 @@ function isParentScope(parent, _child, nodes) {
 
 function checkScopes(source, sink, nodes) {
   var match = sink[/* node */0];
-  if (match) {
-    var sinkNodeID = match[0];
-    var match$1 = source[/* node */0];
-    if (match$1) {
+  var match$1 = source[/* node */0];
+  if (match$1) {
+    if (match) {
       var sourceNodeID = match$1[0];
+      var sinkNodeID = match[0];
       var sinkNode = Belt_MapString.getExn(nodes, sinkNodeID);
       var sourceNode = Belt_MapString.getExn(nodes, sourceNodeID);
       if (Definition$ReactTemplate.isFunctionDefinitionNode(sourceNode) && Definition$ReactTemplate.isKeywordNib(source[/* nib */1])) {
-        var match$2 = sinkNode[/* scope */0];
-        if (match$2) {
-          return isParentScope(sourceNodeID, match$2[0], nodes);
+        if (sourceNodeID === sinkNodeID) {
+          return true;
         } else {
-          return sourceNodeID === sinkNodeID;
+          var match$2 = sinkNode[/* scope */0];
+          if (match$2) {
+            return isParentScope(sourceNodeID, match$2[0], nodes);
+          } else {
+            return sourceNodeID === sinkNodeID;
+          }
         }
       } else {
         var match$3 = sourceNode[/* scope */0];
@@ -72,16 +76,10 @@ function checkScopes(source, sink, nodes) {
         }
       }
     } else {
-      return true;
+      return Belt_MapString.getExn(nodes, match$1[0])[/* scope */0] === /* GraphScope */0;
     }
   } else {
-    var match$5 = source[/* node */0];
-    if (match$5) {
-      var sourceNode$1 = Belt_MapString.getExn(nodes, match$5[0]);
-      return sourceNode$1[/* scope */0] === /* GraphScope */0;
-    } else {
-      return true;
-    }
+    return true;
   }
 }
 

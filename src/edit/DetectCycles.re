@@ -20,39 +20,37 @@ let rec isParentScope = (parent: nodeID, child: nodeID, nodes: nodes) => {
 };
 let checkScopes =
     (source: connectionSide, sink: connectionSide, nodes: nodes): bool =>
-  switch (sink.node) {
-  | GraphConnection =>
-    switch (source.node) {
-    | GraphConnection => true
-    | NodeConnection(sourceNodeID) =>
-      let sourceNode = Belt.Map.String.getExn(nodes, sourceNodeID);
-      sourceNode.scope == GraphScope;
-    }
-  | NodeConnection(sinkNodeID) =>
-    switch (source.node) {
-    | GraphConnection => true
-    | NodeConnection(sourceNodeID) =>
-      let sinkNode = Belt.Map.String.getExn(nodes, sinkNodeID);
-      let sourceNode = Belt.Map.String.getExn(nodes, sourceNodeID);
-      if (isFunctionDefinitionNode(sourceNode) && isKeywordNib(source.nib)) {
+  switch (sink.node, source.node) {
+  | (_, GraphConnection) => true
+  | (GraphConnection, NodeConnection(sourceNodeID)) =>
+    Belt.Map.String.getExn(nodes, sourceNodeID).scope == GraphScope
+  | (NodeConnection(sinkNodeID), NodeConnection(sourceNodeID)) =>
+    let sinkNode = Belt.Map.String.getExn(nodes, sinkNodeID);
+    let sourceNode = Belt.Map.String.getExn(nodes, sourceNodeID);
+
+    /* connecting to an internal input? */
+    if (isFunctionDefinitionNode(sourceNode) && isKeywordNib(source.nib)) {
+      sourceNodeID == sinkNodeID
+      || (
         switch (sinkNode.scope) {
         | GraphScope => sourceNodeID == sinkNodeID
         | NodeScope(sinkScopeNodeID) =>
           isParentScope(sourceNodeID, sinkScopeNodeID, nodes)
-        };
-      } else {
-        switch (sourceNode.scope) {
-        | GraphScope => true
-        | NodeScope(sourceScopeNodeID) =>
-          sourceScopeNodeID == sinkNodeID
-          || (
-            switch (sinkNode.scope) {
-            | GraphScope => false
-            | NodeScope(sinkScopeNodeID) =>
-              isParentScope(sinkScopeNodeID, sourceScopeNodeID, nodes)
-            }
-          )
-        };
+        }
+      );
+    } else {
+      switch (sourceNode.scope) {
+      | GraphScope => true
+      | NodeScope(sourceScopeNodeID) =>
+        /* connecting to an internal output? */
+        sourceScopeNodeID == sinkNodeID
+        || (
+          switch (sinkNode.scope) {
+          | GraphScope => false
+          | NodeScope(sinkScopeNodeID) =>
+            isParentScope(sinkScopeNodeID, sourceScopeNodeID, nodes)
+          }
+        )
       };
-    }
+    };
   };

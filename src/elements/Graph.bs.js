@@ -415,7 +415,7 @@ function make(definitions, implementation, definition, display, documentation, e
                           } else {
                             return /* Update */Block.__(0, [/* record */[
                                         /* pointers */state[/* pointers */0],
-                                        /* error */"You can only connect a source in a parent scope to a sink in a child scope.",
+                                        /* error */"When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.",
                                         /* selectedNib */state[/* selectedNib */2]
                                       ]]);
                           }
