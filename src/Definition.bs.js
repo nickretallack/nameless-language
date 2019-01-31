@@ -74,6 +74,14 @@ function isFunctionDefinitionNode(node) {
   }
 }
 
+function isKeywordNib(nib) {
+  if (typeof nib === "number" || nib.tag) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 var primitiveValueTypes = /* array */[
   /* TextType */2,
   /* NumberType */1
@@ -493,6 +501,7 @@ exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
 exports.ScopeComparator = ScopeComparator;
 exports.isFunctionDefinitionNode = isFunctionDefinitionNode;
+exports.isKeywordNib = isKeywordNib;
 exports.primitiveValueTypes = primitiveValueTypes;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;

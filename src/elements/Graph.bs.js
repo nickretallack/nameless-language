@@ -13,6 +13,7 @@ var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
+var Caml_primitive = require("bs-platform/lib/js/caml_primitive.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
@@ -109,7 +110,12 @@ function make(definitions, implementation, definition, display, documentation, e
               var match = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */0]);
               var graphSize = match[1];
               var nodeLayouts = match[0];
-              console.log("graph dimensions", graphSize[/* columns */0], graphSize[/* rows */1]);
+              var graphSize_000 = /* columns */graphSize[/* columns */0];
+              var graphSize_001 = /* rows */Caml_primitive.caml_int_max(graphSize[/* rows */1], Caml_primitive.caml_int_max(Belt_List.length(definition[/* display */2][/* inputOrdering */0]), Belt_List.length(definition[/* display */2][/* outputOrdering */1])));
+              var graphSize$1 = /* record */[
+                graphSize_000,
+                graphSize_001
+              ];
               var columnWidth = 120.0 + 60.0;
               var getNodePosition = function (nodeID) {
                 var position = Belt_MapString.getExn(nodeLayouts, nodeID)[/* position */0];
@@ -124,7 +130,7 @@ function make(definitions, implementation, definition, display, documentation, e
                         /* y */size[/* rows */1] * 20.0
                       ];
               };
-              var graphSizePixels = sizeToPixels(graphSize);
+              var graphSizePixels = sizeToPixels(graphSize$1);
               var getNodeSize = function (nodeID) {
                 return sizeToPixels(Belt_MapString.getExn(nodeLayouts, nodeID)[/* size */1]);
               };
@@ -357,33 +363,8 @@ function make(definitions, implementation, definition, display, documentation, e
                         var match$4 = match$3[/* explicitConnectionSide */0];
                         var startIsSource = match$4[/* isSource */1];
                         var startNib = match$4[/* connectionSide */0];
-                        var match$5 = startIsSource !== match$2[/* isSource */1];
-                        if (match$5) {
-                          var match$6 = DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */0], startIsSource ? endNib : startNib, startIsSource ? startNib : endNib), implementation[/* nodes */1]);
-                          if (match$6) {
-                            return /* Update */Block.__(0, [/* record */[
-                                        /* pointers */state[/* pointers */0],
-                                        /* error */"Can't create cycles",
-                                        /* selectedNib */state[/* selectedNib */2]
-                                      ]]);
-                          } else {
-                            return /* UpdateWithSideEffects */Block.__(2, [
-                                      /* record */[
-                                        /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
-                                        /* error */undefined,
-                                        /* selectedNib */state[/* selectedNib */2]
-                                      ],
-                                      (function (param) {
-                                          return Curry._1(emit, /* CreateConnection */Block.__(0, [/* record */[
-                                                          /* source */startIsSource ? startNib : endNib,
-                                                          /* sink */startIsSource ? endNib : startNib
-                                                        ]]));
-                                        })
-                                    ]);
-                          }
-                        } else {
-                          var match$7 = Caml_obj.caml_equal(startNib, endNib);
-                          if (match$7) {
+                        if (startIsSource === match$2[/* isSource */1]) {
+                          if (Caml_obj.caml_equal(startNib, endNib)) {
                             return /* Update */Block.__(0, [/* record */[
                                         /* pointers */state[/* pointers */0],
                                         /* error */undefined,
@@ -396,6 +377,45 @@ function make(definitions, implementation, definition, display, documentation, e
                             return /* Update */Block.__(0, [/* record */[
                                         /* pointers */state[/* pointers */0],
                                         /* error */startIsSource ? "Can't connect a source to a source" : "Can't connect a sink to a sink",
+                                        /* selectedNib */state[/* selectedNib */2]
+                                      ]]);
+                          }
+                        } else {
+                          var match$5 = startIsSource ? /* tuple */[
+                              startNib,
+                              endNib
+                            ] : /* tuple */[
+                              endNib,
+                              startNib
+                            ];
+                          var sink = match$5[1];
+                          var source = match$5[0];
+                          if (DetectCycles$ReactTemplate.checkScopes(source, sink, implementation[/* nodes */1])) {
+                            if (DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */0], sink, source), implementation[/* nodes */1])) {
+                              return /* Update */Block.__(0, [/* record */[
+                                          /* pointers */state[/* pointers */0],
+                                          /* error */"Can't create cycles",
+                                          /* selectedNib */state[/* selectedNib */2]
+                                        ]]);
+                            } else {
+                              return /* UpdateWithSideEffects */Block.__(2, [
+                                        /* record */[
+                                          /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                                          /* error */undefined,
+                                          /* selectedNib */state[/* selectedNib */2]
+                                        ],
+                                        (function (param) {
+                                            return Curry._1(emit, /* CreateConnection */Block.__(0, [/* record */[
+                                                            /* source */source,
+                                                            /* sink */sink
+                                                          ]]));
+                                          })
+                                      ]);
+                            }
+                          } else {
+                            return /* Update */Block.__(0, [/* record */[
+                                        /* pointers */state[/* pointers */0],
+                                        /* error */"You can only connect a source in a parent scope to a sink in a child scope.",
                                         /* selectedNib */state[/* selectedNib */2]
                                       ]]);
                           }

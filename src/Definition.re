@@ -118,6 +118,12 @@ let isFunctionDefinitionNode = (node: node) =>
   | _ => false
   };
 
+let isKeywordNib = (nib: connectionNib) =>
+  switch (nib) {
+  | NibConnection(_) => true
+  | _ => false
+  };
+
 /*
  variant Yes
  variant No

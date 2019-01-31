@@ -123,46 +123,22 @@ let make =
       }
     | FinishDrawing({connectionSide: endNib, isSource: endIsSource}) =>
       switch (Belt.Map.get(state.pointers, pointerID)) {
+      | None => ReasonReact.NoUpdate
       | Some({
           explicitConnectionSide: {
             isSource: startIsSource,
             connectionSide: startNib,
           },
         }) =>
-        startIsSource != endIsSource ?
-          DetectCycles.detectCycles(
-            Belt.Map.set(
-              implementation.connections,
-              startIsSource ? endNib : startNib,
-              startIsSource ? startNib : endNib,
-            ),
-            implementation.nodes,
-          ) ?
-            ReasonReact.Update({
-              ...state,
-              error: Some("Can't create cycles"),
-            }) :
-            ReasonReact.UpdateWithSideEffects(
-              {
-                ...state,
-                error: None,
-                pointers: Belt.Map.remove(state.pointers, pointerID),
-              },
-              _ =>
-                emit(
-                  CreateConnection({
-                    source: startIsSource ? startNib : endNib,
-                    sink: startIsSource ? endNib : startNib,
-                  }),
-                ),
-            ) :
-          startNib == endNib ?
+        if (startIsSource == endIsSource) {
+          if (startNib == endNib) {
             ReasonReact.Update({
               ...state,
               error: None,
               selectedNib:
                 Some({connectionSide: startNib, isSource: startIsSource}),
-            }) :
+            });
+          } else {
             ReasonReact.Update({
               ...state,
               error:
@@ -171,9 +147,38 @@ let make =
                     "Can't connect a source to a source" :
                     "Can't connect a sink to a sink",
                 ),
-            })
-
-      | None => ReasonReact.NoUpdate
+            });
+          };
+        } else {
+          let (source, sink) =
+            startIsSource ? (startNib, endNib) : (endNib, startNib);
+          if (!DetectCycles.checkScopes(source, sink, implementation.nodes)) {
+            ReasonReact.Update({
+              ...state,
+              error:
+                Some(
+                  "You can only connect a source in a parent scope to a sink in a child scope.",
+                ),
+            });
+          } else if (DetectCycles.detectCycles(
+                       Belt.Map.set(implementation.connections, sink, source),
+                       implementation.nodes,
+                     )) {
+            ReasonReact.Update({
+              ...state,
+              error: Some("Can't create cycles"),
+            });
+          } else {
+            ReasonReact.UpdateWithSideEffects(
+              {
+                ...state,
+                error: None,
+                pointers: Belt.Map.remove(state.pointers, pointerID),
+              },
+              _ => emit(CreateConnection({source, sink})),
+            );
+          };
+        }
       }
     | StopDrawing =>
       Belt.Map.has(state.pointers, pointerID) ?
@@ -227,7 +232,18 @@ let make =
         definitions,
         implementation.connections,
       );
-    Js.log3("graph dimensions", graphSize.columns, graphSize.rows);
+
+    let graphSize: LayoutGraph.nodePosition = {
+      columns: graphSize.columns,
+      rows:
+        max(
+          graphSize.rows,
+          max(
+            Belt.List.length(definition.display.inputOrdering),
+            Belt.List.length(definition.display.outputOrdering),
+          ),
+        ),
+    };
 
     let nodeWidth = 120.0;
     let textHeight = 20.0;

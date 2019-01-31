@@ -62,7 +62,6 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                                   return Helpers$ReactTemplate.arrayGetWithDefault(columnsFilledness, index, 0);
                                 }
                               }));
-                        console.log(lastColumn);
                         return /* tuple */[
                                 newFilledness,
                                 Helpers$ReactTemplate.simpleMergeMaps(Belt_MapString.set(param[1], node[/* id */0], /* record */[
@@ -76,7 +75,6 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                       }));
         }));
   var columnFilledness = match[0];
-  console.log("filledness", columnFilledness);
   return /* tuple */[
           match[1],
           /* record */[

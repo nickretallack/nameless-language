@@ -81,7 +81,6 @@ let rec layoutDefinition =
                 rows + size.rows + 1 :
                 arrayGetWithDefault(columnsFilledness, index, 0)
             );
-          Js.log(lastColumn);
           (
             newFilledness,
             simpleMergeMaps(
@@ -102,7 +101,6 @@ let rec layoutDefinition =
         },
       )
     );
-  Js.log2("filledness", columnFilledness);
   (
     nodeLayouts,
     {
