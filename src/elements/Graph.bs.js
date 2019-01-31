@@ -267,7 +267,13 @@ function make(definitions, implementation, definition, display, documentation, e
                                     var match$1 = match[/* explicitConnectionSide */0];
                                     var startIsSource = match$1[/* isSource */1];
                                     var connectionSide = match$1[/* connectionSide */0];
-                                    return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : point, startIsSource ? point : getNibPosition(connectionSide, true), startIsSource ? getNibNudge(connectionSide) : 0, undefined, /* array */[]));
+                                    var adjustedPoint_000 = /* x */point[/* x */0];
+                                    var adjustedPoint_001 = /* y */point[/* y */1] - 40.0;
+                                    var adjustedPoint = /* record */[
+                                      adjustedPoint_000,
+                                      adjustedPoint_001
+                                    ];
+                                    return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), startIsSource ? getNibNudge(connectionSide) : 0, undefined, /* array */[]));
                                   }), self[/* state */1][/* pointers */0]), React.createElement("div", {
                                   className: "outputs"
                                 }, renderNibs(Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), "output internal", false, /* GraphConnection */0, self[/* send */3], emit, selectedGraphOutputNib), React.createElement("a", {

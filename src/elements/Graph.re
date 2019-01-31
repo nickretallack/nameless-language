@@ -428,17 +428,21 @@ let make =
                  },
                }: drawingConnection,
              ),
-           ) =>
+           ) => {
+             let adjustedPoint = {x: point.x, y: point.y -. 40.0};
              <Connection
                key={pointerIDToString(pointerID)}
                sourcePosition={
-                 startIsSource ? getNibPosition(connectionSide, false) : point
+                 startIsSource ?
+                   getNibPosition(connectionSide, false) : adjustedPoint
                }
                sinkPosition={
-                 startIsSource ? point : getNibPosition(connectionSide, true)
+                 startIsSource ?
+                   adjustedPoint : getNibPosition(connectionSide, true)
                }
                nudge={startIsSource ? getNibNudge(connectionSide) : 0}
-             />,
+             />;
+           },
            self.state.pointers,
          )}
         <div className="outputs">
