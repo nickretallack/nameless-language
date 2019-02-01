@@ -73,7 +73,7 @@ let rec topoSort =
   if (Belt.Map.String.isEmpty(unavailableNodes)) {
     [availableNodes];
   } else {
-    if (nodes == unavailableNodes) {
+    if (Belt.Map.String.size(nodes) == Belt.Map.String.size(unavailableNodes)) {
       raise(CycleDetected);
     };
     [

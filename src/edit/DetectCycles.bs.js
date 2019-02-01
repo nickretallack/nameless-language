@@ -22,7 +22,6 @@ function detectCycles(connections, nodes) {
 function isParentScope(parent, _child, nodes) {
   while(true) {
     var child = _child;
-    console.log("so far...");
     if (parent === child) {
       return true;
     } else {
@@ -46,9 +45,15 @@ function checkScopes(source, sink, nodes) {
       var sinkNodeID = match[0];
       var sinkNode = Belt_MapString.getExn(nodes, sinkNodeID);
       var sourceNode = Belt_MapString.getExn(nodes, sourceNodeID);
-      if (Definition$ReactTemplate.isFunctionDefinitionNode(sourceNode) && Definition$ReactTemplate.isKeywordNib(source[/* nib */1])) {
+      if (sourceNodeID === sinkNodeID) {
+        if (Definition$ReactTemplate.isFunctionDefinitionNode(sourceNode) && Definition$ReactTemplate.isKeywordNib(source[/* nib */1]) && Definition$ReactTemplate.isFunctionDefinitionNode(sinkNode)) {
+          return Definition$ReactTemplate.isKeywordNib(sink[/* nib */1]);
+        } else {
+          return false;
+        }
+      } else if (Definition$ReactTemplate.isFunctionDefinitionNode(sourceNode) && Definition$ReactTemplate.isKeywordNib(source[/* nib */1])) {
         if (sourceNodeID === sinkNodeID) {
-          return true;
+          return Definition$ReactTemplate.isKeywordNib(sink[/* nib */1]);
         } else {
           var match$2 = sinkNode[/* scope */0];
           if (match$2) {

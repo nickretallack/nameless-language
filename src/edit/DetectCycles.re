@@ -7,8 +7,7 @@ let detectCycles = (connections: connections, nodes: nodes): bool =>
   | _ => false
   };
 
-let rec isParentScope = (parent: nodeID, child: nodeID, nodes: nodes) => {
-  Js.log("so far...");
+let rec isParentScope = (parent: nodeID, child: nodeID, nodes: nodes) =>
   if (parent == child) {
     true;
   } else {
@@ -17,7 +16,6 @@ let rec isParentScope = (parent: nodeID, child: nodeID, nodes: nodes) => {
     | NodeScope(nodeID) => isParentScope(parent, nodeID, nodes)
     };
   };
-};
 let checkScopes =
     (source: connectionSide, sink: connectionSide, nodes: nodes): bool =>
   switch (sink.node, source.node) {
@@ -28,16 +26,22 @@ let checkScopes =
     let sinkNode = Belt.Map.String.getExn(nodes, sinkNodeID);
     let sourceNode = Belt.Map.String.getExn(nodes, sourceNodeID);
 
-    /* connecting to an internal input? */
-    if (isFunctionDefinitionNode(sourceNode) && isKeywordNib(source.nib)) {
-      sourceNodeID == sinkNodeID
-      || (
+    if (sourceNodeID == sinkNodeID) {
+      isFunctionDefinitionNode(sourceNode)
+      && isKeywordNib(source.nib)
+      && isFunctionDefinitionNode(sinkNode)
+      && isKeywordNib(sink.nib);
+    } else if (isFunctionDefinitionNode(sourceNode)
+               && isKeywordNib(source.nib)) {
+      if (sourceNodeID == sinkNodeID) {
+        isKeywordNib(sink.nib);
+      } else {
         switch (sinkNode.scope) {
         | GraphScope => sourceNodeID == sinkNodeID
         | NodeScope(sinkScopeNodeID) =>
           isParentScope(sourceNodeID, sinkScopeNodeID, nodes)
-        }
-      );
+        };
+      };
     } else {
       switch (sourceNode.scope) {
       | GraphScope => true
