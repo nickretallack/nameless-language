@@ -77,43 +77,51 @@ let make =
         Belt.Map.String.getExn(definitions, definitionID).implementation
       ) {
       | ConstantImplementation(_) =>
+        if (nib.isSource) {
+          ReasonReact.NoUpdate;
+        } else {
+          ReasonReact.SideEffects(
+            _ =>
+              emit(
+                AddNode({
+                  node: {
+                    kind: DefinedNode({kind: ValueNode, definitionID}),
+                    scope: getScope(nib, nodes),
+                  },
+                  explicitConnectionSide: nib,
+                  connectionNib: ValueConnection,
+                }),
+              ),
+          );
+        }
+      | _ => ReasonReact.Update({...state, definitionID: Some(definitionID)})
+      }
+    | AddValue =>
+      if (nib.isSource) {
+        ReasonReact.NoUpdate;
+      } else {
         ReasonReact.SideEffects(
           _ =>
             emit(
               AddNode({
                 node: {
-                  kind: DefinedNode({kind: ValueNode, definitionID}),
+                  kind:
+                    DefinedNode({
+                      kind: ValueNode,
+                      definitionID:
+                        switch (state.definitionID) {
+                        | None => raise(Not_found)
+                        | Some(definitionID) => definitionID
+                        },
+                    }),
                   scope: getScope(nib, nodes),
                 },
                 explicitConnectionSide: nib,
                 connectionNib: ValueConnection,
               }),
             ),
-        )
-      | _ => ReasonReact.Update({...state, definitionID: Some(definitionID)})
+        );
       }
-    | AddValue =>
-      ReasonReact.SideEffects(
-        _ =>
-          emit(
-            AddNode({
-              node: {
-                kind:
-                  DefinedNode({
-                    kind: ValueNode,
-                    definitionID:
-                      switch (state.definitionID) {
-                      | None => raise(Not_found)
-                      | Some(definitionID) => definitionID
-                      },
-                  }),
-                scope: getScope(nib, nodes),
-              },
-              explicitConnectionSide: nib,
-              connectionNib: ValueConnection,
-            }),
-          ),
-      )
     },
   render: self => {
     let scope = getScope(nib, nodes);

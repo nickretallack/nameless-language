@@ -213,26 +213,30 @@ function make(definitions, nodes, nib, emit, _children) {
           /* retainedProps */component[/* retainedProps */11],
           /* reducer */(function (action, state) {
               if (typeof action === "number") {
-                return /* SideEffects */Block.__(1, [(function (param) {
-                              var match = state[/* definitionID */1];
-                              var tmp;
-                              if (match !== undefined) {
-                                tmp = match;
-                              } else {
-                                throw Caml_builtin_exceptions.not_found;
-                              }
-                              return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
-                                              /* node : record */[
-                                                /* scope */getScope(nib, nodes),
-                                                /* kind : DefinedNode */Block.__(1, [/* record */[
-                                                      /* kind : ValueNode */1,
-                                                      /* definitionID */tmp
-                                                    ]])
-                                              ],
-                                              /* explicitConnectionSide */nib,
-                                              /* connectionNib : ValueConnection */0
-                                            ]]));
-                            })]);
+                if (nib[/* isSource */1]) {
+                  return /* NoUpdate */0;
+                } else {
+                  return /* SideEffects */Block.__(1, [(function (param) {
+                                var match = state[/* definitionID */1];
+                                var tmp;
+                                if (match !== undefined) {
+                                  tmp = match;
+                                } else {
+                                  throw Caml_builtin_exceptions.not_found;
+                                }
+                                return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                                /* node : record */[
+                                                  /* scope */getScope(nib, nodes),
+                                                  /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                        /* kind : ValueNode */1,
+                                                        /* definitionID */tmp
+                                                      ]])
+                                                ],
+                                                /* explicitConnectionSide */nib,
+                                                /* connectionNib : ValueConnection */0
+                                              ]]));
+                              })]);
+                }
               } else {
                 switch (action.tag | 0) {
                   case 0 : 
@@ -250,6 +254,8 @@ function make(definitions, nodes, nib, emit, _children) {
                                     /* definitionID */definitionID,
                                     /* definedNodeKind */state[/* definedNodeKind */2]
                                   ]]);
+                      } else if (nib[/* isSource */1]) {
+                        return /* NoUpdate */0;
                       } else {
                         return /* SideEffects */Block.__(1, [(function (param) {
                                       return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
