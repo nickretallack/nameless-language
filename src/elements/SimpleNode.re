@@ -50,6 +50,7 @@ let make =
       ~inputs: list(displayNib),
       ~outputs: list(displayNib),
       ~position: point,
+      ~depth: int,
       ~size: point,
       ~selectedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
@@ -64,6 +65,7 @@ let make =
         ~top=pixels(position.y),
         ~width=pixels(size.x),
         ~height=pixels(size.y),
+        ~zIndex=string_of_int(depth),
         (),
       )}
       onDoubleClick=?{

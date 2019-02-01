@@ -10,6 +10,7 @@ let make =
       ~definitionID: definitionID,
       ~position: point,
       ~size: point,
+      ~depth: int,
       ~selectedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
@@ -23,6 +24,7 @@ let make =
         ~top=pixels(position.y),
         ~width=pixels(size.x),
         ~height=pixels(size.y),
+        ~zIndex=string_of_int(depth),
         (),
       )}
       onDoubleClick={_event => ReasonReact.Router.push("#" ++ definitionID)}>

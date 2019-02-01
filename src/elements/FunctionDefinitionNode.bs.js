@@ -10,7 +10,7 @@ var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 
 var component = ReasonReact.statelessComponent("FunctionDefinitionNode");
 
-function make(nodeID, definition, definitionID, position, size, selectedNib, emit, _children) {
+function make(nodeID, definition, definitionID, position, size, depth, selectedNib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -28,7 +28,8 @@ function make(nodeID, definition, definitionID, position, size, selectedNib, emi
                             height: Helpers$ReactTemplate.pixels(size[/* y */1]),
                             left: Helpers$ReactTemplate.pixels(position[/* x */0]),
                             top: Helpers$ReactTemplate.pixels(position[/* y */1]),
-                            width: Helpers$ReactTemplate.pixels(size[/* x */0])
+                            width: Helpers$ReactTemplate.pixels(size[/* x */0]),
+                            zIndex: String(depth)
                           },
                           onDoubleClick: (function (_event) {
                               return ReasonReact.Router[/* push */0]("#" + definitionID);

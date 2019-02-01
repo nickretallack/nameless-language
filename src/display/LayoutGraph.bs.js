@@ -51,7 +51,8 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                                           /* columns */init[/* columns */0],
                                           /* rows */(nodeLayout[/* position */0][/* rows */1] + 1 | 0) + rows | 0
                                         ],
-                                        /* size */nodeLayout[/* size */1]
+                                        /* size */nodeLayout[/* size */1],
+                                        /* depth */nodeLayout[/* depth */2] + 1 | 0
                                       ];
                               }));
                         var newFilledness = Belt_Array.makeBy(Caml_primitive.caml_int_max(columnsFilledness.length, lastColumn + 1 | 0), (function (index) {
@@ -69,7 +70,8 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                                             /* columns */columns,
                                             /* rows */rows
                                           ],
-                                          /* size */size
+                                          /* size */size,
+                                          /* depth */1
                                         ]), adjustedChildren)
                               ];
                       }));
@@ -122,7 +124,8 @@ function layoutGraph(scopedNodeIDs, columnizedNodes, definitions, connections) {
                             /* columns */init[/* columns */0],
                             /* rows */nodeLayout[/* position */0][/* rows */1] + 1 | 0
                           ],
-                          /* size */nodeLayout[/* size */1]
+                          /* size */nodeLayout[/* size */1],
+                          /* depth */nodeLayout[/* depth */2]
                         ];
                 })),
           /* record */[

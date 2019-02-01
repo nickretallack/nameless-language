@@ -9,6 +9,7 @@ type nodePosition = {
 type nodeLayout = {
   position: nodePosition,
   size: nodePosition,
+  depth: int,
 };
 
 let rec layoutDefinition =
@@ -66,6 +67,7 @@ let rec layoutDefinition =
             Belt.Map.String.map(children, nodeLayout =>
               {
                 ...nodeLayout,
+                depth: nodeLayout.depth + 1,
                 position: {
                   ...nodeLayout.position,
                   rows: nodeLayout.position.rows + 1 + rows,
@@ -93,6 +95,7 @@ let rec layoutDefinition =
                     columns,
                     rows,
                   },
+                  depth: 1,
                 },
               ),
               adjustedChildren,

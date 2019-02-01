@@ -10,6 +10,7 @@ let make =
       ~definitions: definitions,
       ~position: point,
       ~size: point,
+      ~depth: int,
       ~selectedNib: option(connectionNib)=?,
       ~emit: GraphActions.graphAction => unit,
       _children,
@@ -21,6 +22,7 @@ let make =
         nodeID
         position
         size
+        depth
         emit
         ?name
         inputs
@@ -57,6 +59,7 @@ let make =
           definitionID
           position
           size
+          depth
           ?selectedNib
           emit
         />

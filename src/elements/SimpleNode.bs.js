@@ -39,7 +39,7 @@ function renderNibs(nibs, className, isSource, connectionNode, emit, selectedNib
                   })));
 }
 
-function make(nodeID, definitionID, name, inputs, outputs, position, size, selectedNib, emit, _children) {
+function make(nodeID, definitionID, name, inputs, outputs, position, depth, size, selectedNib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -57,7 +57,8 @@ function make(nodeID, definitionID, name, inputs, outputs, position, size, selec
                   height: Helpers$ReactTemplate.pixels(size[/* y */1]),
                   left: Helpers$ReactTemplate.pixels(position[/* x */0]),
                   top: Helpers$ReactTemplate.pixels(position[/* y */1]),
-                  width: Helpers$ReactTemplate.pixels(size[/* x */0])
+                  width: Helpers$ReactTemplate.pixels(size[/* x */0]),
+                  zIndex: String(depth)
                 }
               };
               var tmp$1 = Belt_Option.map(definitionID, (function (definitionID, _event) {

@@ -11,7 +11,7 @@ var FunctionDefinitionNode$ReactTemplate = require("./FunctionDefinitionNode.bs.
 
 var component = ReasonReact.statelessComponent("Node");
 
-function make(nodeID, node, definitions, position, size, selectedNib, emit, _children) {
+function make(nodeID, node, definitions, position, size, depth, selectedNib, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -25,7 +25,7 @@ function make(nodeID, node, definitions, position, size, selectedNib, emit, _chi
           /* render */(function (_self) {
               var makeNode = function (outputs, $staropt$star, definitionID, name, param) {
                 var inputs = $staropt$star !== undefined ? $staropt$star : /* [] */0;
-                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, size, selectedNib, emit, /* array */[]));
+                return ReasonReact.element(undefined, undefined, SimpleNode$ReactTemplate.make(nodeID, definitionID, name, inputs, outputs, position, depth, size, selectedNib, emit, /* array */[]));
               };
               var match = node[/* kind */1];
               if (typeof match === "number") {
@@ -45,7 +45,7 @@ function make(nodeID, node, definitions, position, size, selectedNib, emit, _chi
                 if (kind !== 3) {
                   return makeNode(match$2[/* outputs */1], match$2[/* inputs */0], definitionID, Definition$ReactTemplate.getDisplayName(definition, "en"), /* () */0);
                 } else {
-                  return ReasonReact.element(undefined, undefined, FunctionDefinitionNode$ReactTemplate.make(nodeID, definition, definitionID, position, size, selectedNib, emit, /* array */[]));
+                  return ReasonReact.element(undefined, undefined, FunctionDefinitionNode$ReactTemplate.make(nodeID, definition, definitionID, position, size, depth, selectedNib, emit, /* array */[]));
                 }
               } else {
                 return makeNode(/* :: */[

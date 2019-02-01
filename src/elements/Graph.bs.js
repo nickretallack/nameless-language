@@ -306,7 +306,7 @@ function make(definitions, implementation, definition, display, documentation, e
                                     } else {
                                       tmp = undefined;
                                     }
-                                    return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), tmp, self[/* send */3], /* array */[]));
+                                    return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(nodeID, param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), Belt_MapString.getExn(nodeLayouts, nodeID)[/* depth */2], tmp, self[/* send */3], /* array */[]));
                                   }), implementation[/* nodes */1])), match$1 !== undefined ? React.createElement("div", {
                                 className: "error-message"
                               }, match$1) : null, match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */1], match$2, emit, /* array */[])) : null);
