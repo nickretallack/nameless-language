@@ -376,11 +376,6 @@ let make =
         value={getTranslated(documentation.name, "en")}
         onChange=changeName
       />
-      {switch (self.state.error) {
-       | Some(error) =>
-         <div className="error-message"> {ReasonReact.string(error)} </div>
-       | None => ReasonReact.null
-       }}
       <div
         className="graph"
         style={ReactDOMRe.Style.make(
@@ -515,6 +510,11 @@ let make =
            implementation.nodes,
          )}
       </div>
+      {switch (self.state.error) {
+       | Some(error) =>
+         <div className="error-message"> {ReasonReact.string(error)} </div>
+       | None => ReasonReact.null
+       }}
       {switch (self.state.selectedNib) {
        | None => ReasonReact.null
        | Some(explicitConnectionSide) =>
