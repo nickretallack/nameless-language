@@ -106,17 +106,35 @@ function make(definitions, nodes, nib, emit, _children) {
                 var tmp$1;
                 var exit = 0;
                 switch (match$3.tag | 0) {
+                  case 1 : 
+                      var match$4 = nib[/* isSource */1];
+                      tmp$1 = match$4 ? "Can't connect this to a source." : React.createElement("a", {
+                              onClick: (function (_event) {
+                                  return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                                  /* node : record */[
+                                                    /* scope */getScope(nib, nodes),
+                                                    /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                          /* kind : FunctionDefinitionNode */3,
+                                                          /* definitionID */definitionID
+                                                        ]])
+                                                  ],
+                                                  /* explicitConnectionSide */nib,
+                                                  /* connectionNib : ValueConnection */0
+                                                ]]));
+                                })
+                            }, "inline function");
+                      break;
                   case 2 : 
                   case 3 : 
                       exit = 1;
                       break;
                   default:
-                    tmp$1 = React.createElement("div", undefined, "TODO");
+                    tmp$1 = React.createElement(React.Fragment, undefined, "TODO");
                 }
                 if (exit === 1) {
-                  var match$4 = Caml_obj.caml_equal(self[/* state */1][/* definedNodeKind */2], /* FunctionCallNode */0);
-                  tmp$1 = React.createElement("div", undefined, React.createElement("h3", undefined, "Usage"), React.createElement("a", {
-                            className: match$4 ? "selected" : "",
+                  var match$5 = Caml_obj.caml_equal(self[/* state */1][/* definedNodeKind */2], /* FunctionCallNode */0);
+                  tmp$1 = React.createElement(React.Fragment, undefined, React.createElement("a", {
+                            className: match$5 ? "selected" : "",
                             onClick: (function (_event) {
                                 return Curry._1(self[/* send */3], /* SetDefinedNodeKind */Block.__(2, [/* FunctionCallNode */0]));
                               })
@@ -126,10 +144,10 @@ function make(definitions, nodes, nib, emit, _children) {
                               })
                           }, "value"));
                 }
-                var match$5 = self[/* state */1][/* definedNodeKind */2];
+                var match$6 = self[/* state */1][/* definedNodeKind */2];
                 var tmp$2;
-                if (match$5 !== undefined) {
-                  var definedNodeKind = match$5;
+                if (match$6 !== undefined) {
+                  var definedNodeKind = match$6;
                   var display = Definition$ReactTemplate.displayNode(/* record */[
                         /* scope */getScope(nib, nodes),
                         /* kind : DefinedNode */Block.__(1, [/* record */[
@@ -137,9 +155,9 @@ function make(definitions, nodes, nib, emit, _children) {
                               /* definitionID */definitionID
                             ]])
                       ], definitions, "en");
-                  var match$6 = nib[/* isSource */1];
                   var match$7 = nib[/* isSource */1];
-                  tmp$2 = React.createElement("div", undefined, React.createElement("h3", undefined, match$6 ? "Input" : "Output"), Belt_List.toArray(Belt_List.map(match$7 ? display[/* inputs */0] : display[/* outputs */1], (function (displayNib) {
+                  var match$8 = nib[/* isSource */1];
+                  tmp$2 = React.createElement("div", undefined, React.createElement("h3", undefined, match$7 ? "Input" : "Output"), Belt_List.toArray(Belt_List.map(match$8 ? display[/* inputs */0] : display[/* outputs */1], (function (displayNib) {
                                   return React.createElement("a", {
                                               key: SimpleNode$ReactTemplate.nibKey(displayNib[/* nib */1]),
                                               onClick: (function (_event) {
@@ -160,7 +178,7 @@ function make(definitions, nodes, nib, emit, _children) {
                 } else {
                   tmp$2 = null;
                 }
-                tmp = React.createElement(React.Fragment, undefined, tmp$1, tmp$2);
+                tmp = React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("h3", undefined, "Usage"), tmp$1), tmp$2);
               } else {
                 tmp = null;
               }

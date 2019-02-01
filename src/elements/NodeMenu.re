@@ -188,27 +188,51 @@ let make =
        | Some(definitionID) =>
          let definition = Belt.Map.String.getExn(definitions, definitionID);
          <>
-           {switch (definition.implementation) {
-            | GraphImplementation(_)
-            | ExternalImplementation(_) =>
-              <div>
-                <h3> {ReasonReact.string("Usage")} </h3>
-                <a
-                  className={
-                    self.state.definedNodeKind == Some(FunctionCallNode) ?
-                      "selected" : ""
-                  }
-                  onClick={_event =>
-                    self.send(SetDefinedNodeKind(FunctionCallNode))
-                  }>
-                  {ReasonReact.string("call")}
-                </a>
-                <a onClick={_event => self.send(AddValue)}>
-                  {ReasonReact.string("value")}
-                </a>
-              </div>
-            | _ => <div> {ReasonReact.string("TODO")} </div>
-            }}
+           <div>
+             <h3> {ReasonReact.string("Usage")} </h3>
+             {switch (definition.implementation) {
+              | GraphImplementation(_)
+              | ExternalImplementation(_) =>
+                <>
+                  <a
+                    className={
+                      self.state.definedNodeKind == Some(FunctionCallNode) ?
+                        "selected" : ""
+                    }
+                    onClick={_event =>
+                      self.send(SetDefinedNodeKind(FunctionCallNode))
+                    }>
+                    {ReasonReact.string("call")}
+                  </a>
+                  <a onClick={_event => self.send(AddValue)}>
+                    {ReasonReact.string("value")}
+                  </a>
+                </>
+              | InterfaceImplementation(_) =>
+                nib.isSource ?
+                  ReasonReact.string("Can't connect this to a source.") :
+                  <a
+                    onClick={_event =>
+                      emit(
+                        AddNode({
+                          node: {
+                            scope: getScope(nib, nodes),
+                            kind:
+                              DefinedNode({
+                                kind: FunctionDefinitionNode,
+                                definitionID,
+                              }),
+                          },
+                          explicitConnectionSide: nib,
+                          connectionNib: ValueConnection,
+                        }),
+                      )
+                    }>
+                    {ReasonReact.string("inline function")}
+                  </a>
+              | _ => <> {ReasonReact.string("TODO")} </>
+              }}
+           </div>
            {switch (self.state.definedNodeKind) {
             | None => ReasonReact.null
             | Some(definedNodeKind) =>
