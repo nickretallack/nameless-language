@@ -31,7 +31,7 @@ let make =
       <div className="output external">
         <Nib
           isSource=true
-          isHighlighted=false
+          isHighlighted={selectedNib == Some(ValueConnection)}
           connectionSide={node: NodeConnection(nodeID), nib: ValueConnection}
           emit
         />

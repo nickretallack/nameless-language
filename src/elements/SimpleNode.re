@@ -24,7 +24,7 @@ let renderNibs =
     Array.of_list(
       Belt.List.map(
         nibs,
-        ({name, nib}) => {
+        ({name, nib}: displayNib) => {
           let nameElement =
             <div className="nib-name"> {ReasonReact.string(name)} </div>;
           <div className key={nibKey(nib)}>

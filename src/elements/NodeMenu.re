@@ -223,9 +223,11 @@ let make =
                     }>
                     {ReasonReact.string("call")}
                   </a>
-                  <a onClick={_event => self.send(AddValue)}>
-                    {ReasonReact.string("value")}
-                  </a>
+                  {nib.isSource ?
+                     ReasonReact.null :
+                     <a onClick={_event => self.send(AddValue)}>
+                       {ReasonReact.string("value")}
+                     </a>}
                 </>
               | InterfaceImplementation(_) =>
                 nib.isSource ?

@@ -2,6 +2,7 @@
 'use strict';
 
 var React = require("react");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
@@ -39,7 +40,7 @@ function make(nodeID, definition, definitionID, position, size, depth, selectedN
                             }, ReasonReact.element(undefined, undefined, Nib$ReactTemplate.make(true, /* record */[
                                       /* node : NodeConnection */[nodeID],
                                       /* nib : ValueConnection */0
-                                    ], emit, false, /* array */[]))), React.createElement("div", {
+                                    ], emit, Caml_obj.caml_equal(selectedNib, /* ValueConnection */0), /* array */[]))), React.createElement("div", {
                               className: "outputs"
                             }, SimpleNode$ReactTemplate.renderNibs(Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), "output internal", false, /* NodeConnection */[nodeID], emit, selectedNib)), React.createElement("div", {
                               className: "definition-body"
