@@ -49,7 +49,8 @@ let maybeNameless = (string: string) =>
 
 let canConnectToNib = (definition: definition, isSource: bool) =>
   !isSource
-  || (
+  || Belt.List.length(definition.display.inputOrdering) != 0
+  && (
     switch (definition.implementation) {
     | ConstantImplementation(_)
     | InterfaceImplementation(_) => false

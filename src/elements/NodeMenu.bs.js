@@ -56,13 +56,17 @@ function maybeNameless(string) {
 
 function canConnectToNib(definition, isSource) {
   if (isSource) {
-    var match = definition[/* implementation */0];
-    switch (match.tag | 0) {
-      case 0 : 
-      case 1 : 
-          return false;
-      default:
-        return true;
+    if (Belt_List.length(definition[/* display */2][/* inputOrdering */0]) !== 0) {
+      var match = definition[/* implementation */0];
+      switch (match.tag | 0) {
+        case 0 : 
+        case 1 : 
+            return false;
+        default:
+          return true;
+      }
+    } else {
+      return false;
     }
   } else {
     return true;
