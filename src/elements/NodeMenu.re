@@ -52,8 +52,7 @@ let canConnectToNib = (definition: definition, isSource: bool) =>
   || Belt.List.length(definition.display.inputOrdering) != 0
   && (
     switch (definition.implementation) {
-    | ConstantImplementation(_)
-    | InterfaceImplementation(_) => false
+    | ConstantImplementation(_) => false
     | _ => true
     }
   );
@@ -231,27 +230,40 @@ let make =
                      </a>}
                 </>
               | InterfaceImplementation(_) =>
-                nib.isSource ?
-                  ReasonReact.string("Can't connect this to a source.") :
+                <>
                   <a
+                    className={
+                      self.state.definedNodeKind
+                      == Some(FunctionPointerCallNode) ?
+                        "selected" : ""
+                    }
                     onClick={_event =>
-                      emit(
-                        AddNode({
-                          node: {
-                            scope: getScope(nib, nodes),
-                            kind:
-                              DefinedNode({
-                                kind: FunctionDefinitionNode,
-                                definitionID,
-                              }),
-                          },
-                          explicitConnectionSide: nib,
-                          connectionNib: ValueConnection,
-                        }),
-                      )
+                      self.send(SetDefinedNodeKind(FunctionPointerCallNode))
                     }>
-                    {ReasonReact.string("inline function")}
+                    {ReasonReact.string("function pointer call")}
                   </a>
+                  {nib.isSource ?
+                     ReasonReact.null :
+                     <a
+                       onClick={_event =>
+                         emit(
+                           AddNode({
+                             node: {
+                               scope: getScope(nib, nodes),
+                               kind:
+                                 DefinedNode({
+                                   kind: FunctionDefinitionNode,
+                                   definitionID,
+                                 }),
+                             },
+                             explicitConnectionSide: nib,
+                             connectionNib: ValueConnection,
+                           }),
+                         )
+                       }>
+                       {ReasonReact.string("inline function")}
+                     </a>}
+                </>
               | _ => <> {ReasonReact.string("TODO")} </>
               }}
            </div>
