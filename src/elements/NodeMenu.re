@@ -47,6 +47,16 @@ let getScope = (nib: explicitConnectionSide, nodes: nodes) =>
 let maybeNameless = (string: string) =>
   String.length(string) == 0 ? "(nameless)" : string;
 
+let canConnectToNib = (definition: definition, isSource: bool) =>
+  !isSource
+  || (
+    switch (definition.implementation) {
+    | ConstantImplementation(_)
+    | InterfaceImplementation(_) => false
+    | _ => true
+    }
+  );
+
 let component = ReasonReact.reducerComponent("NodeMenu");
 let make =
     (
@@ -143,6 +153,7 @@ let make =
                  definitions,
                  (_definitionID: definitionID, definition: definition) =>
                  filterFunction(definition)
+                 && canConnectToNib(definition, nib.isSource)
                ),
              ),
              ((definitionID: definitionID, definition: definition)) =>

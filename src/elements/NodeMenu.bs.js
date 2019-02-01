@@ -54,6 +54,21 @@ function maybeNameless(string) {
   }
 }
 
+function canConnectToNib(definition, isSource) {
+  if (isSource) {
+    var match = definition[/* implementation */0];
+    switch (match.tag | 0) {
+      case 0 : 
+      case 1 : 
+          return false;
+      default:
+        return true;
+    }
+  } else {
+    return true;
+  }
+}
+
 var component = ReasonReact.reducerComponent("NodeMenu");
 
 function make(definitions, nodes, nib, emit, _children) {
@@ -82,7 +97,11 @@ function make(definitions, nodes, nib, emit, _children) {
                 return React.createElement("div", {
                             className: "type-selector-choices"
                           }, React.createElement("h3", undefined, "Definitions"), Belt_Array.map(Belt_MapString.toArray(Belt_MapString.keep(definitions, (function (_definitionID, definition) {
-                                          return Curry._1(filterFunction, definition);
+                                          if (Curry._1(filterFunction, definition)) {
+                                            return canConnectToNib(definition, nib[/* isSource */1]);
+                                          } else {
+                                            return false;
+                                          }
                                         }))), (function (param) {
                                   var definitionID = param[0];
                                   var match = Caml_obj.caml_equal(self[/* state */1][/* definitionID */1], definitionID);
@@ -288,6 +307,7 @@ function make(definitions, nodes, nib, emit, _children) {
 exports.isNumberConstant = isNumberConstant;
 exports.getScope = getScope;
 exports.maybeNameless = maybeNameless;
+exports.canConnectToNib = canConnectToNib;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */
