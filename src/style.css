@@ -121,6 +121,9 @@ body {
 .type-selector-menu {
 	display: flex;
 }
+.type-selector-menu > div {
+	margin-right: 10px;
+}
 
 .type-selector-menu a {
 	display: block;
@@ -171,4 +174,11 @@ a {
 .output input {
 	width: 110px;
 	text-align: inherit;
+}
+
+h1,
+h2,
+h3 {
+	font: inherit;
+	margin: 0;
 }

@@ -5,10 +5,13 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
+var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
+var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 
 function isNumberConstant(definition) {
   var match = definition[/* implementation */0];
@@ -26,6 +29,31 @@ function isNumberConstant(definition) {
   }
 }
 
+function getScope(nib, nodes) {
+  var match = nib[/* connectionSide */0][/* node */0];
+  if (match) {
+    var nodeID = match[0];
+    var node = Belt_MapString.getExn(nodes, nodeID);
+    var match$1 = Definition$ReactTemplate.isFunctionDefinitionNode(node);
+    if (match$1) {
+      return /* NodeScope */[nodeID];
+    } else {
+      return node[/* scope */0];
+    }
+  } else {
+    return /* GraphScope */0;
+  }
+}
+
+function maybeNameless(string) {
+  var match = string.length === 0;
+  if (match) {
+    return "(nameless)";
+  } else {
+    return string;
+  }
+}
+
 var component = ReasonReact.reducerComponent("NodeMenu");
 
 function make(definitions, nodes, nib, emit, _children) {
@@ -40,57 +68,107 @@ function make(definitions, nodes, nib, emit, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
-              var match = nib[/* connectionSide */0][/* node */0];
-              var scope;
-              if (match) {
-                var nodeID = match[0];
-                var node = Belt_MapString.getExn(nodes, nodeID);
-                var match$1 = Definition$ReactTemplate.isFunctionDefinitionNode(node);
-                scope = match$1 ? /* NodeScope */[nodeID] : node[/* scope */0];
-              } else {
-                scope = /* GraphScope */0;
-              }
+              var scope = getScope(nib, nodes);
               var renderCategory = function (name, category) {
                 var match = Caml_obj.caml_equal(self[/* state */1][/* category */0], category);
                 return React.createElement("a", {
                             className: match ? "selected" : "",
                             onClick: (function (_event) {
-                                return Curry._1(self[/* send */3], /* SelectCategory */[category]);
+                                return Curry._1(self[/* send */3], /* SelectCategory */Block.__(0, [category]));
                               })
                           }, name);
               };
-              var nodeSelector = function (name, filterFunction) {
+              var nodeSelector = function (filterFunction) {
                 return React.createElement("div", {
                             className: "type-selector-choices"
-                          }, React.createElement("h3", undefined, name + "s"), Belt_Array.map(Belt_MapString.toArray(Belt_MapString.keep(definitions, (function (_definitionID, definition) {
+                          }, React.createElement("h3", undefined, "Definitions"), Belt_Array.map(Belt_MapString.toArray(Belt_MapString.keep(definitions, (function (_definitionID, definition) {
                                           return Curry._1(filterFunction, definition);
                                         }))), (function (param) {
                                   var definitionID = param[0];
+                                  var match = Caml_obj.caml_equal(self[/* state */1][/* definitionID */1], definitionID);
                                   return React.createElement("a", {
                                               key: definitionID,
+                                              className: match ? "selected" : "",
                                               onClick: (function (_event) {
-                                                  return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
-                                                                  /* node : record */[
-                                                                    /* scope */scope,
-                                                                    /* kind : DefinedNode */Block.__(1, [/* record */[
-                                                                          /* kind : ValueNode */1,
-                                                                          /* definitionID */definitionID
-                                                                        ]])
-                                                                  ],
-                                                                  /* explicitConnectionSide */nib,
-                                                                  /* connectionNib : ValueConnection */0
-                                                                ]]));
+                                                  return Curry._1(self[/* send */3], /* SelectDefinition */Block.__(1, [definitionID]));
                                                 })
                                             }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
                                 })));
               };
-              var match$2 = nib[/* isSource */1];
-              var match$3 = self[/* state */1][/* category */0];
+              var match = nib[/* isSource */1];
+              var match$1 = self[/* state */1][/* category */0];
+              var match$2 = self[/* state */1][/* definitionID */1];
+              var tmp;
+              if (match$2 !== undefined) {
+                var definitionID = match$2;
+                var definition = Belt_MapString.getExn(definitions, definitionID);
+                var match$3 = definition[/* implementation */0];
+                var tmp$1;
+                var exit = 0;
+                switch (match$3.tag | 0) {
+                  case 2 : 
+                  case 3 : 
+                      exit = 1;
+                      break;
+                  default:
+                    tmp$1 = React.createElement("div", undefined, "TODO");
+                }
+                if (exit === 1) {
+                  var match$4 = Caml_obj.caml_equal(self[/* state */1][/* definedNodeKind */2], /* FunctionCallNode */0);
+                  tmp$1 = React.createElement("div", undefined, React.createElement("h3", undefined, "Usage"), React.createElement("a", {
+                            className: match$4 ? "selected" : "",
+                            onClick: (function (_event) {
+                                return Curry._1(self[/* send */3], /* SetDefinedNodeKind */Block.__(2, [/* FunctionCallNode */0]));
+                              })
+                          }, "call"), React.createElement("a", {
+                            onClick: (function (_event) {
+                                return Curry._1(self[/* send */3], /* AddValue */0);
+                              })
+                          }, "value"));
+                }
+                var match$5 = self[/* state */1][/* definedNodeKind */2];
+                var tmp$2;
+                if (match$5 !== undefined) {
+                  var definedNodeKind = match$5;
+                  var display = Definition$ReactTemplate.displayNode(/* record */[
+                        /* scope */getScope(nib, nodes),
+                        /* kind : DefinedNode */Block.__(1, [/* record */[
+                              /* kind */definedNodeKind,
+                              /* definitionID */definitionID
+                            ]])
+                      ], definitions, "en");
+                  var match$6 = nib[/* isSource */1];
+                  var match$7 = nib[/* isSource */1];
+                  tmp$2 = React.createElement("div", undefined, React.createElement("h3", undefined, match$6 ? "Input" : "Output"), Belt_List.toArray(Belt_List.map(match$7 ? display[/* inputs */0] : display[/* outputs */1], (function (displayNib) {
+                                  return React.createElement("a", {
+                                              key: SimpleNode$ReactTemplate.nibKey(displayNib[/* nib */1]),
+                                              onClick: (function (_event) {
+                                                  return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                                                  /* node : record */[
+                                                                    /* scope */getScope(nib, nodes),
+                                                                    /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                                          /* kind */definedNodeKind,
+                                                                          /* definitionID */definitionID
+                                                                        ]])
+                                                                  ],
+                                                                  /* explicitConnectionSide */nib,
+                                                                  /* connectionNib */displayNib[/* nib */1]
+                                                                ]]));
+                                                })
+                                            }, maybeNameless(displayNib[/* name */0]));
+                                }))));
+                } else {
+                  tmp$2 = null;
+                }
+                tmp = React.createElement(React.Fragment, undefined, tmp$1, tmp$2);
+              } else {
+                tmp = null;
+              }
               return React.createElement("div", {
                           className: "type-selector-menu"
                         }, React.createElement("div", {
                               className: "type-selector-categories"
-                            }, match$2 ? null : React.createElement(React.Fragment, undefined, React.createElement("a", {
+                            }, React.createElement("h3", undefined, "Category"), renderCategory("Defined", /* AllCategory */1), match ? null : React.createElement(React.Fragment, undefined, React.createElement("a", {
                                         onClick: (function (_event) {
                                             return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
                                                             /* node : record */[
@@ -101,20 +179,91 @@ function make(definitions, nodes, nib, emit, _children) {
                                                             /* connectionNib : ValueConnection */0
                                                           ]]));
                                           })
-                                      }, "Reference"), renderCategory("Number", /* NumberCategory */0))), match$3 !== undefined ? nodeSelector("Number", isNumberConstant) : null);
+                                      }, "Reference"))), match$1 !== undefined ? (
+                            match$1 ? nodeSelector((function (param) {
+                                      return true;
+                                    })) : nodeSelector(isNumberConstant)
+                          ) : null, tmp);
             }),
           /* initialState */(function (param) {
-              return /* record */[/* category */undefined];
+              return /* record */[
+                      /* category */undefined,
+                      /* definitionID */undefined,
+                      /* definedNodeKind */undefined
+                    ];
             }),
           /* retainedProps */component[/* retainedProps */11],
-          /* reducer */(function (action, _state) {
-              return /* Update */Block.__(0, [/* record */[/* category */action[0]]]);
+          /* reducer */(function (action, state) {
+              if (typeof action === "number") {
+                return /* SideEffects */Block.__(1, [(function (param) {
+                              var match = state[/* definitionID */1];
+                              var tmp;
+                              if (match !== undefined) {
+                                tmp = match;
+                              } else {
+                                throw Caml_builtin_exceptions.not_found;
+                              }
+                              return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                              /* node : record */[
+                                                /* scope */getScope(nib, nodes),
+                                                /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                      /* kind : ValueNode */1,
+                                                      /* definitionID */tmp
+                                                    ]])
+                                              ],
+                                              /* explicitConnectionSide */nib,
+                                              /* connectionNib : ValueConnection */0
+                                            ]]));
+                            })]);
+              } else {
+                switch (action.tag | 0) {
+                  case 0 : 
+                      return /* Update */Block.__(0, [/* record */[
+                                  /* category */action[0],
+                                  /* definitionID */undefined,
+                                  /* definedNodeKind */undefined
+                                ]]);
+                  case 1 : 
+                      var definitionID = action[0];
+                      var match = Belt_MapString.getExn(definitions, definitionID)[/* implementation */0];
+                      if (match.tag) {
+                        return /* Update */Block.__(0, [/* record */[
+                                    /* category */state[/* category */0],
+                                    /* definitionID */definitionID,
+                                    /* definedNodeKind */state[/* definedNodeKind */2]
+                                  ]]);
+                      } else {
+                        return /* SideEffects */Block.__(1, [(function (param) {
+                                      return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                                      /* node : record */[
+                                                        /* scope */getScope(nib, nodes),
+                                                        /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                              /* kind : ValueNode */1,
+                                                              /* definitionID */definitionID
+                                                            ]])
+                                                      ],
+                                                      /* explicitConnectionSide */nib,
+                                                      /* connectionNib : ValueConnection */0
+                                                    ]]));
+                                    })]);
+                      }
+                  case 2 : 
+                      return /* Update */Block.__(0, [/* record */[
+                                  /* category */state[/* category */0],
+                                  /* definitionID */state[/* definitionID */1],
+                                  /* definedNodeKind */action[0]
+                                ]]);
+                  
+                }
+              }
             }),
           /* jsElementWrapped */component[/* jsElementWrapped */13]
         ];
 }
 
 exports.isNumberConstant = isNumberConstant;
+exports.getScope = getScope;
+exports.maybeNameless = maybeNameless;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */

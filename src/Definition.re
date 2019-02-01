@@ -498,7 +498,8 @@ let displayDefinedNode =
     }
   };
 
-let displayNode = (node: node, definitions: definitions, language: language) =>
+let displayNode =
+    (node: node, definitions: definitions, language: language): displayNibs =>
   switch (node.kind) {
   | ReferenceNode => {
       outputs: [{nib: ValueConnection, name: "Reference"}],
