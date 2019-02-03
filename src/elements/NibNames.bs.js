@@ -8,7 +8,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("NibNames");
 
-function make(position, height, $staropt$star, $staropt$star$1, nodeWidth, textHeight, _children) {
+function make(position, height, title, $staropt$star, $staropt$star$1, nodeWidth, textHeight, _children) {
   var sources = $staropt$star !== undefined ? $staropt$star : /* [] */0;
   var sinks = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   return /* record */[
@@ -24,14 +24,20 @@ function make(position, height, $staropt$star, $staropt$star$1, nodeWidth, textH
           /* render */(function (_self) {
               var renderTexts = function (nibs, isSource) {
                 return Belt_List.toArray(Belt_List.mapWithIndex(nibs, (function (index, display) {
+                                  var match = title !== undefined;
+                                  var text = display[/* name */0];
+                                  var index$1 = index + (
+                                    match ? 1 : 0
+                                  ) | 0;
+                                  var isSource$1 = isSource;
                                   return React.createElement("text", {
                                               alignmentBaseline: "central",
-                                              textAnchor: isSource ? "start" : "end",
+                                              textAnchor: isSource$1 ? "start" : "end",
                                               x: Pervasives.string_of_float(position[/* x */0] + (
-                                                    isSource ? 10.0 : nodeWidth - 10.0
+                                                    isSource$1 ? 10.0 : nodeWidth - 10.0
                                                   )),
-                                              y: Pervasives.string_of_float(textHeight * (index + 0.5))
-                                            }, display[/* name */0]);
+                                              y: Pervasives.string_of_float(textHeight * (index$1 + 0.5))
+                                            }, text);
                                 })));
               };
               return React.createElement(React.Fragment, undefined, React.createElement("rect", {

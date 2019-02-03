@@ -233,10 +233,10 @@ function make(definitions, implementation, definition, display, documentation, e
               var renderedSides = React.createElement(React.Fragment, undefined, ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
                             /* x */0.0,
                             /* y */0.0
-                          ], graphSizePixels[/* y */1], undefined, Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
+                          ], graphSizePixels[/* y */1], undefined, undefined, Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
                             /* x */graphSizePixels[/* x */0] - 120.0,
                             /* y */0.0
-                          ], graphSizePixels[/* y */1], Definition$ReactTemplate.displayKeywordInputs(definition, "en"), undefined, 120.0, 20.0, /* array */[])));
+                          ], graphSizePixels[/* y */1], undefined, Definition$ReactTemplate.displayKeywordInputs(definition, "en"), undefined, 120.0, 20.0, /* array */[])));
               var match$1 = self[/* state */1][/* error */1];
               var match$2 = self[/* state */1][/* selectedNib */2];
               return React.createElement("div", undefined, React.createElement("svg", {

@@ -5,6 +5,7 @@ let make =
     (
       ~position: point,
       ~height: float,
+      ~title=?,
       ~sources=[],
       ~sinks=[],
       ~nodeWidth: float,
@@ -14,20 +15,27 @@ let make =
   ...component,
   render: _self => {
     let sidePadding = 10.0;
+
+    let renderText = (text, index, isSource) =>
+      <text
+        textAnchor={isSource ? "start" : "end"}
+        alignmentBaseline="central"
+        x={string_of_float(
+          position.x +. (isSource ? sidePadding : nodeWidth -. sidePadding),
+        )}
+        y={string_of_float(textHeight *. (float_of_int(index) +. 0.5))}>
+        {ReasonReact.string(text)}
+      </text>;
+
     let renderTexts = (nibs: list(displayNib), isSource: bool) =>
       ReasonReact.array(
         Belt.List.toArray(
           Belt.List.mapWithIndex(nibs, (index, display: displayNib) =>
-            <text
-              textAnchor={isSource ? "start" : "end"}
-              alignmentBaseline="central"
-              x={string_of_float(
-                position.x
-                +. (isSource ? sidePadding : nodeWidth -. sidePadding),
-              )}
-              y={string_of_float(textHeight *. (float_of_int(index) +. 0.5))}>
-              {ReasonReact.string(display.name)}
-            </text>
+            renderText(
+              display.name,
+              index + (title != None ? 1 : 0),
+              isSource,
+            )
           ),
         ),
       );
