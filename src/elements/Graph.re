@@ -442,28 +442,49 @@ let make =
         ),
       );
 
+    let renderedDrawingConnections =
+      renderMap(
+        (
+          (
+            pointerID: pointerID,
+            {
+              point,
+              explicitConnectionSide: {
+                connectionSide,
+                isSource: startIsSource,
+              },
+            }: drawingConnection,
+          ),
+        ) => {
+          let adjustedPoint = {x: point.x, y: point.y -. 40.0};
+          <SvgConnection
+            key={pointerIDToString(pointerID)}
+            sourcePosition={
+              startIsSource ?
+                getNibPosition(connectionSide, false) : adjustedPoint
+            }
+            sinkPosition={
+              startIsSource ?
+                adjustedPoint : getNibPosition(connectionSide, true)
+            }
+          />;
+        },
+        self.state.pointers,
+      );
+
     <div>
+      <div>
+        <input
+          type_="text"
+          className="graph-name"
+          placeholder="(nameless function)"
+          value={getTranslated(documentation.name, "en")}
+          onChange=changeName
+        />
+      </div>
       <svg
-        width={pixels(graphSizePixels.x)} height={pixels(graphSizePixels.y)}>
-        renderedSides
-        renderedNodes
-        renderedConnections
-        renderedNibs
-      </svg>
-      <input
-        type_="text"
-        className="graph-name"
-        placeholder="(nameless function)"
-        value={getTranslated(documentation.name, "en")}
-        onChange=changeName
-      />
-      <div
-        className="graph"
-        style={ReactDOMRe.Style.make(
-          ~width=pixels(graphSizePixels.x),
-          ~height=pixels(graphSizePixels.y),
-          (),
-        )}
+        width={pixels(graphSizePixels.x)}
+        height={pixels(graphSizePixels.y)}
         onMouseMove={event => {
           ReactEvent.Mouse.preventDefault(event);
           self.send({
@@ -498,100 +519,12 @@ let make =
             })
           )
         }>
-        {renderMap(
-           ((sink, source)) =>
-             <Connection
-               key={connectionSideToString(sink)}
-               sinkPosition={getNibPosition(sink, true)}
-               sourcePosition={getNibPosition(source, false)}
-               nudge={getNibNudge(source)}
-             />,
-           implementation.connections,
-         )}
-        {renderMap(
-           (
-             (
-               pointerID: pointerID,
-               {
-                 point,
-                 explicitConnectionSide: {
-                   connectionSide,
-                   isSource: startIsSource,
-                 },
-               }: drawingConnection,
-             ),
-           ) => {
-             let adjustedPoint = {x: point.x, y: point.y -. 40.0};
-             <Connection
-               key={pointerIDToString(pointerID)}
-               sourcePosition={
-                 startIsSource ?
-                   getNibPosition(connectionSide, false) : adjustedPoint
-               }
-               sinkPosition={
-                 startIsSource ?
-                   adjustedPoint : getNibPosition(connectionSide, true)
-               }
-               nudge={startIsSource ? getNibNudge(connectionSide) : 0}
-             />;
-           },
-           self.state.pointers,
-         )}
-        <div className="outputs">
-          {renderNibs(
-             displayKeywordOutputs(definition, "en"),
-             "output internal",
-             false,
-             GraphConnection,
-             self.send,
-             emit,
-             selectedGraphOutputNib,
-           )}
-          <a onClick={_event => emit(AddOutput)}>
-            {ReasonReact.string("Add Output")}
-          </a>
-        </div>
-        <div className="inputs">
-          {renderNibs(
-             displayKeywordInputs(definition, "en"),
-             "input internal",
-             true,
-             GraphConnection,
-             self.send,
-             emit,
-             selectedGraphInputNib,
-           )}
-          <a onClick={_event => emit(AddInput)}>
-            {ReasonReact.string("Add Input")}
-          </a>
-        </div>
-        {renderStringMap(
-           ((nodeID: nodeID, node: node)) =>
-             <Node
-               key=nodeID
-               nodeID
-               definitions
-               node
-               selectedNib=?{
-                 switch (self.state.selectedNib) {
-                 | None => None
-                 | Some({connectionSide}) =>
-                   switch (connectionSide.node) {
-                   | GraphConnection => None
-                   | NodeConnection(selectedNodeID) =>
-                     selectedNodeID == nodeID ?
-                       Some(connectionSide.nib) : None
-                   }
-                 }
-               }
-               position={getNodePosition(nodeID)}
-               size={getNodeSize(nodeID)}
-               depth={getNodeDepth(nodeID)}
-               emit={self.send}
-             />,
-           implementation.nodes,
-         )}
-      </div>
+        renderedSides
+        renderedNodes
+        renderedConnections
+        renderedDrawingConnections
+        renderedNibs
+      </svg>
       {switch (self.state.error) {
        | Some(error) =>
          <div className="error-message"> {ReasonReact.string(error)} </div>
