@@ -424,10 +424,29 @@ let make =
         />
       </>;
 
+    let renderedNodes =
+      ReasonReact.array(
+        Belt.List.toArray(
+          Belt.List.map(
+            Belt.Map.String.toList(implementation.nodes), ((nodeID, node)) =>
+            <SvgNode
+              key=nodeID
+              node
+              definitions
+              position={getNodePosition(nodeID)}
+              size={getNodeSize(nodeID)}
+              nodeWidth
+              textHeight
+            />
+          ),
+        ),
+      );
+
     <div>
       <svg
         width={pixels(graphSizePixels.x)} height={pixels(graphSizePixels.y)}>
         renderedSides
+        renderedNodes
         renderedConnections
         renderedNibs
       </svg>

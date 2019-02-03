@@ -7,7 +7,7 @@ var Helpers$ReactTemplate = require("../Helpers.bs.js");
 
 var component = ReasonReact.statelessComponent("NibNames");
 
-function make(position, height, nodeWidth, textHeight, _children) {
+function make(name, position, height, nodeWidth, textHeight, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -19,14 +19,19 @@ function make(position, height, nodeWidth, textHeight, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement("rect", {
-                          height: Helpers$ReactTemplate.pixels(height * textHeight),
-                          width: Helpers$ReactTemplate.pixels(nodeWidth),
-                          fill: "black",
-                          fillOpacity: "0.1",
-                          x: Helpers$ReactTemplate.pixels(position[/* x */0]),
-                          y: Helpers$ReactTemplate.pixels(position[/* y */1])
-                        });
+              return React.createElement(React.Fragment, undefined, React.createElement("rect", {
+                              height: Helpers$ReactTemplate.pixels(height),
+                              width: Helpers$ReactTemplate.pixels(nodeWidth),
+                              fill: "black",
+                              fillOpacity: "0.1",
+                              x: Helpers$ReactTemplate.pixels(position[/* x */0]),
+                              y: Helpers$ReactTemplate.pixels(position[/* y */1])
+                            }), name !== undefined ? React.createElement("text", {
+                                alignmentBaseline: "central",
+                                textAnchor: "middle",
+                                x: Helpers$ReactTemplate.pixels(position[/* x */0] + nodeWidth / 2.0),
+                                y: Helpers$ReactTemplate.pixels(position[/* y */1] + textHeight / 2.0)
+                              }, name) : null);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

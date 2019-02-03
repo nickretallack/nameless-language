@@ -20,6 +20,7 @@ var Node$ReactTemplate = require("./Node.bs.js");
 var SvgNib$ReactTemplate = require("./SvgNib.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var NibsBox$ReactTemplate = require("./NibsBox.bs.js");
+var SvgNode$ReactTemplate = require("./SvgNode.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
@@ -231,19 +232,23 @@ function make(definitions, implementation, definition, display, documentation, e
                       var connectionSide = explicitConnectionSide[/* connectionSide */0];
                       return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], false, /* array */[]));
                     }));
-              var renderedSides = React.createElement(React.Fragment, undefined, ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(/* record */[
+              var renderedSides = React.createElement(React.Fragment, undefined, ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
                             /* x */0.0,
                             /* y */0.0
-                          ], graphSizePixels[/* y */1], 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(/* record */[
+                          ], graphSizePixels[/* y */1], 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
                             /* x */graphSizePixels[/* x */0] - 120.0,
                             /* y */0.0
                           ], graphSizePixels[/* y */1], 120.0, 20.0, /* array */[])));
+              var renderedNodes = Belt_List.toArray(Belt_List.map(Belt_MapString.toList(implementation[/* nodes */1]), (function (param) {
+                          var nodeID = param[0];
+                          return ReasonReact.element(nodeID, undefined, SvgNode$ReactTemplate.make(param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), 120.0, 20.0, /* array */[]));
+                        })));
               var match$1 = self[/* state */1][/* error */1];
               var match$2 = self[/* state */1][/* selectedNib */2];
               return React.createElement("div", undefined, React.createElement("svg", {
                               height: Helpers$ReactTemplate.pixels(graphSizePixels[/* y */1]),
                               width: Helpers$ReactTemplate.pixels(graphSizePixels[/* x */0])
-                            }, renderedSides, renderedConnections, renderedNibs), React.createElement("input", {
+                            }, renderedSides, renderedNodes, renderedConnections, renderedNibs), React.createElement("input", {
                               className: "graph-name",
                               placeholder: "(nameless function)",
                               type: "text",
