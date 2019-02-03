@@ -642,6 +642,7 @@ let getNodeNibIndex =
       connectionNib,
       isSink,
     )
+    + 1
   | _ =>
     let {inputs, outputs} = displayNode(node, definitions, "en");
     let nibs = isSink ? inputs : outputs;

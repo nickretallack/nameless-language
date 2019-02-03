@@ -329,7 +329,7 @@ let make =
         nibPositionFormula(
           true,
           isSink,
-          {x: 0.0, y: 0.0},
+          {x: 0.0, y: textHeight},
           graphSizePixels,
           nibIndex,
         );
@@ -409,20 +409,13 @@ let make =
       );
 
     let renderedSides =
-      <>
-        <NibsBox
-          position={x: 0.0, y: 0.0}
-          height={graphSizePixels.y}
-          nodeWidth
-          textHeight
-        />
-        <NibsBox
-          position={x: graphSizePixels.x -. nodeWidth, y: 0.0}
-          height={graphSizePixels.y}
-          nodeWidth
-          textHeight
-        />
-      </>;
+      <SvgDefinitionBox
+        name={getDisplayName(definition, "en")}
+        position={x: 0.0, y: 0.0}
+        size=graphSizePixels
+        nodeWidth
+        textHeight
+      />;
 
     let renderedNodes =
       ReasonReact.array(

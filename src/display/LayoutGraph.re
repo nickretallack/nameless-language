@@ -70,7 +70,7 @@ let rec layoutDefinition =
                 depth: nodeLayout.depth + 1,
                 position: {
                   ...nodeLayout.position,
-                  rows: nodeLayout.position.rows + 1 + rows,
+                  rows: nodeLayout.position.rows + 2 + rows,
                 },
               }
             );
@@ -151,7 +151,7 @@ and layoutSubGraph =
          It expands depending on the subset of the graph that needs to occur inside/beside it. */
       columns: max(0, position.columns - 1 - firstColumn) + 2,
       /* inline function needs to be tall enough to contain its inputs/outputs as well as its subgraph */
-      rows: max(nibRows, position.rows),
+      rows: max(nibRows, position.rows) + 1,
     },
     subLayout,
   );
@@ -179,10 +179,10 @@ let layoutGraph =
         ...nodeLayout,
         position: {
           ...nodeLayout.position,
-          rows: nodeLayout.position.rows + 1,
+          rows: nodeLayout.position.rows + 2,
         },
       }
     ),
-    {columns: dimensions.columns + 2, rows: dimensions.rows},
+    {columns: dimensions.columns + 2, rows: dimensions.rows + 1},
   );
 };

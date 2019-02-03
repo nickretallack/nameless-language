@@ -18,7 +18,6 @@ var Caml_primitive = require("bs-platform/lib/js/caml_primitive.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var SvgNib$ReactTemplate = require("./SvgNib.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
-var NibsBox$ReactTemplate = require("./NibsBox.bs.js");
 var SvgNode$ReactTemplate = require("./SvgNode.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
@@ -29,6 +28,7 @@ var DetectCycles$ReactTemplate = require("../edit/DetectCycles.bs.js");
 var GraphActions$ReactTemplate = require("../edit/GraphActions.bs.js");
 var SvgConnection$ReactTemplate = require("./SvgConnection.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
+var SvgDefinitionBox$ReactTemplate = require("./SvgDefinitionBox.bs.js");
 
 var cmp = Caml_obj.caml_compare;
 
@@ -174,7 +174,7 @@ function make(definitions, implementation, definition, display, documentation, e
                         }));
                   return nibPositionFormula(true, isSink, /* record */[
                               /* x */0.0,
-                              /* y */0.0
+                              /* y */20.0
                             ], graphSizePixels, nibIndex$1);
                 }
               };
@@ -230,13 +230,10 @@ function make(definitions, implementation, definition, display, documentation, e
                       var connectionSide = explicitConnectionSide[/* connectionSide */0];
                       return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], false, /* array */[]));
                     }));
-              var renderedSides = React.createElement(React.Fragment, undefined, ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
-                            /* x */0.0,
-                            /* y */0.0
-                          ], graphSizePixels[/* y */1], 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
-                            /* x */graphSizePixels[/* x */0] - 120.0,
-                            /* y */0.0
-                          ], graphSizePixels[/* y */1], 120.0, 20.0, /* array */[])));
+              var renderedSides = ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */[
+                        /* x */0.0,
+                        /* y */0.0
+                      ], graphSizePixels, 120.0, 20.0, /* array */[]));
               var renderedNodes = Belt_List.toArray(Belt_List.map(Belt_MapString.toList(implementation[/* nodes */1]), (function (param) {
                           var nodeID = param[0];
                           return ReasonReact.element(nodeID, undefined, SvgNode$ReactTemplate.make(param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), 120.0, 20.0, /* array */[]));

@@ -395,7 +395,7 @@ function getNodeNibIndex(node, definitions, connectionNib, isSink) {
     if (match$1[/* kind */0] !== 3) {
       exit = 1;
     } else {
-      return functionDefinitionNibIndex(Belt_MapString.getExn(definitions, match$1[/* definitionID */1]), connectionNib, isSink);
+      return functionDefinitionNibIndex(Belt_MapString.getExn(definitions, match$1[/* definitionID */1]), connectionNib, isSink) + 1 | 0;
     }
   }
   if (exit === 1) {

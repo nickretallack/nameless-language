@@ -49,7 +49,7 @@ function layoutDefinition(nodeScope, scopedNodeIDs, columnizedNodes, definitions
                                 return /* record */[
                                         /* position : record */[
                                           /* columns */init[/* columns */0],
-                                          /* rows */(nodeLayout[/* position */0][/* rows */1] + 1 | 0) + rows | 0
+                                          /* rows */(nodeLayout[/* position */0][/* rows */1] + 2 | 0) + rows | 0
                                         ],
                                         /* size */nodeLayout[/* size */1],
                                         /* depth */nodeLayout[/* depth */2] + 1 | 0
@@ -107,7 +107,7 @@ function layoutSubGraph(definitionNode, scopedNodeIDs, columnizedNodes, definiti
   return /* tuple */[
           /* record */[
             /* columns */Caml_primitive.caml_int_max(0, (position[/* columns */0] - 1 | 0) - firstColumn | 0) + 2 | 0,
-            /* rows */Caml_primitive.caml_int_max(nibRows, position[/* rows */1])
+            /* rows */Caml_primitive.caml_int_max(nibRows, position[/* rows */1]) + 1 | 0
           ],
           match$1[0]
         ];
@@ -122,7 +122,7 @@ function layoutGraph(scopedNodeIDs, columnizedNodes, definitions, connections) {
                   return /* record */[
                           /* position : record */[
                             /* columns */init[/* columns */0],
-                            /* rows */nodeLayout[/* position */0][/* rows */1] + 1 | 0
+                            /* rows */nodeLayout[/* position */0][/* rows */1] + 2 | 0
                           ],
                           /* size */nodeLayout[/* size */1],
                           /* depth */nodeLayout[/* depth */2]
@@ -130,7 +130,7 @@ function layoutGraph(scopedNodeIDs, columnizedNodes, definitions, connections) {
                 })),
           /* record */[
             /* columns */dimensions[/* columns */0] + 2 | 0,
-            /* rows */dimensions[/* rows */1]
+            /* rows */dimensions[/* rows */1] + 1 | 0
           ]
         ];
 }
