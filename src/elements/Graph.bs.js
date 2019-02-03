@@ -9,6 +9,7 @@ var Belt_Id = require("bs-platform/lib/js/belt_Id.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
+var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
@@ -16,6 +17,7 @@ var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
 var Caml_primitive = require("bs-platform/lib/js/caml_primitive.js");
 var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
+var SvgNib$ReactTemplate = require("./SvgNib.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
@@ -215,9 +217,17 @@ function make(definitions, implementation, definition, display, documentation, e
               };
               var selectedGraphInputNib = selectedGraphNib(true);
               var selectedGraphOutputNib = selectedGraphNib(false);
+              var allNibs = Definition$ReactTemplate.collectAllGraphNibs(definition, definitions);
               var match$1 = self[/* state */1][/* error */1];
               var match$2 = self[/* state */1][/* selectedNib */2];
-              return React.createElement("div", undefined, React.createElement("input", {
+              return React.createElement("div", undefined, React.createElement("svg", {
+                              height: Helpers$ReactTemplate.pixels(graphSizePixels[/* y */1]),
+                              width: Helpers$ReactTemplate.pixels(graphSizePixels[/* x */0])
+                            }, Belt_Array.map(Belt_List.toArray(allNibs), (function (param) {
+                                    var isSource = param[/* isSource */1];
+                                    var connectionSide = param[/* connectionSide */0];
+                                    return ReasonReact.element(undefined, undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), self[/* send */3], false, /* array */[]));
+                                  }))), React.createElement("input", {
                               className: "graph-name",
                               placeholder: "(nameless function)",
                               type: "text",

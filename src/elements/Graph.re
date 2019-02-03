@@ -371,7 +371,28 @@ let make =
          Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
        ); */
 
+    /* let renderNibs = (nibs, isSink) =>
+       ReasonReact.array(Belt.List.map */
+
+    let allNibs = collectAllGraphNibs(definition, definitions);
+
     <div>
+      <svg
+        width={pixels(graphSizePixels.x)} height={pixels(graphSizePixels.y)}>
+        {ReasonReact.array(
+           Belt.Array.map(
+             Belt.List.toArray(allNibs),
+             ({connectionSide, isSource}: explicitConnectionSide) =>
+             <SvgNib
+               isSource
+               connectionSide
+               position={getNibPosition(connectionSide, !isSource)}
+               emit={self.send}
+               isHighlighted=false
+             />
+           ),
+         )}
+      </svg>
       <input
         type_="text"
         className="graph-name"

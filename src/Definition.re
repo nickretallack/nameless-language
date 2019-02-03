@@ -466,56 +466,147 @@ let displayKeywordOutputs = (definition: definition, language: language) =>
 type displayNibs = {
   inputs: list(displayNib),
   outputs: list(displayNib),
+  internalInputs: list(displayNib),
+  internalOutputs: list(displayNib),
+};
+
+let makeDisplayNibs =
+    (
+      ~inputs=[],
+      ~outputs=[],
+      ~internalInputs=[],
+      ~internalOutputs=[],
+      _unit: unit,
+    ) => {
+  inputs,
+  outputs,
+  internalInputs,
+  internalOutputs,
 };
 
 let displayDefinedNode =
     (definition: definition, kind: definedNodeKind, language: language)
     : displayNibs =>
   switch (kind) {
-  | FunctionCallNode => {
-      inputs: displayKeywordInputs(definition, language),
-      outputs: displayKeywordOutputs(definition, language),
-    }
-  | ValueNode => {inputs: [], outputs: [{nib: ValueConnection, name: ""}]}
-  | FunctionPointerCallNode => {
-      inputs: [
+  | FunctionCallNode =>
+    makeDisplayNibs(
+      ~inputs=displayKeywordInputs(definition, language),
+      ~outputs=displayKeywordOutputs(definition, language),
+      (),
+    )
+  | ValueNode =>
+    makeDisplayNibs(~outputs=[{nib: ValueConnection, name: ""}], ())
+  | FunctionPointerCallNode =>
+    makeDisplayNibs(
+      ~inputs=[
         {nib: ValueConnection, name: "implementation"},
         ...displayKeywordInputs(definition, language),
       ],
-      outputs: displayKeywordOutputs(definition, language),
-    }
-  | FunctionDefinitionNode => {
-      inputs: [],
-      outputs: [{nib: ValueConnection, name: ""}],
-    }
-  | ConstructorNode => {
-      inputs: displayKeywordInputs(definition, language),
-      outputs: [{nib: ValueConnection, name: ""}],
-    }
-  | AccessorNode => {
-      inputs: [{nib: ValueConnection, name: ""}],
-      outputs: displayKeywordInputs(definition, language),
-    }
+      ~outputs=displayKeywordOutputs(definition, language),
+      (),
+    )
+  | FunctionDefinitionNode =>
+    makeDisplayNibs(
+      ~outputs=[{nib: ValueConnection, name: ""}],
+      ~internalInputs=displayKeywordInputs(definition, language),
+      ~internalOutputs=displayKeywordOutputs(definition, language),
+      (),
+    )
+  | ConstructorNode =>
+    makeDisplayNibs(
+      ~inputs=displayKeywordInputs(definition, language),
+      ~outputs=[{nib: ValueConnection, name: ""}],
+      (),
+    )
+  | AccessorNode =>
+    makeDisplayNibs(
+      ~inputs=[{nib: ValueConnection, name: ""}],
+      ~outputs=displayKeywordInputs(definition, language),
+      (),
+    )
   };
 
 let displayNode =
     (node: node, definitions: definitions, language: language): displayNibs =>
   switch (node.kind) {
-  | ReferenceNode => {
-      outputs: [{nib: ValueConnection, name: "Reference"}],
-      inputs: [],
-    }
-  | ListNode(length) => {
-      outputs: [{nib: ValueConnection, name: ""}],
-      inputs:
+  | ReferenceNode =>
+    makeDisplayNibs(
+      ~outputs=[{nib: ValueConnection, name: "Reference"}],
+      (),
+    )
+  | ListNode(length) =>
+    makeDisplayNibs(
+      ~outputs=[{nib: ValueConnection, name: ""}],
+      ~inputs=
         Belt.List.makeBy(length, index =>
           {nib: PositionalConnection(index), name: string_of_int(index)}
         ),
-    }
+      (),
+    )
   | DefinedNode({kind, definitionID}) =>
     let definition = Belt.Map.String.getExn(definitions, definitionID);
     displayDefinedNode(definition, kind, language);
   };
+
+let displayNibsToExplicitConnectionSides =
+    (displayNibs: list(displayNib), node: connectionNode, isSource: bool)
+    : list(explicitConnectionSide) =>
+  Belt.List.map(displayNibs, (displayNib: displayNib) =>
+    {
+      connectionSide: {
+        node,
+        nib: displayNib.nib,
+      },
+      isSource,
+    }
+  );
+
+let collectGraphNodeNibs =
+    (nodes, definitions: definitions): list(explicitConnectionSide) =>
+  Belt.List.reduce(
+    Belt.Map.String.toList(nodes),
+    [],
+    (acc, (nodeID, node)) => {
+      let {inputs, outputs, internalInputs, internalOutputs} =
+        displayNode(node, definitions, "en");
+      let connectionNode = NodeConnection(nodeID);
+      Belt.List.concatMany([|
+        acc,
+        displayNibsToExplicitConnectionSides(inputs, connectionNode, false),
+        displayNibsToExplicitConnectionSides(outputs, connectionNode, true),
+        displayNibsToExplicitConnectionSides(
+          internalInputs,
+          connectionNode,
+          true,
+        ),
+        displayNibsToExplicitConnectionSides(
+          internalOutputs,
+          connectionNode,
+          false,
+        ),
+      |]);
+    },
+  );
+
+let collectAllGraphNibs = (definition: definition, definitions: definitions) => {
+  switch (definition.implementation) {
+  | GraphImplementation(graphImplementation) =>
+    Belt.List.concatMany([|
+      displayNibsToExplicitConnectionSides(
+        displayKeywordOutputs(definition, "en"),
+        GraphConnection,
+        false,
+      ),
+      displayNibsToExplicitConnectionSides(
+        displayKeywordInputs(definition, "en"),
+        GraphConnection,
+        true,
+      ),
+      collectGraphNodeNibs(graphImplementation.nodes, definitions),
+    |])
+  | _ => raise(Not_found)
+  };
+};
 
 let functionDefinitionNibIndex =
     (definition: definition, connectionNib: connectionNib, isSink: bool) =>

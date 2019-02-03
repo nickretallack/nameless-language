@@ -239,58 +239,63 @@ function displayKeywordOutputs(definition, language) {
   return displayKeywordNibs(definition, language, false);
 }
 
+function makeDisplayNibs($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, _unit) {
+  var inputs = $staropt$star !== undefined ? $staropt$star : /* [] */0;
+  var outputs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
+  var internalInputs = $staropt$star$2 !== undefined ? $staropt$star$2 : /* [] */0;
+  var internalOutputs = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
+  return /* record */[
+          /* inputs */inputs,
+          /* outputs */outputs,
+          /* internalInputs */internalInputs,
+          /* internalOutputs */internalOutputs
+        ];
+}
+
 function displayDefinedNode(definition, kind, language) {
   switch (kind) {
     case 0 : 
-        return /* record */[
-                /* inputs */displayKeywordNibs(definition, language, true),
-                /* outputs */displayKeywordNibs(definition, language, false)
-              ];
-    case 2 : 
-        return /* record */[
-                /* inputs : :: */[
-                  /* record */[
-                    /* name */"implementation",
-                    /* nib : ValueConnection */0
-                  ],
-                  displayKeywordNibs(definition, language, true)
-                ],
-                /* outputs */displayKeywordNibs(definition, language, false)
-              ];
+        return makeDisplayNibs(displayKeywordNibs(definition, language, true), displayKeywordNibs(definition, language, false), undefined, undefined, /* () */0);
     case 1 : 
+        return makeDisplayNibs(undefined, /* :: */[
+                    /* record */[
+                      /* name */"",
+                      /* nib : ValueConnection */0
+                    ],
+                    /* [] */0
+                  ], undefined, undefined, /* () */0);
+    case 2 : 
+        return makeDisplayNibs(/* :: */[
+                    /* record */[
+                      /* name */"implementation",
+                      /* nib : ValueConnection */0
+                    ],
+                    displayKeywordNibs(definition, language, true)
+                  ], displayKeywordNibs(definition, language, false), undefined, undefined, /* () */0);
     case 3 : 
-        return /* record */[
-                /* inputs : [] */0,
-                /* outputs : :: */[
-                  /* record */[
-                    /* name */"",
-                    /* nib : ValueConnection */0
-                  ],
-                  /* [] */0
-                ]
-              ];
+        return makeDisplayNibs(undefined, /* :: */[
+                    /* record */[
+                      /* name */"",
+                      /* nib : ValueConnection */0
+                    ],
+                    /* [] */0
+                  ], displayKeywordNibs(definition, language, true), displayKeywordNibs(definition, language, false), /* () */0);
     case 4 : 
-        return /* record */[
-                /* inputs */displayKeywordNibs(definition, language, true),
-                /* outputs : :: */[
-                  /* record */[
-                    /* name */"",
-                    /* nib : ValueConnection */0
-                  ],
-                  /* [] */0
-                ]
-              ];
+        return makeDisplayNibs(displayKeywordNibs(definition, language, true), /* :: */[
+                    /* record */[
+                      /* name */"",
+                      /* nib : ValueConnection */0
+                    ],
+                    /* [] */0
+                  ], undefined, undefined, /* () */0);
     case 5 : 
-        return /* record */[
-                /* inputs : :: */[
-                  /* record */[
-                    /* name */"",
-                    /* nib : ValueConnection */0
-                  ],
-                  /* [] */0
-                ],
-                /* outputs */displayKeywordNibs(definition, language, true)
-              ];
+        return makeDisplayNibs(/* :: */[
+                    /* record */[
+                      /* name */"",
+                      /* nib : ValueConnection */0
+                    ],
+                    /* [] */0
+                  ], displayKeywordNibs(definition, language, true), undefined, undefined, /* () */0);
     
   }
 }
@@ -298,36 +303,69 @@ function displayDefinedNode(definition, kind, language) {
 function displayNode(node, definitions, language) {
   var match = node[/* kind */1];
   if (typeof match === "number") {
-    return /* record */[
-            /* inputs : [] */0,
-            /* outputs : :: */[
-              /* record */[
-                /* name */"Reference",
-                /* nib : ValueConnection */0
-              ],
-              /* [] */0
-            ]
-          ];
+    return makeDisplayNibs(undefined, /* :: */[
+                /* record */[
+                  /* name */"Reference",
+                  /* nib : ValueConnection */0
+                ],
+                /* [] */0
+              ], undefined, undefined, /* () */0);
   } else if (match.tag) {
     var match$1 = match[0];
     var definition = Belt_MapString.getExn(definitions, match$1[/* definitionID */1]);
     return displayDefinedNode(definition, match$1[/* kind */0], language);
   } else {
-    return /* record */[
-            /* inputs */Belt_List.makeBy(match[0], (function (index) {
-                    return /* record */[
-                            /* name */String(index),
-                            /* nib : PositionalConnection */Block.__(1, [index])
-                          ];
-                  })),
-            /* outputs : :: */[
-              /* record */[
-                /* name */"",
-                /* nib : ValueConnection */0
-              ],
-              /* [] */0
-            ]
-          ];
+    return makeDisplayNibs(Belt_List.makeBy(match[0], (function (index) {
+                      return /* record */[
+                              /* name */String(index),
+                              /* nib : PositionalConnection */Block.__(1, [index])
+                            ];
+                    })), /* :: */[
+                /* record */[
+                  /* name */"",
+                  /* nib : ValueConnection */0
+                ],
+                /* [] */0
+              ], undefined, undefined, /* () */0);
+  }
+}
+
+function displayNibsToExplicitConnectionSides(displayNibs, node, isSource) {
+  return Belt_List.map(displayNibs, (function (displayNib) {
+                return /* record */[
+                        /* connectionSide : record */[
+                          /* node */node,
+                          /* nib */displayNib[/* nib */1]
+                        ],
+                        /* isSource */isSource
+                      ];
+              }));
+}
+
+function collectGraphNodeNibs(nodes, definitions) {
+  return Belt_List.reduce(Belt_MapString.toList(nodes), /* [] */0, (function (acc, param) {
+                var match = displayNode(param[1], definitions, "en");
+                var connectionNode = /* NodeConnection */[param[0]];
+                return Belt_List.concatMany(/* array */[
+                            acc,
+                            displayNibsToExplicitConnectionSides(match[/* inputs */0], connectionNode, false),
+                            displayNibsToExplicitConnectionSides(match[/* outputs */1], connectionNode, true),
+                            displayNibsToExplicitConnectionSides(match[/* internalInputs */2], connectionNode, true),
+                            displayNibsToExplicitConnectionSides(match[/* internalOutputs */3], connectionNode, false)
+                          ]);
+              }));
+}
+
+function collectAllGraphNibs(definition, definitions) {
+  var match = definition[/* implementation */0];
+  if (match.tag === 3) {
+    return Belt_List.concatMany(/* array */[
+                displayNibsToExplicitConnectionSides(displayKeywordNibs(definition, "en", false), /* GraphConnection */0, false),
+                displayNibsToExplicitConnectionSides(displayKeywordNibs(definition, "en", true), /* GraphConnection */0, true),
+                collectGraphNodeNibs(match[0][/* nodes */1], definitions)
+              ]);
+  } else {
+    throw Caml_builtin_exceptions.not_found;
   }
 }
 
@@ -518,8 +556,12 @@ exports.getDisplayName = getDisplayName;
 exports.displayKeywordNibs = displayKeywordNibs;
 exports.displayKeywordInputs = displayKeywordInputs;
 exports.displayKeywordOutputs = displayKeywordOutputs;
+exports.makeDisplayNibs = makeDisplayNibs;
 exports.displayDefinedNode = displayDefinedNode;
 exports.displayNode = displayNode;
+exports.displayNibsToExplicitConnectionSides = displayNibsToExplicitConnectionSides;
+exports.collectGraphNodeNibs = collectGraphNodeNibs;
+exports.collectAllGraphNibs = collectAllGraphNibs;
 exports.functionDefinitionNibIndex = functionDefinitionNibIndex;
 exports.getNodeNibIndex = getNodeNibIndex;
 exports.getOutputIndex = getOutputIndex;
