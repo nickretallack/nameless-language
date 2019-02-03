@@ -333,11 +333,14 @@ function displayNode(node, definitions, language) {
 function displayNibsToExplicitConnectionSides(displayNibs, node, isSource) {
   return Belt_List.map(displayNibs, (function (displayNib) {
                 return /* record */[
-                        /* connectionSide : record */[
-                          /* node */node,
-                          /* nib */displayNib[/* nib */1]
-                        ],
-                        /* isSource */isSource
+                        /* name */displayNib[/* name */0],
+                        /* explicitConnectionSide : record */[
+                          /* connectionSide : record */[
+                            /* node */node,
+                            /* nib */displayNib[/* nib */1]
+                          ],
+                          /* isSource */isSource
+                        ]
                       ];
               }));
 }

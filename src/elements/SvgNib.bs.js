@@ -10,7 +10,7 @@ var Helpers$ReactTemplate = require("../Helpers.bs.js");
 
 var component = ReasonReact.reducerComponent("Nib");
 
-function make(isSource, connectionSide, position, emit, isHighlighted, _children) {
+function make(isSource, connectionSide, position, text, emit, isHighlighted, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -38,66 +38,73 @@ function make(isSource, connectionSide, position, emit, isHighlighted, _children
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
-              return React.createElement("circle", {
-                          ref: (function (ref) {
-                              self[/* state */1][0] = (ref == null) ? undefined : Caml_option.some(ref);
-                              return /* () */0;
-                            }),
-                          onMouseDown: (function ($$event) {
-                              return Curry._1(emit, /* record */[
-                                          /* pointerID : Mouse */0,
-                                          /* action : StartDrawing */Block.__(0, [/* record */[
-                                                /* explicitConnectionSide : record */[
-                                                  /* connectionSide */connectionSide,
-                                                  /* isSource */isSource
-                                                ],
-                                                /* point */Helpers$ReactTemplate.pointFromMouse($$event)
-                                              ]])
-                                        ]);
-                            }),
-                          onMouseUp: (function (param) {
-                              return Curry._1(emit, /* record */[
-                                          /* pointerID : Mouse */0,
-                                          /* action : FinishDrawing */Block.__(2, [/* record */[
-                                                /* connectionSide */connectionSide,
-                                                /* isSource */isSource
-                                              ]])
-                                        ]);
-                            }),
-                          onTouchEnd: (function ($$event) {
-                              return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                            document.elementFromPoint(touch.clientX, touch.clientY).dispatchEvent(new CustomEvent("finish-drawing", {
-                                                      detail: {
-                                                        identifier: touch.identifier
-                                                      }
-                                                    }));
-                                            return /* () */0;
-                                          }));
-                            }),
-                          onTouchStart: (function ($$event) {
-                              return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                            return Curry._1(emit, /* record */[
-                                                        /* pointerID : Touch */[touch.identifier],
-                                                        /* action : StartDrawing */Block.__(0, [/* record */[
-                                                              /* explicitConnectionSide : record */[
-                                                                /* connectionSide */connectionSide,
-                                                                /* isSource */isSource
-                                                              ],
-                                                              /* point : record */[
-                                                                /* x */touch.clientX,
-                                                                /* y */touch.clientY
-                                                              ]
-                                                            ]])
-                                                      ]);
-                                          }));
-                            }),
-                          cx: Helpers$ReactTemplate.pixels(position[/* x */0]),
-                          cy: Helpers$ReactTemplate.pixels(position[/* y */1]),
-                          fill: isSource ? "lightgray" : "white",
-                          r: "6",
-                          stroke: "lightgray",
-                          strokeWidth: "4"
-                        });
+              return React.createElement(React.Fragment, undefined, React.createElement("text", {
+                              alignmentBaseline: "central",
+                              textAnchor: isSource ? "start" : "end",
+                              x: Helpers$ReactTemplate.pixels(position[/* x */0] + 10.0 * (
+                                    isSource ? 1.0 : -1.0
+                                  )),
+                              y: Helpers$ReactTemplate.pixels(position[/* y */1])
+                            }, text), React.createElement("circle", {
+                              ref: (function (ref) {
+                                  self[/* state */1][0] = (ref == null) ? undefined : Caml_option.some(ref);
+                                  return /* () */0;
+                                }),
+                              onMouseDown: (function ($$event) {
+                                  return Curry._1(emit, /* record */[
+                                              /* pointerID : Mouse */0,
+                                              /* action : StartDrawing */Block.__(0, [/* record */[
+                                                    /* explicitConnectionSide : record */[
+                                                      /* connectionSide */connectionSide,
+                                                      /* isSource */isSource
+                                                    ],
+                                                    /* point */Helpers$ReactTemplate.pointFromMouse($$event)
+                                                  ]])
+                                            ]);
+                                }),
+                              onMouseUp: (function (param) {
+                                  return Curry._1(emit, /* record */[
+                                              /* pointerID : Mouse */0,
+                                              /* action : FinishDrawing */Block.__(2, [/* record */[
+                                                    /* connectionSide */connectionSide,
+                                                    /* isSource */isSource
+                                                  ]])
+                                            ]);
+                                }),
+                              onTouchEnd: (function ($$event) {
+                                  return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
+                                                document.elementFromPoint(touch.clientX, touch.clientY).dispatchEvent(new CustomEvent("finish-drawing", {
+                                                          detail: {
+                                                            identifier: touch.identifier
+                                                          }
+                                                        }));
+                                                return /* () */0;
+                                              }));
+                                }),
+                              onTouchStart: (function ($$event) {
+                                  return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
+                                                return Curry._1(emit, /* record */[
+                                                            /* pointerID : Touch */[touch.identifier],
+                                                            /* action : StartDrawing */Block.__(0, [/* record */[
+                                                                  /* explicitConnectionSide : record */[
+                                                                    /* connectionSide */connectionSide,
+                                                                    /* isSource */isSource
+                                                                  ],
+                                                                  /* point : record */[
+                                                                    /* x */touch.clientX,
+                                                                    /* y */touch.clientY
+                                                                  ]
+                                                                ]])
+                                                          ]);
+                                              }));
+                                }),
+                              cx: Helpers$ReactTemplate.pixels(position[/* x */0]),
+                              cy: Helpers$ReactTemplate.pixels(position[/* y */1]),
+                              fill: isSource ? "lightgray" : "white",
+                              r: "6",
+                              stroke: "lightgray",
+                              strokeWidth: "4"
+                            }));
             }),
           /* initialState */(function (param) {
               return /* record */[/* contents */undefined];
@@ -110,6 +117,9 @@ function make(isSource, connectionSide, position, emit, isHighlighted, _children
         ];
 }
 
+var sidePadding = 10.0;
+
+exports.sidePadding = sidePadding;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */

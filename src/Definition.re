@@ -548,21 +548,29 @@ let displayNode =
     displayDefinedNode(definition, kind, language);
   };
 
+type explicitDisplayNib = {
+  name: string,
+  explicitConnectionSide,
+};
+
 let displayNibsToExplicitConnectionSides =
     (displayNibs: list(displayNib), node: connectionNode, isSource: bool)
-    : list(explicitConnectionSide) =>
+    : list(explicitDisplayNib) =>
   Belt.List.map(displayNibs, (displayNib: displayNib) =>
     {
-      connectionSide: {
-        node,
-        nib: displayNib.nib,
+      name: displayNib.name,
+      explicitConnectionSide: {
+        connectionSide: {
+          node,
+          nib: displayNib.nib,
+        },
+        isSource,
       },
-      isSource,
     }
   );
 
 let collectGraphNodeNibs =
-    (nodes, definitions: definitions): list(explicitConnectionSide) =>
+    (nodes, definitions: definitions): list(explicitDisplayNib) =>
   Belt.List.reduce(
     Belt.Map.String.toList(nodes),
     [],
@@ -588,7 +596,9 @@ let collectGraphNodeNibs =
     },
   );
 
-let collectAllGraphNibs = (definition: definition, definitions: definitions) => {
+let collectAllGraphNibs =
+    (definition: definition, definitions: definitions)
+    : list(explicitDisplayNib) => {
   switch (definition.implementation) {
   | GraphImplementation(graphImplementation) =>
     Belt.List.concatMany([|

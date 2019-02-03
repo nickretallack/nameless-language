@@ -22,24 +22,56 @@ function make(position, height, title, $staropt$star, $staropt$star$1, nodeWidth
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
+              Belt_List.concatMany(/* array */[title !== undefined ? /* :: */[
+                        /* record */[
+                          /* role : Title */2,
+                          /* text */title
+                        ],
+                        /* [] */0
+                      ] : /* [] */0]);
+              var renderText = function (text, index, textRole) {
+                var tmp;
+                switch (textRole) {
+                  case 0 : 
+                      tmp = "start";
+                      break;
+                  case 1 : 
+                      tmp = "end";
+                      break;
+                  case 2 : 
+                      tmp = "middle";
+                      break;
+                  
+                }
+                var tmp$1;
+                switch (textRole) {
+                  case 0 : 
+                      tmp$1 = 10.0;
+                      break;
+                  case 1 : 
+                      tmp$1 = nodeWidth - 10.0;
+                      break;
+                  case 2 : 
+                      tmp$1 = nodeWidth / 2.0;
+                      break;
+                  
+                }
+                return React.createElement("text", {
+                            alignmentBaseline: "central",
+                            textAnchor: tmp,
+                            x: Pervasives.string_of_float(position[/* x */0] + tmp$1),
+                            y: Pervasives.string_of_float(textHeight * (index + 0.5))
+                          }, text);
+              };
               var renderTexts = function (nibs, isSource) {
                 return Belt_List.toArray(Belt_List.mapWithIndex(nibs, (function (index, display) {
                                   var match = title !== undefined;
-                                  var text = display[/* name */0];
-                                  var index$1 = index + (
-                                    match ? 1 : 0
-                                  ) | 0;
-                                  var isSource$1 = isSource;
-                                  return React.createElement("text", {
-                                              alignmentBaseline: "central",
-                                              textAnchor: isSource$1 ? "start" : "end",
-                                              x: Pervasives.string_of_float(position[/* x */0] + (
-                                                    isSource$1 ? 10.0 : nodeWidth - 10.0
-                                                  )),
-                                              y: Pervasives.string_of_float(textHeight * (index$1 + 0.5))
-                                            }, text);
+                                  return renderText(display[/* name */0], index + (
+                                              match ? 1 : 0
+                                            ) | 0, isSource ? /* Source */0 : /* Sink */1);
                                 })));
               };
+              var renderedTitle = title !== undefined ? renderText(title, 0, /* Title */2) : null;
               return React.createElement(React.Fragment, undefined, React.createElement("rect", {
                               height: Pervasives.string_of_float(height * textHeight),
                               width: Pervasives.string_of_float(nodeWidth),
@@ -47,7 +79,7 @@ function make(position, height, title, $staropt$star, $staropt$star$1, nodeWidth
                               fillOpacity: "0.1",
                               x: Pervasives.string_of_float(position[/* x */0]),
                               y: Pervasives.string_of_float(position[/* y */1])
-                            }), renderTexts(sources, true), renderTexts(sinks, false));
+                            }), renderedTitle, renderTexts(sources, true), renderTexts(sinks, false));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

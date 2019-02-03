@@ -225,15 +225,16 @@ function make(definitions, implementation, definition, display, documentation, e
                       var sink = param[0];
                       return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, SvgConnection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), getNibNudge(source), undefined, /* array */[]));
                     }), implementation[/* connections */0]);
-              var renderedNibs = Belt_Array.map(Belt_List.toArray(allNibs), (function (explicitConnectionSide) {
+              var renderedNibs = Belt_Array.map(Belt_List.toArray(allNibs), (function (param) {
+                      var explicitConnectionSide = param[/* explicitConnectionSide */1];
                       var isSource = explicitConnectionSide[/* isSource */1];
                       var connectionSide = explicitConnectionSide[/* connectionSide */0];
-                      return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), self[/* send */3], false, /* array */[]));
+                      return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], false, /* array */[]));
                     }));
               var renderedSides = React.createElement(React.Fragment, undefined, ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
                             /* x */0.0,
                             /* y */0.0
-                          ], graphSizePixels[/* y */1], undefined, undefined, Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
+                          ], graphSizePixels[/* y */1], "Outputs!", undefined, Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
                             /* x */graphSizePixels[/* x */0] - 120.0,
                             /* y */0.0
                           ], graphSizePixels[/* y */1], undefined, Definition$ReactTemplate.displayKeywordInputs(definition, "en"), undefined, 120.0, 20.0, /* array */[])));

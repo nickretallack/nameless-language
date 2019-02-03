@@ -391,12 +391,13 @@ let make =
       ReasonReact.array(
         Belt.Array.map(
           Belt.List.toArray(allNibs),
-          (explicitConnectionSide: explicitConnectionSide) => {
+          ({name, explicitConnectionSide}) => {
             let {connectionSide, isSource} = explicitConnectionSide;
             <SvgNib
               key={SimpleNode.explicitConnectionSideKey(
                 explicitConnectionSide,
               )}
+              text=name
               isSource
               connectionSide
               position={getNibPosition(connectionSide, !isSource)}
@@ -412,6 +413,7 @@ let make =
         <NibNames
           position={x: 0.0, y: 0.0}
           height={graphSizePixels.y}
+          title="Outputs!"
           sinks={displayKeywordOutputs(definition, "en")}
           nodeWidth
           textHeight
