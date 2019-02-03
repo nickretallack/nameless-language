@@ -379,17 +379,32 @@ let make =
     <div>
       <svg
         width={pixels(graphSizePixels.x)} height={pixels(graphSizePixels.y)}>
+        {renderMap(
+           ((sink, source)) =>
+             <SvgConnection
+               key={connectionSideToString(sink)}
+               sinkPosition={getNibPosition(sink, true)}
+               sourcePosition={getNibPosition(source, false)}
+               nudge={getNibNudge(source)}
+             />,
+           implementation.connections,
+         )}
         {ReasonReact.array(
            Belt.Array.map(
              Belt.List.toArray(allNibs),
-             ({connectionSide, isSource}: explicitConnectionSide) =>
-             <SvgNib
-               isSource
-               connectionSide
-               position={getNibPosition(connectionSide, !isSource)}
-               emit={self.send}
-               isHighlighted=false
-             />
+             (explicitConnectionSide: explicitConnectionSide) => {
+               let {connectionSide, isSource} = explicitConnectionSide;
+               <SvgNib
+                 key={SimpleNode.explicitConnectionSideKey(
+                   explicitConnectionSide,
+                 )}
+                 isSource
+                 connectionSide
+                 position={getNibPosition(connectionSide, !isSource)}
+                 emit={self.send}
+                 isHighlighted=false
+               />;
+             },
            ),
          )}
       </svg>

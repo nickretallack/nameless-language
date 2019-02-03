@@ -2,7 +2,10 @@
 'use strict';
 
 var $$Array = require("bs-platform/lib/js/array.js");
+var Block = require("bs-platform/lib/js/block.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Printf = require("bs-platform/lib/js/printf.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Option = require("bs-platform/lib/js/belt_Option.js");
@@ -21,6 +24,40 @@ function nibKey(connectionNib) {
   } else {
     return connectionNib[0];
   }
+}
+
+function nodeKey(connectionNode) {
+  if (connectionNode) {
+    return connectionNode[0];
+  } else {
+    return "graph";
+  }
+}
+
+function explicitConnectionSideKey(explicitConnectionSide) {
+  var match = explicitConnectionSide[/* isSource */1];
+  return Curry._3(Printf.sprintf(/* Format */[
+                  /* String_literal */Block.__(11, [
+                      "nib-",
+                      /* String */Block.__(2, [
+                          /* No_padding */0,
+                          /* Char_literal */Block.__(12, [
+                              /* "-" */45,
+                              /* String */Block.__(2, [
+                                  /* No_padding */0,
+                                  /* Char_literal */Block.__(12, [
+                                      /* "-" */45,
+                                      /* String */Block.__(2, [
+                                          /* No_padding */0,
+                                          /* End_of_format */0
+                                        ])
+                                    ])
+                                ])
+                            ])
+                        ])
+                    ]),
+                  "nib-%s-%s-%s"
+                ]), nodeKey(explicitConnectionSide[/* connectionSide */0][/* node */0]), nibKey(explicitConnectionSide[/* connectionSide */0][/* nib */1]), match ? "source" : "sink");
 }
 
 function renderNibs(nibs, className, isSource, connectionNode, emit, selectedNib) {
@@ -80,6 +117,8 @@ function make(nodeID, definitionID, name, inputs, outputs, position, depth, size
 
 exports.component = component;
 exports.nibKey = nibKey;
+exports.nodeKey = nodeKey;
+exports.explicitConnectionSideKey = explicitConnectionSideKey;
 exports.renderNibs = renderNibs;
 exports.make = make;
 /* component Not a pure module */

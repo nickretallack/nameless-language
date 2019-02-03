@@ -27,6 +27,7 @@ var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 var LayoutGraph$ReactTemplate = require("../display/LayoutGraph.bs.js");
 var DetectCycles$ReactTemplate = require("../edit/DetectCycles.bs.js");
 var GraphActions$ReactTemplate = require("../edit/GraphActions.bs.js");
+var SvgConnection$ReactTemplate = require("./SvgConnection.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
 
 var cmp = Caml_obj.caml_compare;
@@ -223,10 +224,14 @@ function make(definitions, implementation, definition, display, documentation, e
               return React.createElement("div", undefined, React.createElement("svg", {
                               height: Helpers$ReactTemplate.pixels(graphSizePixels[/* y */1]),
                               width: Helpers$ReactTemplate.pixels(graphSizePixels[/* x */0])
-                            }, Belt_Array.map(Belt_List.toArray(allNibs), (function (param) {
-                                    var isSource = param[/* isSource */1];
-                                    var connectionSide = param[/* connectionSide */0];
-                                    return ReasonReact.element(undefined, undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), self[/* send */3], false, /* array */[]));
+                            }, Helpers$ReactTemplate.renderMap((function (param) {
+                                    var source = param[1];
+                                    var sink = param[0];
+                                    return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, SvgConnection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), getNibNudge(source), undefined, /* array */[]));
+                                  }), implementation[/* connections */0]), Belt_Array.map(Belt_List.toArray(allNibs), (function (explicitConnectionSide) {
+                                    var isSource = explicitConnectionSide[/* isSource */1];
+                                    var connectionSide = explicitConnectionSide[/* connectionSide */0];
+                                    return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), self[/* send */3], false, /* array */[]));
                                   }))), React.createElement("input", {
                               className: "graph-name",
                               placeholder: "(nameless function)",

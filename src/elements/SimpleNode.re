@@ -11,6 +11,22 @@ let nibKey = (connectionNib: connectionNib) => {
   };
 };
 
+let nodeKey = (connectionNode: connectionNode) => {
+  switch (connectionNode) {
+  | GraphConnection => "graph"
+  | NodeConnection(nodeID) => nodeID
+  };
+};
+
+let explicitConnectionSideKey =
+    (explicitConnectionSide: explicitConnectionSide) =>
+  Printf.sprintf(
+    "nib-%s-%s-%s",
+    nodeKey(explicitConnectionSide.connectionSide.node),
+    nibKey(explicitConnectionSide.connectionSide.nib),
+    explicitConnectionSide.isSource ? "source" : "sink",
+  );
+
 let renderNibs =
     (
       nibs: list(displayNib),
