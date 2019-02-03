@@ -6,6 +6,7 @@ open Helpers;
 [@bs.get] external getEventDetail: Dom.event => Js.t({..}) = "detail";
 
 let sidePadding = 10.0;
+let color = "rgb(160,160,160)";
 let component = ReasonReact.reducerComponent("Nib");
 let make =
     (
@@ -48,9 +49,9 @@ let make =
         cx={pixels(position.x)}
         cy={pixels(position.y)}
         r="6"
-        stroke="lightgray"
-        strokeWidth="4"
-        fill={isSource ? "lightgray" : "white"}
+        stroke=color
+        strokeWidth="2"
+        fill={isSource ? color : "white"}
         onMouseDown={event =>
           emit({
             pointerID: Mouse,

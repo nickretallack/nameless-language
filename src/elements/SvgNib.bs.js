@@ -8,6 +8,8 @@ var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 
+var color = "rgb(160,160,160)";
+
 var component = ReasonReact.reducerComponent("Nib");
 
 function make(isSource, connectionSide, position, text, emit, isHighlighted, _children) {
@@ -100,10 +102,10 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
                                 }),
                               cx: Helpers$ReactTemplate.pixels(position[/* x */0]),
                               cy: Helpers$ReactTemplate.pixels(position[/* y */1]),
-                              fill: isSource ? "lightgray" : "white",
+                              fill: isSource ? color : "white",
                               r: "6",
-                              stroke: "lightgray",
-                              strokeWidth: "4"
+                              stroke: color,
+                              strokeWidth: "2"
                             }));
             }),
           /* initialState */(function (param) {
@@ -120,6 +122,7 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
 var sidePadding = 10.0;
 
 exports.sidePadding = sidePadding;
+exports.color = color;
 exports.component = component;
 exports.make = make;
 /* component Not a pure module */
