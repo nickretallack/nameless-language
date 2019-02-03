@@ -410,18 +410,15 @@ let make =
 
     let renderedSides =
       <>
-        <NibNames
+        <NibsBox
           position={x: 0.0, y: 0.0}
           height={graphSizePixels.y}
-          title="Outputs!"
-          sinks={displayKeywordOutputs(definition, "en")}
           nodeWidth
           textHeight
         />
-        <NibNames
+        <NibsBox
           position={x: graphSizePixels.x -. nodeWidth, y: 0.0}
           height={graphSizePixels.y}
-          sources={displayKeywordInputs(definition, "en")}
           nodeWidth
           textHeight
         />

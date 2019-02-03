@@ -19,7 +19,7 @@ var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var SvgNib$ReactTemplate = require("./SvgNib.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
-var NibNames$ReactTemplate = require("./NibNames.bs.js");
+var NibsBox$ReactTemplate = require("./NibsBox.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
@@ -231,13 +231,13 @@ function make(definitions, implementation, definition, display, documentation, e
                       var connectionSide = explicitConnectionSide[/* connectionSide */0];
                       return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], false, /* array */[]));
                     }));
-              var renderedSides = React.createElement(React.Fragment, undefined, ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
+              var renderedSides = React.createElement(React.Fragment, undefined, ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(/* record */[
                             /* x */0.0,
                             /* y */0.0
-                          ], graphSizePixels[/* y */1], "Outputs!", undefined, Definition$ReactTemplate.displayKeywordOutputs(definition, "en"), 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibNames$ReactTemplate.make(/* record */[
+                          ], graphSizePixels[/* y */1], 120.0, 20.0, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(/* record */[
                             /* x */graphSizePixels[/* x */0] - 120.0,
                             /* y */0.0
-                          ], graphSizePixels[/* y */1], undefined, Definition$ReactTemplate.displayKeywordInputs(definition, "en"), undefined, 120.0, 20.0, /* array */[])));
+                          ], graphSizePixels[/* y */1], 120.0, 20.0, /* array */[])));
               var match$1 = self[/* state */1][/* error */1];
               var match$2 = self[/* state */1][/* selectedNib */2];
               return React.createElement("div", undefined, React.createElement("svg", {
