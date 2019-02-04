@@ -104,7 +104,7 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
                               cy: Helpers$ReactTemplate.pixels(position[/* y */1]),
                               fill: isSource ? color : "white",
                               r: "6",
-                              stroke: color,
+                              stroke: isHighlighted ? "red" : color,
                               strokeWidth: "2"
                             }));
             }),

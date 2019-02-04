@@ -356,7 +356,13 @@ let make =
               connectionSide
               position={getNibPosition(connectionSide, !isSource)}
               emit={self.send}
-              isHighlighted=false
+              isHighlighted={
+                switch (self.state.selectedNib) {
+                | None => false
+                | Some(highlightedExplicitConnectionSide) =>
+                  highlightedExplicitConnectionSide == explicitConnectionSide
+                }
+              }
             />;
           },
         ),

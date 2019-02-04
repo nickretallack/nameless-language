@@ -197,7 +197,8 @@ function make(definitions, implementation, definition, display, documentation, e
                       var explicitConnectionSide = param[/* explicitConnectionSide */1];
                       var isSource = explicitConnectionSide[/* isSource */1];
                       var connectionSide = explicitConnectionSide[/* connectionSide */0];
-                      return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], false, /* array */[]));
+                      var match = self[/* state */1][/* selectedNib */2];
+                      return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], match !== undefined ? Caml_obj.caml_equal(match, explicitConnectionSide) : false, /* array */[]));
                     }));
               var renderedSides = ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */[
                         /* x */0.0,

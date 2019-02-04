@@ -49,7 +49,7 @@ let make =
         cx={pixels(position.x)}
         cy={pixels(position.y)}
         r="6"
-        stroke=color
+        stroke={isHighlighted ? "red" : color}
         strokeWidth="2"
         fill={isSource ? color : "white"}
         onMouseDown={event =>
