@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 open Helpers;
 
 let component = ReasonReact.statelessComponent("SvgDefinitionBox");

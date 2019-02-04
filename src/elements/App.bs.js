@@ -282,6 +282,7 @@ function make(definitions, _children) {
                               nodeConnectionSide_000,
                               nodeConnectionSide_001
                             ];
+                            console.log("Explicit side", explicitConnectionSide[/* connectionSide */0]);
                             var match$7 = explicitConnectionSide[/* isSource */1];
                             var match$8 = match$7 ? /* tuple */[
                                 explicitConnectionSide[/* connectionSide */0],

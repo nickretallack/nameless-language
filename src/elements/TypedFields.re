@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 open Definition;
 
 let component = ReasonReact.statelessComponent("TypedFields");

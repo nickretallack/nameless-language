@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 type point = {
   x: float,
   y: float,

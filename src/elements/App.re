@@ -112,6 +112,7 @@ let make = (~definitions, _children) => {
             node: NodeConnection(nodeID),
             nib: connectionNib,
           };
+          Js.log2("Explicit side", explicitConnectionSide.connectionSide);
           let (source, sink) =
             explicitConnectionSide.isSource ?
               (explicitConnectionSide.connectionSide, nodeConnectionSide) :

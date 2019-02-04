@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 open Helpers;
 
 type nibID = string;
@@ -14,6 +15,18 @@ type connectionNode =
   | GraphConnection
   | NodeConnection(nodeID);
 
+let encodeConnectionNode = (connectionNode: connectionNode) =>
+  Json.Encode.(
+    object_(
+      switch (connectionNode) {
+      | GraphConnection => [("type", string("graph"))]
+      | NodeConnection(nodeID) => [
+          ("type", string("node")),
+          ("nodeID", string(nodeID)),
+        ]
+      },
+    )
+  );
 let connectionNodeToString = (connectionNode: connectionNode) =>
   switch (connectionNode) {
   | GraphConnection => "graph"
@@ -24,6 +37,23 @@ type connectionNib =
   | ValueConnection
   | NibConnection(nibID)
   | PositionalConnection(int);
+
+let encodeConnectionNib = (connectionNib: connectionNib) =>
+  Json.Encode.(
+    object_(
+      switch (connectionNib) {
+      | ValueConnection => [("type", string("value"))]
+      | NibConnection(nibID) => [
+          ("type", string("nib")),
+          ("nibID", string(nibID)),
+        ]
+      | PositionalConnection(index) => [
+          ("type", string("positional")),
+          ("index", int(index)),
+        ]
+      },
+    )
+  );
 
 let connectionNibToString = (connectionNib: connectionNib) =>
   switch (connectionNib) {
@@ -36,6 +66,14 @@ type connectionSide = {
   node: connectionNode,
   nib: connectionNib,
 };
+
+let encodeConnectionSide = (connectionSide: connectionSide) =>
+  Json.Encode.(
+    object_([
+      ("node", encodeConnectionNode(connectionSide.node)),
+      ("nib", encodeConnectionNib(connectionSide.nib)),
+    ])
+  );
 
 type explicitConnectionSide = {
   connectionSide,
@@ -65,6 +103,16 @@ type definedNodeKind =
   | ConstructorNode
   | AccessorNode;
 
+let definedNodeKindToString = (kind: definedNodeKind) =>
+  switch (kind) {
+  | ValueNode => "value"
+  | FunctionCallNode => "function call"
+  | FunctionPointerCallNode => "function pointer call"
+  | FunctionDefinitionNode => "function definition"
+  | ConstructorNode => "constructor"
+  | AccessorNode => "accessor"
+  };
+
 let definedNodeKindHasValueInput = (kind: definedNodeKind): bool =>
   switch (kind) {
   | FunctionPointerCallNode => true
@@ -85,14 +133,46 @@ type definedNode = {
   definitionID,
 };
 
+let encodeDefinedNode = (definedNode: definedNode) =>
+  Json.Encode.(
+    object_([
+      ("type", string("defined")),
+      ("definitionID", string(definedNode.definitionID)),
+      ("kind", string(definedNodeKindToString(definedNode.kind))),
+    ])
+  );
+
 type nodeKind =
   | ReferenceNode
   | ListNode(int)
   | DefinedNode(definedNode);
 
+let encodeNodeKind = (nodeKind: nodeKind) =>
+  Json.Encode.(
+    switch (nodeKind) {
+    | ReferenceNode => object_([("type", string("reference"))])
+    | ListNode(length) =>
+      object_([("type", string("list")), ("length", int(length))])
+    | DefinedNode(definedNode) => encodeDefinedNode(definedNode)
+    }
+  );
+
 type nodeScope =
   | GraphScope
   | NodeScope(nodeID);
+
+let encodeNodeScope = (nodeScope: nodeScope) =>
+  Json.Encode.(
+    object_(
+      switch (nodeScope) {
+      | GraphScope => [("type", string("graph"))]
+      | NodeScope(nodeID) => [
+          ("type", string("node")),
+          ("nodeID", string(nodeID)),
+        ]
+      },
+    )
+  );
 
 module ScopeComparator =
   Belt.Id.MakeComparable({
@@ -106,6 +186,14 @@ type node = {
   scope: nodeScope,
   kind: nodeKind,
 };
+
+let encodeNode = (node: node) =>
+  Json.Encode.(
+    object_([
+      ("scope", encodeNodeScope(node.scope)),
+      ("kind", encodeNodeKind(node.kind)),
+    ])
+  );
 
 type nodeWithID = {
   id: nodeID,
@@ -124,111 +212,37 @@ let isKeywordNib = (nib: connectionNib) =>
   | _ => false
   };
 
-/*
- variant Yes
- variant No
- variant Maybe
-
- union type boolean = Yes | No
- union type trinary = Yes | No | Maybe
-
-
- foo : () => boolean
- bar : trinary => ()
-
- bar(foo())
-
- foo : () => trinary
- bar : boolean => ()
-
- bar(default(foo(), boolean, Yes));
-
- let rec fac n =
-   n <= 1 ?
-     1
-     : n * (fac (n - 1))
-
-
- x = Yes : trinary
- type assert x : boolean
-
- variant Nothing
- variant Some(x)
- union type Maybe = Nothing | Some(x)
-
- union type Maybe = Nothing | x
-
- vairant Error(x)
- variant Success(x)
- union type Result = Error(a) | Success(b)
-
- x : Nothing -> Nothing
-
- AuthorA:
- type person1 = {
-   name: string,
-   age: integer,
- }
-
-
- AuthorB:
- foo1 : person1 -> ()
-
- AuthorA
- type person2 = {
-   name: string,
-   age: integer,
-   thuesathueath
- };
-
- AuthorC
- foo2 : perosn2 -> ()
-
-
- Foo (foo1 <- foo2)
- Person (person1
-   <- person2a -- vetted by the community
-   <- person2b -- security exploit!
- )
-
-
-
- type employed inherits person {
-   company: string,
- }
-
- type hasAddress inherits person {
-   address: string,
- }
-
- type businessman inherits person = {
-   company: string,
- }
-
-
- {
-   name,
-   age,
-   company,
-   address
- }
-
- (,,,)
-
-
- fun : {empoyed hasAddress} -> ()
-
-
-
-
- */
-
 type nodes = Belt.Map.String.t(node);
 
 type graphImplementation = {
   connections,
   nodes,
 };
+
+let encodeMap = (map, encode) =>
+  Json.Encode.object_(
+    Belt.List.map(Belt.Map.String.toList(map), ((key, item)) =>
+      (key, encode(item))
+    ),
+  );
+
+let encodeGraphImplementation = (graphImplementation: graphImplementation) =>
+  Json.Encode.(
+    object_([
+      ("nodes", encodeMap(graphImplementation.nodes, encodeNode)),
+      (
+        "connections",
+        list(
+            ((sink, source)) =>
+            object_([
+              ("sink", encodeConnectionSide(sink)),
+              ("source", encodeConnectionSide(source)),
+            ]),
+            Belt.Map.toList(graphImplementation.connections),
+        ),
+      ),
+    ])
+  );
 
 /* Interface */
 

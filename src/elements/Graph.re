@@ -189,6 +189,8 @@ let make =
         ReasonReact.NoUpdate
     },
   render: self => {
+    Js.log(encodeGraphImplementation(implementation));
+
     let getNode = (nodeID: nodeID) =>
       Belt.Map.String.getExn(implementation.nodes, nodeID);
 

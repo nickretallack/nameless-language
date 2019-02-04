@@ -96,6 +96,7 @@ function make(definitions, implementation, definition, display, documentation, e
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
+              console.log(Definition$ReactTemplate.encodeGraphImplementation(implementation));
               var columns = ColumnizeNodes$ReactTemplate.columnizeNodes(implementation[/* nodes */1], implementation[/* connections */0]);
               var columnizedNodes = Belt_List.map(columns, (function (nodes) {
                       return Belt_List.map(Belt_List.fromArray(Belt_MapString.toArray(nodes)), (function (param) {

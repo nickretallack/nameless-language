@@ -1,16 +1,6 @@
 open Definition;
 open Helpers;
 
-let definedNodeKindToString = (kind: definedNodeKind) =>
-  switch (kind) {
-  | ValueNode => "value"
-  | FunctionCallNode => "function call"
-  | FunctionPointerCallNode => "function pointer call"
-  | FunctionDefinitionNode => "function definition"
-  | ConstructorNode => "constructor"
-  | AccessorNode => "accessor"
-  };
-
 let encodeNode = (node: publishingNode) =>
   Json.Encode.(
     switch (node) {

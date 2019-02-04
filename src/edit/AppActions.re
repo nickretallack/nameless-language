@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 open Definition;
 
 type createConnection = {

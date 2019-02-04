@@ -11,24 +11,6 @@ var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var NodeInputOrdering$ReactTemplate = require("./NodeInputOrdering.bs.js");
 
-function definedNodeKindToString(kind) {
-  switch (kind) {
-    case 0 : 
-        return "function call";
-    case 1 : 
-        return "value";
-    case 2 : 
-        return "function pointer call";
-    case 3 : 
-        return "function definition";
-    case 4 : 
-        return "constructor";
-    case 5 : 
-        return "accessor";
-    
-  }
-}
-
 function encodeNode(node) {
   if (typeof node === "number") {
     return Json_encode.object_(/* :: */[
@@ -48,7 +30,7 @@ function encodeNode(node) {
                 /* :: */[
                   /* tuple */[
                     "kind",
-                    definedNodeKindToString(match[/* kind */0])
+                    Definition$ReactTemplate.definedNodeKindToString(match[/* kind */0])
                   ],
                   /* :: */[
                     /* tuple */[
@@ -276,7 +258,6 @@ function encodeCanonicalGraph(graph, dependencies, display) {
   return encodeGraph(canonicalizeGraph(graph, dependencies, display));
 }
 
-exports.definedNodeKindToString = definedNodeKindToString;
 exports.encodeNode = encodeNode;
 exports.encodeConnectionNode = encodeConnectionNode;
 exports.encodeConnectionNib = encodeConnectionNib;

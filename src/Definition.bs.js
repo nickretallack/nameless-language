@@ -3,15 +3,39 @@
 
 var $$Array = require("bs-platform/lib/js/array.js");
 var Block = require("bs-platform/lib/js/block.js");
+var Curry = require("bs-platform/lib/js/curry.js");
 var Belt_Id = require("bs-platform/lib/js/belt_Id.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
+
+function encodeConnectionNode(connectionNode) {
+  return Json_encode.object_(connectionNode ? /* :: */[
+                /* tuple */[
+                  "type",
+                  "node"
+                ],
+                /* :: */[
+                  /* tuple */[
+                    "nodeID",
+                    connectionNode[0]
+                  ],
+                  /* [] */0
+                ]
+              ] : /* :: */[
+                /* tuple */[
+                  "type",
+                  "graph"
+                ],
+                /* [] */0
+              ]);
+}
 
 function connectionNodeToString(connectionNode) {
   if (connectionNode) {
@@ -19,6 +43,44 @@ function connectionNodeToString(connectionNode) {
   } else {
     return "graph";
   }
+}
+
+function encodeConnectionNib(connectionNib) {
+  var tmp;
+  tmp = typeof connectionNib === "number" ? /* :: */[
+      /* tuple */[
+        "type",
+        "value"
+      ],
+      /* [] */0
+    ] : (
+      connectionNib.tag ? /* :: */[
+          /* tuple */[
+            "type",
+            "positional"
+          ],
+          /* :: */[
+            /* tuple */[
+              "index",
+              connectionNib[0]
+            ],
+            /* [] */0
+          ]
+        ] : /* :: */[
+          /* tuple */[
+            "type",
+            "nib"
+          ],
+          /* :: */[
+            /* tuple */[
+              "nibID",
+              connectionNib[0]
+            ],
+            /* [] */0
+          ]
+        ]
+    );
+  return Json_encode.object_(tmp);
 }
 
 function connectionNibToString(connectionNib) {
@@ -31,6 +93,22 @@ function connectionNibToString(connectionNib) {
   }
 }
 
+function encodeConnectionSide(connectionSide) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "node",
+                encodeConnectionNode(connectionSide[/* node */0])
+              ],
+              /* :: */[
+                /* tuple */[
+                  "nib",
+                  encodeConnectionNib(connectionSide[/* nib */1])
+                ],
+                /* [] */0
+              ]
+            ]);
+}
+
 function connectionSideToString(connectionSide) {
   return connectionNodeToString(connectionSide[/* node */0]) + ("-" + connectionNibToString(connectionSide[/* nib */1]));
 }
@@ -38,6 +116,24 @@ function connectionSideToString(connectionSide) {
 var cmp = Caml_obj.caml_compare;
 
 var ConnectionComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp]);
+
+function definedNodeKindToString(kind) {
+  switch (kind) {
+    case 0 : 
+        return "function call";
+    case 1 : 
+        return "value";
+    case 2 : 
+        return "function pointer call";
+    case 3 : 
+        return "function definition";
+    case 4 : 
+        return "constructor";
+    case 5 : 
+        return "accessor";
+    
+  }
+}
 
 function definedNodeKindHasValueInput(kind) {
   if (kind !== 2) {
@@ -61,9 +157,97 @@ function definedNodeKindHasValueOutput(kind) {
   }
 }
 
+function encodeDefinedNode(definedNode) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "type",
+                "defined"
+              ],
+              /* :: */[
+                /* tuple */[
+                  "definitionID",
+                  definedNode[/* definitionID */1]
+                ],
+                /* :: */[
+                  /* tuple */[
+                    "kind",
+                    definedNodeKindToString(definedNode[/* kind */0])
+                  ],
+                  /* [] */0
+                ]
+              ]
+            ]);
+}
+
+function encodeNodeKind(nodeKind) {
+  if (typeof nodeKind === "number") {
+    return Json_encode.object_(/* :: */[
+                /* tuple */[
+                  "type",
+                  "reference"
+                ],
+                /* [] */0
+              ]);
+  } else if (nodeKind.tag) {
+    return encodeDefinedNode(nodeKind[0]);
+  } else {
+    return Json_encode.object_(/* :: */[
+                /* tuple */[
+                  "type",
+                  "list"
+                ],
+                /* :: */[
+                  /* tuple */[
+                    "length",
+                    nodeKind[0]
+                  ],
+                  /* [] */0
+                ]
+              ]);
+  }
+}
+
+function encodeNodeScope(nodeScope) {
+  return Json_encode.object_(nodeScope ? /* :: */[
+                /* tuple */[
+                  "type",
+                  "node"
+                ],
+                /* :: */[
+                  /* tuple */[
+                    "nodeID",
+                    nodeScope[0]
+                  ],
+                  /* [] */0
+                ]
+              ] : /* :: */[
+                /* tuple */[
+                  "type",
+                  "graph"
+                ],
+                /* [] */0
+              ]);
+}
+
 var cmp$1 = Caml_obj.caml_compare;
 
 var ScopeComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp$1]);
+
+function encodeNode(node) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "scope",
+                encodeNodeScope(node[/* scope */0])
+              ],
+              /* :: */[
+                /* tuple */[
+                  "kind",
+                  encodeNodeKind(node[/* kind */1])
+                ],
+                /* [] */0
+              ]
+            ]);
+}
 
 function isFunctionDefinitionNode(node) {
   var match = node[/* kind */1];
@@ -80,6 +264,45 @@ function isKeywordNib(nib) {
   } else {
     return true;
   }
+}
+
+function encodeMap(map, encode) {
+  return Json_encode.object_(Belt_List.map(Belt_MapString.toList(map), (function (param) {
+                    return /* tuple */[
+                            param[0],
+                            Curry._1(encode, param[1])
+                          ];
+                  })));
+}
+
+function encodeGraphImplementation(graphImplementation) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "nodes",
+                encodeMap(graphImplementation[/* nodes */1], encodeNode)
+              ],
+              /* :: */[
+                /* tuple */[
+                  "connections",
+                  Json_encode.list((function (param) {
+                          return Json_encode.object_(/* :: */[
+                                      /* tuple */[
+                                        "sink",
+                                        encodeConnectionSide(param[0])
+                                      ],
+                                      /* :: */[
+                                        /* tuple */[
+                                          "source",
+                                          encodeConnectionSide(param[1])
+                                        ],
+                                        /* [] */0
+                                      ]
+                                    ]);
+                        }), Belt_Map.toList(graphImplementation[/* connections */0]))
+                ],
+                /* [] */0
+              ]
+            ]);
 }
 
 var primitiveValueTypes = /* array */[
@@ -534,15 +757,25 @@ var InvalidConnection = Caml_exceptions.create("Definition-ReactTemplate.Invalid
 
 var CycleDetected = Caml_exceptions.create("Definition-ReactTemplate.CycleDetected");
 
+exports.encodeConnectionNode = encodeConnectionNode;
 exports.connectionNodeToString = connectionNodeToString;
+exports.encodeConnectionNib = encodeConnectionNib;
 exports.connectionNibToString = connectionNibToString;
+exports.encodeConnectionSide = encodeConnectionSide;
 exports.connectionSideToString = connectionSideToString;
 exports.ConnectionComparator = ConnectionComparator;
+exports.definedNodeKindToString = definedNodeKindToString;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;
+exports.encodeDefinedNode = encodeDefinedNode;
+exports.encodeNodeKind = encodeNodeKind;
+exports.encodeNodeScope = encodeNodeScope;
 exports.ScopeComparator = ScopeComparator;
+exports.encodeNode = encodeNode;
 exports.isFunctionDefinitionNode = isFunctionDefinitionNode;
 exports.isKeywordNib = isKeywordNib;
+exports.encodeMap = encodeMap;
+exports.encodeGraphImplementation = encodeGraphImplementation;
 exports.primitiveValueTypes = primitiveValueTypes;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;

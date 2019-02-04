@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 open Definition;
 
 let isRootNode =
