@@ -34,7 +34,7 @@ function getScope(nib, nodes) {
   if (match) {
     var nodeID = match[0];
     var node = Belt_MapString.getExn(nodes, nodeID);
-    var match$1 = Definition$ReactTemplate.isFunctionDefinitionNode(node);
+    var match$1 = Definition$ReactTemplate.isFunctionDefinitionNode(node) && !Definition$ReactTemplate.isValueNib(nib[/* connectionSide */0][/* nib */1]);
     if (match$1) {
       return /* NodeScope */[nodeID];
     } else {

@@ -206,6 +206,12 @@ let isFunctionDefinitionNode = (node: node) =>
   | _ => false
   };
 
+let isValueNib = (nib: connectionNib) =>
+  switch (nib) {
+  | ValueConnection => true
+  | _ => false
+  };
+
 let isKeywordNib = (nib: connectionNib) =>
   switch (nib) {
   | NibConnection(_) => true
@@ -233,12 +239,12 @@ let encodeGraphImplementation = (graphImplementation: graphImplementation) =>
       (
         "connections",
         list(
-            ((sink, source)) =>
+          ((sink, source)) =>
             object_([
               ("sink", encodeConnectionSide(sink)),
               ("source", encodeConnectionSide(source)),
             ]),
-            Belt.Map.toList(graphImplementation.connections),
+          Belt.Map.toList(graphImplementation.connections),
         ),
       ),
     ])

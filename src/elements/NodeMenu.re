@@ -42,7 +42,8 @@ let getScope = (nib: explicitConnectionSide, nodes: nodes) =>
   | GraphConnection => GraphScope
   | NodeConnection(nodeID) =>
     let node = Belt.Map.String.getExn(nodes, nodeID);
-    isFunctionDefinitionNode(node) ? NodeScope(nodeID) : node.scope;
+    isFunctionDefinitionNode(node) && !isValueNib(nib.connectionSide.nib) ?
+      NodeScope(nodeID) : node.scope;
   };
 
 let maybeNameless = (string: string) =>

@@ -258,6 +258,14 @@ function isFunctionDefinitionNode(node) {
   }
 }
 
+function isValueNib(nib) {
+  if (typeof nib === "number") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function isKeywordNib(nib) {
   if (typeof nib === "number" || nib.tag) {
     return false;
@@ -773,6 +781,7 @@ exports.encodeNodeScope = encodeNodeScope;
 exports.ScopeComparator = ScopeComparator;
 exports.encodeNode = encodeNode;
 exports.isFunctionDefinitionNode = isFunctionDefinitionNode;
+exports.isValueNib = isValueNib;
 exports.isKeywordNib = isKeywordNib;
 exports.encodeMap = encodeMap;
 exports.encodeGraphImplementation = encodeGraphImplementation;
