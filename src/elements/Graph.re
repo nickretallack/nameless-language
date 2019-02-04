@@ -19,54 +19,6 @@ type graphState = {
   selectedNib: option(explicitConnectionSide),
 };
 
-let renderNibs =
-    (
-      nibs: list(displayNib),
-      className: string,
-      isSource: bool,
-      connectionNode: connectionNode,
-      emit: GraphActions.graphAction => unit,
-      appEmit: AppActions.definitionAction => unit,
-      selectedNib: option(connectionNib),
-    ) => {
-  ReasonReact.array(
-    Array.of_list(
-      Belt.List.map(
-        nibs,
-        ({name, nib}) => {
-          let nameEditor =
-            <input
-              value=name
-              onChange={event =>
-                appEmit(
-                  AppActions.NibAction({
-                    isInput: isSource,
-                    nibID:
-                      switch (nib) {
-                      | NibConnection(nibID) => nibID
-                      | _ => raise(Not_found)
-                      },
-                    action: ChangeNibName(getEventValue(event)),
-                  }),
-                )
-              }
-            />;
-          <div className key={SimpleNode.nibKey(nib)}>
-            {isSource ? ReasonReact.null : nameEditor}
-            <Nib
-              isSource
-              isHighlighted={Some(nib) == selectedNib}
-              connectionSide={node: connectionNode, nib}
-              emit
-            />
-            {isSource ? nameEditor : ReasonReact.null}
-          </div>;
-        },
-      ),
-    ),
-  );
-};
-
 let document = Webapi.Dom.Document.asEventTarget(Webapi.Dom.document);
 let preventDefault = event => EventRe.preventDefault(event);
 let component = ReasonReact.reducerComponent("Graph");
@@ -535,6 +487,13 @@ let make =
            nib=explicitConnectionSide
          />
        }}
+      <Interface
+        definitions
+        interface={implementation.interface}
+        documentation
+        display
+        emit
+      />
     </div>;
   },
 };

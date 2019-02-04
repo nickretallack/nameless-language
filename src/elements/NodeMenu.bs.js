@@ -280,7 +280,7 @@ function make(definitions, nodes, nib, emit, _children) {
                         return /* Update */Block.__(0, [/* record */[
                                     /* category */state[/* category */0],
                                     /* definitionID */definitionID,
-                                    /* definedNodeKind */state[/* definedNodeKind */2]
+                                    /* definedNodeKind */undefined
                                   ]]);
                       } else if (nib[/* isSource */1]) {
                         return /* NoUpdate */0;

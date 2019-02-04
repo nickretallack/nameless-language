@@ -22,7 +22,7 @@ let make =
     switch (node.kind) {
     | ReferenceNode => makeNode("Reference")
     | ListNode(_) => makeNode("List")
-    | DefinedNode({kind, definitionID}) =>
+    | DefinedNode({definitionID}) =>
       let definition = Belt.Map.String.getExn(definitions, definitionID);
       let name = getDisplayName(definition, "en");
       if (isFunctionDefinitionNode(node)) {

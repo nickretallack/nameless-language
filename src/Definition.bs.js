@@ -274,45 +274,6 @@ function isKeywordNib(nib) {
   }
 }
 
-function encodeMap(map, encode) {
-  return Json_encode.object_(Belt_List.map(Belt_MapString.toList(map), (function (param) {
-                    return /* tuple */[
-                            param[0],
-                            Curry._1(encode, param[1])
-                          ];
-                  })));
-}
-
-function encodeGraphImplementation(graphImplementation) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "nodes",
-                encodeMap(graphImplementation[/* nodes */1], encodeNode)
-              ],
-              /* :: */[
-                /* tuple */[
-                  "connections",
-                  Json_encode.list((function (param) {
-                          return Json_encode.object_(/* :: */[
-                                      /* tuple */[
-                                        "sink",
-                                        encodeConnectionSide(param[0])
-                                      ],
-                                      /* :: */[
-                                        /* tuple */[
-                                          "source",
-                                          encodeConnectionSide(param[1])
-                                        ],
-                                        /* [] */0
-                                      ]
-                                    ]);
-                        }), Belt_Map.toList(graphImplementation[/* connections */0]))
-                ],
-                /* [] */0
-              ]
-            ]);
-}
-
 var primitiveValueTypes = /* array */[
   /* TextType */2,
   /* NumberType */1
@@ -344,6 +305,59 @@ function stringToPrimitiveValueType(string) {
 }
 
 var changeTypedFields = Belt_MapString.set;
+
+function changeInterface($$interface, isInput, nibID, valueType) {
+  if (isInput) {
+    return /* record */[
+            /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, valueType),
+            /* outputTypes */$$interface[/* outputTypes */1]
+          ];
+  } else {
+    return /* record */[
+            /* inputTypes */$$interface[/* inputTypes */0],
+            /* outputTypes */Belt_MapString.set($$interface[/* outputTypes */1], nibID, valueType)
+          ];
+  }
+}
+
+function encodeMap(map, encode) {
+  return Json_encode.object_(Belt_List.map(Belt_MapString.toList(map), (function (param) {
+                    return /* tuple */[
+                            param[0],
+                            Curry._1(encode, param[1])
+                          ];
+                  })));
+}
+
+function encodeGraphImplementation(graphImplementation) {
+  return Json_encode.object_(/* :: */[
+              /* tuple */[
+                "nodes",
+                encodeMap(graphImplementation[/* nodes */2], encodeNode)
+              ],
+              /* :: */[
+                /* tuple */[
+                  "connections",
+                  Json_encode.list((function (param) {
+                          return Json_encode.object_(/* :: */[
+                                      /* tuple */[
+                                        "sink",
+                                        encodeConnectionSide(param[0])
+                                      ],
+                                      /* :: */[
+                                        /* tuple */[
+                                          "source",
+                                          encodeConnectionSide(param[1])
+                                        ],
+                                        /* [] */0
+                                      ]
+                                    ]);
+                        }), Belt_Map.toList(graphImplementation[/* connections */1]))
+                ],
+                /* [] */0
+              ]
+            ]);
+}
 
 function primitiveValueToType(primitiveValue) {
   switch (primitiveValue.tag | 0) {
@@ -596,7 +610,7 @@ function collectAllGraphNibs(definition, definitions) {
     return Belt_List.concatMany(/* array */[
                 displayNibsToExplicitConnectionSides(displayKeywordNibs(definition, "en", false), /* GraphConnection */0, false),
                 displayNibsToExplicitConnectionSides(displayKeywordNibs(definition, "en", true), /* GraphConnection */0, true),
-                collectGraphNodeNibs(match[0][/* nodes */1], definitions)
+                collectGraphNodeNibs(match[0][/* nodes */2], definitions)
               ]);
   } else {
     throw Caml_builtin_exceptions.not_found;
@@ -708,7 +722,9 @@ function displayPrimitiveValueType(primitiveValueType) {
 }
 
 function displayValueType(valueType, definitions, language) {
-  if (valueType.tag) {
+  if (typeof valueType === "number") {
+    return "Any";
+  } else if (valueType.tag) {
     return displayDefinedType(Belt_MapString.getExn(definitions, valueType[0]), language);
   } else {
     return displayPrimitiveValueType(valueType[0]);
@@ -756,6 +772,20 @@ function makeGraph($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$sta
   var nodes = $staropt$star$4 !== undefined ? $staropt$star$4 : /* array */[];
   var connections = $staropt$star$5 !== undefined ? $staropt$star$5 : /* array */[];
   return makeDefinition(name, description, inputs, outputs, /* GraphImplementation */Block.__(3, [/* record */[
+                  /* interface : record */[
+                    /* inputTypes */Belt_MapString.fromArray(Belt_Array.map(inputs, (function (param) {
+                                return /* tuple */[
+                                        param[0],
+                                        /* AnyType */0
+                                      ];
+                              }))),
+                    /* outputTypes */Belt_MapString.fromArray(Belt_Array.map(outputs, (function (param) {
+                                return /* tuple */[
+                                        param[0],
+                                        /* AnyType */0
+                                      ];
+                              })))
+                  ],
                   /* connections */Belt_Map.fromArray(connections, ConnectionComparator),
                   /* nodes */Belt_MapString.fromArray(nodes)
                 ]]), /* () */0);
@@ -783,12 +813,13 @@ exports.encodeNode = encodeNode;
 exports.isFunctionDefinitionNode = isFunctionDefinitionNode;
 exports.isValueNib = isValueNib;
 exports.isKeywordNib = isKeywordNib;
-exports.encodeMap = encodeMap;
-exports.encodeGraphImplementation = encodeGraphImplementation;
 exports.primitiveValueTypes = primitiveValueTypes;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;
 exports.changeTypedFields = changeTypedFields;
+exports.changeInterface = changeInterface;
+exports.encodeMap = encodeMap;
+exports.encodeGraphImplementation = encodeGraphImplementation;
 exports.primitiveValueToType = primitiveValueToType;
 exports.primitiveValueToString = primitiveValueToString;
 exports.primitiveValueToTypeString = primitiveValueToTypeString;

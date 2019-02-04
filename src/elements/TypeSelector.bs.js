@@ -11,7 +11,9 @@ var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exception
 var Definition$ReactTemplate = require("../Definition.bs.js");
 
 function categoryFromType(valueType, definitions) {
-  if (valueType.tag) {
+  if (typeof valueType === "number") {
+    return /* AnyCategory */4;
+  } else if (valueType.tag) {
     var definition = Belt_MapString.getExn(definitions, valueType[0]);
     var match = definition[/* implementation */0];
     switch (match.tag | 0) {
@@ -30,10 +32,10 @@ function categoryFromType(valueType, definitions) {
 }
 
 function hasDefinitionID(valueType, definitionID) {
-  if (valueType.tag) {
-    return definitionID === valueType[0];
-  } else {
+  if (typeof valueType === "number" || !valueType.tag) {
     return false;
+  } else {
+    return definitionID === valueType[0];
   }
 }
 
@@ -87,6 +89,7 @@ function make(valueType, definitions, changeType, _children) {
                                   var definitionID = param[0];
                                   var match = hasDefinitionID(valueType, definitionID);
                                   return React.createElement("a", {
+                                              key: definitionID,
                                               className: match ? "selected" : "",
                                               onClick: (function (_event) {
                                                   return Curry._1(changeType, /* DefinedValueType */Block.__(1, [definitionID]));
@@ -98,13 +101,28 @@ function make(valueType, definitions, changeType, _children) {
               var tmp;
               if (match) {
                 var match$1 = self[/* state */1][/* category */1];
+                var tmp$1;
+                if (match$1 >= 2) {
+                  switch (match$1 - 2 | 0) {
+                    case 0 : 
+                        tmp$1 = definedTypeSelector("Record", isRecordType);
+                        break;
+                    case 1 : 
+                        tmp$1 = definedTypeSelector("Function", isInterface);
+                        break;
+                    case 2 : 
+                        tmp$1 = null;
+                        break;
+                    
+                  }
+                } else {
+                  tmp$1 = null;
+                }
                 tmp = React.createElement("div", {
                       className: "type-selector-menu"
                     }, React.createElement("div", {
                           className: "type-selector-categories"
-                        }, React.createElement("h3", undefined, "Category"), renderCategory("Text", /* TextCategory */1), renderCategory("Number", /* NumberCategory */0), renderCategory("Record", /* RecordCategory */2), renderCategory("Function", /* FunctionCategory */3)), match$1 !== 2 ? (
-                        match$1 >= 3 ? definedTypeSelector("Function", isInterface) : null
-                      ) : definedTypeSelector("Record", isRecordType));
+                        }, React.createElement("h3", undefined, "Category"), renderCategory("Any", /* AnyCategory */4), renderCategory("Text", /* TextCategory */1), renderCategory("Number", /* NumberCategory */0), renderCategory("Record", /* RecordCategory */2), renderCategory("Function", /* FunctionCategory */3)), tmp$1);
               } else {
                 tmp = null;
               }

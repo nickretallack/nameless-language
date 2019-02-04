@@ -112,7 +112,6 @@ let make = (~definitions, _children) => {
             node: NodeConnection(nodeID),
             nib: connectionNib,
           };
-          Js.log2("Explicit side", explicitConnectionSide.connectionSide);
           let (source, sink) =
             explicitConnectionSide.isSource ?
               (explicitConnectionSide.connectionSide, nodeConnectionSide) :
@@ -122,6 +121,7 @@ let make = (~definitions, _children) => {
               ...definition,
               implementation:
                 GraphImplementation({
+                  ...graphImplementation,
                   nodes:
                     Belt.Map.String.set(
                       graphImplementation.nodes,
@@ -194,6 +194,19 @@ let make = (~definitions, _children) => {
                       PrimitiveValueType(TextType),
                     ),
                 })
+              | GraphImplementation(graphImplementation) =>
+                GraphImplementation({
+                  ...graphImplementation,
+                  interface: {
+                    ...graphImplementation.interface,
+                    inputTypes:
+                      Belt.Map.String.set(
+                        graphImplementation.interface.inputTypes,
+                        nibID,
+                        AnyType,
+                      ),
+                  },
+                })
               | RecordTypeImplementation(typedFields) =>
                 RecordTypeImplementation(
                   Belt.Map.String.set(
@@ -234,6 +247,19 @@ let make = (~definitions, _children) => {
                       PrimitiveValueType(NumberType),
                     ),
                 })
+              | GraphImplementation(graphImplementation) =>
+                GraphImplementation({
+                  ...graphImplementation,
+                  interface: {
+                    ...graphImplementation.interface,
+                    outputTypes:
+                      Belt.Map.String.set(
+                        graphImplementation.interface.outputTypes,
+                        nibID,
+                        AnyType,
+                      ),
+                  },
+                })
               | _ => definition.implementation
               },
           };
@@ -258,25 +284,7 @@ let make = (~definitions, _children) => {
                 switch (definition.implementation) {
                 | InterfaceImplementation(interface) =>
                   InterfaceImplementation(
-                    isInput ?
-                      {
-                        ...interface,
-                        inputTypes:
-                          changeTypedFields(
-                            interface.inputTypes,
-                            nibID,
-                            valueType,
-                          ),
-                      } :
-                      {
-                        ...interface,
-                        outputTypes:
-                          changeTypedFields(
-                            interface.outputTypes,
-                            nibID,
-                            valueType,
-                          ),
-                      },
+                    changeInterface(interface, isInput, nibID, valueType),
                   )
                 | RecordTypeImplementation(typedFields) =>
                   RecordTypeImplementation(
@@ -284,6 +292,17 @@ let make = (~definitions, _children) => {
                       changeTypedFields(typedFields, nibID, valueType) :
                       raise(Not_found),
                   )
+                | GraphImplementation(graphImplementation) =>
+                  GraphImplementation({
+                    ...graphImplementation,
+                    interface:
+                      changeInterface(
+                        graphImplementation.interface,
+                        isInput,
+                        nibID,
+                        valueType,
+                      ),
+                  })
                 | _ => raise(Not_found)
                 },
             }

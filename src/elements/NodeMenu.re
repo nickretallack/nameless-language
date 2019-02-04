@@ -106,7 +106,12 @@ let make =
               ),
           );
         }
-      | _ => ReasonReact.Update({...state, definitionID: Some(definitionID)})
+      | _ =>
+        ReasonReact.Update({
+          ...state,
+          definitionID: Some(definitionID),
+          definedNodeKind: None,
+        })
       }
     | AddValue =>
       if (nib.isSource) {

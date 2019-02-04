@@ -16,7 +16,7 @@ function id(x) {
 }
 
 function visitConnection(graph, dependencies, connectionSide, nodes) {
-  var match = Belt_Map.get(graph[/* connections */0], connectionSide);
+  var match = Belt_Map.get(graph[/* connections */1], connectionSide);
   if (match !== undefined) {
     var node = match[/* node */0];
     if (node) {
@@ -28,7 +28,7 @@ function visitConnection(graph, dependencies, connectionSide, nodes) {
           nodeID,
           nodes
         ];
-        var match$1 = Belt_MapString.getExn(graph[/* nodes */1], nodeID)[/* kind */1];
+        var match$1 = Belt_MapString.getExn(graph[/* nodes */2], nodeID)[/* kind */1];
         if (typeof match$1 === "number") {
           return nodeAcc;
         } else if (match$1.tag) {

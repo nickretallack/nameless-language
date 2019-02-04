@@ -5,7 +5,8 @@ type category =
   | NumberCategory
   | TextCategory
   | RecordCategory
-  | FunctionCategory;
+  | FunctionCategory
+  | AnyCategory;
 
 type state = {
   opened: bool,
@@ -32,11 +33,13 @@ let categoryFromType =
     | RecordTypeImplementation(_) => RecordCategory
     | _ => raise(Not_found)
     };
+  | AnyType => AnyCategory
   };
 
 let hasDefinitionID = (valueType: valueType, definitionID: definitionID) =>
   switch (valueType) {
-  | PrimitiveValueType(_) => false
+  | PrimitiveValueType(_)
+  | AnyType => false
   | DefinedValueType(theDefinitionID) => definitionID == theDefinitionID
   };
 
@@ -98,6 +101,7 @@ let make =
              ),
              ((definitionID: definitionID, definition: definition)) =>
              <a
+               key=definitionID
                className={
                  hasDefinitionID(valueType, definitionID) ? "selected" : ""
                }
@@ -116,6 +120,7 @@ let make =
          <div className="type-selector-menu">
            <div className="type-selector-categories">
              <h3> {ReasonReact.string("Category")} </h3>
+             {renderCategory("Any", AnyCategory)}
              {renderCategory("Text", TextCategory)}
              {renderCategory("Number", NumberCategory)}
              {renderCategory("Record", RecordCategory)}

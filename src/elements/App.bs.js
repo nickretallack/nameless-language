@@ -159,55 +159,81 @@ function make(definitions, _children) {
                                     /* outputTypes */$$interface[/* outputTypes */1]
                                   ]]);
                               break;
+                          case 3 : 
+                              var graphImplementation = match$1[0];
+                              var init = graphImplementation[/* interface */0];
+                              tmp = /* GraphImplementation */Block.__(3, [/* record */[
+                                    /* interface : record */[
+                                      /* inputTypes */Belt_MapString.set(graphImplementation[/* interface */0][/* inputTypes */0], nibID, /* AnyType */0),
+                                      /* outputTypes */init[/* outputTypes */1]
+                                    ],
+                                    /* connections */graphImplementation[/* connections */1],
+                                    /* nodes */graphImplementation[/* nodes */2]
+                                  ]]);
+                              break;
                           case 4 : 
                               tmp = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$1[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
                               break;
                           default:
                             tmp = definition[/* implementation */0];
                         }
-                        var init = definition[/* documentation */1];
-                        var init$1 = definition[/* display */2];
+                        var init$1 = definition[/* documentation */1];
+                        var init$2 = definition[/* display */2];
                         newDefinition = /* record */[
                           /* implementation */tmp,
                           /* documentation : record */[
-                            /* name */init[/* name */0],
-                            /* description */init[/* description */1],
+                            /* name */init$1[/* name */0],
+                            /* description */init$1[/* description */1],
                             /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
-                            /* outputs */init[/* outputs */3]
+                            /* outputs */init$1[/* outputs */3]
                           ],
                           /* display : record */[
                             /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
                                   nibID,
                                   /* [] */0
                                 ]),
-                            /* outputOrdering */init$1[/* outputOrdering */1]
+                            /* outputOrdering */init$2[/* outputOrdering */1]
                           ]
                         ];
                       } else {
                         var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
                         var match$2 = definition[/* implementation */0];
                         var tmp$1;
-                        if (match$2.tag === 1) {
-                          var $$interface$1 = match$2[0];
-                          tmp$1 = /* InterfaceImplementation */Block.__(1, [/* record */[
-                                /* inputTypes */$$interface$1[/* inputTypes */0],
-                                /* outputTypes */Belt_MapString.set($$interface$1[/* outputTypes */1], nibID$1, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]))
-                              ]]);
-                        } else {
-                          tmp$1 = definition[/* implementation */0];
+                        switch (match$2.tag | 0) {
+                          case 1 : 
+                              var $$interface$1 = match$2[0];
+                              tmp$1 = /* InterfaceImplementation */Block.__(1, [/* record */[
+                                    /* inputTypes */$$interface$1[/* inputTypes */0],
+                                    /* outputTypes */Belt_MapString.set($$interface$1[/* outputTypes */1], nibID$1, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]))
+                                  ]]);
+                              break;
+                          case 3 : 
+                              var graphImplementation$1 = match$2[0];
+                              var init$3 = graphImplementation$1[/* interface */0];
+                              tmp$1 = /* GraphImplementation */Block.__(3, [/* record */[
+                                    /* interface : record */[
+                                      /* inputTypes */init$3[/* inputTypes */0],
+                                      /* outputTypes */Belt_MapString.set(graphImplementation$1[/* interface */0][/* outputTypes */1], nibID$1, /* AnyType */0)
+                                    ],
+                                    /* connections */graphImplementation$1[/* connections */1],
+                                    /* nodes */graphImplementation$1[/* nodes */2]
+                                  ]]);
+                              break;
+                          default:
+                            tmp$1 = definition[/* implementation */0];
                         }
-                        var init$2 = definition[/* documentation */1];
-                        var init$3 = definition[/* display */2];
+                        var init$4 = definition[/* documentation */1];
+                        var init$5 = definition[/* display */2];
                         newDefinition = /* record */[
                           /* implementation */tmp$1,
                           /* documentation : record */[
-                            /* name */init$2[/* name */0],
-                            /* description */init$2[/* description */1],
-                            /* inputs */init$2[/* inputs */2],
+                            /* name */init$4[/* name */0],
+                            /* description */init$4[/* description */1],
+                            /* inputs */init$4[/* inputs */2],
                             /* outputs */Belt_MapString.set(definition[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
                           ],
                           /* display : record */[
-                            /* inputOrdering */init$3[/* inputOrdering */0],
+                            /* inputOrdering */init$5[/* inputOrdering */0],
                             /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
                                   nibID$1,
                                   /* [] */0
@@ -221,11 +247,12 @@ function make(definitions, _children) {
                             var match$3 = action$1[0];
                             var match$4 = definition[/* implementation */0];
                             if (match$4.tag === 3) {
-                              var graphImplementation = match$4[0];
+                              var graphImplementation$2 = match$4[0];
                               newDefinition = /* record */[
                                 /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                      /* connections */Belt_Map.set(graphImplementation[/* connections */0], match$3[/* sink */1], match$3[/* source */0]),
-                                      /* nodes */graphImplementation[/* nodes */1]
+                                      /* interface */graphImplementation$2[/* interface */0],
+                                      /* connections */Belt_Map.set(graphImplementation$2[/* connections */1], match$3[/* sink */1], match$3[/* source */0]),
+                                      /* nodes */graphImplementation$2[/* nodes */2]
                                     ]]),
                                 /* documentation */definition[/* documentation */1],
                                 /* display */definition[/* display */2]
@@ -235,27 +262,27 @@ function make(definitions, _children) {
                             }
                             break;
                         case 1 : 
-                            var init$4 = definition[/* documentation */1];
+                            var init$6 = definition[/* documentation */1];
                             newDefinition = /* record */[
                               /* implementation */definition[/* implementation */0],
                               /* documentation : record */[
                                 /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* name */0], "en", action$1[0]),
-                                /* description */init$4[/* description */1],
-                                /* inputs */init$4[/* inputs */2],
-                                /* outputs */init$4[/* outputs */3]
+                                /* description */init$6[/* description */1],
+                                /* inputs */init$6[/* inputs */2],
+                                /* outputs */init$6[/* outputs */3]
                               ],
                               /* display */definition[/* display */2]
                             ];
                             break;
                         case 2 : 
-                            var init$5 = definition[/* documentation */1];
+                            var init$7 = definition[/* documentation */1];
                             newDefinition = /* record */[
                               /* implementation */definition[/* implementation */0],
                               /* documentation : record */[
                                 /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* description */1], "en", action$1[0]),
-                                /* description */init$5[/* description */1],
-                                /* inputs */init$5[/* inputs */2],
-                                /* outputs */init$5[/* outputs */3]
+                                /* description */init$7[/* description */1],
+                                /* inputs */init$7[/* inputs */2],
+                                /* outputs */init$7[/* outputs */3]
                               ],
                               /* display */definition[/* display */2]
                             ];
@@ -282,7 +309,6 @@ function make(definitions, _children) {
                               nodeConnectionSide_000,
                               nodeConnectionSide_001
                             ];
-                            console.log("Explicit side", explicitConnectionSide[/* connectionSide */0]);
                             var match$7 = explicitConnectionSide[/* isSource */1];
                             var match$8 = match$7 ? /* tuple */[
                                 explicitConnectionSide[/* connectionSide */0],
@@ -293,11 +319,12 @@ function make(definitions, _children) {
                               ];
                             var match$9 = definition[/* implementation */0];
                             if (match$9.tag === 3) {
-                              var graphImplementation$1 = match$9[0];
+                              var graphImplementation$3 = match$9[0];
                               newDefinition = /* record */[
                                 /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                      /* connections */Belt_Map.set(graphImplementation$1[/* connections */0], match$8[1], match$8[0]),
-                                      /* nodes */Belt_MapString.set(graphImplementation$1[/* nodes */1], nodeID, match$6[/* node */0])
+                                      /* interface */graphImplementation$3[/* interface */0],
+                                      /* connections */Belt_Map.set(graphImplementation$3[/* connections */1], match$8[1], match$8[0]),
+                                      /* nodes */Belt_MapString.set(graphImplementation$3[/* nodes */2], nodeID, match$6[/* node */0])
                                     ]]),
                                 /* documentation */definition[/* documentation */1],
                                 /* display */definition[/* display */2]
@@ -319,19 +346,19 @@ function make(definitions, _children) {
                                   var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
                                   var documentation;
                                   if (isInput) {
-                                    var init$6 = definition[/* documentation */1];
+                                    var init$8 = definition[/* documentation */1];
                                     documentation = /* record */[
-                                      /* name */init$6[/* name */0],
-                                      /* description */init$6[/* description */1],
+                                      /* name */init$8[/* name */0],
+                                      /* description */init$8[/* description */1],
                                       /* inputs */newNibs,
-                                      /* outputs */init$6[/* outputs */3]
+                                      /* outputs */init$8[/* outputs */3]
                                     ];
                                   } else {
-                                    var init$7 = definition[/* documentation */1];
+                                    var init$9 = definition[/* documentation */1];
                                     documentation = /* record */[
-                                      /* name */init$7[/* name */0],
-                                      /* description */init$7[/* description */1],
-                                      /* inputs */init$7[/* inputs */2],
+                                      /* name */init$9[/* name */0],
+                                      /* description */init$9[/* description */1],
+                                      /* inputs */init$9[/* inputs */2],
                                       /* outputs */newNibs
                                     ];
                                   }
@@ -347,14 +374,15 @@ function make(definitions, _children) {
                                   var tmp$2;
                                   switch (match$11.tag | 0) {
                                     case 1 : 
-                                        var $$interface$2 = match$11[0];
-                                        tmp$2 = /* InterfaceImplementation */Block.__(1, [isInput ? /* record */[
-                                                /* inputTypes */Definition$ReactTemplate.changeTypedFields($$interface$2[/* inputTypes */0], nibID$2, valueType),
-                                                /* outputTypes */$$interface$2[/* outputTypes */1]
-                                              ] : /* record */[
-                                                /* inputTypes */$$interface$2[/* inputTypes */0],
-                                                /* outputTypes */Definition$ReactTemplate.changeTypedFields($$interface$2[/* outputTypes */1], nibID$2, valueType)
-                                              ]]);
+                                        tmp$2 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$11[0], isInput, nibID$2, valueType)]);
+                                        break;
+                                    case 3 : 
+                                        var graphImplementation$4 = match$11[0];
+                                        tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
+                                              /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$4[/* interface */0], isInput, nibID$2, valueType),
+                                              /* connections */graphImplementation$4[/* connections */1],
+                                              /* nodes */graphImplementation$4[/* nodes */2]
+                                            ]]);
                                         break;
                                     case 4 : 
                                         var tmp$3;
@@ -378,15 +406,15 @@ function make(definitions, _children) {
                                   var index = action$2[0];
                                   var tmp$4;
                                   if (isInput) {
-                                    var init$8 = definition[/* display */2];
+                                    var init$10 = definition[/* display */2];
                                     tmp$4 = /* record */[
                                       /* inputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* inputOrdering */0], nibID$2, index),
-                                      /* outputOrdering */init$8[/* outputOrdering */1]
+                                      /* outputOrdering */init$10[/* outputOrdering */1]
                                     ];
                                   } else {
-                                    var init$9 = definition[/* display */2];
+                                    var init$11 = definition[/* display */2];
                                     tmp$4 = /* record */[
-                                      /* inputOrdering */init$9[/* inputOrdering */0],
+                                      /* inputOrdering */init$11[/* inputOrdering */0],
                                       /* outputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* outputOrdering */1], nibID$2, index)
                                     ];
                                   }

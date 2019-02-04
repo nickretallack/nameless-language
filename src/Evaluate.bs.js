@@ -46,11 +46,11 @@ function evaluateExternal(name, outputIndex, inputs) {
 }
 
 function evaluateConnection(definitions, graphImplementation, sink) {
-  var source = Belt_Map.getExn(graphImplementation[/* connections */0], sink);
+  var source = Belt_Map.getExn(graphImplementation[/* connections */1], sink);
   var match = source[/* node */0];
   if (match) {
     var nodeID = match[0];
-    var node = Belt_MapString.getExn(graphImplementation[/* nodes */1], nodeID);
+    var node = Belt_MapString.getExn(graphImplementation[/* nodes */2], nodeID);
     var match$1 = node[/* kind */1];
     if (typeof match$1 === "number") {
       return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Reference!"])]);

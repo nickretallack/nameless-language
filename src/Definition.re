@@ -220,36 +220,6 @@ let isKeywordNib = (nib: connectionNib) =>
 
 type nodes = Belt.Map.String.t(node);
 
-type graphImplementation = {
-  connections,
-  nodes,
-};
-
-let encodeMap = (map, encode) =>
-  Json.Encode.object_(
-    Belt.List.map(Belt.Map.String.toList(map), ((key, item)) =>
-      (key, encode(item))
-    ),
-  );
-
-let encodeGraphImplementation = (graphImplementation: graphImplementation) =>
-  Json.Encode.(
-    object_([
-      ("nodes", encodeMap(graphImplementation.nodes, encodeNode)),
-      (
-        "connections",
-        list(
-          ((sink, source)) =>
-            object_([
-              ("sink", encodeConnectionSide(sink)),
-              ("source", encodeConnectionSide(source)),
-            ]),
-          Belt.Map.toList(graphImplementation.connections),
-        ),
-      ),
-    ])
-  );
-
 /* Interface */
 
 type primitiveValueType =
@@ -290,7 +260,8 @@ type publishingValueType =
 
 type valueType =
   | PrimitiveValueType(primitiveValueType)
-  | DefinedValueType(definitionID);
+  | DefinedValueType(definitionID)
+  | AnyType;
 
 type typedFields = Belt.Map.String.t(valueType);
 
@@ -302,6 +273,49 @@ type interface = {
   inputTypes: typedFields,
   outputTypes: typedFields,
 };
+
+let changeInterface =
+    (interface: interface, isInput: bool, nibID: nibID, valueType: valueType) =>
+  isInput ?
+    {
+      ...interface,
+      inputTypes: changeTypedFields(interface.inputTypes, nibID, valueType),
+    } :
+    {
+      ...interface,
+      outputTypes: changeTypedFields(interface.outputTypes, nibID, valueType),
+    };
+
+type graphImplementation = {
+  interface,
+  connections,
+  nodes,
+};
+
+let encodeMap = (map, encode) =>
+  Json.Encode.object_(
+    Belt.List.map(Belt.Map.String.toList(map), ((key, item)) =>
+      (key, encode(item))
+    ),
+  );
+
+let encodeGraphImplementation = (graphImplementation: graphImplementation) =>
+  Json.Encode.(
+    object_([
+      ("nodes", encodeMap(graphImplementation.nodes, encodeNode)),
+      (
+        "connections",
+        list(
+          ((sink, source)) =>
+            object_([
+              ("sink", encodeConnectionSide(sink)),
+              ("source", encodeConnectionSide(source)),
+            ]),
+          Belt.Map.toList(graphImplementation.connections),
+        ),
+      ),
+    ])
+  );
 
 type publishingInterface = {
   inputs: Belt.List.t(publishingValueType),
@@ -727,6 +741,7 @@ let displayValueType =
       Belt.Map.String.getExn(definitions, definitionID),
       language,
     )
+  | AnyType => "Any"
   };
 
 /* let getNibIndex =
@@ -797,6 +812,16 @@ let makeGraph =
     ~outputs,
     ~implementation=
       GraphImplementation({
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray(
+              Belt.Array.map(inputs, ((id, _name)) => (id, AnyType)),
+            ),
+          outputTypes:
+            Belt.Map.String.fromArray(
+              Belt.Array.map(outputs, ((id, _name)) => (id, AnyType)),
+            ),
+        },
         nodes: Belt.Map.String.fromArray(nodes),
         connections:
           Belt.Map.fromArray(connections, ~id=(module ConnectionComparator)),

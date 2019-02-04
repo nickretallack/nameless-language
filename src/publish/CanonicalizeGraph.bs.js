@@ -195,7 +195,7 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
         throw Definition$ReactTemplate.InvalidConnection;
       }
     } else {
-      var match$2 = Belt_MapString.getExn(graph[/* nodes */1], nodeID)[/* kind */1];
+      var match$2 = Belt_MapString.getExn(graph[/* nodes */2], nodeID)[/* kind */1];
       if (typeof match$2 === "number") {
         throw Definition$ReactTemplate.InvalidConnection;
       } else if (match$2.tag) {
@@ -230,7 +230,7 @@ function canonicalizeGraph(graph, dependencies, display) {
   var nodeOrdering = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies, display[/* outputOrdering */1]);
   return /* record */[
           /* nodes */Belt_List.map(nodeOrdering, (function (nodeID) {
-                  var match = Belt_MapString.getExn(graph[/* nodes */1], nodeID)[/* kind */1];
+                  var match = Belt_MapString.getExn(graph[/* nodes */2], nodeID)[/* kind */1];
                   if (typeof match === "number") {
                     return /* PublishingReferenceNode */0;
                   } else if (match.tag) {
@@ -243,7 +243,7 @@ function canonicalizeGraph(graph, dependencies, display) {
                     return /* PublishingListNode */Block.__(0, [match[0]]);
                   }
                 })),
-          /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */0]), (function (param) {
+          /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */1]), (function (param) {
                       return /* record */[
                               /* source */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* inputOrdering */0], param[1], false),
                               /* sink */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* outputOrdering */1], param[0], true)
