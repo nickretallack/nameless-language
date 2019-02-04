@@ -302,7 +302,7 @@ let make =
                          nib.isSource ? display.inputs : display.outputs,
                          (displayNib: displayNib) =>
                          <a
-                           key={SimpleNode.nibKey(displayNib.nib)}
+                           key={nibKey(displayNib.nib)}
                            onClick={_event =>
                              emit(
                                AddNode({

@@ -348,9 +348,7 @@ let make =
           ({name, explicitConnectionSide}) => {
             let {connectionSide, isSource} = explicitConnectionSide;
             <SvgNib
-              key={SimpleNode.explicitConnectionSideKey(
-                explicitConnectionSide,
-              )}
+              key={explicitConnectionSideKey(explicitConnectionSide)}
               text=name
               isSource
               connectionSide

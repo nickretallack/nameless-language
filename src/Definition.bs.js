@@ -4,6 +4,7 @@
 var $$Array = require("bs-platform/lib/js/array.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
+var Printf = require("bs-platform/lib/js/printf.js");
 var Belt_Id = require("bs-platform/lib/js/belt_Id.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
@@ -116,6 +117,50 @@ function connectionSideToString(connectionSide) {
 var cmp = Caml_obj.caml_compare;
 
 var ConnectionComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp]);
+
+function nibKey(connectionNib) {
+  if (typeof connectionNib === "number") {
+    return "value";
+  } else if (connectionNib.tag) {
+    return String(connectionNib[0]);
+  } else {
+    return connectionNib[0];
+  }
+}
+
+function nodeKey(connectionNode) {
+  if (connectionNode) {
+    return connectionNode[0];
+  } else {
+    return "graph";
+  }
+}
+
+function explicitConnectionSideKey(explicitConnectionSide) {
+  var match = explicitConnectionSide[/* isSource */1];
+  return Curry._3(Printf.sprintf(/* Format */[
+                  /* String_literal */Block.__(11, [
+                      "nib-",
+                      /* String */Block.__(2, [
+                          /* No_padding */0,
+                          /* Char_literal */Block.__(12, [
+                              /* "-" */45,
+                              /* String */Block.__(2, [
+                                  /* No_padding */0,
+                                  /* Char_literal */Block.__(12, [
+                                      /* "-" */45,
+                                      /* String */Block.__(2, [
+                                          /* No_padding */0,
+                                          /* End_of_format */0
+                                        ])
+                                    ])
+                                ])
+                            ])
+                        ])
+                    ]),
+                  "nib-%s-%s-%s"
+                ]), nodeKey(explicitConnectionSide[/* connectionSide */0][/* node */0]), nibKey(explicitConnectionSide[/* connectionSide */0][/* nib */1]), match ? "source" : "sink");
+}
 
 function definedNodeKindToString(kind) {
   switch (kind) {
@@ -802,6 +847,9 @@ exports.connectionNibToString = connectionNibToString;
 exports.encodeConnectionSide = encodeConnectionSide;
 exports.connectionSideToString = connectionSideToString;
 exports.ConnectionComparator = ConnectionComparator;
+exports.nibKey = nibKey;
+exports.nodeKey = nodeKey;
+exports.explicitConnectionSideKey = explicitConnectionSideKey;
 exports.definedNodeKindToString = definedNodeKindToString;
 exports.definedNodeKindHasValueInput = definedNodeKindHasValueInput;
 exports.definedNodeKindHasValueOutput = definedNodeKindHasValueOutput;

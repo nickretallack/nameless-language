@@ -93,6 +93,30 @@ module ConnectionComparator =
 type connections =
   Belt.Map.t(connectionSide, connectionSide, ConnectionComparator.identity);
 
+let nibKey = (connectionNib: connectionNib) => {
+  switch (connectionNib) {
+  | ValueConnection => "value"
+  | NibConnection(nibID) => nibID
+  | PositionalConnection(int) => string_of_int(int)
+  };
+};
+
+let nodeKey = (connectionNode: connectionNode) => {
+  switch (connectionNode) {
+  | GraphConnection => "graph"
+  | NodeConnection(nodeID) => nodeID
+  };
+};
+
+let explicitConnectionSideKey =
+    (explicitConnectionSide: explicitConnectionSide) =>
+  Printf.sprintf(
+    "nib-%s-%s-%s",
+    nodeKey(explicitConnectionSide.connectionSide.node),
+    nibKey(explicitConnectionSide.connectionSide.nib),
+    explicitConnectionSide.isSource ? "source" : "sink",
+  );
+
 /* Nodes */
 
 type definedNodeKind =

@@ -11,7 +11,6 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
-var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 
 function isNumberConstant(definition) {
   var match = definition[/* implementation */0];
@@ -187,7 +186,7 @@ function make(definitions, nodes, nib, emit, _children) {
                   var match$10 = nib[/* isSource */1];
                   tmp$2 = React.createElement("div", undefined, React.createElement("h3", undefined, match$9 ? "Input" : "Output"), Belt_List.toArray(Belt_List.map(match$10 ? display[/* inputs */0] : display[/* outputs */1], (function (displayNib) {
                                   return React.createElement("a", {
-                                              key: SimpleNode$ReactTemplate.nibKey(displayNib[/* nib */1]),
+                                              key: Definition$ReactTemplate.nibKey(displayNib[/* nib */1]),
                                               onClick: (function (_event) {
                                                   return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
                                                                   /* node : record */[

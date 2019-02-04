@@ -21,7 +21,6 @@ var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Interface$ReactTemplate = require("./Interface.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
-var SimpleNode$ReactTemplate = require("./SimpleNode.bs.js");
 var LayoutGraph$ReactTemplate = require("../display/LayoutGraph.bs.js");
 var DetectCycles$ReactTemplate = require("../edit/DetectCycles.bs.js");
 var GraphActions$ReactTemplate = require("../edit/GraphActions.bs.js");
@@ -198,7 +197,7 @@ function make(definitions, implementation, definition, display, documentation, e
                       var isSource = explicitConnectionSide[/* isSource */1];
                       var connectionSide = explicitConnectionSide[/* connectionSide */0];
                       var match = self[/* state */1][/* selectedNib */2];
-                      return ReasonReact.element(SimpleNode$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], match !== undefined ? Caml_obj.caml_equal(match, explicitConnectionSide) : false, /* array */[]));
+                      return ReasonReact.element(Definition$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], match !== undefined ? Caml_obj.caml_equal(match, explicitConnectionSide) : false, /* array */[]));
                     }));
               var renderedSides = ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */[
                         /* x */0.0,
