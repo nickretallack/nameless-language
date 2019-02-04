@@ -2,12 +2,13 @@
 'use strict';
 
 var React = require("react");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 
 var component = ReasonReact.statelessComponent("NibNames");
 
-function make(name, position, height, nodeWidth, textHeight, _children) {
+function make(name, position, height, nodeWidth, textHeight, onDoubleClick, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -19,7 +20,11 @@ function make(name, position, height, nodeWidth, textHeight, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement(React.Fragment, undefined, React.createElement("rect", {
+              var tmp = { };
+              if (onDoubleClick !== undefined) {
+                tmp.onDoubleClick = Caml_option.valFromOption(onDoubleClick);
+              }
+              return React.createElement("g", tmp, React.createElement("rect", {
                               height: Helpers$ReactTemplate.pixels(height),
                               width: Helpers$ReactTemplate.pixels(nodeWidth),
                               fill: "black",

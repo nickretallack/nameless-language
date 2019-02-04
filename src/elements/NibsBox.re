@@ -9,11 +9,12 @@ let make =
       ~height: float,
       ~nodeWidth: float,
       ~textHeight: float,
+      ~onDoubleClick=?,
       _children,
     ) => {
   ...component,
   render: _self => {
-    <>
+    <g ?onDoubleClick>
       <rect
         x={pixels(position.x)}
         y={pixels(position.y)}
@@ -33,6 +34,6 @@ let make =
            {ReasonReact.string(text)}
          </text>
        }}
-    </>;
+    </g>;
   },
 };

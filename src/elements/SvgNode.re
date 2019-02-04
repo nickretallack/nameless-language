@@ -16,19 +16,36 @@ let make =
     ) => {
   ...component,
   render: _self => {
-    let makeNode = name =>
-      <NibsBox name position height={size.y} nodeWidth textHeight />;
+    let makeNode = (name: string, onDoubleClick) =>
+      <NibsBox
+        name
+        position
+        height={size.y}
+        nodeWidth
+        textHeight
+        ?onDoubleClick
+      />;
 
     switch (node.kind) {
-    | ReferenceNode => makeNode("Reference")
-    | ListNode(_) => makeNode("List")
+    | ReferenceNode => makeNode("Reference", None)
+    | ListNode(_) => makeNode("List", None)
     | DefinedNode({definitionID}) =>
       let definition = Belt.Map.String.getExn(definitions, definitionID);
       let name = getDisplayName(definition, "en");
+      let onDoubleClick = _event =>
+        ReasonReact.Router.push("#" ++ definitionID);
+
       if (isFunctionDefinitionNode(node)) {
-        <SvgDefinitionBox name position size nodeWidth textHeight />;
+        <SvgDefinitionBox
+          name
+          position
+          size
+          nodeWidth
+          textHeight
+          onDoubleClick
+        />;
       } else {
-        makeNode(name);
+        makeNode(name, Some(onDoubleClick));
       };
     };
   },

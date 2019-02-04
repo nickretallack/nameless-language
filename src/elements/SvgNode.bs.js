@@ -21,22 +21,26 @@ function make(node, definitions, position, size, nodeWidth, textHeight, _childre
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              var makeNode = function (name) {
-                return ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(name, position, size[/* y */1], nodeWidth, textHeight, /* array */[]));
+              var makeNode = function (name, onDoubleClick) {
+                return ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(name, position, size[/* y */1], nodeWidth, textHeight, onDoubleClick, /* array */[]));
               };
               var match = node[/* kind */1];
               if (typeof match === "number") {
-                return makeNode("Reference");
+                return makeNode("Reference", undefined);
               } else if (match.tag) {
-                var definition = Belt_MapString.getExn(definitions, match[0][/* definitionID */1]);
+                var definitionID = match[0][/* definitionID */1];
+                var definition = Belt_MapString.getExn(definitions, definitionID);
                 var name = Definition$ReactTemplate.getDisplayName(definition, "en");
+                var onDoubleClick = function (_event) {
+                  return ReasonReact.Router[/* push */0]("#" + definitionID);
+                };
                 if (Definition$ReactTemplate.isFunctionDefinitionNode(node)) {
-                  return ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(name, position, size, nodeWidth, textHeight, /* array */[]));
+                  return ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(name, position, size, nodeWidth, textHeight, onDoubleClick, /* array */[]));
                 } else {
-                  return makeNode(name);
+                  return makeNode(name, onDoubleClick);
                 }
               } else {
-                return makeNode("List");
+                return makeNode("List", undefined);
               }
             }),
           /* initialState */component[/* initialState */10],

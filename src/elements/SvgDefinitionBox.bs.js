@@ -2,13 +2,14 @@
 'use strict';
 
 var React = require("react");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var NibsBox$ReactTemplate = require("./NibsBox.bs.js");
 
 var component = ReasonReact.statelessComponent("SvgDefinitionBox");
 
-function make(name, position, size, nodeWidth, textHeight, _children) {
+function make(name, position, size, nodeWidth, textHeight, onDoubleClick, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -20,7 +21,11 @@ function make(name, position, size, nodeWidth, textHeight, _children) {
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement(React.Fragment, undefined, React.createElement("rect", {
+              var tmp = { };
+              if (onDoubleClick !== undefined) {
+                tmp.onDoubleClick = Caml_option.valFromOption(onDoubleClick);
+              }
+              return React.createElement("g", tmp, React.createElement("rect", {
                               height: Helpers$ReactTemplate.pixels(size[/* y */1] - textHeight),
                               width: Helpers$ReactTemplate.pixels(size[/* x */0] - nodeWidth * 2.0),
                               fill: "black",
@@ -30,10 +35,10 @@ function make(name, position, size, nodeWidth, textHeight, _children) {
                             }), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
                                   /* x */position[/* x */0],
                                   /* y */position[/* y */1] + textHeight
-                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
+                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, undefined, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
                                   /* x */position[/* x */0] + size[/* x */0] - nodeWidth,
                                   /* y */position[/* y */1] + textHeight
-                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, /* array */[])), React.createElement("rect", {
+                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, undefined, /* array */[])), React.createElement("rect", {
                               height: Helpers$ReactTemplate.pixels(textHeight),
                               width: Helpers$ReactTemplate.pixels(size[/* x */0]),
                               fill: "black",

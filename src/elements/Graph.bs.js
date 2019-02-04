@@ -203,7 +203,7 @@ function make(definitions, implementation, definition, display, documentation, e
               var renderedSides = ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */[
                         /* x */0.0,
                         /* y */0.0
-                      ], graphSizePixels, 120.0, 20.0, /* array */[]));
+                      ], graphSizePixels, 120.0, 20.0, undefined, /* array */[]));
               var renderedNodes = Belt_List.toArray(Belt_List.map(Belt_MapString.toList(implementation[/* nodes */2]), (function (param) {
                           var nodeID = param[0];
                           return ReasonReact.element(nodeID, undefined, SvgNode$ReactTemplate.make(param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), 120.0, 20.0, /* array */[]));
