@@ -266,7 +266,7 @@ function make(definitions, implementation, definition, display, documentation, e
                                 })
                             }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), match$1 !== undefined ? React.createElement("div", {
                                 className: "error-message"
-                              }, match$1) : null, match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], match$2, emit, /* array */[])) : null, ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
+                              }, match$1) : null, match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], match$2, emit, /* array */[])) : null, React.createElement("h2", undefined, "Interface"), ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
             }),
           /* initialState */(function (param) {
               return /* record */[

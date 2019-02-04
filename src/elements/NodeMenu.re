@@ -177,127 +177,85 @@ let make =
          )}
       </div>;
 
-    <div className="type-selector-menu">
-      <div className="type-selector-categories">
-        <h3> {ReasonReact.string("Category")} </h3>
-        {renderCategory("Defined", AllCategory)}
-        {nib.isSource ?
-           ReasonReact.null :
+    <>
+      <h2> {ReasonReact.string("Create a node")} </h2>
+      <div className="type-selector-menu">
+        <div className="type-selector-categories">
+          <h3> {ReasonReact.string("Category")} </h3>
+          {renderCategory("Defined", AllCategory)}
+          {nib.isSource ?
+             ReasonReact.null :
+             <>
+               <a
+                 onClick={_event =>
+                   emit(
+                     AddNode({
+                       node: {
+                         kind: ReferenceNode,
+                         scope,
+                       },
+                       explicitConnectionSide: nib,
+                       connectionNib: ValueConnection,
+                     }),
+                   )
+                 }>
+                 {ReasonReact.string("Reference")}
+               </a>
+             </>}
+        </div>
+        {switch (self.state.category) {
+         | None => ReasonReact.null
+         | Some(category) =>
+           switch (category) {
+           | NumberCategory => nodeSelector(isNumberConstant)
+           | AllCategory => nodeSelector(_ => true)
+           }
+         }}
+        {switch (self.state.definitionID) {
+         | None => ReasonReact.null
+         | Some(definitionID) =>
+           let definition = Belt.Map.String.getExn(definitions, definitionID);
            <>
-             <a
-               onClick={_event =>
-                 emit(
-                   AddNode({
-                     node: {
-                       kind: ReferenceNode,
-                       scope,
-                     },
-                     explicitConnectionSide: nib,
-                     connectionNib: ValueConnection,
-                   }),
-                 )
-               }>
-               {ReasonReact.string("Reference")}
-             </a>
-           </>}
-      </div>
-      {switch (self.state.category) {
-       | None => ReasonReact.null
-       | Some(category) =>
-         switch (category) {
-         | NumberCategory => nodeSelector(isNumberConstant)
-         | AllCategory => nodeSelector(_ => true)
-         }
-       }}
-      {switch (self.state.definitionID) {
-       | None => ReasonReact.null
-       | Some(definitionID) =>
-         let definition = Belt.Map.String.getExn(definitions, definitionID);
-         <>
-           <div>
-             <h3> {ReasonReact.string("Usage")} </h3>
-             {switch (definition.implementation) {
-              | GraphImplementation(_)
-              | ExternalImplementation(_) =>
-                <>
-                  <a
-                    className={
-                      self.state.definedNodeKind == Some(FunctionCallNode) ?
-                        "selected" : ""
-                    }
-                    onClick={_event =>
-                      self.send(SetDefinedNodeKind(FunctionCallNode))
-                    }>
-                    {ReasonReact.string("call")}
-                  </a>
-                  {nib.isSource ?
-                     ReasonReact.null :
-                     <a onClick={_event => self.send(AddValue)}>
-                       {ReasonReact.string("value")}
-                     </a>}
-                </>
-              | InterfaceImplementation(_) =>
-                <>
-                  <a
-                    className={
-                      self.state.definedNodeKind
-                      == Some(FunctionPointerCallNode) ?
-                        "selected" : ""
-                    }
-                    onClick={_event =>
-                      self.send(SetDefinedNodeKind(FunctionPointerCallNode))
-                    }>
-                    {ReasonReact.string("function pointer call")}
-                  </a>
-                  {nib.isSource ?
-                     ReasonReact.null :
-                     <a
-                       onClick={_event =>
-                         emit(
-                           AddNode({
-                             node: {
-                               scope: getScope(nib, nodes),
-                               kind:
-                                 DefinedNode({
-                                   kind: FunctionDefinitionNode,
-                                   definitionID,
-                                 }),
-                             },
-                             explicitConnectionSide: nib,
-                             connectionNib: ValueConnection,
-                           }),
-                         )
-                       }>
-                       {ReasonReact.string("inline function")}
-                     </a>}
-                </>
-              | _ => <> {ReasonReact.string("TODO")} </>
-              }}
-           </div>
-           {switch (self.state.definedNodeKind) {
-            | None => ReasonReact.null
-            | Some(definedNodeKind) =>
-              let display =
-                displayNode(
-                  {
-                    scope: getScope(nib, nodes),
-                    kind: DefinedNode({kind: definedNodeKind, definitionID}),
-                  },
-                  definitions,
-                  "en",
-                );
-
-              <div>
-                <h3>
-                  {ReasonReact.string(nib.isSource ? "Input" : "Output")}
-                </h3>
-                {ReasonReact.array(
-                   Belt.List.toArray(
-                     Belt.List.map(
-                       nib.isSource ? display.inputs : display.outputs,
-                       (displayNib: displayNib) =>
+             <div>
+               <h3> {ReasonReact.string("Usage")} </h3>
+               {switch (definition.implementation) {
+                | GraphImplementation(_)
+                | ExternalImplementation(_) =>
+                  <>
+                    <a
+                      className={
+                        self.state.definedNodeKind == Some(FunctionCallNode) ?
+                          "selected" : ""
+                      }
+                      onClick={_event =>
+                        self.send(SetDefinedNodeKind(FunctionCallNode))
+                      }>
+                      {ReasonReact.string("call")}
+                    </a>
+                    {nib.isSource ?
+                       ReasonReact.null :
+                       <a onClick={_event => self.send(AddValue)}>
+                         {ReasonReact.string("value")}
+                       </a>}
+                  </>
+                | InterfaceImplementation(_) =>
+                  <>
+                    <a
+                      className={
+                        self.state.definedNodeKind
+                        == Some(FunctionPointerCallNode) ?
+                          "selected" : ""
+                      }
+                      onClick={_event =>
+                        self.send(
+                          SetDefinedNodeKind(FunctionPointerCallNode),
+                        )
+                      }>
+                      {ReasonReact.string("function pointer call")}
+                    </a>
+                    {nib.isSource ?
+                       ReasonReact.null :
                        <a
-                         key={SimpleNode.nibKey(displayNib.nib)}
                          onClick={_event =>
                            emit(
                              AddNode({
@@ -305,24 +263,74 @@ let make =
                                  scope: getScope(nib, nodes),
                                  kind:
                                    DefinedNode({
-                                     kind: definedNodeKind,
+                                     kind: FunctionDefinitionNode,
                                      definitionID,
                                    }),
                                },
                                explicitConnectionSide: nib,
-                               connectionNib: displayNib.nib,
+                               connectionNib: ValueConnection,
                              }),
                            )
                          }>
-                         {ReasonReact.string(maybeNameless(displayNib.name))}
-                       </a>
+                         {ReasonReact.string("inline function")}
+                       </a>}
+                  </>
+                | _ => <> {ReasonReact.string("TODO")} </>
+                }}
+             </div>
+             {switch (self.state.definedNodeKind) {
+              | None => ReasonReact.null
+              | Some(definedNodeKind) =>
+                let display =
+                  displayNode(
+                    {
+                      scope: getScope(nib, nodes),
+                      kind:
+                        DefinedNode({kind: definedNodeKind, definitionID}),
+                    },
+                    definitions,
+                    "en",
+                  );
+
+                <div>
+                  <h3>
+                    {ReasonReact.string(nib.isSource ? "Input" : "Output")}
+                  </h3>
+                  {ReasonReact.array(
+                     Belt.List.toArray(
+                       Belt.List.map(
+                         nib.isSource ? display.inputs : display.outputs,
+                         (displayNib: displayNib) =>
+                         <a
+                           key={SimpleNode.nibKey(displayNib.nib)}
+                           onClick={_event =>
+                             emit(
+                               AddNode({
+                                 node: {
+                                   scope: getScope(nib, nodes),
+                                   kind:
+                                     DefinedNode({
+                                       kind: definedNodeKind,
+                                       definitionID,
+                                     }),
+                                 },
+                                 explicitConnectionSide: nib,
+                                 connectionNib: displayNib.nib,
+                               }),
+                             )
+                           }>
+                           {ReasonReact.string(
+                              maybeNameless(displayNib.name),
+                            )}
+                         </a>
+                       ),
                      ),
-                   ),
-                 )}
-              </div>;
-            }}
-         </>;
-       }}
-    </div>;
+                   )}
+                </div>;
+              }}
+           </>;
+         }}
+      </div>
+    </>;
   },
 };

@@ -210,26 +210,26 @@ function make(definitions, nodes, nib, emit, _children) {
               } else {
                 tmp = null;
               }
-              return React.createElement("div", {
-                          className: "type-selector-menu"
-                        }, React.createElement("div", {
-                              className: "type-selector-categories"
-                            }, React.createElement("h3", undefined, "Category"), renderCategory("Defined", /* AllCategory */1), match ? null : React.createElement(React.Fragment, undefined, React.createElement("a", {
-                                        onClick: (function (_event) {
-                                            return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
-                                                            /* node : record */[
-                                                              /* scope */scope,
-                                                              /* kind : ReferenceNode */0
-                                                            ],
-                                                            /* explicitConnectionSide */nib,
-                                                            /* connectionNib : ValueConnection */0
-                                                          ]]));
-                                          })
-                                      }, "Reference"))), match$1 !== undefined ? (
-                            match$1 ? nodeSelector((function (param) {
-                                      return true;
-                                    })) : nodeSelector(isNumberConstant)
-                          ) : null, tmp);
+              return React.createElement(React.Fragment, undefined, React.createElement("h2", undefined, "Create a node"), React.createElement("div", {
+                              className: "type-selector-menu"
+                            }, React.createElement("div", {
+                                  className: "type-selector-categories"
+                                }, React.createElement("h3", undefined, "Category"), renderCategory("Defined", /* AllCategory */1), match ? null : React.createElement(React.Fragment, undefined, React.createElement("a", {
+                                            onClick: (function (_event) {
+                                                return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                                                /* node : record */[
+                                                                  /* scope */scope,
+                                                                  /* kind : ReferenceNode */0
+                                                                ],
+                                                                /* explicitConnectionSide */nib,
+                                                                /* connectionNib : ValueConnection */0
+                                                              ]]));
+                                              })
+                                          }, "Reference"))), match$1 !== undefined ? (
+                                match$1 ? nodeSelector((function (param) {
+                                          return true;
+                                        })) : nodeSelector(isNumberConstant)
+                              ) : null, tmp));
             }),
           /* initialState */(function (param) {
               return /* record */[

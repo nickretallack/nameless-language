@@ -487,6 +487,7 @@ let make =
            nib=explicitConnectionSide
          />
        }}
+      <h2> {ReasonReact.string("Interface")} </h2>
       <Interface
         definitions
         interface={implementation.interface}
