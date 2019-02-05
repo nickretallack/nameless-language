@@ -381,12 +381,34 @@ let make = (~definitions, _children) => {
               | _ => raise(Not_found)
               },
           }
+        | Fork => definition
         };
-      ReasonReact.Update({
-        ...state,
-        definitions:
-          Belt.Map.String.set(state.definitions, definitionID, newDefinition),
-      });
+
+      if (action == Fork) {
+        let newDefinitionID = randomID();
+        ReasonReact.UpdateWithSideEffects(
+          {
+            ...state,
+            definitions:
+              Belt.Map.String.set(
+                state.definitions,
+                newDefinitionID,
+                newDefinition,
+              ),
+          },
+          _ => ReasonReact.Router.push("#" ++ newDefinitionID),
+        );
+      } else {
+        ReasonReact.Update({
+          ...state,
+          definitions:
+            Belt.Map.String.set(
+              state.definitions,
+              definitionID,
+              newDefinition,
+            ),
+        });
+      };
     },
   render: self =>
     <div>

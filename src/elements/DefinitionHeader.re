@@ -16,14 +16,19 @@ let make =
   render: _self => {
     let changeName = event => emit(ChangeName(getEventValue(event)));
 
-    <div>
-      <input
-        type_="text"
-        className="name"
-        placeholder
-        value={getTranslated(documentation.name, "en")}
-        onChange=changeName
-      />
-    </div>;
+    <>
+      <div>
+        <input
+          type_="text"
+          className="name"
+          placeholder
+          value={getTranslated(documentation.name, "en")}
+          onChange=changeName
+        />
+      </div>
+      <button onClick={_event => emit(Fork)}>
+        {ReasonReact.string("Fork")}
+      </button>
+    </>;
   },
 };

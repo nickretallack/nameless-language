@@ -45,7 +45,8 @@ type definitionAction =
   | AddOutput
   | NibAction(nibActionRecord)
   | RemoveConnection(connectionSide)
-  | RemoveNodes(Belt.Set.String.t);
+  | RemoveNodes(Belt.Set.String.t)
+  | Fork;
 
 type definitionActionRecord = {
   definitionID,

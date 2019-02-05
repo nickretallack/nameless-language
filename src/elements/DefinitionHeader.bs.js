@@ -25,13 +25,17 @@ function make(documentation, placeholder, emit, _children) {
               var changeName = function ($$event) {
                 return Curry._1(emit, /* ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)]));
               };
-              return React.createElement("div", undefined, React.createElement("input", {
-                              className: "name",
-                              placeholder: placeholder,
-                              type: "text",
-                              value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
-                              onChange: changeName
-                            }));
+              return React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("input", {
+                                  className: "name",
+                                  placeholder: placeholder,
+                                  type: "text",
+                                  value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
+                                  onChange: changeName
+                                })), React.createElement("button", {
+                              onClick: (function (_event) {
+                                  return Curry._1(emit, /* Fork */2);
+                                })
+                            }, "Fork"));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

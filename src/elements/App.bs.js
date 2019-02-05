@@ -149,99 +149,106 @@ function make(definitions, _children) {
                     var definition = Belt_MapString.getExn(state[/* definitions */0], definitionID);
                     var newDefinition;
                     if (typeof action$1 === "number") {
-                      if (action$1 === 0) {
-                        var nibID = Helpers$ReactTemplate.randomID(/* () */0);
-                        var match$1 = definition[/* implementation */0];
-                        var tmp;
-                        switch (match$1.tag | 0) {
-                          case 1 : 
-                              var $$interface = match$1[0];
-                              tmp = /* InterfaceImplementation */Block.__(1, [/* record */[
-                                    /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2])),
-                                    /* outputTypes */$$interface[/* outputTypes */1]
-                                  ]]);
-                              break;
-                          case 3 : 
-                              var graphImplementation = match$1[0];
-                              var init = graphImplementation[/* interface */0];
-                              tmp = /* GraphImplementation */Block.__(3, [/* record */[
-                                    /* interface : record */[
-                                      /* inputTypes */Belt_MapString.set(graphImplementation[/* interface */0][/* inputTypes */0], nibID, /* AnyType */0),
-                                      /* outputTypes */init[/* outputTypes */1]
-                                    ],
-                                    /* connections */graphImplementation[/* connections */1],
-                                    /* nodes */graphImplementation[/* nodes */2]
-                                  ]]);
-                              break;
-                          case 4 : 
-                              tmp = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$1[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
-                              break;
-                          default:
-                            tmp = definition[/* implementation */0];
-                        }
-                        var init$1 = definition[/* documentation */1];
-                        var init$2 = definition[/* display */2];
-                        newDefinition = /* record */[
-                          /* implementation */tmp,
-                          /* documentation : record */[
-                            /* name */init$1[/* name */0],
-                            /* description */init$1[/* description */1],
-                            /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
-                            /* outputs */init$1[/* outputs */3]
-                          ],
-                          /* display : record */[
-                            /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
-                                  nibID,
-                                  /* [] */0
-                                ]),
-                            /* outputOrdering */init$2[/* outputOrdering */1]
-                          ]
-                        ];
-                      } else {
-                        var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
-                        var match$2 = definition[/* implementation */0];
-                        var tmp$1;
-                        switch (match$2.tag | 0) {
-                          case 1 : 
-                              var $$interface$1 = match$2[0];
-                              tmp$1 = /* InterfaceImplementation */Block.__(1, [/* record */[
-                                    /* inputTypes */$$interface$1[/* inputTypes */0],
-                                    /* outputTypes */Belt_MapString.set($$interface$1[/* outputTypes */1], nibID$1, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]))
-                                  ]]);
-                              break;
-                          case 3 : 
-                              var graphImplementation$1 = match$2[0];
-                              var init$3 = graphImplementation$1[/* interface */0];
-                              tmp$1 = /* GraphImplementation */Block.__(3, [/* record */[
-                                    /* interface : record */[
-                                      /* inputTypes */init$3[/* inputTypes */0],
-                                      /* outputTypes */Belt_MapString.set(graphImplementation$1[/* interface */0][/* outputTypes */1], nibID$1, /* AnyType */0)
-                                    ],
-                                    /* connections */graphImplementation$1[/* connections */1],
-                                    /* nodes */graphImplementation$1[/* nodes */2]
-                                  ]]);
-                              break;
-                          default:
-                            tmp$1 = definition[/* implementation */0];
-                        }
-                        var init$4 = definition[/* documentation */1];
-                        var init$5 = definition[/* display */2];
-                        newDefinition = /* record */[
-                          /* implementation */tmp$1,
-                          /* documentation : record */[
-                            /* name */init$4[/* name */0],
-                            /* description */init$4[/* description */1],
-                            /* inputs */init$4[/* inputs */2],
-                            /* outputs */Belt_MapString.set(definition[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
-                          ],
-                          /* display : record */[
-                            /* inputOrdering */init$5[/* inputOrdering */0],
-                            /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
-                                  nibID$1,
-                                  /* [] */0
-                                ])
-                          ]
-                        ];
+                      switch (action$1) {
+                        case 0 : 
+                            var nibID = Helpers$ReactTemplate.randomID(/* () */0);
+                            var match$1 = definition[/* implementation */0];
+                            var tmp;
+                            switch (match$1.tag | 0) {
+                              case 1 : 
+                                  var $$interface = match$1[0];
+                                  tmp = /* InterfaceImplementation */Block.__(1, [/* record */[
+                                        /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2])),
+                                        /* outputTypes */$$interface[/* outputTypes */1]
+                                      ]]);
+                                  break;
+                              case 3 : 
+                                  var graphImplementation = match$1[0];
+                                  var init = graphImplementation[/* interface */0];
+                                  tmp = /* GraphImplementation */Block.__(3, [/* record */[
+                                        /* interface : record */[
+                                          /* inputTypes */Belt_MapString.set(graphImplementation[/* interface */0][/* inputTypes */0], nibID, /* AnyType */0),
+                                          /* outputTypes */init[/* outputTypes */1]
+                                        ],
+                                        /* connections */graphImplementation[/* connections */1],
+                                        /* nodes */graphImplementation[/* nodes */2]
+                                      ]]);
+                                  break;
+                              case 4 : 
+                                  tmp = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$1[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
+                                  break;
+                              default:
+                                tmp = definition[/* implementation */0];
+                            }
+                            var init$1 = definition[/* documentation */1];
+                            var init$2 = definition[/* display */2];
+                            newDefinition = /* record */[
+                              /* implementation */tmp,
+                              /* documentation : record */[
+                                /* name */init$1[/* name */0],
+                                /* description */init$1[/* description */1],
+                                /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
+                                /* outputs */init$1[/* outputs */3]
+                              ],
+                              /* display : record */[
+                                /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
+                                      nibID,
+                                      /* [] */0
+                                    ]),
+                                /* outputOrdering */init$2[/* outputOrdering */1]
+                              ]
+                            ];
+                            break;
+                        case 1 : 
+                            var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
+                            var match$2 = definition[/* implementation */0];
+                            var tmp$1;
+                            switch (match$2.tag | 0) {
+                              case 1 : 
+                                  var $$interface$1 = match$2[0];
+                                  tmp$1 = /* InterfaceImplementation */Block.__(1, [/* record */[
+                                        /* inputTypes */$$interface$1[/* inputTypes */0],
+                                        /* outputTypes */Belt_MapString.set($$interface$1[/* outputTypes */1], nibID$1, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]))
+                                      ]]);
+                                  break;
+                              case 3 : 
+                                  var graphImplementation$1 = match$2[0];
+                                  var init$3 = graphImplementation$1[/* interface */0];
+                                  tmp$1 = /* GraphImplementation */Block.__(3, [/* record */[
+                                        /* interface : record */[
+                                          /* inputTypes */init$3[/* inputTypes */0],
+                                          /* outputTypes */Belt_MapString.set(graphImplementation$1[/* interface */0][/* outputTypes */1], nibID$1, /* AnyType */0)
+                                        ],
+                                        /* connections */graphImplementation$1[/* connections */1],
+                                        /* nodes */graphImplementation$1[/* nodes */2]
+                                      ]]);
+                                  break;
+                              default:
+                                tmp$1 = definition[/* implementation */0];
+                            }
+                            var init$4 = definition[/* documentation */1];
+                            var init$5 = definition[/* display */2];
+                            newDefinition = /* record */[
+                              /* implementation */tmp$1,
+                              /* documentation : record */[
+                                /* name */init$4[/* name */0],
+                                /* description */init$4[/* description */1],
+                                /* inputs */init$4[/* inputs */2],
+                                /* outputs */Belt_MapString.set(definition[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
+                              ],
+                              /* display : record */[
+                                /* inputOrdering */init$5[/* inputOrdering */0],
+                                /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
+                                      nibID$1,
+                                      /* [] */0
+                                    ])
+                              ]
+                            ];
+                            break;
+                        case 2 : 
+                            newDefinition = definition;
+                            break;
+                        
                       }
                     } else {
                       switch (action$1.tag | 0) {
@@ -473,10 +480,23 @@ function make(definitions, _children) {
                         
                       }
                     }
-                    return /* Update */Block.__(0, [/* record */[
-                                /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID, newDefinition),
-                                /* definitionID */state[/* definitionID */1]
-                              ]]);
+                    if (action$1 === /* Fork */2) {
+                      var newDefinitionID = Helpers$ReactTemplate.randomID(/* () */0);
+                      return /* UpdateWithSideEffects */Block.__(2, [
+                                /* record */[
+                                  /* definitions */Belt_MapString.set(state[/* definitions */0], newDefinitionID, newDefinition),
+                                  /* definitionID */state[/* definitionID */1]
+                                ],
+                                (function (param) {
+                                    return ReasonReact.Router[/* push */0]("#" + newDefinitionID);
+                                  })
+                              ]);
+                    } else {
+                      return /* Update */Block.__(0, [/* record */[
+                                  /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID, newDefinition),
+                                  /* definitionID */state[/* definitionID */1]
+                                ]]);
+                    }
                 case 1 : 
                     var definitionID$1 = Helpers$ReactTemplate.randomID(/* () */0);
                     return /* UpdateWithSideEffects */Block.__(2, [
