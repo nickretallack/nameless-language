@@ -24,6 +24,7 @@ let encodeValueType = (valueType: publishingValueType) =>
         ("type", string("defined")),
         ("contentID", string(contentID)),
       ])
+    | PublishingAnyType => object_([("type", string("any"))])
     }
   );
 
@@ -40,6 +41,7 @@ let canonicalizeType =
     )
   | PrimitiveValueType(primitiveValueType) =>
     PublishingPrimitiveValueType(primitiveValueType)
+  | AnyType => PublishingAnyType
   };
 
 let canonicalizeTypedFields =

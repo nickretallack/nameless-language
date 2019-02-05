@@ -280,7 +280,8 @@ type boolean =
 
 type publishingValueType =
   | PublishingPrimitiveValueType(primitiveValueType)
-  | PublishingDefinedValueType(contentID);
+  | PublishingDefinedValueType(contentID)
+  | PublishingAnyType;
 
 type valueType =
   | PrimitiveValueType(primitiveValueType)

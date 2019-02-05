@@ -5,7 +5,6 @@ var Block = require("bs-platform/lib/js/block.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
 function primitiveValueTypeToString(primitiveValueType) {
   switch (primitiveValueType) {
@@ -20,7 +19,15 @@ function primitiveValueTypeToString(primitiveValueType) {
 }
 
 function encodeValueType(valueType) {
-  if (valueType.tag) {
+  if (typeof valueType === "number") {
+    return Json_encode.object_(/* :: */[
+                /* tuple */[
+                  "type",
+                  "any"
+                ],
+                /* [] */0
+              ]);
+  } else if (valueType.tag) {
     return Json_encode.object_(/* :: */[
                 /* tuple */[
                   "type",
@@ -57,14 +64,7 @@ function encodeTypedFields(fields) {
 
 function canonicalizeType(valueType, dependencies) {
   if (typeof valueType === "number") {
-    throw [
-          Caml_builtin_exceptions.match_failure,
-          /* tuple */[
-            "CanonicalizeType.re",
-            36,
-            2
-          ]
-        ];
+    return /* PublishingAnyType */0;
   } else if (valueType.tag) {
     return /* PublishingDefinedValueType */Block.__(1, [Belt_MapString.getExn(dependencies, valueType[0])[/* contentID */0]]);
   } else {

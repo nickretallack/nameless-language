@@ -237,9 +237,9 @@ let make =
 
     let getNodeSize = nodeID =>
       sizeToPixels(Belt.Map.String.getExn(nodeLayouts, nodeID).size);
-
-    let getNodeDepth = nodeID =>
-      Belt.Map.String.getExn(nodeLayouts, nodeID).depth;
+    /*
+     let getNodeDepth = nodeID =>
+       Belt.Map.String.getExn(nodeLayouts, nodeID).depth; */
 
     let isNibInternal = (node: node, nib: connectionNib) =>
       switch (node.kind) {
