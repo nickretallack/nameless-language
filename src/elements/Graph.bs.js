@@ -202,6 +202,18 @@ function make(definitions, implementation, definition, display, documentation, e
                     }), self[/* state */1][/* pointers */0]);
               var match$1 = self[/* state */1][/* error */1];
               var match$2 = self[/* state */1][/* selectedNib */2];
+              var match$3 = self[/* state */1][/* selectedConnection */3];
+              var tmp;
+              if (match$3 !== undefined) {
+                var connectionSide = match$3;
+                tmp = React.createElement("button", {
+                      onClick: (function (_event) {
+                          return Curry._1(emit, /* RemoveConnection */Block.__(6, [connectionSide]));
+                        })
+                    }, "Remove connection");
+              } else {
+                tmp = null;
+              }
               return React.createElement("div", undefined, React.createElement("svg", {
                               height: Helpers$ReactTemplate.pixels(graphSizePixels[/* y */1]),
                               width: Helpers$ReactTemplate.pixels(graphSizePixels[/* x */0]),
@@ -239,7 +251,7 @@ function make(definitions, implementation, definition, display, documentation, e
                                 })
                             }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), match$1 !== undefined ? React.createElement("div", {
                                 className: "error-message"
-                              }, match$1) : null, match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], match$2, emit, /* array */[])) : null, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, "(nameless graph)", emit, /* array */[])), React.createElement("h2", undefined, "Interface"), ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
+                              }, match$1) : null, match$2 !== undefined ? ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], match$2, emit, /* array */[])) : null, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, "(nameless graph)", emit, /* array */[])), tmp, React.createElement("h2", undefined, "Interface"), ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
             }),
           /* initialState */(function (param) {
               return /* record */[

@@ -427,6 +427,25 @@ function make(definitions, _children) {
                               
                             }
                             break;
+                        case 6 : 
+                            var match$12 = definition[/* implementation */0];
+                            var tmp$5;
+                            if (match$12.tag === 3) {
+                              var graphImplementation$5 = match$12[0];
+                              tmp$5 = /* GraphImplementation */Block.__(3, [/* record */[
+                                    /* interface */graphImplementation$5[/* interface */0],
+                                    /* connections */Belt_Map.remove(graphImplementation$5[/* connections */1], action$1[0]),
+                                    /* nodes */graphImplementation$5[/* nodes */2]
+                                  ]]);
+                            } else {
+                              throw Caml_builtin_exceptions.not_found;
+                            }
+                            newDefinition = /* record */[
+                              /* implementation */tmp$5,
+                              /* documentation */definition[/* documentation */1],
+                              /* display */definition[/* display */2]
+                            ];
+                            break;
                         
                       }
                     }

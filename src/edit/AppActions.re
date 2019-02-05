@@ -43,7 +43,8 @@ type definitionAction =
   | AddNode(addNode)
   | AddInput
   | AddOutput
-  | NibAction(nibActionRecord);
+  | NibAction(nibActionRecord)
+  | RemoveConnection(connectionSide);
 
 type definitionActionRecord = {
   definitionID,

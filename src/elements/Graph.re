@@ -487,6 +487,13 @@ let make =
          />
        }}
       <DefinitionHeader documentation emit placeholder="(nameless graph)" />
+      {switch(self.state.selectedConnection) {
+        | None => ReasonReact.null
+        | Some(connectionSide) =>
+          <button
+            onClick={_event => emit(RemoveConnection(connectionSide))}
+          > {ReasonReact.string("Remove connection")} </button>
+      }}
       <h2> {ReasonReact.string("Interface")} </h2>
       <Interface
         definitions

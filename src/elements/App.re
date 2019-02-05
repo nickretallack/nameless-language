@@ -330,6 +330,22 @@ let make = (~definitions, _children) => {
                   },
             }
           }
+        | RemoveConnection(connectionSide) => {
+            ...definition,
+            implementation:
+              switch (definition.implementation) {
+              | GraphImplementation(graphImplementation) =>
+                GraphImplementation({
+                  ...graphImplementation,
+                  connections:
+                    Belt.Map.remove(
+                      graphImplementation.connections,
+                      connectionSide,
+                    ),
+                })
+              | _ => raise(Not_found)
+              },
+          }
         };
       ReasonReact.Update({
         ...state,
