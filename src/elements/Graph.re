@@ -77,9 +77,9 @@ let make =
         selectedNodes:
           if (additive) {
             if (Belt.Set.String.has(state.selectedNodes, nodeID)) {
-              Belt.Set.String.add(state.selectedNodes, nodeID);
-            } else {
               Belt.Set.String.remove(state.selectedNodes, nodeID);
+            } else {
+              Belt.Set.String.add(state.selectedNodes, nodeID);
             };
           } else {
             Belt.Set.String.fromArray([|nodeID|]);

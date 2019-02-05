@@ -454,7 +454,7 @@ function make(definitions, implementation, definition, display, documentation, e
                                   /* selectedNib */undefined,
                                   /* selectedConnection */undefined,
                                   /* selectedNodes */match$7[/* additive */1] ? (
-                                      Belt_SetString.has(state[/* selectedNodes */4], nodeID) ? Belt_SetString.add(state[/* selectedNodes */4], nodeID) : Belt_SetString.remove(state[/* selectedNodes */4], nodeID)
+                                      Belt_SetString.has(state[/* selectedNodes */4], nodeID) ? Belt_SetString.remove(state[/* selectedNodes */4], nodeID) : Belt_SetString.add(state[/* selectedNodes */4], nodeID)
                                     ) : Belt_SetString.fromArray(/* array */[nodeID])
                                 ]]);
                   
