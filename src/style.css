@@ -182,3 +182,11 @@ h3 {
 	font: inherit;
 	margin: 0;
 }
+
+.interface {
+	display: flex;
+}
+
+.interface > div + div {
+	margin-left: 20px;
+}

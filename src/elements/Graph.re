@@ -457,7 +457,7 @@ let make =
             }: drawingConnection,
           ),
         ) => {
-          let adjustedPoint = {x: point.x, y: point.y -. 40.0};
+          let adjustedPoint = {x: point.x, y: point.y -. 18.0};
           <SvgConnection
             key={pointerIDToString(pointerID)}
             sourcePosition={

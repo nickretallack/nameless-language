@@ -20,15 +20,17 @@ function make(definitions, $$interface, documentation, display, emit, _children)
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
-              return React.createElement("div", undefined, React.createElement("h2", undefined, "Outputs:"), ReasonReact.element(undefined, undefined, TypedFields$ReactTemplate.make(definitions, $$interface[/* outputTypes */1], documentation[/* outputs */3], false, display[/* outputOrdering */1], emit, /* array */[])), React.createElement("a", {
-                              onClick: (function (_event) {
-                                  return Curry._1(emit, /* AddOutput */1);
-                                })
-                            }, "Add Output"), React.createElement("h2", undefined, "Inputs:"), ReasonReact.element(undefined, undefined, TypedFields$ReactTemplate.make(definitions, $$interface[/* inputTypes */0], documentation[/* inputs */2], true, display[/* inputOrdering */0], emit, /* array */[])), React.createElement("a", {
-                              onClick: (function (_event) {
-                                  return Curry._1(emit, /* AddInput */0);
-                                })
-                            }, "Add Input"));
+              return React.createElement("div", {
+                          className: "interface"
+                        }, React.createElement("div", undefined, React.createElement("h2", undefined, "Outputs:"), ReasonReact.element(undefined, undefined, TypedFields$ReactTemplate.make(definitions, $$interface[/* outputTypes */1], documentation[/* outputs */3], false, display[/* outputOrdering */1], emit, /* array */[])), React.createElement("a", {
+                                  onClick: (function (_event) {
+                                      return Curry._1(emit, /* AddOutput */1);
+                                    })
+                                }, "Add Output")), React.createElement("div", undefined, React.createElement("h2", undefined, "Inputs:"), ReasonReact.element(undefined, undefined, TypedFields$ReactTemplate.make(definitions, $$interface[/* inputTypes */0], documentation[/* inputs */2], true, display[/* inputOrdering */0], emit, /* array */[])), React.createElement("a", {
+                                  onClick: (function (_event) {
+                                      return Curry._1(emit, /* AddInput */0);
+                                    })
+                                }, "Add Input")));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

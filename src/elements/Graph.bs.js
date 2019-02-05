@@ -203,7 +203,7 @@ function make(definitions, implementation, definition, display, documentation, e
                       var startIsSource = match$1[/* isSource */1];
                       var connectionSide = match$1[/* connectionSide */0];
                       var adjustedPoint_000 = /* x */point[/* x */0];
-                      var adjustedPoint_001 = /* y */point[/* y */1] - 40.0;
+                      var adjustedPoint_001 = /* y */point[/* y */1] - 18.0;
                       var adjustedPoint = /* record */[
                         adjustedPoint_000,
                         adjustedPoint_001
