@@ -428,6 +428,17 @@ function primitiveValueToString(primitiveValue) {
   }
 }
 
+function displayPrimitiveValue(primitiveValue) {
+  switch (primitiveValue.tag | 0) {
+    case 0 : 
+    case 1 : 
+        return primitiveValueToString(primitiveValue);
+    case 2 : 
+        return "\"" + (primitiveValue[0] + "\"");
+    
+  }
+}
+
 function primitiveValueToTypeString(x) {
   return primitiveValueTypeToString(primitiveValueToType(x));
 }
@@ -503,7 +514,7 @@ function getDisplayName(definition, language) {
     if (match.tag) {
       return "(nameless " + (implementationName(definition[/* implementation */0]) + ")");
     } else {
-      return primitiveValueToString(match[0]);
+      return displayPrimitiveValue(match[0]);
     }
   }
 }
@@ -870,6 +881,7 @@ exports.encodeMap = encodeMap;
 exports.encodeGraphImplementation = encodeGraphImplementation;
 exports.primitiveValueToType = primitiveValueToType;
 exports.primitiveValueToString = primitiveValueToString;
+exports.displayPrimitiveValue = displayPrimitiveValue;
 exports.primitiveValueToTypeString = primitiveValueToTypeString;
 exports.implementationName = implementationName;
 exports.getTranslated = getTranslated;

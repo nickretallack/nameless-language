@@ -378,6 +378,12 @@ let primitiveValueToString = (primitiveValue: primitiveValue) =>
   | TextValue(value) => value
   };
 
+let displayPrimitiveValue = (primitiveValue: primitiveValue) =>
+  switch (primitiveValue) {
+  | TextValue(value) => "\"" ++ value ++ "\""
+  | _ => primitiveValueToString(primitiveValue)
+  };
+
 let primitiveValueToTypeString = x =>
   x |> primitiveValueToType |> primitiveValueTypeToString;
 
@@ -410,15 +416,6 @@ let implementationName = (implementation: implementation): string =>
   | LabeledTypeImplementation(_) => "labeled type"
   | UnionTypeImplementation(_) => "union type"
   };
-
-/* type implementationType =
-    | ConstantImplementationType(primitiveValue)
-    | InterfaceImplementation(interface)
-    | ExternalImplementation(externalImplementation)
-    | GraphImplementation(graphImplementation)
-    | RecordTypeImplementation(typedFields)
-    | UnionTypeImplementation(typedFields);
-   */
 
 /* Documentation */
 
@@ -487,7 +484,7 @@ let getDisplayName = (definition: definition, language: language) => {
     text;
   } else {
     switch (definition.implementation) {
-    | ConstantImplementation(value) => primitiveValueToString(value)
+    | ConstantImplementation(value) => displayPrimitiveValue(value)
     | _ =>
       "(nameless " ++ implementationName(definition.implementation) ++ ")"
     };

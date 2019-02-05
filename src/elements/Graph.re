@@ -424,15 +424,6 @@ let make =
       );
 
     <div>
-      <div>
-        <input
-          type_="text"
-          className="graph-name"
-          placeholder="(nameless function)"
-          value={getTranslated(documentation.name, "en")}
-          onChange=changeName
-        />
-      </div>
       <svg
         width={pixels(graphSizePixels.x)}
         height={pixels(graphSizePixels.y)}
@@ -491,6 +482,7 @@ let make =
            nib=explicitConnectionSide
          />
        }}
+      <DefinitionHeader documentation emit placeholder="(nameless graph)" />
       <h2> {ReasonReact.string("Interface")} </h2>
       <Interface
         definitions

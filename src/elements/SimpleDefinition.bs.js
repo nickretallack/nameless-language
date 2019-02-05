@@ -3,6 +3,7 @@
 
 var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 var DefinitionHeader$ReactTemplate = require("./DefinitionHeader.bs.js");
 var ConstantImplementation$ReactTemplate = require("./ConstantImplementation.bs.js");
 var InterfaceImplementation$ReactTemplate = require("./InterfaceImplementation.bs.js");
@@ -39,7 +40,7 @@ function make(definition, definitions, emit, _children) {
                 default:
                   tmp = "TODO";
               }
-              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, emit, /* array */[])), tmp);
+              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, "(nameless " + (Definition$ReactTemplate.implementationName(implementation) + ")"), emit, /* array */[])), tmp);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

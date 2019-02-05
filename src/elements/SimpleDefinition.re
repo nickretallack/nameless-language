@@ -9,7 +9,13 @@ let make =
   render: _self => {
     let {documentation, display, implementation} = definition;
     <div>
-      <DefinitionHeader documentation emit />
+      <DefinitionHeader
+        documentation
+        emit
+        placeholder={
+          "(nameless " ++ implementationName(implementation) ++ ")"
+        }
+      />
       {switch (implementation) {
        | ConstantImplementation(implementation) =>
          <ConstantImplementation implementation emit />
