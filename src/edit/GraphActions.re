@@ -36,4 +36,5 @@ type selectNode = {
 type graphAction =
   | PointerAction(pointerActionRecord)
   | SelectConnection(connectionSide)
-  | SelectNode(selectNode);
+  | SelectNode(selectNode)
+  | RemoveSelectedNodes;

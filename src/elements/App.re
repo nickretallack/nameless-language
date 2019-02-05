@@ -346,6 +346,41 @@ let make = (~definitions, _children) => {
               | _ => raise(Not_found)
               },
           }
+        | RemoveNodes(nodeIDs) => {
+            ...definition,
+            implementation:
+              switch (definition.implementation) {
+              | GraphImplementation(graphImplementation) =>
+                let nodeIDs =
+                  ExpandDeletion.getAffectedNodes(
+                    nodeIDs,
+                    graphImplementation.nodes,
+                  );
+                GraphImplementation({
+                  ...graphImplementation,
+                  nodes:
+                    Belt.Map.String.removeMany(
+                      graphImplementation.nodes,
+                      Belt.Set.String.toArray(nodeIDs),
+                    ),
+                  connections:
+                    Belt.Map.keep(
+                      graphImplementation.connections, (sink, source) =>
+                      !(
+                        ExpandDeletion.connectionSideInvolvesNodeIDs(
+                          sink,
+                          nodeIDs,
+                        )
+                        || ExpandDeletion.connectionSideInvolvesNodeIDs(
+                             source,
+                             nodeIDs,
+                           )
+                      )
+                    ),
+                });
+              | _ => raise(Not_found)
+              },
+          }
         };
       ReasonReact.Update({
         ...state,

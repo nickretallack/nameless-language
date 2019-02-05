@@ -9,11 +9,13 @@ var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
 var Graph$ReactTemplate = require("./Graph.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
+var ExpandDeletion$ReactTemplate = require("../edit/ExpandDeletion.bs.js");
 var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
 
 var makers = /* array */[
@@ -442,6 +444,28 @@ function make(definitions, _children) {
                             }
                             newDefinition = /* record */[
                               /* implementation */tmp$5,
+                              /* documentation */definition[/* documentation */1],
+                              /* display */definition[/* display */2]
+                            ];
+                            break;
+                        case 7 : 
+                            var match$13 = definition[/* implementation */0];
+                            var tmp$6;
+                            if (match$13.tag === 3) {
+                              var graphImplementation$6 = match$13[0];
+                              var nodeIDs = ExpandDeletion$ReactTemplate.getAffectedNodes(action$1[0], graphImplementation$6[/* nodes */2]);
+                              tmp$6 = /* GraphImplementation */Block.__(3, [/* record */[
+                                    /* interface */graphImplementation$6[/* interface */0],
+                                    /* connections */Belt_Map.keep(graphImplementation$6[/* connections */1], (function (sink, source) {
+                                            return !(ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(sink, nodeIDs) || ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(source, nodeIDs));
+                                          })),
+                                    /* nodes */Belt_MapString.removeMany(graphImplementation$6[/* nodes */2], Belt_SetString.toArray(nodeIDs))
+                                  ]]);
+                            } else {
+                              throw Caml_builtin_exceptions.not_found;
+                            }
+                            newDefinition = /* record */[
+                              /* implementation */tmp$6,
                               /* documentation */definition[/* documentation */1],
                               /* display */definition[/* display */2]
                             ];

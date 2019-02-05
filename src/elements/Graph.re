@@ -72,6 +72,8 @@ let make =
     | SelectNode({nodeID, additive}) =>
       ReasonReact.Update({
         ...state,
+        selectedConnection: None,
+        selectedNib: None,
         selectedNodes:
           if (additive) {
             if (Belt.Set.String.has(state.selectedNodes, nodeID)) {
@@ -83,6 +85,11 @@ let make =
             Belt.Set.String.fromArray([|nodeID|]);
           },
       })
+    | RemoveSelectedNodes =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, selectedNodes: Belt.Set.String.empty},
+        _ => emit(RemoveNodes(state.selectedNodes)),
+      )
     | SelectConnection(connectionSide) =>
       ReasonReact.Update({
         ...state,
@@ -538,6 +545,11 @@ let make =
            {ReasonReact.string("Remove connection")}
          </button>
        }}
+      {Belt.Set.String.isEmpty(self.state.selectedNodes) ?
+         ReasonReact.null :
+         <button onClick={_event => self.send(RemoveSelectedNodes)}>
+           {ReasonReact.string("Remove Nodes")}
+         </button>}
       <h2> {ReasonReact.string("Interface")} </h2>
       <Interface
         definitions
