@@ -12,6 +12,8 @@ let make =
       ~size: point,
       ~nodeWidth: float,
       ~textHeight: float,
+      ~selected: bool=false,
+      ~onClick,
       _children,
     ) => {
   ...component,
@@ -24,6 +26,8 @@ let make =
         nodeWidth
         textHeight
         ?onDoubleClick
+        selected
+        onClick
       />;
 
     switch (node.kind) {
@@ -42,7 +46,9 @@ let make =
           size
           nodeWidth
           textHeight
+          selected
           onDoubleClick
+          onClick
         />;
       } else {
         makeNode(name, Some(onDoubleClick));

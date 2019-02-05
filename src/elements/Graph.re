@@ -18,6 +18,7 @@ type graphState = {
   error: option(string),
   selectedNib: option(explicitConnectionSide),
   selectedConnection: option(connectionSide),
+  selectedNodes: Belt.Set.String.t,
 };
 
 let document = Webapi.Dom.Document.asEventTarget(Webapi.Dom.document);
@@ -35,13 +36,24 @@ let make =
     ) => {
   ...component,
   /* Prevent iOS from scrolling all over the place */
-  didMount: _ =>
+  didMount: self => {
     Webapi.Dom.EventTarget.addEventListenerWithOptions(
       "touchmove",
       preventDefault,
       {"passive": false, "capture": true, "once": false},
       document,
-    ),
+    );
+    Webapi.Dom.EventTarget.addKeyUpEventListener(
+      event =>
+        if (Webapi.Dom.KeyboardEvent.key(event) == "Backspace") {
+          switch (self.state.selectedConnection) {
+          | None => ()
+          | Some(connectionSide) => emit(RemoveConnection(connectionSide))
+          };
+        },
+      document,
+    );
+  },
   willUnmount: _ =>
     Webapi.Dom.EventTarget.removeEventListener(
       "touchmove",
@@ -53,9 +65,24 @@ let make =
     error: None,
     selectedNib: None,
     selectedConnection: None,
+    selectedNodes: Belt.Set.String.empty,
   },
   reducer: (action: graphAction, state: graphState) =>
     switch (action) {
+    | SelectNode({nodeID, additive}) =>
+      ReasonReact.Update({
+        ...state,
+        selectedNodes:
+          if (additive) {
+            if (Belt.Set.String.has(state.selectedNodes, nodeID)) {
+              Belt.Set.String.add(state.selectedNodes, nodeID);
+            } else {
+              Belt.Set.String.remove(state.selectedNodes, nodeID);
+            };
+          } else {
+            Belt.Set.String.fromArray([|nodeID|]);
+          },
+      })
     | SelectConnection(connectionSide) =>
       ReasonReact.Update({
         ...state,
@@ -384,6 +411,15 @@ let make =
               size={getNodeSize(nodeID)}
               nodeWidth
               textHeight
+              selected={Belt.Set.String.has(self.state.selectedNodes, nodeID)}
+              onClick={event =>
+                self.send(
+                  SelectNode({
+                    nodeID,
+                    additive: ReactEvent.Mouse.shiftKey(event),
+                  }),
+                )
+              }
             />
           ),
         ),
@@ -464,6 +500,14 @@ let make =
               }),
             )
           )
+        }
+        onKeyPress={event =>
+          if (ReactEvent.Keyboard.key(event) == "Backspace") {
+            switch (self.state.selectedConnection) {
+            | None => ()
+            | Some(connectionSide) => emit(RemoveConnection(connectionSide))
+            };
+          }
         }>
         renderedSides
         renderedNodes
@@ -487,13 +531,13 @@ let make =
          />
        }}
       <DefinitionHeader documentation emit placeholder="(nameless graph)" />
-      {switch(self.state.selectedConnection) {
-        | None => ReasonReact.null
-        | Some(connectionSide) =>
-          <button
-            onClick={_event => emit(RemoveConnection(connectionSide))}
-          > {ReasonReact.string("Remove connection")} </button>
-      }}
+      {switch (self.state.selectedConnection) {
+       | None => ReasonReact.null
+       | Some(connectionSide) =>
+         <button onClick={_event => emit(RemoveConnection(connectionSide))}>
+           {ReasonReact.string("Remove connection")}
+         </button>
+       }}
       <h2> {ReasonReact.string("Interface")} </h2>
       <Interface
         definitions

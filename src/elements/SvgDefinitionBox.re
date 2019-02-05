@@ -10,18 +10,20 @@ let make =
       ~size: point,
       ~nodeWidth: float,
       ~textHeight: float,
+      ~selected: bool=false,
       ~onDoubleClick=?,
+      ~onClick=?,
       _children,
     ) => {
   ...component,
   render: _self => {
-    <g ?onDoubleClick>
+    <g ?onDoubleClick ?onClick>
       <rect
         x={pixels(position.x +. nodeWidth)}
         y={pixels(position.y +. textHeight)}
         width={pixels(size.x -. nodeWidth *. 2.0)}
         height={pixels(size.y -. textHeight)}
-        fill="black"
+        fill={selected ? "blue" : "black"}
         fillOpacity="0.05"
       />
       <NibsBox
@@ -29,6 +31,7 @@ let make =
         height={size.y -. textHeight}
         nodeWidth
         textHeight
+        selected
       />
       <NibsBox
         position={
@@ -38,13 +41,14 @@ let make =
         height={size.y -. textHeight}
         nodeWidth
         textHeight
+        selected
       />
       <rect
         x={pixels(position.x)}
         y={pixels(position.y)}
         width={pixels(size.x)}
         height={pixels(textHeight)}
-        fill="black"
+        fill={selected ? "blue" : "black"}
         fillOpacity="0.1"
       />
       <text

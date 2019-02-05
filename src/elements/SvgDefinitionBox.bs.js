@@ -9,7 +9,8 @@ var NibsBox$ReactTemplate = require("./NibsBox.bs.js");
 
 var component = ReasonReact.statelessComponent("SvgDefinitionBox");
 
-function make(name, position, size, nodeWidth, textHeight, onDoubleClick, _children) {
+function make(name, position, size, nodeWidth, textHeight, $staropt$star, onDoubleClick, onClick, _children) {
+  var selected = $staropt$star !== undefined ? $staropt$star : false;
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -22,26 +23,29 @@ function make(name, position, size, nodeWidth, textHeight, onDoubleClick, _child
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               var tmp = { };
+              if (onClick !== undefined) {
+                tmp.onClick = Caml_option.valFromOption(onClick);
+              }
               if (onDoubleClick !== undefined) {
                 tmp.onDoubleClick = Caml_option.valFromOption(onDoubleClick);
               }
               return React.createElement("g", tmp, React.createElement("rect", {
                               height: Helpers$ReactTemplate.pixels(size[/* y */1] - textHeight),
                               width: Helpers$ReactTemplate.pixels(size[/* x */0] - nodeWidth * 2.0),
-                              fill: "black",
+                              fill: selected ? "blue" : "black",
                               fillOpacity: "0.05",
                               x: Helpers$ReactTemplate.pixels(position[/* x */0] + nodeWidth),
                               y: Helpers$ReactTemplate.pixels(position[/* y */1] + textHeight)
                             }), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
                                   /* x */position[/* x */0],
                                   /* y */position[/* y */1] + textHeight
-                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, undefined, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
+                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, undefined, selected, undefined, /* array */[])), ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(undefined, /* record */[
                                   /* x */position[/* x */0] + size[/* x */0] - nodeWidth,
                                   /* y */position[/* y */1] + textHeight
-                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, undefined, /* array */[])), React.createElement("rect", {
+                                ], size[/* y */1] - textHeight, nodeWidth, textHeight, undefined, selected, undefined, /* array */[])), React.createElement("rect", {
                               height: Helpers$ReactTemplate.pixels(textHeight),
                               width: Helpers$ReactTemplate.pixels(size[/* x */0]),
-                              fill: "black",
+                              fill: selected ? "blue" : "black",
                               fillOpacity: "0.1",
                               x: Helpers$ReactTemplate.pixels(position[/* x */0]),
                               y: Helpers$ReactTemplate.pixels(position[/* y */1])

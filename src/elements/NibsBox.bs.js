@@ -8,7 +8,8 @@ var Helpers$ReactTemplate = require("../Helpers.bs.js");
 
 var component = ReasonReact.statelessComponent("NibNames");
 
-function make(name, position, height, nodeWidth, textHeight, onDoubleClick, _children) {
+function make(name, position, height, nodeWidth, textHeight, onDoubleClick, $staropt$star, onClick, _children) {
+  var selected = $staropt$star !== undefined ? $staropt$star : false;
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -21,13 +22,16 @@ function make(name, position, height, nodeWidth, textHeight, onDoubleClick, _chi
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               var tmp = { };
+              if (onClick !== undefined) {
+                tmp.onClick = Caml_option.valFromOption(onClick);
+              }
               if (onDoubleClick !== undefined) {
                 tmp.onDoubleClick = Caml_option.valFromOption(onDoubleClick);
               }
               return React.createElement("g", tmp, React.createElement("rect", {
                               height: Helpers$ReactTemplate.pixels(height),
                               width: Helpers$ReactTemplate.pixels(nodeWidth),
-                              fill: "black",
+                              fill: selected ? "blue" : "black",
                               fillOpacity: "0.1",
                               x: Helpers$ReactTemplate.pixels(position[/* x */0]),
                               y: Helpers$ReactTemplate.pixels(position[/* y */1])

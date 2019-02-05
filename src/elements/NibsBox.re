@@ -10,17 +10,19 @@ let make =
       ~nodeWidth: float,
       ~textHeight: float,
       ~onDoubleClick=?,
+      ~selected: bool=false,
+      ~onClick=?,
       _children,
     ) => {
   ...component,
   render: _self => {
-    <g ?onDoubleClick>
+    <g ?onDoubleClick ?onClick>
       <rect
         x={pixels(position.x)}
         y={pixels(position.y)}
         width={pixels(nodeWidth)}
         height={pixels(height)}
-        fill="black"
+        fill={selected ? "blue" : "black"}
         fillOpacity="0.1"
       />
       {switch (name) {

@@ -28,6 +28,12 @@ type pointerActionRecord = {
   action: pointerAction,
 };
 
+type selectNode = {
+  nodeID,
+  additive: bool,
+};
+
 type graphAction =
   | PointerAction(pointerActionRecord)
-  | SelectConnection(connectionSide);
+  | SelectConnection(connectionSide)
+  | SelectNode(selectNode);
