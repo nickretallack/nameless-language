@@ -13,12 +13,16 @@ module PointerComparator =
 type pointerMap('a) =
   Belt.Map.t(PointerComparator.t, 'a, PointerComparator.identity);
 
+type selection =
+  | NoSelection
+  | SelectedConnection(connectionSide)
+  | SelectedNib(explicitConnectionSide)
+  | SelectedNodes(Belt.Set.String.t);
+
 type graphState = {
   pointers: pointerMap(drawingConnection),
   error: option(string),
-  selectedNib: option(explicitConnectionSide),
-  selectedConnection: option(connectionSide),
-  selectedNodes: Belt.Set.String.t,
+  selection,
 };
 
 let document = Webapi.Dom.Document.asEventTarget(Webapi.Dom.document);
@@ -36,21 +40,11 @@ let make =
     ) => {
   ...component,
   /* Prevent iOS from scrolling all over the place */
-  didMount: self => {
+  didMount: _ => {
     Webapi.Dom.EventTarget.addEventListenerWithOptions(
       "touchmove",
       preventDefault,
       {"passive": false, "capture": true, "once": false},
-      document,
-    );
-    Webapi.Dom.EventTarget.addKeyUpEventListener(
-      event =>
-        if (Webapi.Dom.KeyboardEvent.key(event) == "Backspace") {
-          switch (self.state.selectedConnection) {
-          | None => ()
-          | Some(connectionSide) => emit(RemoveConnection(connectionSide))
-          };
-        },
       document,
     );
   },
@@ -63,37 +57,46 @@ let make =
   initialState: () => {
     pointers: Belt.Map.make(~id=(module PointerComparator)),
     error: None,
-    selectedNib: None,
-    selectedConnection: None,
-    selectedNodes: Belt.Set.String.empty,
+    selection: NoSelection,
   },
   reducer: (action: graphAction, state: graphState) =>
     switch (action) {
     | SelectNode({nodeID, additive}) =>
       ReasonReact.Update({
         ...state,
-        selectedConnection: None,
-        selectedNib: None,
-        selectedNodes:
-          if (additive) {
-            if (Belt.Set.String.has(state.selectedNodes, nodeID)) {
-              Belt.Set.String.remove(state.selectedNodes, nodeID);
+        selection:
+          switch (state.selection) {
+          | SelectedNodes(nodeIDs) =>
+            if (additive) {
+              if (Belt.Set.String.has(nodeIDs, nodeID)) {
+                let newNodeIDs = Belt.Set.String.remove(nodeIDs, nodeID);
+                if (Belt.Set.String.isEmpty(newNodeIDs)) {
+                  NoSelection;
+                } else {
+                  SelectedNodes(newNodeIDs);
+                };
+              } else {
+                SelectedNodes(Belt.Set.String.add(nodeIDs, nodeID));
+              };
             } else {
-              Belt.Set.String.add(state.selectedNodes, nodeID);
-            };
-          } else {
-            Belt.Set.String.fromArray([|nodeID|]);
+              SelectedNodes(Belt.Set.String.fromArray([|nodeID|]));
+            }
+          | _ => SelectedNodes(Belt.Set.String.fromArray([|nodeID|]))
           },
       })
     | RemoveSelectedNodes =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, selectedNodes: Belt.Set.String.empty},
-        _ => emit(RemoveNodes(state.selectedNodes)),
-      )
+      switch (state.selection) {
+      | SelectedNodes(nodeIDs) =>
+        ReasonReact.UpdateWithSideEffects(
+          {...state, selection: NoSelection},
+          _ => emit(RemoveNodes(nodeIDs)),
+        )
+      | _ => ReasonReact.NoUpdate
+      }
     | SelectConnection(connectionSide) =>
       ReasonReact.Update({
         ...state,
-        selectedConnection: Some(connectionSide),
+        selection: SelectedConnection(connectionSide),
       })
     | PointerAction({pointerID, action}) =>
       switch (action) {
@@ -131,9 +134,11 @@ let make =
               ReasonReact.Update({
                 ...state,
                 error: None,
-                selectedConnection: None,
-                selectedNib:
-                  Some({connectionSide: startNib, isSource: startIsSource}),
+                selection:
+                  SelectedNib({
+                    connectionSide: startNib,
+                    isSource: startIsSource,
+                  }),
               });
             } else {
               ReasonReact.Update({
@@ -367,7 +372,7 @@ let make =
             sourcePosition={getNibPosition(source, false)}
             nudge={getNibNudge(source)}
             onClick={_event => self.send(SelectConnection(sink))}
-            isSelected={self.state.selectedConnection == Some(sink)}
+            isSelected={self.state.selection == SelectedConnection(sink)}
           />,
         implementation.connections,
       );
@@ -385,10 +390,10 @@ let make =
               position={getNibPosition(connectionSide, !isSource)}
               emit={self.send}
               isHighlighted={
-                switch (self.state.selectedNib) {
-                | None => false
-                | Some(highlightedExplicitConnectionSide) =>
+                switch (self.state.selection) {
+                | SelectedNib(highlightedExplicitConnectionSide) =>
                   highlightedExplicitConnectionSide == explicitConnectionSide
+                | _ => false
                 }
               }
             />;
@@ -418,7 +423,13 @@ let make =
               size={getNodeSize(nodeID)}
               nodeWidth
               textHeight
-              selected={Belt.Set.String.has(self.state.selectedNodes, nodeID)}
+              selected={
+                switch (self.state.selection) {
+                | SelectedNodes(nodeIDs) =>
+                  Belt.Set.String.has(nodeIDs, nodeID)
+                | _ => false
+                }
+              }
               onClick={event =>
                 self.send(
                   SelectNode({
@@ -507,14 +518,6 @@ let make =
               }),
             )
           )
-        }
-        onKeyPress={event =>
-          if (ReactEvent.Keyboard.key(event) == "Backspace") {
-            switch (self.state.selectedConnection) {
-            | None => ()
-            | Some(connectionSide) => emit(RemoveConnection(connectionSide))
-            };
-          }
         }>
         renderedSides
         renderedNodes
@@ -527,29 +530,33 @@ let make =
          <div className="error-message"> {ReasonReact.string(error)} </div>
        | None => ReasonReact.null
        }}
-      {switch (self.state.selectedNib) {
-       | None => ReasonReact.null
-       | Some(explicitConnectionSide) =>
+      {switch (self.state.selection) {
+       | SelectedNib(explicitConnectionSide) =>
          <NodeMenu
            emit
            definitions
            nodes={implementation.nodes}
            nib=explicitConnectionSide
          />
+       | _ => ReasonReact.null
        }}
       <DefinitionHeader documentation emit placeholder="(nameless graph)" />
-      {switch (self.state.selectedConnection) {
-       | None => ReasonReact.null
-       | Some(connectionSide) =>
+      {switch (self.state.selection) {
+       | SelectedConnection(connectionSide) =>
          <button onClick={_event => emit(RemoveConnection(connectionSide))}>
            {ReasonReact.string("Remove connection")}
          </button>
+       | _ => ReasonReact.null
        }}
-      {Belt.Set.String.isEmpty(self.state.selectedNodes) ?
-         ReasonReact.null :
-         <button onClick={_event => self.send(RemoveSelectedNodes)}>
-           {ReasonReact.string("Remove Nodes")}
-         </button>}
+      {switch (self.state.selection) {
+       | SelectedNodes(nodeIDs) =>
+         Belt.Set.String.isEmpty(nodeIDs) ?
+           ReasonReact.null :
+           <button onClick={_event => self.send(RemoveSelectedNodes)}>
+             {ReasonReact.string("Remove Node(s)")}
+           </button>
+       | _ => ReasonReact.null
+       }}
       <h2> {ReasonReact.string("Interface")} </h2>
       <Interface
         definitions
