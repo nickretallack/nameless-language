@@ -22,13 +22,13 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
               var match = self[/* state */1][0];
               if (match !== undefined) {
                 Caml_option.valFromOption(match).addEventListener("finish-drawing", (function ($$event) {
-                        return Curry._1(emit, /* record */[
-                                    /* pointerID : Touch */[$$event.detail.identifier],
-                                    /* action : FinishDrawing */Block.__(2, [/* record */[
-                                          /* connectionSide */connectionSide,
-                                          /* isSource */isSource
-                                        ]])
-                                  ]);
+                        return Curry._1(emit, /* PointerAction */Block.__(0, [/* record */[
+                                        /* pointerID : Touch */[$$event.detail.identifier],
+                                        /* action : FinishDrawing */Block.__(2, [/* record */[
+                                              /* connectionSide */connectionSide,
+                                              /* isSource */isSource
+                                            ]])
+                                      ]]));
                       }));
                 return /* () */0;
               } else {
@@ -53,25 +53,25 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
                                   return /* () */0;
                                 }),
                               onMouseDown: (function ($$event) {
-                                  return Curry._1(emit, /* record */[
-                                              /* pointerID : Mouse */0,
-                                              /* action : StartDrawing */Block.__(0, [/* record */[
-                                                    /* explicitConnectionSide : record */[
-                                                      /* connectionSide */connectionSide,
-                                                      /* isSource */isSource
-                                                    ],
-                                                    /* point */Helpers$ReactTemplate.pointFromMouse($$event)
-                                                  ]])
-                                            ]);
+                                  return Curry._1(emit, /* PointerAction */Block.__(0, [/* record */[
+                                                  /* pointerID : Mouse */0,
+                                                  /* action : StartDrawing */Block.__(0, [/* record */[
+                                                        /* explicitConnectionSide : record */[
+                                                          /* connectionSide */connectionSide,
+                                                          /* isSource */isSource
+                                                        ],
+                                                        /* point */Helpers$ReactTemplate.pointFromMouse($$event)
+                                                      ]])
+                                                ]]));
                                 }),
                               onMouseUp: (function (param) {
-                                  return Curry._1(emit, /* record */[
-                                              /* pointerID : Mouse */0,
-                                              /* action : FinishDrawing */Block.__(2, [/* record */[
-                                                    /* connectionSide */connectionSide,
-                                                    /* isSource */isSource
-                                                  ]])
-                                            ]);
+                                  return Curry._1(emit, /* PointerAction */Block.__(0, [/* record */[
+                                                  /* pointerID : Mouse */0,
+                                                  /* action : FinishDrawing */Block.__(2, [/* record */[
+                                                        /* connectionSide */connectionSide,
+                                                        /* isSource */isSource
+                                                      ]])
+                                                ]]));
                                 }),
                               onTouchEnd: (function ($$event) {
                                   return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
@@ -85,19 +85,19 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
                                 }),
                               onTouchStart: (function ($$event) {
                                   return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
-                                                return Curry._1(emit, /* record */[
-                                                            /* pointerID : Touch */[touch.identifier],
-                                                            /* action : StartDrawing */Block.__(0, [/* record */[
-                                                                  /* explicitConnectionSide : record */[
-                                                                    /* connectionSide */connectionSide,
-                                                                    /* isSource */isSource
-                                                                  ],
-                                                                  /* point : record */[
-                                                                    /* x */touch.clientX,
-                                                                    /* y */touch.clientY
-                                                                  ]
-                                                                ]])
-                                                          ]);
+                                                return Curry._1(emit, /* PointerAction */Block.__(0, [/* record */[
+                                                                /* pointerID : Touch */[touch.identifier],
+                                                                /* action : StartDrawing */Block.__(0, [/* record */[
+                                                                      /* explicitConnectionSide : record */[
+                                                                        /* connectionSide */connectionSide,
+                                                                        /* isSource */isSource
+                                                                      ],
+                                                                      /* point : record */[
+                                                                        /* x */touch.clientX,
+                                                                        /* y */touch.clientY
+                                                                      ]
+                                                                    ]])
+                                                              ]]));
                                               }));
                                 }),
                               cx: Helpers$ReactTemplate.pixels(position[/* x */0]),

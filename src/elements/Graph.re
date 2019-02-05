@@ -17,6 +17,7 @@ type graphState = {
   pointers: pointerMap(drawingConnection),
   error: option(string),
   selectedNib: option(explicitConnectionSide),
+  selectedConnection: option(connectionSide),
 };
 
 let document = Webapi.Dom.Document.asEventTarget(Webapi.Dom.document);
@@ -51,94 +52,109 @@ let make =
     pointers: Belt.Map.make(~id=(module PointerComparator)),
     error: None,
     selectedNib: None,
+    selectedConnection: None,
   },
-  reducer: ({pointerID, action}: graphAction, state: graphState) =>
+  reducer: (action: graphAction, state: graphState) =>
     switch (action) {
-    | StartDrawing(drawingConnection) =>
+    | SelectConnection(connectionSide) =>
       ReasonReact.Update({
         ...state,
-        pointers: Belt.Map.set(state.pointers, pointerID, drawingConnection),
+        selectedConnection: Some(connectionSide),
       })
-    | ContinueDrawing(point) =>
-      switch (Belt.Map.get(state.pointers, pointerID)) {
-      | Some(drawingConnection) =>
+    | PointerAction({pointerID, action}) =>
+      switch (action) {
+      | StartDrawing(drawingConnection) =>
         ReasonReact.Update({
           ...state,
           pointers:
-            Belt.Map.set(
-              state.pointers,
-              pointerID,
-              {...drawingConnection, point},
-            ),
+            Belt.Map.set(state.pointers, pointerID, drawingConnection),
         })
-      | None => ReasonReact.NoUpdate
-      }
-    | FinishDrawing({connectionSide: endNib, isSource: endIsSource}) =>
-      switch (Belt.Map.get(state.pointers, pointerID)) {
-      | None => ReasonReact.NoUpdate
-      | Some({
-          explicitConnectionSide: {
-            isSource: startIsSource,
-            connectionSide: startNib,
-          },
-        }) =>
-        if (startIsSource == endIsSource) {
-          if (startNib == endNib) {
-            ReasonReact.Update({
-              ...state,
-              error: None,
-              selectedNib:
-                Some({connectionSide: startNib, isSource: startIsSource}),
-            });
-          } else {
-            ReasonReact.Update({
-              ...state,
-              error:
-                Some(
-                  startIsSource ?
-                    "Can't connect a source to a source" :
-                    "Can't connect a sink to a sink",
-                ),
-            });
-          };
-        } else {
-          let (source, sink) =
-            startIsSource ? (startNib, endNib) : (endNib, startNib);
-          if (!DetectCycles.checkScopes(source, sink, implementation.nodes)) {
-            ReasonReact.Update({
-              ...state,
-              error:
-                Some(
-                  "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.",
-                ),
-            });
-          } else if (DetectCycles.detectCycles(
-                       Belt.Map.set(implementation.connections, sink, source),
-                       implementation.nodes,
-                     )) {
-            ReasonReact.Update({
-              ...state,
-              error: Some("Can't create cycles"),
-            });
-          } else {
-            ReasonReact.UpdateWithSideEffects(
-              {
+      | ContinueDrawing(point) =>
+        switch (Belt.Map.get(state.pointers, pointerID)) {
+        | Some(drawingConnection) =>
+          ReasonReact.Update({
+            ...state,
+            pointers:
+              Belt.Map.set(
+                state.pointers,
+                pointerID,
+                {...drawingConnection, point},
+              ),
+          })
+        | None => ReasonReact.NoUpdate
+        }
+      | FinishDrawing({connectionSide: endNib, isSource: endIsSource}) =>
+        switch (Belt.Map.get(state.pointers, pointerID)) {
+        | None => ReasonReact.NoUpdate
+        | Some({
+            explicitConnectionSide: {
+              isSource: startIsSource,
+              connectionSide: startNib,
+            },
+          }) =>
+          if (startIsSource == endIsSource) {
+            if (startNib == endNib) {
+              ReasonReact.Update({
                 ...state,
                 error: None,
-                pointers: Belt.Map.remove(state.pointers, pointerID),
-              },
-              _ => emit(CreateConnection({source, sink})),
-            );
-          };
+                selectedConnection: None,
+                selectedNib:
+                  Some({connectionSide: startNib, isSource: startIsSource}),
+              });
+            } else {
+              ReasonReact.Update({
+                ...state,
+                error:
+                  Some(
+                    startIsSource ?
+                      "Can't connect a source to a source" :
+                      "Can't connect a sink to a sink",
+                  ),
+              });
+            };
+          } else {
+            let (source, sink) =
+              startIsSource ? (startNib, endNib) : (endNib, startNib);
+            if (!DetectCycles.checkScopes(source, sink, implementation.nodes)) {
+              ReasonReact.Update({
+                ...state,
+                error:
+                  Some(
+                    "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.",
+                  ),
+              });
+            } else if (DetectCycles.detectCycles(
+                         Belt.Map.set(
+                           implementation.connections,
+                           sink,
+                           source,
+                         ),
+                         implementation.nodes,
+                       )) {
+              ReasonReact.Update({
+                ...state,
+                error: Some("Can't create cycles"),
+              });
+            } else {
+              ReasonReact.UpdateWithSideEffects(
+                {
+                  ...state,
+                  error: None,
+                  pointers: Belt.Map.remove(state.pointers, pointerID),
+                },
+                _ => emit(CreateConnection({source, sink})),
+              );
+            };
+          }
         }
+      | StopDrawing =>
+        Belt.Map.has(state.pointers, pointerID) ?
+          ReasonReact.Update({
+            ...state,
+            pointers: Belt.Map.remove(state.pointers, pointerID),
+          }) :
+          ReasonReact.NoUpdate
       }
-    | StopDrawing =>
-      Belt.Map.has(state.pointers, pointerID) ?
-        ReasonReact.Update({
-          ...state,
-          pointers: Belt.Map.remove(state.pointers, pointerID),
-        }) :
-        ReasonReact.NoUpdate
     },
   render: self => {
     Js.log(encodeGraphImplementation(implementation));
@@ -301,32 +317,10 @@ let make =
         }
       };
 
-    let changeName = event => emit(ChangeName(getEventValue(event)));
-
-    let selectedGraphNib = isSource =>
-      switch (self.state.selectedNib) {
-      | None => None
-      | Some({connectionSide, isSource: selectionIsSource}) =>
-        isSource != selectionIsSource ?
-          None :
-          (
-            switch (connectionSide.node) {
-            | NodeConnection(_) => None
-            | GraphConnection => Some(connectionSide.nib)
-            }
-          )
-      };
-
-    let selectedGraphInputNib = selectedGraphNib(true);
-    let selectedGraphOutputNib = selectedGraphNib(false);
-
     /* let evaluate = outputID =>
        Js.log(
          Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
        ); */
-
-    /* let renderNibs = (nibs, isSink) =>
-       ReasonReact.array(Belt.List.map */
 
     let allNibs = collectAllGraphNibs(definition, definitions);
 
@@ -338,6 +332,8 @@ let make =
             sinkPosition={getNibPosition(sink, true)}
             sourcePosition={getNibPosition(source, false)}
             nudge={getNibNudge(source)}
+            onClick={_event => self.send(SelectConnection(sink))}
+            isSelected={self.state.selectedConnection == Some(sink)}
           />,
         implementation.connections,
       );
@@ -429,36 +425,44 @@ let make =
         height={pixels(graphSizePixels.y)}
         onMouseMove={event => {
           ReactEvent.Mouse.preventDefault(event);
-          self.send({
-            pointerID: Mouse,
-            action: ContinueDrawing(pointFromMouse(event)),
-          });
+          self.send(
+            PointerAction({
+              pointerID: Mouse,
+              action: ContinueDrawing(pointFromMouse(event)),
+            }),
+          );
         }}
         onTouchMove={event =>
           iterateTouches(event, touch =>
-            self.send({
-              pointerID: Touch(touch##identifier),
-              action:
-                ContinueDrawing({
-                  x:
-                    touch##clientX
-                    -.
-                    ReactEvent.Touch.currentTarget(event)##offsetLeft,
-                  y:
-                    touch##clientY
-                    -.
-                    ReactEvent.Touch.currentTarget(event)##offsetTop,
-                }),
-            })
+            self.send(
+              PointerAction({
+                pointerID: Touch(touch##identifier),
+                action:
+                  ContinueDrawing({
+                    x:
+                      touch##clientX
+                      -.
+                      ReactEvent.Touch.currentTarget(event)##offsetLeft,
+                    y:
+                      touch##clientY
+                      -.
+                      ReactEvent.Touch.currentTarget(event)##offsetTop,
+                  }),
+              }),
+            )
           )
         }
-        onMouseUp={_ => self.send({pointerID: Mouse, action: StopDrawing})}
+        onMouseUp={_ =>
+          self.send(PointerAction({pointerID: Mouse, action: StopDrawing}))
+        }
         onTouchEnd={event =>
           iterateTouches(event, touch =>
-            self.send({
-              pointerID: Touch(touch##identifier),
-              action: StopDrawing,
-            })
+            self.send(
+              PointerAction({
+                pointerID: Touch(touch##identifier),
+                action: StopDrawing,
+              }),
+            )
           )
         }>
         renderedSides

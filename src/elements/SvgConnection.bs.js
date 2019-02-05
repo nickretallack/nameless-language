@@ -5,11 +5,13 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var Printf = require("bs-platform/lib/js/printf.js");
+var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 
 var component = ReasonReact.statelessComponent("Connection");
 
-function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _children) {
+function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, $staropt$star$2, onClick, _children) {
+  var isSelected = $staropt$star !== undefined ? $staropt$star : false;
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -23,56 +25,60 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, _chi
           /* render */(function (_self) {
               var delta_000 = /* x */sinkPosition[/* x */0] - sourcePosition[/* x */0];
               var delta_001 = /* y */sinkPosition[/* y */1] - sourcePosition[/* y */1];
-              return React.createElement("path", {
-                          d: Curry._5(Printf.sprintf(/* Format */[
-                                    /* Char_literal */Block.__(12, [
-                                        /* "M" */77,
-                                        /* Float */Block.__(8, [
-                                            /* Float_f */0,
-                                            /* No_padding */0,
-                                            /* No_precision */0,
-                                            /* Char_literal */Block.__(12, [
-                                                /* " " */32,
-                                                /* Float */Block.__(8, [
-                                                    /* Float_f */0,
-                                                    /* No_padding */0,
-                                                    /* No_precision */0,
-                                                    /* String_literal */Block.__(11, [
-                                                        " h ",
-                                                        /* Float */Block.__(8, [
-                                                            /* Float_f */0,
-                                                            /* No_padding */0,
-                                                            /* No_precision */0,
-                                                            /* String_literal */Block.__(11, [
-                                                                " v ",
-                                                                /* Float */Block.__(8, [
-                                                                    /* Float_f */0,
-                                                                    /* No_padding */0,
-                                                                    /* No_precision */0,
-                                                                    /* String_literal */Block.__(11, [
-                                                                        " h ",
-                                                                        /* Float */Block.__(8, [
-                                                                            /* Float_f */0,
-                                                                            /* No_padding */0,
-                                                                            /* No_precision */0,
-                                                                            /* End_of_format */0
-                                                                          ])
-                                                                      ])
-                                                                  ])
-                                                              ])
-                                                          ])
-                                                      ])
-                                                  ])
-                                              ])
-                                          ])
-                                      ]),
-                                    "M%f %f h %f v %f h %f"
-                                  ]), sourcePosition[/* x */0], sourcePosition[/* y */1], delta_000 / 2.0, delta_001, delta_000 / 2.0),
-                          fill: "transparent",
-                          stroke: "black",
-                          strokeOpacity: ".1",
-                          strokeWidth: "5"
-                        });
+              var tmp = {
+                d: Curry._5(Printf.sprintf(/* Format */[
+                          /* Char_literal */Block.__(12, [
+                              /* "M" */77,
+                              /* Float */Block.__(8, [
+                                  /* Float_f */0,
+                                  /* No_padding */0,
+                                  /* No_precision */0,
+                                  /* Char_literal */Block.__(12, [
+                                      /* " " */32,
+                                      /* Float */Block.__(8, [
+                                          /* Float_f */0,
+                                          /* No_padding */0,
+                                          /* No_precision */0,
+                                          /* String_literal */Block.__(11, [
+                                              " h ",
+                                              /* Float */Block.__(8, [
+                                                  /* Float_f */0,
+                                                  /* No_padding */0,
+                                                  /* No_precision */0,
+                                                  /* String_literal */Block.__(11, [
+                                                      " v ",
+                                                      /* Float */Block.__(8, [
+                                                          /* Float_f */0,
+                                                          /* No_padding */0,
+                                                          /* No_precision */0,
+                                                          /* String_literal */Block.__(11, [
+                                                              " h ",
+                                                              /* Float */Block.__(8, [
+                                                                  /* Float_f */0,
+                                                                  /* No_padding */0,
+                                                                  /* No_precision */0,
+                                                                  /* End_of_format */0
+                                                                ])
+                                                            ])
+                                                        ])
+                                                    ])
+                                                ])
+                                            ])
+                                        ])
+                                    ])
+                                ])
+                            ]),
+                          "M%f %f h %f v %f h %f"
+                        ]), sourcePosition[/* x */0], sourcePosition[/* y */1], delta_000 / 2.0, delta_001, delta_000 / 2.0),
+                fill: "transparent",
+                stroke: isSelected ? "red" : "black",
+                strokeOpacity: isSelected ? "0.5" : ".1",
+                strokeWidth: "5"
+              };
+              if (onClick !== undefined) {
+                tmp.onClick = Caml_option.valFromOption(onClick);
+              }
+              return React.createElement("path", tmp);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

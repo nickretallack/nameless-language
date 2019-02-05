@@ -7,8 +7,10 @@ let make =
     (
       ~sourcePosition: point,
       ~sinkPosition: point,
+      ~isSelected: bool=false,
       ~nudge=0,
       ~maxNudge=1,
+      ~onClick=?,
       _children,
     ) => {
   ...component,
@@ -19,9 +21,9 @@ let make =
     };
     <path
       fill="transparent"
-      stroke="black"
+      stroke={isSelected ? "red" : "black"}
       strokeWidth="5"
-      strokeOpacity=".1"
+      strokeOpacity={isSelected ? "0.5" : ".1"}
       d={Printf.sprintf(
         "M%f %f h %f v %f h %f",
         sourcePosition.x,
@@ -30,6 +32,7 @@ let make =
         delta.y,
         delta.x /. 2.0,
       )}
+      ?onClick
     />;
   },
 };

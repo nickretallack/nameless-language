@@ -23,7 +23,11 @@ type pointerAction =
   | FinishDrawing(explicitConnectionSide)
   | StopDrawing;
 
-type graphAction = {
+type pointerActionRecord = {
   pointerID,
   action: pointerAction,
 };
+
+type graphAction =
+  | PointerAction(pointerActionRecord)
+  | SelectConnection(connectionSide);

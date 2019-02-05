@@ -1,6 +1,6 @@
 [%%debugger.chrome];
 open Definition;
-open GraphActions;
+open! GraphActions;
 open Helpers;
 
 [@bs.get] external getEventDetail: Dom.event => Js.t({..}) = "detail";
@@ -27,10 +27,12 @@ let make =
       Webapi.Dom.Element.addEventListener(
         "finish-drawing",
         event =>
-          emit({
-            pointerID: Touch(getEventDetail(event)##identifier),
-            action: FinishDrawing({connectionSide, isSource}),
-          }),
+          emit(
+            PointerAction({
+              pointerID: Touch(getEventDetail(event)##identifier),
+              action: FinishDrawing({connectionSide, isSource}),
+            }),
+          ),
         element,
       )
     | None => ()
@@ -53,41 +55,47 @@ let make =
         strokeWidth="2"
         fill={isSource ? color : "white"}
         onMouseDown={event =>
-          emit({
-            pointerID: Mouse,
-            action:
-              StartDrawing({
-                explicitConnectionSide: {
-                  connectionSide,
-                  isSource,
-                },
-                point: pointFromMouse(event),
-              }),
-          })
-        }
-        onTouchStart={event =>
-          iterateTouches(event, touch =>
-            emit({
-              pointerID: Touch(touch##identifier),
+          emit(
+            PointerAction({
+              pointerID: Mouse,
               action:
                 StartDrawing({
                   explicitConnectionSide: {
                     connectionSide,
                     isSource,
                   },
-                  point: {
-                    x: touch##clientX,
-                    y: touch##clientY,
-                  },
+                  point: pointFromMouse(event),
                 }),
-            })
+            }),
+          )
+        }
+        onTouchStart={event =>
+          iterateTouches(event, touch =>
+            emit(
+              PointerAction({
+                pointerID: Touch(touch##identifier),
+                action:
+                  StartDrawing({
+                    explicitConnectionSide: {
+                      connectionSide,
+                      isSource,
+                    },
+                    point: {
+                      x: touch##clientX,
+                      y: touch##clientY,
+                    },
+                  }),
+              }),
+            )
           )
         }
         onMouseUp={_ =>
-          emit({
-            pointerID: Mouse,
-            action: FinishDrawing({connectionSide, isSource}),
-          })
+          emit(
+            PointerAction({
+              pointerID: Mouse,
+              action: FinishDrawing({connectionSide, isSource}),
+            }),
+          )
         }
         onTouchEnd={event =>
           iterateTouches(event, touch =>
