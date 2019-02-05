@@ -213,30 +213,30 @@ function make(definitions, implementation, definition, display, documentation, e
               var match$1 = self[/* state */1][/* error */1];
               var match$2 = self[/* state */1][/* selection */2];
               var tmp;
-              tmp = typeof match$2 === "number" || match$2.tag !== 1 ? null : ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], match$2[0], emit, /* array */[]));
-              var match$3 = self[/* state */1][/* selection */2];
-              var tmp$1;
-              if (typeof match$3 === "number" || match$3.tag) {
-                tmp$1 = null;
+              if (typeof match$2 === "number") {
+                tmp = null;
               } else {
-                var connectionSide = match$3[0];
-                tmp$1 = React.createElement("button", {
-                      onClick: (function (_event) {
-                          return Curry._1(emit, /* RemoveConnection */Block.__(6, [connectionSide]));
-                        })
-                    }, "Remove connection");
-              }
-              var match$4 = self[/* state */1][/* selection */2];
-              var tmp$2;
-              if (typeof match$4 === "number" || match$4.tag !== 2) {
-                tmp$2 = null;
-              } else {
-                var match$5 = Belt_SetString.isEmpty(match$4[0]);
-                tmp$2 = match$5 ? null : React.createElement("button", {
-                        onClick: (function (_event) {
-                            return Curry._1(self[/* send */3], /* RemoveSelectedNodes */0);
-                          })
-                      }, "Remove Node(s)");
+                switch (match$2.tag | 0) {
+                  case 0 : 
+                      var connectionSide = match$2[0];
+                      tmp = React.createElement("button", {
+                            onClick: (function (_event) {
+                                return Curry._1(emit, /* RemoveConnection */Block.__(6, [connectionSide]));
+                              })
+                          }, "Remove connection");
+                      break;
+                  case 1 : 
+                      tmp = ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], match$2[0], emit, /* array */[]));
+                      break;
+                  case 2 : 
+                      tmp = React.createElement("button", {
+                            onClick: (function (_event) {
+                                return Curry._1(self[/* send */3], /* RemoveSelectedNodes */0);
+                              })
+                          }, "Remove Node(s)");
+                      break;
+                  
+                }
               }
               return React.createElement("div", undefined, React.createElement("svg", {
                               height: Helpers$ReactTemplate.pixels(graphSizePixels[/* y */1]),
@@ -273,9 +273,9 @@ function make(definitions, implementation, definition, display, documentation, e
                                                               ]]));
                                               }));
                                 })
-                            }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), match$1 !== undefined ? React.createElement("div", {
+                            }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, "(nameless graph)", emit, /* array */[])), match$1 !== undefined ? React.createElement("div", {
                                 className: "error-message"
-                              }, match$1) : null, tmp, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(documentation, "(nameless graph)", emit, /* array */[])), tmp$1, tmp$2, React.createElement("h2", undefined, "Interface"), ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
+                              }, match$1) : null, tmp, React.createElement("h2", undefined, "Interface"), ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
             }),
           /* initialState */(function (param) {
               return /* record */[

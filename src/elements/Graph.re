@@ -525,6 +525,7 @@ let make =
         renderedDrawingConnections
         renderedNibs
       </svg>
+      <DefinitionHeader documentation emit placeholder="(nameless graph)" />
       {switch (self.state.error) {
        | Some(error) =>
          <div className="error-message"> {ReasonReact.string(error)} </div>
@@ -538,24 +539,15 @@ let make =
            nodes={implementation.nodes}
            nib=explicitConnectionSide
          />
-       | _ => ReasonReact.null
-       }}
-      <DefinitionHeader documentation emit placeholder="(nameless graph)" />
-      {switch (self.state.selection) {
        | SelectedConnection(connectionSide) =>
          <button onClick={_event => emit(RemoveConnection(connectionSide))}>
            {ReasonReact.string("Remove connection")}
          </button>
-       | _ => ReasonReact.null
-       }}
-      {switch (self.state.selection) {
-       | SelectedNodes(nodeIDs) =>
-         Belt.Set.String.isEmpty(nodeIDs) ?
-           ReasonReact.null :
-           <button onClick={_event => self.send(RemoveSelectedNodes)}>
-             {ReasonReact.string("Remove Node(s)")}
-           </button>
-       | _ => ReasonReact.null
+       | SelectedNodes(_) =>
+         <button onClick={_event => self.send(RemoveSelectedNodes)}>
+           {ReasonReact.string("Remove Node(s)")}
+         </button>
+       | NoSelection => ReasonReact.null
        }}
       <h2> {ReasonReact.string("Interface")} </h2>
       <Interface
