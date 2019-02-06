@@ -147,7 +147,12 @@ function make(definitions, _children) {
                     var action$1 = match[/* action */1];
                     var definitionID = match[/* definitionID */0];
                     var definition = Belt_MapString.getExn(state[/* definitions */0], definitionID);
-                    var newDefinition;
+                    var updateDefinition = function (definition) {
+                      return /* Update */Block.__(0, [/* record */[
+                                  /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID, definition),
+                                  /* definitionID */state[/* definitionID */1]
+                                ]]);
+                    };
                     if (typeof action$1 === "number") {
                       switch (action$1) {
                         case 0 : 
@@ -182,23 +187,22 @@ function make(definitions, _children) {
                             }
                             var init$1 = definition[/* documentation */1];
                             var init$2 = definition[/* display */2];
-                            newDefinition = /* record */[
-                              /* implementation */tmp,
-                              /* documentation : record */[
-                                /* name */init$1[/* name */0],
-                                /* description */init$1[/* description */1],
-                                /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
-                                /* outputs */init$1[/* outputs */3]
-                              ],
-                              /* display : record */[
-                                /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
-                                      nibID,
-                                      /* [] */0
-                                    ]),
-                                /* outputOrdering */init$2[/* outputOrdering */1]
-                              ]
-                            ];
-                            break;
+                            return updateDefinition(/* record */[
+                                        /* implementation */tmp,
+                                        /* documentation : record */[
+                                          /* name */init$1[/* name */0],
+                                          /* description */init$1[/* description */1],
+                                          /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
+                                          /* outputs */init$1[/* outputs */3]
+                                        ],
+                                        /* display : record */[
+                                          /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
+                                                nibID,
+                                                /* [] */0
+                                              ]),
+                                          /* outputOrdering */init$2[/* outputOrdering */1]
+                                        ]
+                                      ]);
                         case 1 : 
                             var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
                             var match$2 = definition[/* implementation */0];
@@ -228,26 +232,33 @@ function make(definitions, _children) {
                             }
                             var init$4 = definition[/* documentation */1];
                             var init$5 = definition[/* display */2];
-                            newDefinition = /* record */[
-                              /* implementation */tmp$1,
-                              /* documentation : record */[
-                                /* name */init$4[/* name */0],
-                                /* description */init$4[/* description */1],
-                                /* inputs */init$4[/* inputs */2],
-                                /* outputs */Belt_MapString.set(definition[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
-                              ],
-                              /* display : record */[
-                                /* inputOrdering */init$5[/* inputOrdering */0],
-                                /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
-                                      nibID$1,
-                                      /* [] */0
-                                    ])
-                              ]
-                            ];
-                            break;
+                            return updateDefinition(/* record */[
+                                        /* implementation */tmp$1,
+                                        /* documentation : record */[
+                                          /* name */init$4[/* name */0],
+                                          /* description */init$4[/* description */1],
+                                          /* inputs */init$4[/* inputs */2],
+                                          /* outputs */Belt_MapString.set(definition[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
+                                        ],
+                                        /* display : record */[
+                                          /* inputOrdering */init$5[/* inputOrdering */0],
+                                          /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
+                                                nibID$1,
+                                                /* [] */0
+                                              ])
+                                        ]
+                                      ]);
                         case 2 : 
-                            newDefinition = definition;
-                            break;
+                            var newDefinitionID = Helpers$ReactTemplate.randomID(/* () */0);
+                            return /* UpdateWithSideEffects */Block.__(2, [
+                                      /* record */[
+                                        /* definitions */Belt_MapString.set(state[/* definitions */0], newDefinitionID, definition),
+                                        /* definitionID */state[/* definitionID */1]
+                                      ],
+                                      (function (param) {
+                                          return ReasonReact.Router[/* push */0]("#" + newDefinitionID);
+                                        })
+                                    ]);
                         
                       }
                     } else {
@@ -257,57 +268,53 @@ function make(definitions, _children) {
                             var match$4 = definition[/* implementation */0];
                             if (match$4.tag === 3) {
                               var graphImplementation$2 = match$4[0];
-                              newDefinition = /* record */[
-                                /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                      /* interface */graphImplementation$2[/* interface */0],
-                                      /* connections */Belt_Map.set(graphImplementation$2[/* connections */1], match$3[/* sink */1], match$3[/* source */0]),
-                                      /* nodes */graphImplementation$2[/* nodes */2]
-                                    ]]),
-                                /* documentation */definition[/* documentation */1],
-                                /* display */definition[/* display */2]
-                              ];
+                              return updateDefinition(/* record */[
+                                          /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                                /* interface */graphImplementation$2[/* interface */0],
+                                                /* connections */Belt_Map.set(graphImplementation$2[/* connections */1], match$3[/* sink */1], match$3[/* source */0]),
+                                                /* nodes */graphImplementation$2[/* nodes */2]
+                                              ]]),
+                                          /* documentation */definition[/* documentation */1],
+                                          /* display */definition[/* display */2]
+                                        ]);
                             } else {
-                              newDefinition = definition;
+                              return /* NoUpdate */0;
                             }
-                            break;
                         case 1 : 
                             var init$6 = definition[/* documentation */1];
-                            newDefinition = /* record */[
-                              /* implementation */definition[/* implementation */0],
-                              /* documentation : record */[
-                                /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* name */0], "en", action$1[0]),
-                                /* description */init$6[/* description */1],
-                                /* inputs */init$6[/* inputs */2],
-                                /* outputs */init$6[/* outputs */3]
-                              ],
-                              /* display */definition[/* display */2]
-                            ];
-                            break;
+                            return updateDefinition(/* record */[
+                                        /* implementation */definition[/* implementation */0],
+                                        /* documentation : record */[
+                                          /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* name */0], "en", action$1[0]),
+                                          /* description */init$6[/* description */1],
+                                          /* inputs */init$6[/* inputs */2],
+                                          /* outputs */init$6[/* outputs */3]
+                                        ],
+                                        /* display */definition[/* display */2]
+                                      ]);
                         case 2 : 
                             var init$7 = definition[/* documentation */1];
-                            newDefinition = /* record */[
-                              /* implementation */definition[/* implementation */0],
-                              /* documentation : record */[
-                                /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* description */1], "en", action$1[0]),
-                                /* description */init$7[/* description */1],
-                                /* inputs */init$7[/* inputs */2],
-                                /* outputs */init$7[/* outputs */3]
-                              ],
-                              /* display */definition[/* display */2]
-                            ];
-                            break;
+                            return updateDefinition(/* record */[
+                                        /* implementation */definition[/* implementation */0],
+                                        /* documentation : record */[
+                                          /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* description */1], "en", action$1[0]),
+                                          /* description */init$7[/* description */1],
+                                          /* inputs */init$7[/* inputs */2],
+                                          /* outputs */init$7[/* outputs */3]
+                                        ],
+                                        /* display */definition[/* display */2]
+                                      ]);
                         case 3 : 
                             var match$5 = definition[/* implementation */0];
                             if (match$5.tag) {
                               throw Caml_builtin_exceptions.not_found;
                             } else {
-                              newDefinition = /* record */[
-                                /* implementation : ConstantImplementation */Block.__(0, [action$1[0]]),
-                                /* documentation */definition[/* documentation */1],
-                                /* display */definition[/* display */2]
-                              ];
+                              return updateDefinition(/* record */[
+                                          /* implementation : ConstantImplementation */Block.__(0, [action$1[0]]),
+                                          /* documentation */definition[/* documentation */1],
+                                          /* display */definition[/* display */2]
+                                        ]);
                             }
-                            break;
                         case 4 : 
                             var match$6 = action$1[0];
                             var explicitConnectionSide = match$6[/* explicitConnectionSide */1];
@@ -329,113 +336,119 @@ function make(definitions, _children) {
                             var match$9 = definition[/* implementation */0];
                             if (match$9.tag === 3) {
                               var graphImplementation$3 = match$9[0];
-                              newDefinition = /* record */[
-                                /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                      /* interface */graphImplementation$3[/* interface */0],
-                                      /* connections */Belt_Map.set(graphImplementation$3[/* connections */1], match$8[1], match$8[0]),
-                                      /* nodes */Belt_MapString.set(graphImplementation$3[/* nodes */2], nodeID, match$6[/* node */0])
-                                    ]]),
-                                /* documentation */definition[/* documentation */1],
-                                /* display */definition[/* display */2]
-                              ];
+                              return updateDefinition(/* record */[
+                                          /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                                /* interface */graphImplementation$3[/* interface */0],
+                                                /* connections */Belt_Map.set(graphImplementation$3[/* connections */1], match$8[1], match$8[0]),
+                                                /* nodes */Belt_MapString.set(graphImplementation$3[/* nodes */2], nodeID, match$6[/* node */0])
+                                              ]]),
+                                          /* documentation */definition[/* documentation */1],
+                                          /* display */definition[/* display */2]
+                                        ]);
                             } else {
-                              newDefinition = definition;
+                              return /* NoUpdate */0;
                             }
-                            break;
                         case 5 : 
                             var match$10 = action$1[0];
                             var action$2 = match$10[/* action */2];
                             var isInput = match$10[/* isInput */1];
                             var nibID$2 = match$10[/* nibID */0];
-                            switch (action$2.tag | 0) {
-                              case 0 : 
-                                  var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
-                                  var nib = Belt_MapString.getExn(nibs, nibID$2);
-                                  var newNib = Definition$ReactTemplate.setTranslated(nib, "en", action$2[0]);
-                                  var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
-                                  var documentation;
-                                  if (isInput) {
-                                    var init$8 = definition[/* documentation */1];
-                                    documentation = /* record */[
-                                      /* name */init$8[/* name */0],
-                                      /* description */init$8[/* description */1],
-                                      /* inputs */newNibs,
-                                      /* outputs */init$8[/* outputs */3]
-                                    ];
-                                  } else {
-                                    var init$9 = definition[/* documentation */1];
-                                    documentation = /* record */[
-                                      /* name */init$9[/* name */0],
-                                      /* description */init$9[/* description */1],
-                                      /* inputs */init$9[/* inputs */2],
-                                      /* outputs */newNibs
-                                    ];
-                                  }
-                                  newDefinition = /* record */[
-                                    /* implementation */definition[/* implementation */0],
-                                    /* documentation */documentation,
-                                    /* display */definition[/* display */2]
+                            if (typeof action$2 === "number") {
+                              throw [
+                                    Caml_builtin_exceptions.match_failure,
+                                    /* tuple */[
+                                      "App.re",
+                                      267,
+                                      8
+                                    ]
                                   ];
-                                  break;
-                              case 1 : 
-                                  var valueType = action$2[0];
-                                  var match$11 = definition[/* implementation */0];
-                                  var tmp$2;
-                                  switch (match$11.tag | 0) {
-                                    case 1 : 
-                                        tmp$2 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$11[0], isInput, nibID$2, valueType)]);
-                                        break;
-                                    case 3 : 
-                                        var graphImplementation$4 = match$11[0];
-                                        tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
-                                              /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$4[/* interface */0], isInput, nibID$2, valueType),
-                                              /* connections */graphImplementation$4[/* connections */1],
-                                              /* nodes */graphImplementation$4[/* nodes */2]
-                                            ]]);
-                                        break;
-                                    case 4 : 
-                                        var tmp$3;
-                                        if (isInput) {
-                                          tmp$3 = Definition$ReactTemplate.changeTypedFields(match$11[0], nibID$2, valueType);
-                                        } else {
-                                          throw Caml_builtin_exceptions.not_found;
-                                        }
-                                        tmp$2 = /* RecordTypeImplementation */Block.__(4, [tmp$3]);
-                                        break;
-                                    default:
-                                      throw Caml_builtin_exceptions.not_found;
-                                  }
-                                  newDefinition = /* record */[
-                                    /* implementation */tmp$2,
-                                    /* documentation */definition[/* documentation */1],
-                                    /* display */definition[/* display */2]
-                                  ];
-                                  break;
-                              case 2 : 
-                                  var index = action$2[0];
-                                  var tmp$4;
-                                  if (isInput) {
-                                    var init$10 = definition[/* display */2];
-                                    tmp$4 = /* record */[
-                                      /* inputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* inputOrdering */0], nibID$2, index),
-                                      /* outputOrdering */init$10[/* outputOrdering */1]
-                                    ];
-                                  } else {
-                                    var init$11 = definition[/* display */2];
-                                    tmp$4 = /* record */[
-                                      /* inputOrdering */init$11[/* inputOrdering */0],
-                                      /* outputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* outputOrdering */1], nibID$2, index)
-                                    ];
-                                  }
-                                  newDefinition = /* record */[
-                                    /* implementation */definition[/* implementation */0],
-                                    /* documentation */definition[/* documentation */1],
-                                    /* display */tmp$4
-                                  ];
-                                  break;
-                              
+                            } else {
+                              switch (action$2.tag | 0) {
+                                case 0 : 
+                                    var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
+                                    var nib = Belt_MapString.getExn(nibs, nibID$2);
+                                    var newNib = Definition$ReactTemplate.setTranslated(nib, "en", action$2[0]);
+                                    var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
+                                    var documentation;
+                                    if (isInput) {
+                                      var init$8 = definition[/* documentation */1];
+                                      documentation = /* record */[
+                                        /* name */init$8[/* name */0],
+                                        /* description */init$8[/* description */1],
+                                        /* inputs */newNibs,
+                                        /* outputs */init$8[/* outputs */3]
+                                      ];
+                                    } else {
+                                      var init$9 = definition[/* documentation */1];
+                                      documentation = /* record */[
+                                        /* name */init$9[/* name */0],
+                                        /* description */init$9[/* description */1],
+                                        /* inputs */init$9[/* inputs */2],
+                                        /* outputs */newNibs
+                                      ];
+                                    }
+                                    return updateDefinition(/* record */[
+                                                /* implementation */definition[/* implementation */0],
+                                                /* documentation */documentation,
+                                                /* display */definition[/* display */2]
+                                              ]);
+                                case 1 : 
+                                    var valueType = action$2[0];
+                                    var match$11 = definition[/* implementation */0];
+                                    var tmp$2;
+                                    switch (match$11.tag | 0) {
+                                      case 1 : 
+                                          tmp$2 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$11[0], isInput, nibID$2, valueType)]);
+                                          break;
+                                      case 3 : 
+                                          var graphImplementation$4 = match$11[0];
+                                          tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
+                                                /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$4[/* interface */0], isInput, nibID$2, valueType),
+                                                /* connections */graphImplementation$4[/* connections */1],
+                                                /* nodes */graphImplementation$4[/* nodes */2]
+                                              ]]);
+                                          break;
+                                      case 4 : 
+                                          var tmp$3;
+                                          if (isInput) {
+                                            tmp$3 = Definition$ReactTemplate.changeTypedFields(match$11[0], nibID$2, valueType);
+                                          } else {
+                                            throw Caml_builtin_exceptions.not_found;
+                                          }
+                                          tmp$2 = /* RecordTypeImplementation */Block.__(4, [tmp$3]);
+                                          break;
+                                      default:
+                                        throw Caml_builtin_exceptions.not_found;
+                                    }
+                                    return updateDefinition(/* record */[
+                                                /* implementation */tmp$2,
+                                                /* documentation */definition[/* documentation */1],
+                                                /* display */definition[/* display */2]
+                                              ]);
+                                case 2 : 
+                                    var index = action$2[0];
+                                    var tmp$4;
+                                    if (isInput) {
+                                      var init$10 = definition[/* display */2];
+                                      tmp$4 = /* record */[
+                                        /* inputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* inputOrdering */0], nibID$2, index),
+                                        /* outputOrdering */init$10[/* outputOrdering */1]
+                                      ];
+                                    } else {
+                                      var init$11 = definition[/* display */2];
+                                      tmp$4 = /* record */[
+                                        /* inputOrdering */init$11[/* inputOrdering */0],
+                                        /* outputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* outputOrdering */1], nibID$2, index)
+                                      ];
+                                    }
+                                    return updateDefinition(/* record */[
+                                                /* implementation */definition[/* implementation */0],
+                                                /* documentation */definition[/* documentation */1],
+                                                /* display */tmp$4
+                                              ]);
+                                
+                              }
                             }
-                            break;
                         case 6 : 
                             var match$12 = definition[/* implementation */0];
                             var tmp$5;
@@ -449,12 +462,11 @@ function make(definitions, _children) {
                             } else {
                               throw Caml_builtin_exceptions.not_found;
                             }
-                            newDefinition = /* record */[
-                              /* implementation */tmp$5,
-                              /* documentation */definition[/* documentation */1],
-                              /* display */definition[/* display */2]
-                            ];
-                            break;
+                            return updateDefinition(/* record */[
+                                        /* implementation */tmp$5,
+                                        /* documentation */definition[/* documentation */1],
+                                        /* display */definition[/* display */2]
+                                      ]);
                         case 7 : 
                             var match$13 = definition[/* implementation */0];
                             var tmp$6;
@@ -471,31 +483,13 @@ function make(definitions, _children) {
                             } else {
                               throw Caml_builtin_exceptions.not_found;
                             }
-                            newDefinition = /* record */[
-                              /* implementation */tmp$6,
-                              /* documentation */definition[/* documentation */1],
-                              /* display */definition[/* display */2]
-                            ];
-                            break;
+                            return updateDefinition(/* record */[
+                                        /* implementation */tmp$6,
+                                        /* documentation */definition[/* documentation */1],
+                                        /* display */definition[/* display */2]
+                                      ]);
                         
                       }
-                    }
-                    if (action$1 === /* Fork */2) {
-                      var newDefinitionID = Helpers$ReactTemplate.randomID(/* () */0);
-                      return /* UpdateWithSideEffects */Block.__(2, [
-                                /* record */[
-                                  /* definitions */Belt_MapString.set(state[/* definitions */0], newDefinitionID, newDefinition),
-                                  /* definitionID */state[/* definitionID */1]
-                                ],
-                                (function (param) {
-                                    return ReasonReact.Router[/* push */0]("#" + newDefinitionID);
-                                  })
-                              ]);
-                    } else {
-                      return /* Update */Block.__(0, [/* record */[
-                                  /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID, newDefinition),
-                                  /* definitionID */state[/* definitionID */1]
-                                ]]);
                     }
                 case 1 : 
                     var definitionID$1 = Helpers$ReactTemplate.randomID(/* () */0);

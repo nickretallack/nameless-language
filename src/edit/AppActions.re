@@ -21,7 +21,8 @@ type changeNibType = {
 type nibAction =
   | ChangeNibName(string)
   | ChangeNibType(valueType)
-  | ChangeNibOrdering(int);
+  | ChangeNibOrdering(int)
+  | RemoveNib;
 
 type nibActionRecord = {
   nibID,
