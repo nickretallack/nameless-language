@@ -331,6 +331,30 @@ let make = (~definitions, _children) => {
                     ),
                 },
           })
+        /* | RemoveNib =>
+           /* Find the node in all related graphs */
+           let affectedDefinitions =
+             Belt.Map.String.keep(state.definitions, (_, otherDefinition) =>
+               switch (otherDefinition.implementation) {
+               | GraphImplementation({nodes}) =>
+                 Belt.Map.String.some(nodes, (_, node) =>
+                   switch (node.kind) {
+                   | DefinedNode({definitionID: usingDefinitionID}) =>
+                     usingDefinitionID == definitionID
+                   | _ => false
+                   }
+                 )
+               | _ => false
+               }
+             );
+           ReasonReact.Update({
+             ...state,
+             definitions:
+               Belt.Map.String.set(state.definitions, definitionID, {
+                 ...definition,
+
+               })
+           }) */
         }
       | RemoveConnection(connectionSide) =>
         updateDefinition({

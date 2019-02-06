@@ -201,19 +201,10 @@ let make =
     let getNode = (nodeID: nodeID) =>
       Belt.Map.String.getExn(implementation.nodes, nodeID);
 
-    let columns: list(nodes) =
+    let columnizedNodes =
       ColumnizeNodes.columnizeNodes(
         implementation.nodes,
         implementation.connections,
-      );
-
-    /* TODO: ColumnizeNodes should output this format */
-    let columnizedNodes =
-      Belt.List.map(columns, nodes =>
-        Belt.List.map(
-          Belt.List.fromArray(Belt.Map.String.toArray(nodes)), ((id, node)) =>
-          {id, node}
-        )
       );
 
     let scopedNodeIDs =

@@ -65,15 +65,7 @@ function make(definitions, implementation, definition, display, documentation, e
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
               console.log(Definition$ReactTemplate.encodeGraphImplementation(implementation));
-              var columns = ColumnizeNodes$ReactTemplate.columnizeNodes(implementation[/* nodes */2], implementation[/* connections */1]);
-              var columnizedNodes = Belt_List.map(columns, (function (nodes) {
-                      return Belt_List.map(Belt_List.fromArray(Belt_MapString.toArray(nodes)), (function (param) {
-                                    return /* record */[
-                                            /* id */param[0],
-                                            /* node */param[1]
-                                          ];
-                                  }));
-                    }));
+              var columnizedNodes = ColumnizeNodes$ReactTemplate.columnizeNodes(implementation[/* nodes */2], implementation[/* connections */1]);
               var scopedNodeIDs = Belt_MapString.reduce(implementation[/* nodes */2], Belt_Map.make(Definition$ReactTemplate.ScopeComparator), (function (scopes, id, node) {
                       return Belt_Map.update(scopes, node[/* scope */0], (function (nodeIDs) {
                                     return Caml_option.some(Belt_SetString.add(nodeIDs !== undefined ? Caml_option.valFromOption(nodeIDs) : Belt_SetString.empty, id));

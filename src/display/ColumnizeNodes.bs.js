@@ -3,20 +3,21 @@
 
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Belt_Set = require("bs-platform/lib/js/belt_Set.js");
+var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 
-function isRootNode(nodeID, node, connections, scopes) {
-  if (Belt_Set.has(scopes, node[/* scope */0])) {
+function isRootNode(node, connections, scopes) {
+  if (Belt_Set.has(scopes, node[/* node */1][/* scope */0])) {
     return !Belt_Map.some(connections, (function (sink, source) {
                   var match = source[/* node */0];
                   if (match) {
-                    var match$1 = nodeID !== match[0];
+                    var match$1 = node[/* id */0] !== match[0];
                     if (match$1) {
                       return false;
                     } else {
-                      var match$2 = node[/* kind */1];
+                      var match$2 = node[/* node */1][/* kind */1];
                       var exit = 0;
                       if (typeof match$2 === "number" || !(match$2.tag && match$2[0][/* kind */0] === 3)) {
                         exit = 1;
@@ -55,8 +56,8 @@ function isRootNode(nodeID, node, connections, scopes) {
 }
 
 function topoSort(nodes, connections, scopes) {
-  var match = Belt_MapString.partition(nodes, (function (nodeID, _node) {
-          return isRootNode(nodeID, Belt_MapString.getExn(nodes, nodeID), connections, scopes);
+  var match = Belt_List.partition(nodes, (function (node) {
+          return isRootNode(node, connections, scopes);
         }));
   var unavailableNodes = match[1];
   var availableNodes = match[0];
@@ -64,28 +65,28 @@ function topoSort(nodes, connections, scopes) {
           var match = sink[/* node */0];
           if (match) {
             var nodeID = match[0];
-            return !Belt_MapString.some(availableNodes, (function (connectionNodeID, _node) {
-                          return connectionNodeID === nodeID;
+            return !Belt_List.some(availableNodes, (function (node) {
+                          return node[/* id */0] === nodeID;
                         }));
           } else {
             return false;
           }
         }));
-  var newScopes = Belt_MapString.reduce(availableNodes, scopes, (function (acc, nodeID, node) {
-          var match = node[/* kind */1];
+  var newScopes = Belt_List.reduce(availableNodes, scopes, (function (acc, node) {
+          var match = node[/* node */1][/* kind */1];
           if (typeof match === "number" || !(match.tag && match[0][/* kind */0] === 3)) {
             return acc;
           } else {
-            return Belt_Set.add(acc, /* NodeScope */[nodeID]);
+            return Belt_Set.add(acc, /* NodeScope */[node[/* id */0]]);
           }
         }));
-  if (Belt_MapString.isEmpty(unavailableNodes)) {
+  if (Belt_List.length(unavailableNodes) === 0) {
     return /* :: */[
             availableNodes,
             /* [] */0
           ];
   } else {
-    if (Belt_MapString.size(nodes) === Belt_MapString.size(unavailableNodes)) {
+    if (Belt_List.length(nodes) === Belt_List.length(unavailableNodes)) {
       throw Definition$ReactTemplate.CycleDetected;
     }
     return /* :: */[
@@ -96,7 +97,12 @@ function topoSort(nodes, connections, scopes) {
 }
 
 function columnizeNodes(nodes, connections) {
-  return topoSort(nodes, connections, Belt_Set.fromArray(/* array */[/* GraphScope */0], Definition$ReactTemplate.ScopeComparator));
+  return topoSort(Belt_List.map(Belt_MapString.toList(nodes), (function (param) {
+                    return /* record */[
+                            /* id */param[0],
+                            /* node */param[1]
+                          ];
+                  })), connections, Belt_Set.fromArray(/* array */[/* GraphScope */0], Definition$ReactTemplate.ScopeComparator));
 }
 
 exports.isRootNode = isRootNode;
