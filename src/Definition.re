@@ -311,6 +311,24 @@ let changeInterface =
       outputTypes: changeTypedFields(interface.outputTypes, nibID, valueType),
     };
 
+let editInterfaceNibs =
+    (
+      interface: interface,
+      isInput: bool,
+      mutation: typedFields => typedFields,
+    ) =>
+  isInput ?
+    {...interface, inputTypes: mutation(interface.inputTypes)} :
+    {...interface, outputTypes: mutation(interface.outputTypes)};
+
+let removeInterfaceNib =
+    (interface: interface, nibID: nibID, isInput: bool): interface =>
+  editInterfaceNibs(interface, isInput, fields =>
+    Belt.Map.String.keep(fields, (interfaceNibID, _) =>
+      interfaceNibID != nibID
+    )
+  );
+
 type graphImplementation = {
   interface,
   connections,

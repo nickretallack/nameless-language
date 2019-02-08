@@ -55,9 +55,12 @@ let make =
            {ReasonReact.string("This nib is connected in: ")}
            {renderStringMap(
               ((definitionID, definition)) =>
-                <a key=definitionID href={"#" ++ definitionID}>
-                  {ReasonReact.string(getDisplayName(definition, "en"))}
-                </a>,
+                <>
+                  <a key=definitionID href={"#" ++ definitionID}>
+                    {ReasonReact.string(getDisplayName(definition, "en"))}
+                  </a>
+                  {ReasonReact.string(" ")}
+                </>,
               definitions,
             )}
          </div>

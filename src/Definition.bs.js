@@ -365,6 +365,28 @@ function changeInterface($$interface, isInput, nibID, valueType) {
   }
 }
 
+function editInterfaceNibs($$interface, isInput, mutation) {
+  if (isInput) {
+    return /* record */[
+            /* inputTypes */Curry._1(mutation, $$interface[/* inputTypes */0]),
+            /* outputTypes */$$interface[/* outputTypes */1]
+          ];
+  } else {
+    return /* record */[
+            /* inputTypes */$$interface[/* inputTypes */0],
+            /* outputTypes */Curry._1(mutation, $$interface[/* outputTypes */1])
+          ];
+  }
+}
+
+function removeInterfaceNib($$interface, nibID, isInput) {
+  return editInterfaceNibs($$interface, isInput, (function (fields) {
+                return Belt_MapString.keep(fields, (function (interfaceNibID, param) {
+                              return interfaceNibID !== nibID;
+                            }));
+              }));
+}
+
 function encodeMap(map, encode) {
   return Json_encode.object_(Belt_List.map(Belt_MapString.toList(map), (function (param) {
                     return /* tuple */[
@@ -877,6 +899,8 @@ exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;
 exports.changeTypedFields = changeTypedFields;
 exports.changeInterface = changeInterface;
+exports.editInterfaceNibs = editInterfaceNibs;
+exports.removeInterfaceNib = removeInterfaceNib;
 exports.encodeMap = encodeMap;
 exports.encodeGraphImplementation = encodeGraphImplementation;
 exports.primitiveValueToType = primitiveValueToType;

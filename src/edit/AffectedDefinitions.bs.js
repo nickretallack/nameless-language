@@ -58,33 +58,36 @@ function findConnectedDefinitions(definitionID, nibID, isInput, definitions) {
                                                   return checkConnectionSide(source, nodeID);
                                                 }));
                                   };
-                                  var match$2 = match$1[/* definitionID */1] === definitionID && isInput;
-                                  if (match$2) {
-                                    switch (kind) {
-                                      case 3 : 
-                                          return checkSource(/* () */0);
-                                      case 0 : 
-                                      case 2 : 
-                                      case 4 : 
-                                          return checkSink(/* () */0);
-                                      case 1 : 
-                                      case 5 : 
-                                          return false;
-                                      
+                                  if (match$1[/* definitionID */1] === definitionID) {
+                                    if (isInput) {
+                                      switch (kind) {
+                                        case 3 : 
+                                            return checkSource(/* () */0);
+                                        case 0 : 
+                                        case 2 : 
+                                        case 4 : 
+                                            return checkSink(/* () */0);
+                                        case 1 : 
+                                        case 5 : 
+                                            return false;
+                                        
+                                      }
+                                    } else {
+                                      switch (kind) {
+                                        case 0 : 
+                                        case 2 : 
+                                            return checkSource(/* () */0);
+                                        case 1 : 
+                                        case 4 : 
+                                            return false;
+                                        case 3 : 
+                                        case 5 : 
+                                            return checkSink(/* () */0);
+                                        
+                                      }
                                     }
                                   } else {
-                                    switch (kind) {
-                                      case 0 : 
-                                      case 2 : 
-                                          return checkSource(/* () */0);
-                                      case 1 : 
-                                      case 4 : 
-                                          return false;
-                                      case 3 : 
-                                      case 5 : 
-                                          return checkSink(/* () */0);
-                                      
-                                    }
+                                    return false;
                                   }
                                 }
                               }));
@@ -94,6 +97,25 @@ function findConnectedDefinitions(definitionID, nibID, isInput, definitions) {
               }));
 }
 
+function removeNibFromInterface($$interface, nibID, isInput) {
+  if (isInput) {
+    return /* record */[
+            /* inputTypes */Belt_MapString.keep($$interface[/* inputTypes */0], (function (typeNibID, param) {
+                    return typeNibID !== nibID;
+                  })),
+            /* outputTypes */$$interface[/* outputTypes */1]
+          ];
+  } else {
+    return /* record */[
+            /* inputTypes */$$interface[/* inputTypes */0],
+            /* outputTypes */Belt_MapString.keep($$interface[/* outputTypes */1], (function (typeNibID, param) {
+                    return typeNibID !== nibID;
+                  }))
+          ];
+  }
+}
+
 exports.findDefinitionUses = findDefinitionUses;
 exports.findConnectedDefinitions = findConnectedDefinitions;
+exports.removeNibFromInterface = removeNibFromInterface;
 /* No side effect */

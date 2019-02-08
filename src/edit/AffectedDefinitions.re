@@ -46,29 +46,50 @@ let findConnectedDefinitions =
               checkConnectionSide(source, nodeID)
             );
 
-          usingDefinitionID == definitionID && isInput ?
-            switch (kind) {
-            | FunctionCallNode
-            | FunctionPointerCallNode
-            | ConstructorNode => checkSink()
-            | FunctionDefinitionNode => checkSource()
-            | _ => false
-            } :
-            (
+          usingDefinitionID == definitionID
+          && (
+            isInput ?
               switch (kind) {
               | FunctionCallNode
-              | FunctionPointerCallNode => checkSource()
-              | FunctionDefinitionNode
-              | AccessorNode => checkSink()
+              | FunctionPointerCallNode
+              | ConstructorNode => checkSink()
+              | FunctionDefinitionNode => checkSource()
               | _ => false
-              }
-            );
+              } :
+              (
+                switch (kind) {
+                | FunctionCallNode
+                | FunctionPointerCallNode => checkSource()
+                | FunctionDefinitionNode
+                | AccessorNode => checkSink()
+                | _ => false
+                }
+              )
+          );
         | _ => false
         }
       );
     | _ => false
     }
   );
+
+let removeNibFromInterface =
+    (interface: interface, nibID: nibID, isInput: bool): interface =>
+  isInput ?
+    {
+      ...interface,
+      inputTypes:
+        Belt.Map.String.keep(interface.inputTypes, (typeNibID, _) =>
+          typeNibID != nibID
+        ),
+    } :
+    {
+      ...interface,
+      outputTypes:
+        Belt.Map.String.keep(interface.outputTypes, (typeNibID, _) =>
+          typeNibID != nibID
+        ),
+    };
 
 /* let findUses
 

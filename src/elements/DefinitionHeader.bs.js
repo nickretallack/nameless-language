@@ -49,10 +49,10 @@ function make(definitionID, definitions, documentation, placeholder, emit, error
                                               }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
                                   }), uses)), error ? React.createElement("div", undefined, "This nib is connected in: ", Helpers$ReactTemplate.renderStringMap((function (param) {
                                       var definitionID = param[0];
-                                      return React.createElement("a", {
-                                                  key: definitionID,
-                                                  href: "#" + definitionID
-                                                }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
+                                      return React.createElement(React.Fragment, undefined, React.createElement("a", {
+                                                      key: definitionID,
+                                                      href: "#" + definitionID
+                                                    }, Definition$ReactTemplate.getDisplayName(param[1], "en")), " ");
                                     }), error[0])) : null);
             }),
           /* initialState */component[/* initialState */10],

@@ -74,7 +74,11 @@ let make = (~definitions, _children) => {
   reducer: (action: appAction, state: appState) =>
     switch (action) {
     | ChangeRoute(url) =>
-      ReasonReact.Update({...state, definitionID: url.hash})
+      ReasonReact.Update({
+        ...state,
+        definitionID: url.hash,
+        error: NoAppError,
+      })
     | CreateDefinition(definition) =>
       let definitionID = randomID();
       ReasonReact.UpdateWithSideEffects(
@@ -342,6 +346,7 @@ let make = (~definitions, _children) => {
               state.definitions,
             );
           if (Belt.Map.String.isEmpty(uses)) {
+            /* TODO: remove nib from translations?  Unify "interface" usage? */
             updateDefinition({
               ...definition,
               display:
@@ -379,7 +384,24 @@ let make = (~definitions, _children) => {
                           }
                         )
                       ),
+                    interface:
+                      removeInterfaceNib(
+                        graphImplementation.interface,
+                        nibID,
+                        isInput,
+                      ),
                   })
+                | InterfaceImplementation(interface) =>
+                  InterfaceImplementation(
+                    removeInterfaceNib(interface, nibID, isInput),
+                  )
+                | RecordTypeImplementation(typedFields) =>
+                  RecordTypeImplementation(
+                    Belt.Map.String.keep(typedFields, (fieldNibID, _) =>
+                      fieldNibID != nibID
+                    ),
+                  )
+                | other => other
                 },
             });
           } else {

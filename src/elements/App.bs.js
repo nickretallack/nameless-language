@@ -361,34 +361,37 @@ function make(definitions, _children) {
                             if (typeof action$2 === "number") {
                               var uses = AffectedDefinitions$ReactTemplate.findConnectedDefinitions(definitionID, nibID$2, isInput, state[/* definitions */0]);
                               if (Belt_MapString.isEmpty(uses)) {
-                                var match$11 = definition[/* implementation */0];
+                                var other = definition[/* implementation */0];
                                 var tmp$2;
-                                if (match$11.tag === 3) {
-                                  var graphImplementation$4 = match$11[0];
-                                  tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
-                                        /* interface */graphImplementation$4[/* interface */0],
-                                        /* connections */Belt_Map.keep(graphImplementation$4[/* connections */1], (function (sink, source) {
-                                                var match = isInput ? source : sink;
-                                                var tmp;
-                                                if (match[/* node */0]) {
-                                                  tmp = false;
-                                                } else {
-                                                  var match$1 = match[/* nib */1];
-                                                  tmp = typeof match$1 === "number" || match$1.tag ? false : match$1[0] === nibID$2;
-                                                }
-                                                return !tmp;
-                                              })),
-                                        /* nodes */graphImplementation$4[/* nodes */2]
-                                      ]]);
-                                } else {
-                                  throw [
-                                        Caml_builtin_exceptions.match_failure,
-                                        /* tuple */[
-                                          "App.re",
-                                          364,
-                                          16
-                                        ]
-                                      ];
+                                switch (other.tag | 0) {
+                                  case 1 : 
+                                      tmp$2 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.removeInterfaceNib(other[0], nibID$2, isInput)]);
+                                      break;
+                                  case 3 : 
+                                      var graphImplementation$4 = other[0];
+                                      tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
+                                            /* interface */Definition$ReactTemplate.removeInterfaceNib(graphImplementation$4[/* interface */0], nibID$2, isInput),
+                                            /* connections */Belt_Map.keep(graphImplementation$4[/* connections */1], (function (sink, source) {
+                                                    var match = isInput ? source : sink;
+                                                    var tmp;
+                                                    if (match[/* node */0]) {
+                                                      tmp = false;
+                                                    } else {
+                                                      var match$1 = match[/* nib */1];
+                                                      tmp = typeof match$1 === "number" || match$1.tag ? false : match$1[0] === nibID$2;
+                                                    }
+                                                    return !tmp;
+                                                  })),
+                                            /* nodes */graphImplementation$4[/* nodes */2]
+                                          ]]);
+                                      break;
+                                  case 4 : 
+                                      tmp$2 = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.keep(other[0], (function (fieldNibID, param) {
+                                                  return fieldNibID !== nibID$2;
+                                                }))]);
+                                      break;
+                                  default:
+                                    tmp$2 = other;
                                 }
                                 var tmp$3;
                                 if (isInput) {
@@ -452,14 +455,14 @@ function make(definitions, _children) {
                                               ]);
                                 case 1 : 
                                     var valueType = action$2[0];
-                                    var match$12 = definition[/* implementation */0];
+                                    var match$11 = definition[/* implementation */0];
                                     var tmp$4;
-                                    switch (match$12.tag | 0) {
+                                    switch (match$11.tag | 0) {
                                       case 1 : 
-                                          tmp$4 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$12[0], isInput, nibID$2, valueType)]);
+                                          tmp$4 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$11[0], isInput, nibID$2, valueType)]);
                                           break;
                                       case 3 : 
-                                          var graphImplementation$5 = match$12[0];
+                                          var graphImplementation$5 = match$11[0];
                                           tmp$4 = /* GraphImplementation */Block.__(3, [/* record */[
                                                 /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$5[/* interface */0], isInput, nibID$2, valueType),
                                                 /* connections */graphImplementation$5[/* connections */1],
@@ -469,7 +472,7 @@ function make(definitions, _children) {
                                       case 4 : 
                                           var tmp$5;
                                           if (isInput) {
-                                            tmp$5 = Definition$ReactTemplate.changeTypedFields(match$12[0], nibID$2, valueType);
+                                            tmp$5 = Definition$ReactTemplate.changeTypedFields(match$11[0], nibID$2, valueType);
                                           } else {
                                             throw Caml_builtin_exceptions.not_found;
                                           }
@@ -508,10 +511,10 @@ function make(definitions, _children) {
                               }
                             }
                         case 6 : 
-                            var match$13 = definition[/* implementation */0];
+                            var match$12 = definition[/* implementation */0];
                             var tmp$7;
-                            if (match$13.tag === 3) {
-                              var graphImplementation$6 = match$13[0];
+                            if (match$12.tag === 3) {
+                              var graphImplementation$6 = match$12[0];
                               tmp$7 = /* GraphImplementation */Block.__(3, [/* record */[
                                     /* interface */graphImplementation$6[/* interface */0],
                                     /* connections */Belt_Map.remove(graphImplementation$6[/* connections */1], action$1[0]),
@@ -526,10 +529,10 @@ function make(definitions, _children) {
                                         /* display */definition[/* display */2]
                                       ]);
                         case 7 : 
-                            var match$14 = definition[/* implementation */0];
+                            var match$13 = definition[/* implementation */0];
                             var tmp$8;
-                            if (match$14.tag === 3) {
-                              var graphImplementation$7 = match$14[0];
+                            if (match$13.tag === 3) {
+                              var graphImplementation$7 = match$13[0];
                               var nodeIDs = ExpandDeletion$ReactTemplate.getAffectedNodes(action$1[0], graphImplementation$7[/* nodes */2]);
                               tmp$8 = /* GraphImplementation */Block.__(3, [/* record */[
                                     /* interface */graphImplementation$7[/* interface */0],
@@ -565,7 +568,7 @@ function make(definitions, _children) {
                     return /* Update */Block.__(0, [/* record */[
                                 /* definitions */state[/* definitions */0],
                                 /* definitionID */action[0][/* hash */1],
-                                /* error */state[/* error */2]
+                                /* error : NoAppError */0
                               ]]);
                 
               }
