@@ -47,13 +47,13 @@ function make(definitionID, definitions, documentation, placeholder, emit, error
                                                 key: definitionID,
                                                 value: definitionID
                                               }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
-                                  }), uses)), error ? React.createElement("div", undefined, "This nib is connected in: ", Helpers$ReactTemplate.renderStringMap((function (param) {
-                                      var definitionID = param[0];
-                                      return React.createElement(React.Fragment, undefined, React.createElement("a", {
-                                                      key: definitionID,
-                                                      href: "#" + definitionID
-                                                    }, Definition$ReactTemplate.getDisplayName(param[1], "en")), " ");
-                                    }), error[0])) : null);
+                                  }), uses)), error ? React.createElement("div", undefined, "This nib is connected in: ", React.createElement("ul", undefined, Helpers$ReactTemplate.renderStringMap((function (param) {
+                                          var definitionID = param[0];
+                                          return React.createElement("li", undefined, React.createElement("a", {
+                                                          key: definitionID,
+                                                          href: "#" + definitionID
+                                                        }, Definition$ReactTemplate.getDisplayName(param[1], "en")));
+                                        }), error[0]))) : null);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

@@ -53,16 +53,17 @@ let make =
        | NibIsConnected(definitions) =>
          <div>
            {ReasonReact.string("This nib is connected in: ")}
-           {renderStringMap(
-              ((definitionID, definition)) =>
-                <>
-                  <a key=definitionID href={"#" ++ definitionID}>
-                    {ReasonReact.string(getDisplayName(definition, "en"))}
-                  </a>
-                  {ReasonReact.string(" ")}
-                </>,
-              definitions,
-            )}
+           <ul>
+             {renderStringMap(
+                ((definitionID, definition)) =>
+                  <li>
+                    <a key=definitionID href={"#" ++ definitionID}>
+                      {ReasonReact.string(getDisplayName(definition, "en"))}
+                    </a>
+                  </li>,
+                definitions,
+              )}
+           </ul>
          </div>
        }}
     </>;
