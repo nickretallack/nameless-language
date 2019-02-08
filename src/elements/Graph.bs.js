@@ -42,7 +42,7 @@ function preventDefault($$event) {
 
 var component = ReasonReact.reducerComponent("Graph");
 
-function make(definitionID, definitions, implementation, definition, display, documentation, emit, _children) {
+function make(definitionID, definitions, implementation, definition, display, documentation, emit, error, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -265,7 +265,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                                               ]]));
                                               }));
                                 })
-                            }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(definitionID, definitions, documentation, "(nameless graph)", emit, /* array */[])), match$1 !== undefined ? React.createElement("div", {
+                            }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(definitionID, definitions, documentation, "(nameless graph)", emit, error, /* array */[])), match$1 !== undefined ? React.createElement("div", {
                                 className: "error-message"
                               }, match$1) : null, tmp, React.createElement("h2", undefined, "Interface"), ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
             }),

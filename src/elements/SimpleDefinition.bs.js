@@ -11,7 +11,7 @@ var RecordTypeImplementation$ReactTemplate = require("./RecordTypeImplementation
 
 var component = ReasonReact.statelessComponent("SimpleDefinition");
 
-function make(definitionID, definition, definitions, emit, _children) {
+function make(definitionID, definition, definitions, error, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -40,7 +40,7 @@ function make(definitionID, definition, definitions, emit, _children) {
                 default:
                   tmp = "TODO";
               }
-              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(definitionID, definitions, documentation, "(nameless " + (Definition$ReactTemplate.implementationName(implementation) + ")"), emit, /* array */[])), tmp);
+              return React.createElement("div", undefined, ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(definitionID, definitions, documentation, "(nameless " + (Definition$ReactTemplate.implementationName(implementation) + ")"), emit, error, /* array */[])), tmp);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

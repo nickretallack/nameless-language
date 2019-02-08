@@ -1,6 +1,10 @@
 [%%debugger.chrome];
 open Definition;
 
+type appError =
+  | NoAppError
+  | NibIsConnected(definitions);
+
 type createConnection = {
   source: connectionSide,
   sink: connectionSide,

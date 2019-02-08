@@ -12,6 +12,7 @@ let make =
       ~documentation: documentation,
       ~placeholder: string,
       ~emit: definitionAction => unit,
+      ~error: AppActions.appError,
       _children,
     ) => {
   ...component,
@@ -47,6 +48,20 @@ let make =
            uses,
          )}
       </select>
+      {switch (error) {
+       | NoAppError => ReasonReact.null
+       | NibIsConnected(definitions) =>
+         <div>
+           {ReasonReact.string("This nib is connected in: ")}
+           {renderStringMap(
+              ((definitionID, definition)) =>
+                <a key=definitionID href={"#" ++ definitionID}>
+                  {ReasonReact.string(getDisplayName(definition, "en"))}
+                </a>,
+              definitions,
+            )}
+         </div>
+       }}
     </>;
   },
 };

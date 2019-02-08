@@ -37,6 +37,7 @@ let make =
       ~display: display,
       ~documentation: documentation,
       ~emit: definitionAction => unit,
+      ~error: AppActions.appError,
       _children,
     ) => {
   ...component,
@@ -522,6 +523,7 @@ let make =
         definitions
         documentation
         emit
+        error
         placeholder="(nameless graph)"
       />
       {switch (self.state.error) {

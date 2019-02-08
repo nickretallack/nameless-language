@@ -8,6 +8,7 @@ let make =
       ~definitionID,
       ~definition: definition,
       ~definitions: definitions,
+      ~error: AppActions.appError,
       ~emit,
       _children,
     ) => {
@@ -20,6 +21,7 @@ let make =
         definitions
         documentation
         emit
+        error
         placeholder={
           "(nameless " ++ implementationName(implementation) ++ ")"
         }

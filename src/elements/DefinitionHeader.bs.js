@@ -11,7 +11,7 @@ var AffectedDefinitions$ReactTemplate = require("../edit/AffectedDefinitions.bs.
 
 var component = ReasonReact.statelessComponent("DefinitionHeader");
 
-function make(definitionID, definitions, documentation, placeholder, emit, _children) {
+function make(definitionID, definitions, documentation, placeholder, emit, error, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -47,7 +47,13 @@ function make(definitionID, definitions, documentation, placeholder, emit, _chil
                                                 key: definitionID,
                                                 value: definitionID
                                               }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
-                                  }), uses)));
+                                  }), uses)), error ? React.createElement("div", undefined, "This nib is connected in: ", Helpers$ReactTemplate.renderStringMap((function (param) {
+                                      var definitionID = param[0];
+                                      return React.createElement("a", {
+                                                  key: definitionID,
+                                                  href: "#" + definitionID
+                                                }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
+                                    }), error[0])) : null);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

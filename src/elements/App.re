@@ -6,6 +6,7 @@ open Helpers;
 type appState = {
   definitions,
   definitionID,
+  error: appError,
 };
 
 let makers = [|
@@ -63,6 +64,7 @@ let make = (~definitions, _children) => {
   initialState: () => {
     definitions,
     definitionID: ReasonReact.Router.dangerouslyGetInitialUrl().hash,
+    error: NoAppError,
   },
   didMount: self => {
     let watcherId =
@@ -358,20 +360,30 @@ let make = (~definitions, _children) => {
                         item != nibID
                       ),
                   },
+              implementation:
+                switch (definition.implementation) {
+                | GraphImplementation(graphImplementation) =>
+                  GraphImplementation({
+                    ...graphImplementation,
+                    connections:
+                      Belt.Map.keep(
+                        graphImplementation.connections, (sink, source) =>
+                        !(
+                          switch (isInput ? source : sink) {
+                          | {
+                              node: GraphConnection,
+                              nib: NibConnection(connectionNibID),
+                            } =>
+                            connectionNibID == nibID
+                          | _ => false
+                          }
+                        )
+                      ),
+                  })
+                },
             });
           } else {
-            Js.log(
-              "This nib is connected in: "
-              ++ String.concat(
-                   ", ",
-                   Belt.List.map(
-                     Belt.Map.String.toList(uses),
-                     ((_definitionID, definition)) =>
-                     getDisplayName(definition, "en")
-                   ),
-                 ),
-            );
-            ReasonReact.NoUpdate;
+            ReasonReact.Update({...state, error: NibIsConnected(uses)});
           };
         }
       | RemoveConnection(connectionSide) =>
@@ -478,8 +490,16 @@ let make = (~definitions, _children) => {
                display
                documentation
                emit
+               error={self.state.error}
              />
-           | _ => <SimpleDefinition definitionID definition definitions emit />
+           | _ =>
+             <SimpleDefinition
+               definitionID
+               definition
+               definitions
+               emit
+               error={self.state.error}
+             />
            };
          };
        }}
