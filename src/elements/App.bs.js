@@ -5,7 +5,9 @@ var List = require("bs-platform/lib/js/list.js");
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var $$String = require("bs-platform/lib/js/string.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
+var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
@@ -17,6 +19,7 @@ var Definition$ReactTemplate = require("../Definition.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
 var ExpandDeletion$ReactTemplate = require("../edit/ExpandDeletion.bs.js");
 var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
+var AffectedDefinitions$ReactTemplate = require("../edit/AffectedDefinitions.bs.js");
 
 var makers = /* array */[
   /* tuple */[
@@ -354,14 +357,37 @@ function make(definitions, _children) {
                             var isInput = match$10[/* isInput */1];
                             var nibID$2 = match$10[/* nibID */0];
                             if (typeof action$2 === "number") {
-                              throw [
-                                    Caml_builtin_exceptions.match_failure,
-                                    /* tuple */[
-                                      "App.re",
-                                      267,
-                                      8
-                                    ]
+                              var uses = AffectedDefinitions$ReactTemplate.findConnectedDefinitions(definitionID, nibID$2, isInput, state[/* definitions */0]);
+                              if (Belt_MapString.isEmpty(uses)) {
+                                var tmp$2;
+                                if (isInput) {
+                                  var init$8 = definition[/* display */2];
+                                  tmp$2 = /* record */[
+                                    /* inputOrdering */Belt_List.keep(definition[/* display */2][/* inputOrdering */0], (function (item) {
+                                            return item !== nibID$2;
+                                          })),
+                                    /* outputOrdering */init$8[/* outputOrdering */1]
                                   ];
+                                } else {
+                                  var init$9 = definition[/* display */2];
+                                  tmp$2 = /* record */[
+                                    /* inputOrdering */init$9[/* inputOrdering */0],
+                                    /* outputOrdering */Belt_List.keep(definition[/* display */2][/* outputOrdering */1], (function (item) {
+                                            return item !== nibID$2;
+                                          }))
+                                  ];
+                                }
+                                return updateDefinition(/* record */[
+                                            /* implementation */definition[/* implementation */0],
+                                            /* documentation */definition[/* documentation */1],
+                                            /* display */tmp$2
+                                          ]);
+                              } else {
+                                console.log("This nib is connected in: " + $$String.concat(", ", Belt_List.map(Belt_MapString.toList(uses), (function (param) {
+                                                return Definition$ReactTemplate.getDisplayName(param[1], "en");
+                                              }))));
+                                return /* NoUpdate */0;
+                              }
                             } else {
                               switch (action$2.tag | 0) {
                                 case 0 : 
@@ -371,19 +397,19 @@ function make(definitions, _children) {
                                     var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
                                     var documentation;
                                     if (isInput) {
-                                      var init$8 = definition[/* documentation */1];
+                                      var init$10 = definition[/* documentation */1];
                                       documentation = /* record */[
-                                        /* name */init$8[/* name */0],
-                                        /* description */init$8[/* description */1],
+                                        /* name */init$10[/* name */0],
+                                        /* description */init$10[/* description */1],
                                         /* inputs */newNibs,
-                                        /* outputs */init$8[/* outputs */3]
+                                        /* outputs */init$10[/* outputs */3]
                                       ];
                                     } else {
-                                      var init$9 = definition[/* documentation */1];
+                                      var init$11 = definition[/* documentation */1];
                                       documentation = /* record */[
-                                        /* name */init$9[/* name */0],
-                                        /* description */init$9[/* description */1],
-                                        /* inputs */init$9[/* inputs */2],
+                                        /* name */init$11[/* name */0],
+                                        /* description */init$11[/* description */1],
+                                        /* inputs */init$11[/* inputs */2],
                                         /* outputs */newNibs
                                       ];
                                     }
@@ -395,66 +421,66 @@ function make(definitions, _children) {
                                 case 1 : 
                                     var valueType = action$2[0];
                                     var match$11 = definition[/* implementation */0];
-                                    var tmp$2;
+                                    var tmp$3;
                                     switch (match$11.tag | 0) {
                                       case 1 : 
-                                          tmp$2 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$11[0], isInput, nibID$2, valueType)]);
+                                          tmp$3 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$11[0], isInput, nibID$2, valueType)]);
                                           break;
                                       case 3 : 
                                           var graphImplementation$4 = match$11[0];
-                                          tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
+                                          tmp$3 = /* GraphImplementation */Block.__(3, [/* record */[
                                                 /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$4[/* interface */0], isInput, nibID$2, valueType),
                                                 /* connections */graphImplementation$4[/* connections */1],
                                                 /* nodes */graphImplementation$4[/* nodes */2]
                                               ]]);
                                           break;
                                       case 4 : 
-                                          var tmp$3;
+                                          var tmp$4;
                                           if (isInput) {
-                                            tmp$3 = Definition$ReactTemplate.changeTypedFields(match$11[0], nibID$2, valueType);
+                                            tmp$4 = Definition$ReactTemplate.changeTypedFields(match$11[0], nibID$2, valueType);
                                           } else {
                                             throw Caml_builtin_exceptions.not_found;
                                           }
-                                          tmp$2 = /* RecordTypeImplementation */Block.__(4, [tmp$3]);
+                                          tmp$3 = /* RecordTypeImplementation */Block.__(4, [tmp$4]);
                                           break;
                                       default:
                                         throw Caml_builtin_exceptions.not_found;
                                     }
                                     return updateDefinition(/* record */[
-                                                /* implementation */tmp$2,
+                                                /* implementation */tmp$3,
                                                 /* documentation */definition[/* documentation */1],
                                                 /* display */definition[/* display */2]
                                               ]);
                                 case 2 : 
                                     var index = action$2[0];
-                                    var tmp$4;
+                                    var tmp$5;
                                     if (isInput) {
-                                      var init$10 = definition[/* display */2];
-                                      tmp$4 = /* record */[
+                                      var init$12 = definition[/* display */2];
+                                      tmp$5 = /* record */[
                                         /* inputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* inputOrdering */0], nibID$2, index),
-                                        /* outputOrdering */init$10[/* outputOrdering */1]
+                                        /* outputOrdering */init$12[/* outputOrdering */1]
                                       ];
                                     } else {
-                                      var init$11 = definition[/* display */2];
-                                      tmp$4 = /* record */[
-                                        /* inputOrdering */init$11[/* inputOrdering */0],
+                                      var init$13 = definition[/* display */2];
+                                      tmp$5 = /* record */[
+                                        /* inputOrdering */init$13[/* inputOrdering */0],
                                         /* outputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* outputOrdering */1], nibID$2, index)
                                       ];
                                     }
                                     return updateDefinition(/* record */[
                                                 /* implementation */definition[/* implementation */0],
                                                 /* documentation */definition[/* documentation */1],
-                                                /* display */tmp$4
+                                                /* display */tmp$5
                                               ]);
                                 
                               }
                             }
                         case 6 : 
                             var match$12 = definition[/* implementation */0];
-                            var tmp$5;
+                            var tmp$6;
                             if (match$12.tag === 3) {
                               var graphImplementation$5 = match$12[0];
-                              tmp$5 = /* GraphImplementation */Block.__(3, [/* record */[
+                              tmp$6 = /* GraphImplementation */Block.__(3, [/* record */[
                                     /* interface */graphImplementation$5[/* interface */0],
                                     /* connections */Belt_Map.remove(graphImplementation$5[/* connections */1], action$1[0]),
                                     /* nodes */graphImplementation$5[/* nodes */2]
@@ -463,17 +489,17 @@ function make(definitions, _children) {
                               throw Caml_builtin_exceptions.not_found;
                             }
                             return updateDefinition(/* record */[
-                                        /* implementation */tmp$5,
+                                        /* implementation */tmp$6,
                                         /* documentation */definition[/* documentation */1],
                                         /* display */definition[/* display */2]
                                       ]);
                         case 7 : 
                             var match$13 = definition[/* implementation */0];
-                            var tmp$6;
+                            var tmp$7;
                             if (match$13.tag === 3) {
                               var graphImplementation$6 = match$13[0];
                               var nodeIDs = ExpandDeletion$ReactTemplate.getAffectedNodes(action$1[0], graphImplementation$6[/* nodes */2]);
-                              tmp$6 = /* GraphImplementation */Block.__(3, [/* record */[
+                              tmp$7 = /* GraphImplementation */Block.__(3, [/* record */[
                                     /* interface */graphImplementation$6[/* interface */0],
                                     /* connections */Belt_Map.keep(graphImplementation$6[/* connections */1], (function (sink, source) {
                                             return !(ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(sink, nodeIDs) || ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(source, nodeIDs));
@@ -484,7 +510,7 @@ function make(definitions, _children) {
                               throw Caml_builtin_exceptions.not_found;
                             }
                             return updateDefinition(/* record */[
-                                        /* implementation */tmp$6,
+                                        /* implementation */tmp$7,
                                         /* documentation */definition[/* documentation */1],
                                         /* display */definition[/* display */2]
                                       ]);

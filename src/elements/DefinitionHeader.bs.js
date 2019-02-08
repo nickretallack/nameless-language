@@ -26,7 +26,7 @@ function make(definitionID, definitions, documentation, placeholder, emit, _chil
               var changeName = function ($$event) {
                 return Curry._1(emit, /* ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)]));
               };
-              var uses = AffectedDefinitions$ReactTemplate.findUses(definitionID, definitions);
+              var uses = AffectedDefinitions$ReactTemplate.findDefinitionUses(definitionID, definitions);
               return React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("input", {
                                   className: "name",
                                   placeholder: placeholder,
@@ -42,8 +42,10 @@ function make(definitionID, definitions, documentation, placeholder, emit, _chil
                                   return ReasonReact.Router[/* push */0]("#" + $$event.target.value);
                                 })
                             }, React.createElement("option", undefined, "Uses..."), Helpers$ReactTemplate.renderStringMap((function (param) {
+                                    var definitionID = param[0];
                                     return React.createElement("option", {
-                                                value: param[0]
+                                                key: definitionID,
+                                                value: definitionID
                                               }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
                                   }), uses)));
             }),

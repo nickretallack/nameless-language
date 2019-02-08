@@ -38,7 +38,11 @@ function make(nibID, definitions, isInput, valueType, name, index, count, emit, 
               };
               var match = index !== 0;
               var match$1 = index !== (count - 1 | 0);
-              return React.createElement("tr", undefined, React.createElement("td", undefined, match ? React.createElement("a", {
+              return React.createElement("tr", undefined, React.createElement("td", undefined, React.createElement("a", {
+                                  onClick: (function (_event) {
+                                      return emitNibAction(/* RemoveNib */0);
+                                    })
+                                }, "x")), React.createElement("td", undefined, match ? React.createElement("a", {
                                     onClick: (function (_event) {
                                         return emitNibAction(/* ChangeNibOrdering */Block.__(2, [index - 1 | 0]));
                                       })

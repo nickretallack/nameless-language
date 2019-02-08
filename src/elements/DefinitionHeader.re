@@ -17,7 +17,8 @@ let make =
   ...component,
   render: _self => {
     let changeName = event => emit(ChangeName(getEventValue(event)));
-    let uses = AffectedDefinitions.findUses(definitionID, definitions);
+    let uses =
+      AffectedDefinitions.findDefinitionUses(definitionID, definitions);
     <>
       <div>
         <input
@@ -40,7 +41,7 @@ let make =
         <option> {ReasonReact.string("Uses...")} </option>
         {renderStringMap(
            ((definitionID, definition)) =>
-             <option value=definitionID>
+             <option key=definitionID value=definitionID>
                {ReasonReact.string(getDisplayName(definition, "en"))}
              </option>,
            uses,

@@ -32,6 +32,11 @@ let make =
 
     <tr>
       <td>
+        <a onClick={_event => emitNibAction(AppActions.RemoveNib)}>
+          {ReasonReact.string("x")}
+        </a>
+      </td>
+      <td>
         {index != 0 ?
            <a onClick={_event => changeOrdering(index - 1)}>
              {ReasonReact.string("^")}
