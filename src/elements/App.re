@@ -453,6 +453,7 @@ let make = (~definitions, _children) => {
            | GraphImplementation(implementation) =>
              <Graph
                key=definitionID
+               definitionID
                definitions={self.state.definitions}
                definition
                implementation
@@ -460,7 +461,7 @@ let make = (~definitions, _children) => {
                documentation
                emit
              />
-           | _ => <SimpleDefinition definition definitions emit />
+           | _ => <SimpleDefinition definitionID definition definitions emit />
            };
          };
        }}

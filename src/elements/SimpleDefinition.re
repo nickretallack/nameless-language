@@ -4,12 +4,20 @@ open Definition;
 let component = ReasonReact.statelessComponent("SimpleDefinition");
 
 let make =
-    (~definition: definition, ~definitions: definitions, ~emit, _children) => {
+    (
+      ~definitionID,
+      ~definition: definition,
+      ~definitions: definitions,
+      ~emit,
+      _children,
+    ) => {
   ...component,
   render: _self => {
     let {documentation, display, implementation} = definition;
     <div>
       <DefinitionHeader
+        definitionID
+        definitions
         documentation
         emit
         placeholder={

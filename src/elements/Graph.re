@@ -30,6 +30,7 @@ let preventDefault = event => EventRe.preventDefault(event);
 let component = ReasonReact.reducerComponent("Graph");
 let make =
     (
+      ~definitionID: definitionID,
       ~definitions: definitions,
       ~implementation: graphImplementation,
       ~definition: definition,
@@ -516,7 +517,13 @@ let make =
         renderedDrawingConnections
         renderedNibs
       </svg>
-      <DefinitionHeader documentation emit placeholder="(nameless graph)" />
+      <DefinitionHeader
+        definitionID
+        definitions
+        documentation
+        emit
+        placeholder="(nameless graph)"
+      />
       {switch (self.state.error) {
        | Some(error) =>
          <div className="error-message"> {ReasonReact.string(error)} </div>

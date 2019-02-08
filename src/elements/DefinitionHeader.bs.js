@@ -7,10 +7,11 @@ var React = require("react");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
+var AffectedDefinitions$ReactTemplate = require("../edit/AffectedDefinitions.bs.js");
 
 var component = ReasonReact.statelessComponent("DefinitionHeader");
 
-function make(documentation, placeholder, emit, _children) {
+function make(definitionID, definitions, documentation, placeholder, emit, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -25,6 +26,7 @@ function make(documentation, placeholder, emit, _children) {
               var changeName = function ($$event) {
                 return Curry._1(emit, /* ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)]));
               };
+              var uses = AffectedDefinitions$ReactTemplate.findUses(definitionID, definitions);
               return React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("input", {
                                   className: "name",
                                   placeholder: placeholder,
@@ -35,7 +37,15 @@ function make(documentation, placeholder, emit, _children) {
                               onClick: (function (_event) {
                                   return Curry._1(emit, /* Fork */2);
                                 })
-                            }, "Fork"));
+                            }, "Fork"), React.createElement("select", {
+                              onChange: (function ($$event) {
+                                  return ReasonReact.Router[/* push */0]("#" + $$event.target.value);
+                                })
+                            }, React.createElement("option", undefined, "Uses..."), Helpers$ReactTemplate.renderStringMap((function (param) {
+                                    return React.createElement("option", {
+                                                value: param[0]
+                                              }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
+                                  }), uses)));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],
