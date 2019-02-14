@@ -5,7 +5,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var NibsBox$ReactTemplate = require("./NibsBox.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
-var SvgDefinitionBox$ReactTemplate = require("./SvgDefinitionBox.bs.js");
+var DefinitionBox$ReactTemplate = require("./DefinitionBox.bs.js");
 
 var component = ReasonReact.statelessComponent("Node");
 
@@ -36,7 +36,7 @@ function make(node, definitions, position, size, nodeWidth, textHeight, $staropt
                   return ReasonReact.Router[/* push */0]("#" + definitionID);
                 };
                 if (Definition$ReactTemplate.isFunctionDefinitionNode(node)) {
-                  return ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(name, position, size, nodeWidth, textHeight, selected, onClick, onDoubleClick, onMouseDown, onTouchStart, onMouseUp, onTouchEnd, /* array */[]));
+                  return ReasonReact.element(undefined, undefined, DefinitionBox$ReactTemplate.make(name, position, size, nodeWidth, textHeight, selected, onClick, onDoubleClick, onMouseDown, onTouchStart, onMouseUp, onTouchEnd, /* array */[]));
                 } else {
                   return makeNode(name, onDoubleClick);
                 }

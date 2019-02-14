@@ -385,7 +385,7 @@ let make =
     let renderedConnections =
       renderMap(
         ((sink, source)) =>
-          <SvgConnection
+          <Connection
             key={connectionSideToString(sink)}
             sinkPosition={getNibPosition(sink, true)}
             sourcePosition={getNibPosition(source, false)}
@@ -401,7 +401,7 @@ let make =
           Belt.List.toArray(allNibs),
           ({name, explicitConnectionSide}) => {
             let {connectionSide, isSource} = explicitConnectionSide;
-            <SvgNib
+            <Nib
               key={explicitConnectionSideKey(explicitConnectionSide)}
               text=name
               isSource
@@ -421,7 +421,7 @@ let make =
       );
 
     let renderedSides =
-      <SvgDefinitionBox
+      <DefinitionBox
         name={getDisplayName(definition, "en")}
         position={x: 0.0, y: 0.0}
         size=graphSizePixels
@@ -438,7 +438,7 @@ let make =
               getNodeDepth(nodeID)
             ),
             ((nodeID, node)) =>
-            <SvgNode
+            <Node
               key=nodeID
               node
               definitions
@@ -494,7 +494,7 @@ let make =
               },
             }) =>
             let adjustedPoint = {x: point.x, y: point.y -. 18.0};
-            <SvgConnection
+            <Connection
               key={pointerIDToString(pointerID)}
               sourcePosition={
                 startIsSource ?

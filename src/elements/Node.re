@@ -48,7 +48,7 @@ let make =
         ReasonReact.Router.push("#" ++ definitionID);
 
       if (isFunctionDefinitionNode(node)) {
-        <SvgDefinitionBox
+        <DefinitionBox
           name
           position
           size

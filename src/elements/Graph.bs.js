@@ -14,20 +14,20 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
 var Caml_primitive = require("bs-platform/lib/js/caml_primitive.js");
-var SvgNib$ReactTemplate = require("./SvgNib.bs.js");
+var Nib$ReactTemplate = require("./Nib.bs.js");
+var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
-var SvgNode$ReactTemplate = require("./SvgNode.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Interface$ReactTemplate = require("./Interface.bs.js");
+var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var LayoutGraph$ReactTemplate = require("../display/LayoutGraph.bs.js");
 var DetectCycles$ReactTemplate = require("../edit/DetectCycles.bs.js");
 var GraphActions$ReactTemplate = require("../edit/GraphActions.bs.js");
-var SvgConnection$ReactTemplate = require("./SvgConnection.bs.js");
+var DefinitionBox$ReactTemplate = require("./DefinitionBox.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
 var DefinitionHeader$ReactTemplate = require("./DefinitionHeader.bs.js");
-var SvgDefinitionBox$ReactTemplate = require("./SvgDefinitionBox.bs.js");
 
 var cmp = Caml_obj.caml_compare;
 
@@ -158,7 +158,7 @@ function make(definitionID, definitions, implementation, definition, display, do
               var renderedConnections = Helpers$ReactTemplate.renderMap((function (param) {
                       var source = param[1];
                       var sink = param[0];
-                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, SvgConnection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), getNibNudge(source), undefined, (function (_event) {
+                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), getNibNudge(source), undefined, (function (_event) {
                                         return Curry._1(self[/* send */3], /* SelectConnection */Block.__(1, [sink]));
                                       }), /* array */[]));
                     }), implementation[/* connections */1]);
@@ -169,9 +169,9 @@ function make(definitionID, definitions, implementation, definition, display, do
                       var match = self[/* state */1][/* selection */2];
                       var tmp;
                       tmp = typeof match === "number" || match.tag !== 1 ? false : Caml_obj.caml_equal(match[0], explicitConnectionSide);
-                      return ReasonReact.element(Definition$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, SvgNib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], tmp, /* array */[]));
+                      return ReasonReact.element(Definition$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, Nib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], tmp, /* array */[]));
                     }));
-              var renderedSides = ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */[
+              var renderedSides = ReasonReact.element(undefined, undefined, DefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */[
                         /* x */0.0,
                         /* y */0.0
                       ], graphSizePixels, 120.0, 20.0, undefined, undefined, undefined, undefined, undefined, undefined, undefined, /* array */[]));
@@ -182,7 +182,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                           var match = self[/* state */1][/* selection */2];
                           var tmp;
                           tmp = typeof match === "number" || match.tag !== 2 ? false : Belt_SetString.has(match[0], nodeID);
-                          return ReasonReact.element(nodeID, undefined, SvgNode$ReactTemplate.make(param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), 120.0, 20.0, tmp, (function ($$event) {
+                          return ReasonReact.element(nodeID, undefined, Node$ReactTemplate.make(param[1], definitions, getNodePosition(nodeID), getNodeSize(nodeID), 120.0, 20.0, tmp, (function ($$event) {
                                             return Curry._1(self[/* send */3], /* SelectNode */Block.__(2, [/* record */[
                                                             /* nodeID */nodeID,
                                                             /* additive */$$event.shiftKey
@@ -215,7 +215,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                           adjustedPoint_000,
                           adjustedPoint_001
                         ];
-                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, SvgConnection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, undefined, undefined, undefined, /* array */[]));
+                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, undefined, undefined, undefined, /* array */[]));
                       }
                     }), self[/* state */1][/* pointers */0]);
               var match$1 = self[/* state */1][/* error */1];

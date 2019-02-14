@@ -7,7 +7,7 @@ var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var NibsBox$ReactTemplate = require("./NibsBox.bs.js");
 
-var component = ReasonReact.statelessComponent("SvgDefinitionBox");
+var component = ReasonReact.statelessComponent("DefinitionBox");
 
 function make(name, position, size, nodeWidth, textHeight, $staropt$star, onClick, onDoubleClick, onMouseDown, onTouchStart, onMouseUp, onTouchEnd, _children) {
   var selected = $staropt$star !== undefined ? $staropt$star : false;

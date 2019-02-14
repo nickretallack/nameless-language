@@ -1,7 +1,7 @@
 [%%debugger.chrome];
 open Helpers;
 
-let component = ReasonReact.statelessComponent("SvgDefinitionBox");
+let component = ReasonReact.statelessComponent("DefinitionBox");
 
 let make =
     (
