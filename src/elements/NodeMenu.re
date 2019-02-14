@@ -114,7 +114,7 @@ let make =
         })
       }
     | AddValue =>
-      if (nib.isSource) {
+      if (nib.isSource && state.definedNodeKind != Some(ConstructorNode)) {
         ReasonReact.NoUpdate;
       } else {
         ReasonReact.SideEffects(
@@ -177,6 +177,13 @@ let make =
          )}
       </div>;
 
+    let nodeTypeLink = (kind, name) =>
+      <a
+        className={self.state.definedNodeKind == Some(kind) ? "selected" : ""}
+        onClick={_event => self.send(SetDefinedNodeKind(kind))}>
+        {ReasonReact.string(name)}
+      </a>;
+
     <>
       <h2> {ReasonReact.string("Create a node")} </h2>
       <div className="type-selector-menu">
@@ -222,16 +229,7 @@ let make =
                 | GraphImplementation(_)
                 | ExternalImplementation(_) =>
                   <>
-                    <a
-                      className={
-                        self.state.definedNodeKind == Some(FunctionCallNode) ?
-                          "selected" : ""
-                      }
-                      onClick={_event =>
-                        self.send(SetDefinedNodeKind(FunctionCallNode))
-                      }>
-                      {ReasonReact.string("call")}
-                    </a>
+                    {nodeTypeLink(FunctionCallNode, "call")}
                     {nib.isSource ?
                        ReasonReact.null :
                        <a onClick={_event => self.send(AddValue)}>
@@ -240,19 +238,10 @@ let make =
                   </>
                 | InterfaceImplementation(_) =>
                   <>
-                    <a
-                      className={
-                        self.state.definedNodeKind
-                        == Some(FunctionPointerCallNode) ?
-                          "selected" : ""
-                      }
-                      onClick={_event =>
-                        self.send(
-                          SetDefinedNodeKind(FunctionPointerCallNode),
-                        )
-                      }>
-                      {ReasonReact.string("function pointer call")}
-                    </a>
+                    {nodeTypeLink(
+                       FunctionPointerCallNode,
+                       "function pointer call",
+                     )}
                     {nib.isSource ?
                        ReasonReact.null :
                        <a
@@ -275,6 +264,53 @@ let make =
                          {ReasonReact.string("inline function")}
                        </a>}
                   </>
+                | RecordTypeImplementation(_) =>
+                  nib.isSource ?
+                    <>
+                      {nodeTypeLink(ConstructorNode, "constructor")}
+                      <a
+                        onClick={_event =>
+                          emit(
+                            AddNode({
+                              node: {
+                                scope: getScope(nib, nodes),
+                                kind:
+                                  DefinedNode({
+                                    kind: AccessorNode,
+                                    definitionID,
+                                  }),
+                              },
+                              explicitConnectionSide: nib,
+                              connectionNib: ValueConnection,
+                            }),
+                          )
+                        }>
+                        {ReasonReact.string("accessor")}
+                      </a>
+                    </> :
+                    <>
+                      <a
+                        onClick={_event =>
+                          emit(
+                            AddNode({
+                              node: {
+                                scope: getScope(nib, nodes),
+                                kind:
+                                  DefinedNode({
+                                    kind: ConstructorNode,
+                                    definitionID,
+                                  }),
+                              },
+                              explicitConnectionSide: nib,
+                              connectionNib: ValueConnection,
+                            }),
+                          )
+                        }>
+                        {ReasonReact.string("constructor")}
+                      </a>
+                      {nodeTypeLink(AccessorNode, "accessor")}
+                    </>
+
                 | _ => <> {ReasonReact.string("TODO")} </>
                 }}
              </div>

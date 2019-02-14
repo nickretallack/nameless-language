@@ -115,6 +115,15 @@ function make(definitions, nodes, nib, emit, _children) {
                                             }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
                                 })));
               };
+              var nodeTypeLink = function (kind, name) {
+                var match = Caml_obj.caml_equal(self[/* state */1][/* definedNodeKind */2], kind);
+                return React.createElement("a", {
+                            className: match ? "selected" : "",
+                            onClick: (function (_event) {
+                                return Curry._1(self[/* send */3], /* SetDefinedNodeKind */Block.__(2, [kind]));
+                              })
+                          }, name);
+              };
               var match = nib[/* isSource */1];
               var match$1 = self[/* state */1][/* category */0];
               var match$2 = self[/* state */1][/* definitionID */1];
@@ -127,14 +136,8 @@ function make(definitions, nodes, nib, emit, _children) {
                 var exit = 0;
                 switch (match$3.tag | 0) {
                   case 1 : 
-                      var match$4 = Caml_obj.caml_equal(self[/* state */1][/* definedNodeKind */2], /* FunctionPointerCallNode */2);
-                      var match$5 = nib[/* isSource */1];
-                      tmp$1 = React.createElement(React.Fragment, undefined, React.createElement("a", {
-                                className: match$4 ? "selected" : "",
-                                onClick: (function (_event) {
-                                    return Curry._1(self[/* send */3], /* SetDefinedNodeKind */Block.__(2, [/* FunctionPointerCallNode */2]));
-                                  })
-                              }, "function pointer call"), match$5 ? null : React.createElement("a", {
+                      var match$4 = nib[/* isSource */1];
+                      tmp$1 = React.createElement(React.Fragment, undefined, nodeTypeLink(/* FunctionPointerCallNode */2, "function pointer call"), match$4 ? null : React.createElement("a", {
                                   onClick: (function (_event) {
                                       return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
                                                       /* node : record */[
@@ -154,27 +157,53 @@ function make(definitions, nodes, nib, emit, _children) {
                   case 3 : 
                       exit = 1;
                       break;
+                  case 4 : 
+                      var match$5 = nib[/* isSource */1];
+                      tmp$1 = match$5 ? React.createElement(React.Fragment, undefined, nodeTypeLink(/* ConstructorNode */4, "constructor"), React.createElement("a", {
+                                  onClick: (function (_event) {
+                                      return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                                      /* node : record */[
+                                                        /* scope */getScope(nib, nodes),
+                                                        /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                              /* kind : AccessorNode */5,
+                                                              /* definitionID */definitionID
+                                                            ]])
+                                                      ],
+                                                      /* explicitConnectionSide */nib,
+                                                      /* connectionNib : ValueConnection */0
+                                                    ]]));
+                                    })
+                                }, "accessor")) : React.createElement(React.Fragment, undefined, React.createElement("a", {
+                                  onClick: (function (_event) {
+                                      return Curry._1(emit, /* AddNode */Block.__(4, [/* record */[
+                                                      /* node : record */[
+                                                        /* scope */getScope(nib, nodes),
+                                                        /* kind : DefinedNode */Block.__(1, [/* record */[
+                                                              /* kind : ConstructorNode */4,
+                                                              /* definitionID */definitionID
+                                                            ]])
+                                                      ],
+                                                      /* explicitConnectionSide */nib,
+                                                      /* connectionNib : ValueConnection */0
+                                                    ]]));
+                                    })
+                                }, "constructor"), nodeTypeLink(/* AccessorNode */5, "accessor"));
+                      break;
                   default:
                     tmp$1 = React.createElement(React.Fragment, undefined, "TODO");
                 }
                 if (exit === 1) {
-                  var match$6 = Caml_obj.caml_equal(self[/* state */1][/* definedNodeKind */2], /* FunctionCallNode */0);
-                  var match$7 = nib[/* isSource */1];
-                  tmp$1 = React.createElement(React.Fragment, undefined, React.createElement("a", {
-                            className: match$6 ? "selected" : "",
-                            onClick: (function (_event) {
-                                return Curry._1(self[/* send */3], /* SetDefinedNodeKind */Block.__(2, [/* FunctionCallNode */0]));
-                              })
-                          }, "call"), match$7 ? null : React.createElement("a", {
+                  var match$6 = nib[/* isSource */1];
+                  tmp$1 = React.createElement(React.Fragment, undefined, nodeTypeLink(/* FunctionCallNode */0, "call"), match$6 ? null : React.createElement("a", {
                               onClick: (function (_event) {
                                   return Curry._1(self[/* send */3], /* AddValue */0);
                                 })
                             }, "value"));
                 }
-                var match$8 = self[/* state */1][/* definedNodeKind */2];
+                var match$7 = self[/* state */1][/* definedNodeKind */2];
                 var tmp$2;
-                if (match$8 !== undefined) {
-                  var definedNodeKind = match$8;
+                if (match$7 !== undefined) {
+                  var definedNodeKind = match$7;
                   var display = Definition$ReactTemplate.displayNode(/* record */[
                         /* scope */getScope(nib, nodes),
                         /* kind : DefinedNode */Block.__(1, [/* record */[
@@ -182,9 +211,9 @@ function make(definitions, nodes, nib, emit, _children) {
                               /* definitionID */definitionID
                             ]])
                       ], definitions, "en");
+                  var match$8 = nib[/* isSource */1];
                   var match$9 = nib[/* isSource */1];
-                  var match$10 = nib[/* isSource */1];
-                  tmp$2 = React.createElement("div", undefined, React.createElement("h3", undefined, match$9 ? "Input" : "Output"), Belt_List.toArray(Belt_List.map(match$10 ? display[/* inputs */0] : display[/* outputs */1], (function (displayNib) {
+                  tmp$2 = React.createElement("div", undefined, React.createElement("h3", undefined, match$8 ? "Input" : "Output"), Belt_List.toArray(Belt_List.map(match$9 ? display[/* inputs */0] : display[/* outputs */1], (function (displayNib) {
                                   return React.createElement("a", {
                                               key: Definition$ReactTemplate.nibKey(displayNib[/* nib */1]),
                                               onClick: (function (_event) {
@@ -240,7 +269,7 @@ function make(definitions, nodes, nib, emit, _children) {
           /* retainedProps */component[/* retainedProps */11],
           /* reducer */(function (action, state) {
               if (typeof action === "number") {
-                if (nib[/* isSource */1]) {
+                if (nib[/* isSource */1] && Caml_obj.caml_notequal(state[/* definedNodeKind */2], /* ConstructorNode */4)) {
                   return /* NoUpdate */0;
                 } else {
                   return /* SideEffects */Block.__(1, [(function (param) {
