@@ -269,9 +269,9 @@ let make =
 
     let getNodeSize = nodeID =>
       sizeToPixels(Belt.Map.String.getExn(nodeLayouts, nodeID).size);
-    /*
-     let getNodeDepth = nodeID =>
-       Belt.Map.String.getExn(nodeLayouts, nodeID).depth; */
+
+    let getNodeDepth = nodeID =>
+      Belt.Map.String.getExn(nodeLayouts, nodeID).depth;
 
     let isNibInternal = (node: node, nib: connectionNib) =>
       switch (node.kind) {
@@ -407,7 +407,11 @@ let make =
       ReasonReact.array(
         Belt.List.toArray(
           Belt.List.map(
-            Belt.Map.String.toList(implementation.nodes), ((nodeID, node)) =>
+            sortBy(
+              Belt.Map.String.toList(implementation.nodes), ((nodeID, _)) =>
+              getNodeDepth(nodeID)
+            ),
+            ((nodeID, node)) =>
             <SvgNode
               key=nodeID
               node

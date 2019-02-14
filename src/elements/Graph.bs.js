@@ -176,7 +176,9 @@ function make(definitionID, definitions, implementation, definition, display, do
                         /* x */0.0,
                         /* y */0.0
                       ], graphSizePixels, 120.0, 20.0, undefined, undefined, undefined, /* array */[]));
-              var renderedNodes = Belt_List.toArray(Belt_List.map(Belt_MapString.toList(implementation[/* nodes */2]), (function (param) {
+              var renderedNodes = Belt_List.toArray(Belt_List.map(Helpers$ReactTemplate.sortBy(Belt_MapString.toList(implementation[/* nodes */2]), (function (param) {
+                              return Belt_MapString.getExn(nodeLayouts, param[0])[/* depth */2];
+                            })), (function (param) {
                           var nodeID = param[0];
                           var match = self[/* state */1][/* selection */2];
                           var tmp;
