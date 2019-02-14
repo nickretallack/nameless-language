@@ -476,6 +476,7 @@ let make = (~definitions, _children) => {
           _ => ReasonReact.Router.push("#" ++ newDefinitionID),
         );
       | ChangeNodeScope({nodeID, nodeScope}) =>
+        Js.log3("change node scope", nodeID, nodeScope);
         switch (definition.implementation) {
         | GraphImplementation(graphImplementation) =>
           if (switch (nodeScope) {
@@ -510,7 +511,7 @@ let make = (~definitions, _children) => {
           }
 
         | _ => ReasonReact.NoUpdate
-        }
+        };
       };
     },
   render: self =>

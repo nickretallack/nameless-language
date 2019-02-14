@@ -553,6 +553,7 @@ function make(definitions, _children) {
                             var match$14 = action$1[0];
                             var nodeScope = match$14[/* nodeScope */1];
                             var nodeID$1 = match$14[/* nodeID */0];
+                            console.log("change node scope", nodeID$1, nodeScope);
                             var match$15 = definition[/* implementation */0];
                             if (match$15.tag === 3) {
                               var graphImplementation$8 = match$15[0];

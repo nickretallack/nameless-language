@@ -192,11 +192,17 @@ function make(definitionID, definitions, implementation, definition, display, do
                                                             /* pointerID : Mouse */0,
                                                             /* action : StartDragging */Block.__(1, [nodeID])
                                                           ]]));
-                                          }), undefined, (function (param) {
-                                            return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
-                                                            /* pointerID : Mouse */0,
-                                                            /* action : FinishDragging */Block.__(4, [/* NodeScope */[nodeID]])
-                                                          ]]));
+                                          }), undefined, (function ($$event) {
+                                            var match = Belt_Map.get(self[/* state */1][/* pointers */0], /* Mouse */0);
+                                            if (match !== undefined && match.tag) {
+                                              $$event.stopPropagation();
+                                              return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
+                                                              /* pointerID : Mouse */0,
+                                                              /* action : FinishDragging */Block.__(4, [/* NodeScope */[nodeID]])
+                                                            ]]));
+                                            } else {
+                                              return /* () */0;
+                                            }
                                           }), undefined, /* array */[]));
                         })));
               var renderedDrawingConnections = Helpers$ReactTemplate.renderMap((function (param) {

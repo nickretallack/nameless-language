@@ -469,13 +469,18 @@ let make =
                   }),
                 )
               }
-              onMouseUp={_ =>
-                self.send(
-                  PointerAction({
-                    pointerID: Mouse,
-                    action: FinishDragging(NodeScope(nodeID)),
-                  }),
-                )
+              onMouseUp={event =>
+                switch (Belt.Map.get(self.state.pointers, Mouse)) {
+                | Some(DraggingNode(_)) =>
+                  ReactEvent.Mouse.stopPropagation(event);
+                  self.send(
+                    PointerAction({
+                      pointerID: Mouse,
+                      action: FinishDragging(NodeScope(nodeID)),
+                    }),
+                  )
+                | _ => ()
+                }
               }
             />
           ),
