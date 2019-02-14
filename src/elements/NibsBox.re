@@ -9,14 +9,24 @@ let make =
       ~height: float,
       ~nodeWidth: float,
       ~textHeight: float,
-      ~onDoubleClick=?,
       ~selected: bool=false,
+      ~onDoubleClick=?,
       ~onClick=?,
+      ~onMouseDown=?,
+      ~onTouchStart=?,
+      ~onMouseUp=?,
+      ~onTouchEnd=?,
       _children,
     ) => {
   ...component,
   render: _self => {
-    <g ?onDoubleClick ?onClick>
+    <g
+      ?onClick
+      ?onDoubleClick
+      ?onMouseDown
+      ?onMouseUp
+      ?onTouchStart
+      ?onTouchEnd>
       <rect
         x={pixels(position.x)}
         y={pixels(position.y)}

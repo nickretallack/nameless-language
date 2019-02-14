@@ -40,6 +40,11 @@ type addNode = {
   connectionNib,
 };
 
+type changeNodeScope = {
+  nodeID,
+  scopeNodeID: nodeID,
+};
+
 type definitionAction =
   | CreateConnection(createConnection)
   | ChangeName(string)
@@ -51,6 +56,7 @@ type definitionAction =
   | NibAction(nibActionRecord)
   | RemoveConnection(connectionSide)
   | RemoveNodes(Belt.Set.String.t)
+  | ChangeNodeScope(changeNodeScope)
   | Fork;
 
 type definitionActionRecord = {

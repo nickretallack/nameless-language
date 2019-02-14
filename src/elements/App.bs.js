@@ -549,6 +549,32 @@ function make(definitions, _children) {
                                         /* documentation */definition[/* documentation */1],
                                         /* display */definition[/* display */2]
                                       ]);
+                        case 8 : 
+                            var match$14 = action$1[0];
+                            var nodeID$1 = match$14[/* nodeID */0];
+                            console.log("change node scope!");
+                            var match$15 = definition[/* implementation */0];
+                            if (match$15.tag === 3) {
+                              var graphImplementation$8 = match$15[0];
+                              var node = Belt_MapString.getExn(graphImplementation$8[/* nodes */2], nodeID$1);
+                              var newNode_000 = /* scope : NodeScope */[match$14[/* scopeNodeID */1]];
+                              var newNode_001 = /* kind */node[/* kind */1];
+                              var newNode = /* record */[
+                                newNode_000,
+                                newNode_001
+                              ];
+                              return updateDefinition(/* record */[
+                                          /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                                /* interface */graphImplementation$8[/* interface */0],
+                                                /* connections */graphImplementation$8[/* connections */1],
+                                                /* nodes */Belt_MapString.set(graphImplementation$8[/* nodes */2], nodeID$1, newNode)
+                                              ]]),
+                                          /* documentation */definition[/* documentation */1],
+                                          /* display */definition[/* display */2]
+                                        ]);
+                            } else {
+                              return /* NoUpdate */0;
+                            }
                         
                       }
                     }

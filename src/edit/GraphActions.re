@@ -17,11 +17,17 @@ type drawingConnection = {
   point,
 };
 
+type pointerState =
+  | DrawingConnection(drawingConnection)
+  | DraggingNode(nodeID);
+
 type pointerAction =
   | StartDrawing(drawingConnection)
   | ContinueDrawing(point)
   | FinishDrawing(explicitConnectionSide)
-  | StopDrawing;
+  | StopDrawing
+  | StartDragging(nodeID)
+  | FinishDragging(nodeID);
 
 type pointerActionRecord = {
   pointerID,

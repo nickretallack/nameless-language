@@ -20,7 +20,7 @@ type selection =
   | SelectedNodes(Belt.Set.String.t);
 
 type graphState = {
-  pointers: pointerMap(drawingConnection),
+  pointers: pointerMap(pointerState),
   error: option(string),
   selection,
 };
@@ -106,31 +106,58 @@ let make =
         ReasonReact.Update({
           ...state,
           pointers:
-            Belt.Map.set(state.pointers, pointerID, drawingConnection),
+            Belt.Map.set(
+              state.pointers,
+              pointerID,
+              DrawingConnection(drawingConnection),
+            ),
+        })
+      | StartDragging(nodeID) =>
+        ReasonReact.Update({
+          ...state,
+          pointers:
+            Belt.Map.set(state.pointers, pointerID, DraggingNode(nodeID)),
         })
       | ContinueDrawing(point) =>
         switch (Belt.Map.get(state.pointers, pointerID)) {
-        | Some(drawingConnection) =>
+        | Some(DrawingConnection(drawingConnection)) =>
           ReasonReact.Update({
             ...state,
             pointers:
               Belt.Map.set(
                 state.pointers,
                 pointerID,
-                {...drawingConnection, point},
+                DrawingConnection({...drawingConnection, point}),
               ),
           })
-        | None => ReasonReact.NoUpdate
+        | _ => ReasonReact.NoUpdate
+        }
+      | FinishDragging(scopeNodeID) =>
+        switch (Belt.Map.get(state.pointers, pointerID)) {
+        | Some(DraggingNode(nodeID)) =>
+          if (!
+                isFunctionDefinitionNode(
+                  Belt.Map.String.getExn(implementation.nodes, scopeNodeID),
+                )
+              || nodeID == scopeNodeID) {
+            ReasonReact.NoUpdate;
+          } else {
+            ReasonReact.SideEffects(
+              _ => emit(ChangeNodeScope({nodeID, scopeNodeID})),
+            );
+          }
+        | _ => ReasonReact.NoUpdate
         }
       | FinishDrawing({connectionSide: endNib, isSource: endIsSource}) =>
         switch (Belt.Map.get(state.pointers, pointerID)) {
-        | None => ReasonReact.NoUpdate
-        | Some({
-            explicitConnectionSide: {
-              isSource: startIsSource,
-              connectionSide: startNib,
-            },
-          }) =>
+        | Some(
+            DrawingConnection({
+              explicitConnectionSide: {
+                isSource: startIsSource,
+                connectionSide: startNib,
+              },
+            }),
+          ) =>
           if (startIsSource == endIsSource) {
             if (startNib == endNib) {
               ReasonReact.Update({
@@ -187,7 +214,9 @@ let make =
               );
             };
           }
+        | _ => ReasonReact.NoUpdate
         }
+
       | StopDrawing =>
         Belt.Map.has(state.pointers, pointerID) ?
           ReasonReact.Update({
@@ -435,6 +464,22 @@ let make =
                   }),
                 )
               }
+              onMouseDown={_ =>
+                self.send(
+                  PointerAction({
+                    pointerID: Mouse,
+                    action: StartDragging(nodeID),
+                  }),
+                )
+              }
+              onMouseUp={_ =>
+                self.send(
+                  PointerAction({
+                    pointerID: Mouse,
+                    action: FinishDragging(nodeID),
+                  }),
+                )
+              }
             />
           ),
         ),
@@ -442,31 +487,29 @@ let make =
 
     let renderedDrawingConnections =
       renderMap(
-        (
-          (
-            pointerID: pointerID,
-            {
+        ((pointerID: pointerID, pointerState: pointerState)) =>
+          switch (pointerState) {
+          | DrawingConnection({
               point,
               explicitConnectionSide: {
                 connectionSide,
                 isSource: startIsSource,
               },
-            }: drawingConnection,
-          ),
-        ) => {
-          let adjustedPoint = {x: point.x, y: point.y -. 18.0};
-          <SvgConnection
-            key={pointerIDToString(pointerID)}
-            sourcePosition={
-              startIsSource ?
-                getNibPosition(connectionSide, false) : adjustedPoint
-            }
-            sinkPosition={
-              startIsSource ?
-                adjustedPoint : getNibPosition(connectionSide, true)
-            }
-          />;
-        },
+            }) =>
+            let adjustedPoint = {x: point.x, y: point.y -. 18.0};
+            <SvgConnection
+              key={pointerIDToString(pointerID)}
+              sourcePosition={
+                startIsSource ?
+                  getNibPosition(connectionSide, false) : adjustedPoint
+              }
+              sinkPosition={
+                startIsSource ?
+                  adjustedPoint : getNibPosition(connectionSide, true)
+              }
+            />;
+          | _ => ReasonReact.null
+          },
         self.state.pointers,
       );
 

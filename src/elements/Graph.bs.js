@@ -175,7 +175,7 @@ function make(definitionID, definitions, implementation, definition, display, do
               var renderedSides = ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */[
                         /* x */0.0,
                         /* y */0.0
-                      ], graphSizePixels, 120.0, 20.0, undefined, undefined, undefined, /* array */[]));
+                      ], graphSizePixels, 120.0, 20.0, undefined, undefined, undefined, undefined, undefined, undefined, undefined, /* array */[]));
               var renderedNodes = Belt_List.toArray(Belt_List.map(Helpers$ReactTemplate.sortBy(Belt_MapString.toList(implementation[/* nodes */2]), (function (param) {
                               return Belt_MapString.getExn(nodeLayouts, param[0])[/* depth */2];
                             })), (function (param) {
@@ -188,21 +188,36 @@ function make(definitionID, definitions, implementation, definition, display, do
                                                             /* nodeID */nodeID,
                                                             /* additive */$$event.shiftKey
                                                           ]]));
-                                          }), /* array */[]));
+                                          }), (function (param) {
+                                            return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
+                                                            /* pointerID : Mouse */0,
+                                                            /* action : StartDragging */Block.__(3, [nodeID])
+                                                          ]]));
+                                          }), undefined, (function (param) {
+                                            return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
+                                                            /* pointerID : Mouse */0,
+                                                            /* action : FinishDragging */Block.__(4, [nodeID])
+                                                          ]]));
+                                          }), undefined, /* array */[]));
                         })));
               var renderedDrawingConnections = Helpers$ReactTemplate.renderMap((function (param) {
-                      var match = param[1];
-                      var point = match[/* point */1];
-                      var match$1 = match[/* explicitConnectionSide */0];
-                      var startIsSource = match$1[/* isSource */1];
-                      var connectionSide = match$1[/* connectionSide */0];
-                      var adjustedPoint_000 = /* x */point[/* x */0];
-                      var adjustedPoint_001 = /* y */point[/* y */1] - 18.0;
-                      var adjustedPoint = /* record */[
-                        adjustedPoint_000,
-                        adjustedPoint_001
-                      ];
-                      return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, SvgConnection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, undefined, undefined, undefined, /* array */[]));
+                      var pointerState = param[1];
+                      if (pointerState.tag) {
+                        return null;
+                      } else {
+                        var match = pointerState[0];
+                        var point = match[/* point */1];
+                        var match$1 = match[/* explicitConnectionSide */0];
+                        var startIsSource = match$1[/* isSource */1];
+                        var connectionSide = match$1[/* connectionSide */0];
+                        var adjustedPoint_000 = /* x */point[/* x */0];
+                        var adjustedPoint_001 = /* y */point[/* y */1] - 18.0;
+                        var adjustedPoint = /* record */[
+                          adjustedPoint_000,
+                          adjustedPoint_001
+                        ];
+                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, SvgConnection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, undefined, undefined, undefined, /* array */[]));
+                      }
                     }), self[/* state */1][/* pointers */0]);
               var match$1 = self[/* state */1][/* error */1];
               var match$2 = self[/* state */1][/* selection */2];
@@ -318,88 +333,127 @@ function make(definitionID, definitions, implementation, definition, display, do
                         switch (action$1.tag | 0) {
                           case 0 : 
                               return /* Update */Block.__(0, [/* record */[
-                                          /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, action$1[0]),
+                                          /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* DrawingConnection */Block.__(0, [action$1[0]])),
                                           /* error */state[/* error */1],
                                           /* selection */state[/* selection */2]
                                         ]]);
                           case 1 : 
                               var match$3 = Belt_Map.get(state[/* pointers */0], pointerID);
                               if (match$3 !== undefined) {
-                                return /* Update */Block.__(0, [/* record */[
-                                            /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* record */[
-                                                  /* explicitConnectionSide */match$3[/* explicitConnectionSide */0],
-                                                  /* point */action$1[0]
-                                                ]),
-                                            /* error */state[/* error */1],
-                                            /* selection */state[/* selection */2]
-                                          ]]);
+                                var match$4 = match$3;
+                                if (match$4.tag) {
+                                  return /* NoUpdate */0;
+                                } else {
+                                  return /* Update */Block.__(0, [/* record */[
+                                              /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* DrawingConnection */Block.__(0, [/* record */[
+                                                        /* explicitConnectionSide */match$4[0][/* explicitConnectionSide */0],
+                                                        /* point */action$1[0]
+                                                      ]])),
+                                              /* error */state[/* error */1],
+                                              /* selection */state[/* selection */2]
+                                            ]]);
+                                }
                               } else {
                                 return /* NoUpdate */0;
                               }
                           case 2 : 
-                              var match$4 = action$1[0];
-                              var endNib = match$4[/* connectionSide */0];
-                              var match$5 = Belt_Map.get(state[/* pointers */0], pointerID);
-                              if (match$5 !== undefined) {
-                                var match$6 = match$5[/* explicitConnectionSide */0];
-                                var startIsSource = match$6[/* isSource */1];
-                                var startNib = match$6[/* connectionSide */0];
-                                if (startIsSource === match$4[/* isSource */1]) {
-                                  if (Caml_obj.caml_equal(startNib, endNib)) {
-                                    return /* Update */Block.__(0, [/* record */[
-                                                /* pointers */state[/* pointers */0],
-                                                /* error */undefined,
-                                                /* selection : SelectedNib */Block.__(1, [/* record */[
-                                                      /* connectionSide */startNib,
-                                                      /* isSource */startIsSource
-                                                    ]])
-                                              ]]);
-                                  } else {
-                                    return /* Update */Block.__(0, [/* record */[
-                                                /* pointers */state[/* pointers */0],
-                                                /* error */startIsSource ? "Can't connect a source to a source" : "Can't connect a sink to a sink",
-                                                /* selection */state[/* selection */2]
-                                              ]]);
-                                  }
+                              var match$5 = action$1[0];
+                              var endNib = match$5[/* connectionSide */0];
+                              var match$6 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$6 !== undefined) {
+                                var match$7 = match$6;
+                                if (match$7.tag) {
+                                  return /* NoUpdate */0;
                                 } else {
-                                  var match$7 = startIsSource ? /* tuple */[
-                                      startNib,
-                                      endNib
-                                    ] : /* tuple */[
-                                      endNib,
-                                      startNib
-                                    ];
-                                  var sink = match$7[1];
-                                  var source = match$7[0];
-                                  if (DetectCycles$ReactTemplate.checkScopes(source, sink, implementation[/* nodes */2])) {
-                                    if (DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */1], sink, source), implementation[/* nodes */2])) {
+                                  var match$8 = match$7[0][/* explicitConnectionSide */0];
+                                  var startIsSource = match$8[/* isSource */1];
+                                  var startNib = match$8[/* connectionSide */0];
+                                  if (startIsSource === match$5[/* isSource */1]) {
+                                    if (Caml_obj.caml_equal(startNib, endNib)) {
                                       return /* Update */Block.__(0, [/* record */[
                                                   /* pointers */state[/* pointers */0],
-                                                  /* error */"Can't create cycles",
-                                                  /* selection */state[/* selection */2]
+                                                  /* error */undefined,
+                                                  /* selection : SelectedNib */Block.__(1, [/* record */[
+                                                        /* connectionSide */startNib,
+                                                        /* isSource */startIsSource
+                                                      ]])
                                                 ]]);
                                     } else {
-                                      return /* UpdateWithSideEffects */Block.__(2, [
-                                                /* record */[
-                                                  /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
-                                                  /* error */undefined,
+                                      return /* Update */Block.__(0, [/* record */[
+                                                  /* pointers */state[/* pointers */0],
+                                                  /* error */startIsSource ? "Can't connect a source to a source" : "Can't connect a sink to a sink",
                                                   /* selection */state[/* selection */2]
-                                                ],
-                                                (function (param) {
-                                                    return Curry._1(emit, /* CreateConnection */Block.__(0, [/* record */[
-                                                                    /* source */source,
-                                                                    /* sink */sink
-                                                                  ]]));
-                                                  })
-                                              ]);
+                                                ]]);
                                     }
                                   } else {
-                                    return /* Update */Block.__(0, [/* record */[
-                                                /* pointers */state[/* pointers */0],
-                                                /* error */"When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.",
-                                                /* selection */state[/* selection */2]
-                                              ]]);
+                                    var match$9 = startIsSource ? /* tuple */[
+                                        startNib,
+                                        endNib
+                                      ] : /* tuple */[
+                                        endNib,
+                                        startNib
+                                      ];
+                                    var sink = match$9[1];
+                                    var source = match$9[0];
+                                    if (DetectCycles$ReactTemplate.checkScopes(source, sink, implementation[/* nodes */2])) {
+                                      if (DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */1], sink, source), implementation[/* nodes */2])) {
+                                        return /* Update */Block.__(0, [/* record */[
+                                                    /* pointers */state[/* pointers */0],
+                                                    /* error */"Can't create cycles",
+                                                    /* selection */state[/* selection */2]
+                                                  ]]);
+                                      } else {
+                                        return /* UpdateWithSideEffects */Block.__(2, [
+                                                  /* record */[
+                                                    /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                                                    /* error */undefined,
+                                                    /* selection */state[/* selection */2]
+                                                  ],
+                                                  (function (param) {
+                                                      return Curry._1(emit, /* CreateConnection */Block.__(0, [/* record */[
+                                                                      /* source */source,
+                                                                      /* sink */sink
+                                                                    ]]));
+                                                    })
+                                                ]);
+                                      }
+                                    } else {
+                                      return /* Update */Block.__(0, [/* record */[
+                                                  /* pointers */state[/* pointers */0],
+                                                  /* error */"When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.",
+                                                  /* selection */state[/* selection */2]
+                                                ]]);
+                                    }
                                   }
+                                }
+                              } else {
+                                return /* NoUpdate */0;
+                              }
+                          case 3 : 
+                              return /* Update */Block.__(0, [/* record */[
+                                          /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* DraggingNode */Block.__(1, [action$1[0]])),
+                                          /* error */state[/* error */1],
+                                          /* selection */state[/* selection */2]
+                                        ]]);
+                          case 4 : 
+                              var scopeNodeID = action$1[0];
+                              var match$10 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$10 !== undefined) {
+                                var match$11 = match$10;
+                                if (match$11.tag) {
+                                  var nodeID = match$11[0];
+                                  if (!Definition$ReactTemplate.isFunctionDefinitionNode(Belt_MapString.getExn(implementation[/* nodes */2], scopeNodeID)) || nodeID === scopeNodeID) {
+                                    return /* NoUpdate */0;
+                                  } else {
+                                    return /* SideEffects */Block.__(1, [(function (param) {
+                                                  return Curry._1(emit, /* ChangeNodeScope */Block.__(8, [/* record */[
+                                                                  /* nodeID */nodeID,
+                                                                  /* scopeNodeID */scopeNodeID
+                                                                ]]));
+                                                })]);
+                                  }
+                                } else {
+                                  return /* NoUpdate */0;
                                 }
                               } else {
                                 return /* NoUpdate */0;
@@ -414,26 +468,26 @@ function make(definitionID, definitions, implementation, definition, display, do
                                   /* selection : SelectedConnection */Block.__(0, [action[0]])
                                 ]]);
                   case 2 : 
-                      var match$8 = action[0];
-                      var nodeID = match$8[/* nodeID */0];
-                      var match$9 = state[/* selection */2];
+                      var match$12 = action[0];
+                      var nodeID$1 = match$12[/* nodeID */0];
+                      var match$13 = state[/* selection */2];
                       var tmp;
-                      if (typeof match$9 === "number") {
-                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID])]);
-                      } else if (match$9.tag === 2) {
-                        var nodeIDs$1 = match$9[0];
-                        if (match$8[/* additive */1]) {
-                          if (Belt_SetString.has(nodeIDs$1, nodeID)) {
-                            var newNodeIDs = Belt_SetString.remove(nodeIDs$1, nodeID);
+                      if (typeof match$13 === "number") {
+                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$1])]);
+                      } else if (match$13.tag === 2) {
+                        var nodeIDs$1 = match$13[0];
+                        if (match$12[/* additive */1]) {
+                          if (Belt_SetString.has(nodeIDs$1, nodeID$1)) {
+                            var newNodeIDs = Belt_SetString.remove(nodeIDs$1, nodeID$1);
                             tmp = Belt_SetString.isEmpty(newNodeIDs) ? /* NoSelection */0 : /* SelectedNodes */Block.__(2, [newNodeIDs]);
                           } else {
-                            tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.add(nodeIDs$1, nodeID)]);
+                            tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.add(nodeIDs$1, nodeID$1)]);
                           }
                         } else {
-                          tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID])]);
+                          tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$1])]);
                         }
                       } else {
-                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID])]);
+                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$1])]);
                       }
                       return /* Update */Block.__(0, [/* record */[
                                   /* pointers */state[/* pointers */0],

@@ -475,6 +475,28 @@ let make = (~definitions, _children) => {
           },
           _ => ReasonReact.Router.push("#" ++ newDefinitionID),
         );
+      | ChangeNodeScope({nodeID, scopeNodeID}) =>
+        Js.log("change node scope!");
+        switch (definition.implementation) {
+        | GraphImplementation(graphImplementation) =>
+          let node =
+            Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
+          let newNode = {...node, scope: NodeScope(scopeNodeID)};
+          updateDefinition({
+            ...definition,
+            implementation:
+              GraphImplementation({
+                ...graphImplementation,
+                nodes:
+                  Belt.Map.String.set(
+                    graphImplementation.nodes,
+                    nodeID,
+                    newNode,
+                  ),
+              }),
+          });
+        | _ => ReasonReact.NoUpdate
+        };
       };
     },
   render: self =>

@@ -9,7 +9,7 @@ var SvgDefinitionBox$ReactTemplate = require("./SvgDefinitionBox.bs.js");
 
 var component = ReasonReact.statelessComponent("Node");
 
-function make(node, definitions, position, size, nodeWidth, textHeight, $staropt$star, onClick, _children) {
+function make(node, definitions, position, size, nodeWidth, textHeight, $staropt$star, onClick, onMouseDown, onTouchStart, onMouseUp, onTouchEnd, _children) {
   var selected = $staropt$star !== undefined ? $staropt$star : false;
   return /* record */[
           /* debugName */component[/* debugName */0],
@@ -23,7 +23,7 @@ function make(node, definitions, position, size, nodeWidth, textHeight, $staropt
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               var makeNode = function (name, onDoubleClick) {
-                return ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(name, position, size[/* y */1], nodeWidth, textHeight, onDoubleClick, selected, onClick, /* array */[]));
+                return ReasonReact.element(undefined, undefined, NibsBox$ReactTemplate.make(name, position, size[/* y */1], nodeWidth, textHeight, selected, onDoubleClick, onClick, onMouseDown, onTouchStart, onMouseUp, onTouchEnd, /* array */[]));
               };
               var match = node[/* kind */1];
               if (typeof match === "number") {
@@ -36,7 +36,7 @@ function make(node, definitions, position, size, nodeWidth, textHeight, $staropt
                   return ReasonReact.Router[/* push */0]("#" + definitionID);
                 };
                 if (Definition$ReactTemplate.isFunctionDefinitionNode(node)) {
-                  return ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(name, position, size, nodeWidth, textHeight, selected, onDoubleClick, onClick, /* array */[]));
+                  return ReasonReact.element(undefined, undefined, SvgDefinitionBox$ReactTemplate.make(name, position, size, nodeWidth, textHeight, selected, onClick, onDoubleClick, onMouseDown, onTouchStart, onMouseUp, onTouchEnd, /* array */[]));
                 } else {
                   return makeNode(name, onDoubleClick);
                 }
