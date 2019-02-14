@@ -42,7 +42,7 @@ type addNode = {
 
 type changeNodeScope = {
   nodeID,
-  scopeNodeID: nodeID,
+  nodeScope,
 };
 
 type definitionAction =

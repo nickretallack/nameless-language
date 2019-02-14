@@ -196,7 +196,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                           }), undefined, (function (param) {
                                             return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
                                                             /* pointerID : Mouse */0,
-                                                            /* action : FinishDragging */Block.__(4, [nodeID])
+                                                            /* action : FinishDragging */Block.__(4, [/* NodeScope */[nodeID]])
                                                           ]]));
                                           }), undefined, /* array */[]));
                         })));
@@ -319,13 +319,31 @@ function make(definitionID, definitions, implementation, definition, display, do
                       var action$1 = match$1[/* action */1];
                       var pointerID = match$1[/* pointerID */0];
                       if (typeof action$1 === "number") {
-                        var match$2 = Belt_Map.has(state[/* pointers */0], pointerID);
-                        if (match$2) {
-                          return /* Update */Block.__(0, [/* record */[
-                                      /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
-                                      /* error */state[/* error */1],
-                                      /* selection */state[/* selection */2]
-                                    ]]);
+                        var match$2 = Belt_Map.get(state[/* pointers */0], pointerID);
+                        if (match$2 !== undefined) {
+                          var match$3 = match$2;
+                          if (match$3.tag) {
+                            var nodeID = match$3[0];
+                            return /* UpdateWithSideEffects */Block.__(2, [
+                                      /* record */[
+                                        /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                                        /* error */state[/* error */1],
+                                        /* selection */state[/* selection */2]
+                                      ],
+                                      (function (param) {
+                                          return Curry._1(emit, /* ChangeNodeScope */Block.__(8, [/* record */[
+                                                          /* nodeID */nodeID,
+                                                          /* nodeScope : GraphScope */0
+                                                        ]]));
+                                        })
+                                    ]);
+                          } else {
+                            return /* Update */Block.__(0, [/* record */[
+                                        /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                                        /* error */state[/* error */1],
+                                        /* selection */state[/* selection */2]
+                                      ]]);
+                          }
                         } else {
                           return /* NoUpdate */0;
                         }
@@ -338,15 +356,15 @@ function make(definitionID, definitions, implementation, definition, display, do
                                           /* selection */state[/* selection */2]
                                         ]]);
                           case 1 : 
-                              var match$3 = Belt_Map.get(state[/* pointers */0], pointerID);
-                              if (match$3 !== undefined) {
-                                var match$4 = match$3;
-                                if (match$4.tag) {
+                              var match$4 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$4 !== undefined) {
+                                var match$5 = match$4;
+                                if (match$5.tag) {
                                   return /* NoUpdate */0;
                                 } else {
                                   return /* Update */Block.__(0, [/* record */[
                                               /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* DrawingConnection */Block.__(0, [/* record */[
-                                                        /* explicitConnectionSide */match$4[0][/* explicitConnectionSide */0],
+                                                        /* explicitConnectionSide */match$5[0][/* explicitConnectionSide */0],
                                                         /* point */action$1[0]
                                                       ]])),
                                               /* error */state[/* error */1],
@@ -357,18 +375,18 @@ function make(definitionID, definitions, implementation, definition, display, do
                                 return /* NoUpdate */0;
                               }
                           case 2 : 
-                              var match$5 = action$1[0];
-                              var endNib = match$5[/* connectionSide */0];
-                              var match$6 = Belt_Map.get(state[/* pointers */0], pointerID);
-                              if (match$6 !== undefined) {
-                                var match$7 = match$6;
-                                if (match$7.tag) {
+                              var match$6 = action$1[0];
+                              var endNib = match$6[/* connectionSide */0];
+                              var match$7 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$7 !== undefined) {
+                                var match$8 = match$7;
+                                if (match$8.tag) {
                                   return /* NoUpdate */0;
                                 } else {
-                                  var match$8 = match$7[0][/* explicitConnectionSide */0];
-                                  var startIsSource = match$8[/* isSource */1];
-                                  var startNib = match$8[/* connectionSide */0];
-                                  if (startIsSource === match$5[/* isSource */1]) {
+                                  var match$9 = match$8[0][/* explicitConnectionSide */0];
+                                  var startIsSource = match$9[/* isSource */1];
+                                  var startNib = match$9[/* connectionSide */0];
+                                  if (startIsSource === match$6[/* isSource */1]) {
                                     if (Caml_obj.caml_equal(startNib, endNib)) {
                                       return /* Update */Block.__(0, [/* record */[
                                                   /* pointers */state[/* pointers */0],
@@ -386,15 +404,15 @@ function make(definitionID, definitions, implementation, definition, display, do
                                                 ]]);
                                     }
                                   } else {
-                                    var match$9 = startIsSource ? /* tuple */[
+                                    var match$10 = startIsSource ? /* tuple */[
                                         startNib,
                                         endNib
                                       ] : /* tuple */[
                                         endNib,
                                         startNib
                                       ];
-                                    var sink = match$9[1];
-                                    var source = match$9[0];
+                                    var sink = match$10[1];
+                                    var source = match$10[0];
                                     if (DetectCycles$ReactTemplate.checkScopes(source, sink, implementation[/* nodes */2])) {
                                       if (DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */1], sink, source), implementation[/* nodes */2])) {
                                         return /* Update */Block.__(0, [/* record */[
@@ -436,22 +454,18 @@ function make(definitionID, definitions, implementation, definition, display, do
                                           /* selection */state[/* selection */2]
                                         ]]);
                           case 4 : 
-                              var scopeNodeID = action$1[0];
-                              var match$10 = Belt_Map.get(state[/* pointers */0], pointerID);
-                              if (match$10 !== undefined) {
-                                var match$11 = match$10;
-                                if (match$11.tag) {
-                                  var nodeID = match$11[0];
-                                  if (!Definition$ReactTemplate.isFunctionDefinitionNode(Belt_MapString.getExn(implementation[/* nodes */2], scopeNodeID)) || nodeID === scopeNodeID) {
-                                    return /* NoUpdate */0;
-                                  } else {
-                                    return /* SideEffects */Block.__(1, [(function (param) {
-                                                  return Curry._1(emit, /* ChangeNodeScope */Block.__(8, [/* record */[
-                                                                  /* nodeID */nodeID,
-                                                                  /* scopeNodeID */scopeNodeID
-                                                                ]]));
-                                                })]);
-                                  }
+                              var nodeScope = action$1[0];
+                              var match$11 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$11 !== undefined) {
+                                var match$12 = match$11;
+                                if (match$12.tag) {
+                                  var nodeID$1 = match$12[0];
+                                  return /* SideEffects */Block.__(1, [(function (param) {
+                                                return Curry._1(emit, /* ChangeNodeScope */Block.__(8, [/* record */[
+                                                                /* nodeID */nodeID$1,
+                                                                /* nodeScope */nodeScope
+                                                              ]]));
+                                              })]);
                                 } else {
                                   return /* NoUpdate */0;
                                 }
@@ -468,26 +482,26 @@ function make(definitionID, definitions, implementation, definition, display, do
                                   /* selection : SelectedConnection */Block.__(0, [action[0]])
                                 ]]);
                   case 2 : 
-                      var match$12 = action[0];
-                      var nodeID$1 = match$12[/* nodeID */0];
-                      var match$13 = state[/* selection */2];
+                      var match$13 = action[0];
+                      var nodeID$2 = match$13[/* nodeID */0];
+                      var match$14 = state[/* selection */2];
                       var tmp;
-                      if (typeof match$13 === "number") {
-                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$1])]);
-                      } else if (match$13.tag === 2) {
-                        var nodeIDs$1 = match$13[0];
-                        if (match$12[/* additive */1]) {
-                          if (Belt_SetString.has(nodeIDs$1, nodeID$1)) {
-                            var newNodeIDs = Belt_SetString.remove(nodeIDs$1, nodeID$1);
+                      if (typeof match$14 === "number") {
+                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$2])]);
+                      } else if (match$14.tag === 2) {
+                        var nodeIDs$1 = match$14[0];
+                        if (match$13[/* additive */1]) {
+                          if (Belt_SetString.has(nodeIDs$1, nodeID$2)) {
+                            var newNodeIDs = Belt_SetString.remove(nodeIDs$1, nodeID$2);
                             tmp = Belt_SetString.isEmpty(newNodeIDs) ? /* NoSelection */0 : /* SelectedNodes */Block.__(2, [newNodeIDs]);
                           } else {
-                            tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.add(nodeIDs$1, nodeID$1)]);
+                            tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.add(nodeIDs$1, nodeID$2)]);
                           }
                         } else {
-                          tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$1])]);
+                          tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$2])]);
                         }
                       } else {
-                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$1])]);
+                        tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$2])]);
                       }
                       return /* Update */Block.__(0, [/* record */[
                                   /* pointers */state[/* pointers */0],

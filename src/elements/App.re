@@ -475,26 +475,41 @@ let make = (~definitions, _children) => {
           },
           _ => ReasonReact.Router.push("#" ++ newDefinitionID),
         );
-      | ChangeNodeScope({nodeID, scopeNodeID}) =>
+      | ChangeNodeScope({nodeID, nodeScope}) =>
         Js.log("change node scope!");
         switch (definition.implementation) {
         | GraphImplementation(graphImplementation) =>
-          let node =
-            Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
-          let newNode = {...node, scope: NodeScope(scopeNodeID)};
-          updateDefinition({
-            ...definition,
-            implementation:
-              GraphImplementation({
-                ...graphImplementation,
-                nodes:
-                  Belt.Map.String.set(
+          if (switch (nodeScope) {
+              | GraphScope => true
+              | NodeScope(scopeNodeID) =>
+                isFunctionDefinitionNode(
+                  Belt.Map.String.getExn(
                     graphImplementation.nodes,
-                    nodeID,
-                    newNode,
+                    scopeNodeID,
                   ),
-              }),
-          });
+                )
+                && nodeID != scopeNodeID
+              }) {
+            let node =
+              Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
+            let newNode = {...node, scope: nodeScope};
+            updateDefinition({
+              ...definition,
+              implementation:
+                GraphImplementation({
+                  ...graphImplementation,
+                  nodes:
+                    Belt.Map.String.set(
+                      graphImplementation.nodes,
+                      nodeID,
+                      newNode,
+                    ),
+                }),
+            });
+          } else {
+            ReasonReact.NoUpdate;
+          }
+
         | _ => ReasonReact.NoUpdate
         };
       };

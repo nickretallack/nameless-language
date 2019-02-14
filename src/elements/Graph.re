@@ -132,20 +132,12 @@ let make =
           })
         | _ => ReasonReact.NoUpdate
         }
-      | FinishDragging(scopeNodeID) =>
+      | FinishDragging(nodeScope) =>
         switch (Belt.Map.get(state.pointers, pointerID)) {
         | Some(DraggingNode(nodeID)) =>
-          if (!
-                isFunctionDefinitionNode(
-                  Belt.Map.String.getExn(implementation.nodes, scopeNodeID),
-                )
-              || nodeID == scopeNodeID) {
-            ReasonReact.NoUpdate;
-          } else {
-            ReasonReact.SideEffects(
-              _ => emit(ChangeNodeScope({nodeID, scopeNodeID})),
-            );
-          }
+          ReasonReact.SideEffects(
+            _ => emit(ChangeNodeScope({nodeID, nodeScope})),
+          )
         | _ => ReasonReact.NoUpdate
         }
       | FinishDrawing({connectionSide: endNib, isSource: endIsSource}) =>
@@ -218,12 +210,19 @@ let make =
         }
 
       | StopDrawing =>
-        Belt.Map.has(state.pointers, pointerID) ?
+        switch (Belt.Map.get(state.pointers, pointerID)) {
+        | Some(DrawingConnection(_)) =>
           ReasonReact.Update({
             ...state,
             pointers: Belt.Map.remove(state.pointers, pointerID),
-          }) :
-          ReasonReact.NoUpdate
+          })
+        | Some(DraggingNode(nodeID)) =>
+          ReasonReact.UpdateWithSideEffects(
+            {...state, pointers: Belt.Map.remove(state.pointers, pointerID)},
+            _ => emit(ChangeNodeScope({nodeID, nodeScope: GraphScope})),
+          )
+        | _ => ReasonReact.NoUpdate
+        }
       }
     },
   render: self => {
@@ -476,7 +475,7 @@ let make =
                 self.send(
                   PointerAction({
                     pointerID: Mouse,
-                    action: FinishDragging(nodeID),
+                    action: FinishDragging(NodeScope(nodeID)),
                   }),
                 )
               }

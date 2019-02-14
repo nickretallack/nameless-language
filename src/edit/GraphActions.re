@@ -27,7 +27,7 @@ type pointerAction =
   | FinishDrawing(explicitConnectionSide)
   | StopDrawing
   | StartDragging(nodeID)
-  | FinishDragging(nodeID);
+  | FinishDragging(nodeScope);
 
 type pointerActionRecord = {
   pointerID,
