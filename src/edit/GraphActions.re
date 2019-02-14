@@ -23,10 +23,10 @@ type pointerState =
 
 type pointerAction =
   | StartDrawing(drawingConnection)
-  | ContinueDrawing(point)
-  | FinishDrawing(explicitConnectionSide)
-  | StopDrawing
   | StartDragging(nodeID)
+  | MovePointer(point)
+  | ReleasePointer
+  | FinishDrawing(explicitConnectionSide)
   | FinishDragging(nodeScope);
 
 type pointerActionRecord = {

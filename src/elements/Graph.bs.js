@@ -64,7 +64,6 @@ function make(definitionID, definitions, implementation, definition, display, do
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
-              console.log(Definition$ReactTemplate.encodeGraphImplementation(implementation));
               var columnizedNodes = ColumnizeNodes$ReactTemplate.columnizeNodes(implementation[/* nodes */2], implementation[/* connections */1]);
               var scopedNodeIDs = Belt_MapString.reduce(implementation[/* nodes */2], Belt_Map.make(Definition$ReactTemplate.ScopeComparator), (function (scopes, id, node) {
                       return Belt_Map.update(scopes, node[/* scope */0], (function (nodeIDs) {
@@ -191,7 +190,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                           }), (function (param) {
                                             return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
                                                             /* pointerID : Mouse */0,
-                                                            /* action : StartDragging */Block.__(3, [nodeID])
+                                                            /* action : StartDragging */Block.__(1, [nodeID])
                                                           ]]));
                                           }), undefined, (function (param) {
                                             return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
@@ -254,20 +253,20 @@ function make(definitionID, definitions, implementation, definition, display, do
                                   $$event.preventDefault();
                                   return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
                                                   /* pointerID : Mouse */0,
-                                                  /* action : ContinueDrawing */Block.__(1, [Helpers$ReactTemplate.pointFromMouse($$event)])
+                                                  /* action : MovePointer */Block.__(2, [Helpers$ReactTemplate.pointFromMouse($$event)])
                                                 ]]));
                                 }),
                               onMouseUp: (function (param) {
                                   return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
                                                   /* pointerID : Mouse */0,
-                                                  /* action : StopDrawing */0
+                                                  /* action : ReleasePointer */0
                                                 ]]));
                                 }),
                               onTouchEnd: (function ($$event) {
                                   return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
                                                 return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
                                                                 /* pointerID : Touch */[touch.identifier],
-                                                                /* action : StopDrawing */0
+                                                                /* action : ReleasePointer */0
                                                               ]]));
                                               }));
                                 }),
@@ -275,7 +274,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                   return Helpers$ReactTemplate.iterateTouches($$event, (function (touch) {
                                                 return Curry._1(self[/* send */3], /* PointerAction */Block.__(0, [/* record */[
                                                                 /* pointerID : Touch */[touch.identifier],
-                                                                /* action : ContinueDrawing */Block.__(1, [/* record */[
+                                                                /* action : MovePointer */Block.__(2, [/* record */[
                                                                       /* x */touch.clientX - $$event.currentTarget.offsetLeft,
                                                                       /* y */touch.clientY - $$event.currentTarget.offsetTop
                                                                     ]])
@@ -356,6 +355,12 @@ function make(definitionID, definitions, implementation, definition, display, do
                                           /* selection */state[/* selection */2]
                                         ]]);
                           case 1 : 
+                              return /* Update */Block.__(0, [/* record */[
+                                          /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* DraggingNode */Block.__(1, [action$1[0]])),
+                                          /* error */state[/* error */1],
+                                          /* selection */state[/* selection */2]
+                                        ]]);
+                          case 2 : 
                               var match$4 = Belt_Map.get(state[/* pointers */0], pointerID);
                               if (match$4 !== undefined) {
                                 var match$5 = match$4;
@@ -374,7 +379,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                               } else {
                                 return /* NoUpdate */0;
                               }
-                          case 2 : 
+                          case 3 : 
                               var match$6 = action$1[0];
                               var endNib = match$6[/* connectionSide */0];
                               var match$7 = Belt_Map.get(state[/* pointers */0], pointerID);
@@ -447,12 +452,6 @@ function make(definitionID, definitions, implementation, definition, display, do
                               } else {
                                 return /* NoUpdate */0;
                               }
-                          case 3 : 
-                              return /* Update */Block.__(0, [/* record */[
-                                          /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* DraggingNode */Block.__(1, [action$1[0]])),
-                                          /* error */state[/* error */1],
-                                          /* selection */state[/* selection */2]
-                                        ]]);
                           case 4 : 
                               var nodeScope = action$1[0];
                               var match$11 = Belt_Map.get(state[/* pointers */0], pointerID);

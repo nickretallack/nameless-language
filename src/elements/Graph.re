@@ -118,7 +118,7 @@ let make =
           pointers:
             Belt.Map.set(state.pointers, pointerID, DraggingNode(nodeID)),
         })
-      | ContinueDrawing(point) =>
+      | MovePointer(point) =>
         switch (Belt.Map.get(state.pointers, pointerID)) {
         | Some(DrawingConnection(drawingConnection)) =>
           ReasonReact.Update({
@@ -209,7 +209,7 @@ let make =
         | _ => ReasonReact.NoUpdate
         }
 
-      | StopDrawing =>
+      | ReleasePointer =>
         switch (Belt.Map.get(state.pointers, pointerID)) {
         | Some(DrawingConnection(_)) =>
           ReasonReact.Update({
@@ -226,8 +226,6 @@ let make =
       }
     },
   render: self => {
-    Js.log(encodeGraphImplementation(implementation));
-
     let getNode = (nodeID: nodeID) =>
       Belt.Map.String.getExn(implementation.nodes, nodeID);
 
@@ -521,7 +519,7 @@ let make =
           self.send(
             PointerAction({
               pointerID: Mouse,
-              action: ContinueDrawing(pointFromMouse(event)),
+              action: MovePointer(pointFromMouse(event)),
             }),
           );
         }}
@@ -531,7 +529,7 @@ let make =
               PointerAction({
                 pointerID: Touch(touch##identifier),
                 action:
-                  ContinueDrawing({
+                  MovePointer({
                     x:
                       touch##clientX
                       -.
@@ -546,14 +544,16 @@ let make =
           )
         }
         onMouseUp={_ =>
-          self.send(PointerAction({pointerID: Mouse, action: StopDrawing}))
+          self.send(
+            PointerAction({pointerID: Mouse, action: ReleasePointer}),
+          )
         }
         onTouchEnd={event =>
           iterateTouches(event, touch =>
             self.send(
               PointerAction({
                 pointerID: Touch(touch##identifier),
-                action: StopDrawing,
+                action: ReleasePointer,
               }),
             )
           )

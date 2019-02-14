@@ -24,7 +24,7 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
                 Caml_option.valFromOption(match).addEventListener("finish-drawing", (function ($$event) {
                         return Curry._1(emit, /* PointerAction */Block.__(0, [/* record */[
                                         /* pointerID : Touch */[$$event.detail.identifier],
-                                        /* action : FinishDrawing */Block.__(2, [/* record */[
+                                        /* action : FinishDrawing */Block.__(3, [/* record */[
                                               /* connectionSide */connectionSide,
                                               /* isSource */isSource
                                             ]])
@@ -67,7 +67,7 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
                               onMouseUp: (function (param) {
                                   return Curry._1(emit, /* PointerAction */Block.__(0, [/* record */[
                                                   /* pointerID : Mouse */0,
-                                                  /* action : FinishDrawing */Block.__(2, [/* record */[
+                                                  /* action : FinishDrawing */Block.__(3, [/* record */[
                                                         /* connectionSide */connectionSide,
                                                         /* isSource */isSource
                                                       ]])
