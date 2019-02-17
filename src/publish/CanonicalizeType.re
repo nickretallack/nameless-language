@@ -58,6 +58,15 @@ let canonicalizeTypedFields =
     )
   );
 
+let canonicalizeTypeSet =
+    (typeSet: typeSet, dependencies: publishingDependencies)
+    : Belt.List.t(publishingValueType) =>
+  Belt.List.map(
+    Helpers.sortBy(Belt.List.fromArray(Belt.Set.toArray(typeSet)), x => x),
+    valueType =>
+    canonicalizeType(valueType, dependencies)
+  );
+
 let encodeRecordType = (fields: Belt.List.t(publishingValueType)): Js.Json.t =>
   Json.Encode.(
     object_([
@@ -102,15 +111,8 @@ let encodeCanonicalRecordType =
   );
 
 let encodeCanonicalUnionType =
-    (
-      typedFields: typedFields,
-      dependencies: publishingDependencies,
-      fieldOrdering: Belt.List.t(nibID),
-    )
-    : Js.Json.t =>
-  encodeUnionType(
-    canonicalizeTypedFields(typedFields, dependencies, fieldOrdering),
-  );
+    (typeSet: typeSet, dependencies: publishingDependencies): Js.Json.t =>
+  encodeUnionType(canonicalizeTypeSet(typeSet, dependencies));
 
 let encodeCanonicalLabeledType =
     (

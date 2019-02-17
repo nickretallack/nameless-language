@@ -2,9 +2,11 @@
 'use strict';
 
 var Block = require("bs-platform/lib/js/block.js");
+var Belt_Set = require("bs-platform/lib/js/belt_Set.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
 
 function primitiveValueTypeToString(primitiveValueType) {
   switch (primitiveValueType) {
@@ -78,6 +80,14 @@ function canonicalizeTypedFields(typedFields, dependencies, fieldOrdering) {
               }));
 }
 
+function canonicalizeTypeSet(typeSet, dependencies) {
+  return Belt_List.map(Helpers$ReactTemplate.sortBy(Belt_List.fromArray(Belt_Set.toArray(typeSet)), (function (x) {
+                    return x;
+                  })), (function (valueType) {
+                return canonicalizeType(valueType, dependencies);
+              }));
+}
+
 function encodeRecordType(fields) {
   return Json_encode.object_(/* :: */[
               /* tuple */[
@@ -136,8 +146,8 @@ function encodeCanonicalRecordType(typedFields, dependencies, fieldOrdering) {
   return encodeRecordType(canonicalizeTypedFields(typedFields, dependencies, fieldOrdering));
 }
 
-function encodeCanonicalUnionType(typedFields, dependencies, fieldOrdering) {
-  return encodeUnionType(canonicalizeTypedFields(typedFields, dependencies, fieldOrdering));
+function encodeCanonicalUnionType(typeSet, dependencies) {
+  return encodeUnionType(canonicalizeTypeSet(typeSet, dependencies));
 }
 
 function encodeCanonicalLabeledType(id, maybeValueType, dependencies) {
@@ -211,6 +221,7 @@ exports.encodeValueType = encodeValueType;
 exports.encodeTypedFields = encodeTypedFields;
 exports.canonicalizeType = canonicalizeType;
 exports.canonicalizeTypedFields = canonicalizeTypedFields;
+exports.canonicalizeTypeSet = canonicalizeTypeSet;
 exports.encodeRecordType = encodeRecordType;
 exports.encodeUnionType = encodeUnionType;
 exports.encodeLabeledType = encodeLabeledType;
@@ -222,4 +233,4 @@ exports.encodeInterface = encodeInterface;
 exports.encodeCanonicalInterface = encodeCanonicalInterface;
 exports.encodeExternal = encodeExternal;
 exports.encodeCanonicalExternal = encodeCanonicalExternal;
-/* No side effect */
+/* Helpers-ReactTemplate Not a pure module */

@@ -349,6 +349,10 @@ function stringToPrimitiveValueType(string) {
   }
 }
 
+var cmp$2 = Caml_obj.caml_compare;
+
+var ValueTypeComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp$2]);
+
 var changeTypedFields = Belt_MapString.set;
 
 function changeInterface($$interface, isInput, nibID, valueType) {
@@ -897,6 +901,7 @@ exports.isKeywordNib = isKeywordNib;
 exports.primitiveValueTypes = primitiveValueTypes;
 exports.primitiveValueTypeToString = primitiveValueTypeToString;
 exports.stringToPrimitiveValueType = stringToPrimitiveValueType;
+exports.ValueTypeComparator = ValueTypeComparator;
 exports.changeTypedFields = changeTypedFields;
 exports.changeInterface = changeInterface;
 exports.editInterfaceNibs = editInterfaceNibs;

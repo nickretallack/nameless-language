@@ -28,7 +28,7 @@ function canonicalizeImplementation(id, implementation, display, dependencies) {
         tmp = CanonicalizeType$ReactTemplate.encodeCanonicalLabeledType(id, implementation[0], dependencies);
         break;
     case 6 : 
-        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalUnionType(implementation[0], dependencies, display[/* inputOrdering */0]);
+        tmp = CanonicalizeType$ReactTemplate.encodeCanonicalUnionType(implementation[0], dependencies);
         break;
     
   }
@@ -36,4 +36,4 @@ function canonicalizeImplementation(id, implementation, display, dependencies) {
 }
 
 exports.canonicalizeImplementation = canonicalizeImplementation;
-/* CanonicalizeGraph-ReactTemplate Not a pure module */
+/* CanonicalizeType-ReactTemplate Not a pure module */

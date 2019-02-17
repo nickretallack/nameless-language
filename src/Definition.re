@@ -288,7 +288,14 @@ type valueType =
   | DefinedValueType(definitionID)
   | AnyType;
 
+module ValueTypeComparator =
+  Belt.Id.MakeComparable({
+    type t = valueType;
+    let cmp = compare;
+  });
+
 type typedFields = Belt.Map.String.t(valueType);
+type typeSet = Belt.Set.t(valueType, ValueTypeComparator.identity);
 
 let changeTypedFields =
     (typedFields: typedFields, nibID: nibID, valueType: valueType) =>
@@ -423,7 +430,7 @@ type implementation =
   | GraphImplementation(graphImplementation)
   | RecordTypeImplementation(typedFields)
   | LabeledTypeImplementation(option(valueType))
-  | UnionTypeImplementation(typedFields);
+  | UnionTypeImplementation(typeSet);
 
 let implementationName = (implementation: implementation): string =>
   switch (implementation) {

@@ -25,11 +25,7 @@ let canonicalizeImplementation =
         display.inputOrdering,
       )
     | UnionTypeImplementation(typedFields) =>
-      CanonicalizeType.encodeCanonicalUnionType(
-        typedFields,
-        dependencies,
-        display.inputOrdering,
-      )
+      CanonicalizeType.encodeCanonicalUnionType(typedFields, dependencies)
     | InterfaceImplementation(interface) =>
       CanonicalizeType.encodeCanonicalInterface(
         interface,

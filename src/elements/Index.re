@@ -386,6 +386,33 @@ let nestedInlineExample =
     (),
   );
 
+let yesLabel =
+  makeDefinition(
+    ~name="Yes",
+    ~implementation=LabeledTypeImplementation(None),
+    (),
+  );
+
+let noLabel =
+  makeDefinition(
+    ~name="No",
+    ~implementation=LabeledTypeImplementation(None),
+    (),
+  );
+
+let booleanUnion =
+  makeDefinition(
+    ~name="Boolean",
+    ~implementation=
+      UnionTypeImplementation(
+        Belt.Set.fromArray(
+          [|DefinedValueType("yes"), DefinedValueType("no")|],
+          ~id=(module ValueTypeComparator),
+        ),
+      ),
+    (),
+  );
+
 let definitions =
   Belt.Map.String.fromArray([|
     ("example", example),
@@ -398,6 +425,9 @@ let definitions =
     ("example-interface", exampleInterface),
     ("interface-example", interfaceExample),
     ("nested-inline-example", nestedInlineExample),
+    ("yes", yesLabel),
+    ("no", noLabel),
+    ("boolean", booleanUnion),
   |]);
 
 ReactDOMRe.renderToElementWithId(<App definitions />, "graph");

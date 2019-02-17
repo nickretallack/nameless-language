@@ -2,6 +2,7 @@
 'use strict';
 
 var Block = require("bs-platform/lib/js/block.js");
+var Belt_Set = require("bs-platform/lib/js/belt_Set.js");
 var ReactDOMRe = require("reason-react/src/ReactDOMRe.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
@@ -491,6 +492,15 @@ var nestedInlineExample = Definition$ReactTemplate.makeGraph("Nested Inline Func
         ]
       ]], /* () */0);
 
+var yesLabel = Definition$ReactTemplate.makeDefinition("Yes", undefined, undefined, undefined, /* LabeledTypeImplementation */Block.__(5, [undefined]), /* () */0);
+
+var noLabel = Definition$ReactTemplate.makeDefinition("No", undefined, undefined, undefined, /* LabeledTypeImplementation */Block.__(5, [undefined]), /* () */0);
+
+var booleanUnion = Definition$ReactTemplate.makeDefinition("Boolean", undefined, undefined, undefined, /* UnionTypeImplementation */Block.__(6, [Belt_Set.fromArray(/* array */[
+              /* DefinedValueType */Block.__(1, ["yes"]),
+              /* DefinedValueType */Block.__(1, ["no"])
+            ], Definition$ReactTemplate.ValueTypeComparator)]), /* () */0);
+
 var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "example",
@@ -531,6 +541,18 @@ var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "nested-inline-example",
         nestedInlineExample
+      ],
+      /* tuple */[
+        "yes",
+        yesLabel
+      ],
+      /* tuple */[
+        "no",
+        noLabel
+      ],
+      /* tuple */[
+        "boolean",
+        booleanUnion
       ]
     ]);
 
@@ -546,5 +568,8 @@ exports.referenceExample = referenceExample;
 exports.exampleInterface = exampleInterface;
 exports.interfaceExample = interfaceExample;
 exports.nestedInlineExample = nestedInlineExample;
+exports.yesLabel = yesLabel;
+exports.noLabel = noLabel;
+exports.booleanUnion = booleanUnion;
 exports.definitions = definitions;
 /* example Not a pure module */
