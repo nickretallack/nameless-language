@@ -123,8 +123,8 @@ function encodeLabeledType(id, valueType) {
                 ],
                 /* :: */[
                   /* tuple */[
-                    "type",
-                    encodeValueType(valueType)
+                    "wrapped",
+                    valueType !== undefined ? encodeValueType(valueType) : null
                   ],
                   /* [] */0
                 ]
@@ -140,8 +140,8 @@ function encodeCanonicalUnionType(typedFields, dependencies, fieldOrdering) {
   return encodeUnionType(canonicalizeTypedFields(typedFields, dependencies, fieldOrdering));
 }
 
-function encodeCanonicalLabeledType(id, valueType, dependencies) {
-  return encodeLabeledType(id, canonicalizeType(valueType, dependencies));
+function encodeCanonicalLabeledType(id, maybeValueType, dependencies) {
+  return encodeLabeledType(id, maybeValueType !== undefined ? canonicalizeType(maybeValueType, dependencies) : undefined);
 }
 
 function canonicalizeInterface($$interface, dependencies, display) {

@@ -422,7 +422,7 @@ type implementation =
   | ExternalImplementation(externalImplementation)
   | GraphImplementation(graphImplementation)
   | RecordTypeImplementation(typedFields)
-  | LabeledTypeImplementation(valueType)
+  | LabeledTypeImplementation(option(valueType))
   | UnionTypeImplementation(typedFields);
 
 let implementationName = (implementation: implementation): string =>

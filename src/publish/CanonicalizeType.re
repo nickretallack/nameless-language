@@ -75,12 +75,18 @@ let encodeUnionType = (fields: Belt.List.t(publishingValueType)): Js.Json.t =>
   );
 
 let encodeLabeledType =
-    (id: definitionID, valueType: publishingValueType): Js.Json.t =>
+    (id: definitionID, valueType: option(publishingValueType)): Js.Json.t =>
   Json.Encode.(
     object_([
       ("type", string("label")),
       ("id", string(id)),
-      ("type", encodeValueType(valueType)),
+      (
+        "wrapped",
+        switch (valueType) {
+        | Some(valueType) => encodeValueType(valueType)
+        | None => null
+        },
+      ),
     ])
   );
 
@@ -109,11 +115,17 @@ let encodeCanonicalUnionType =
 let encodeCanonicalLabeledType =
     (
       id: definitionID,
-      valueType: valueType,
+      maybeValueType: option(valueType),
       dependencies: publishingDependencies,
     )
     : Js.Json.t =>
-  encodeLabeledType(id, canonicalizeType(valueType, dependencies));
+  encodeLabeledType(
+    id,
+    switch (maybeValueType) {
+    | None => None
+    | Some(valueType) => Some(canonicalizeType(valueType, dependencies))
+    },
+  );
 
 let canonicalizeInterface =
     (
