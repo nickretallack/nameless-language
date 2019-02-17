@@ -3,7 +3,8 @@ open Definition;
 
 type appError =
   | NoAppError
-  | NibIsConnected(definitions);
+  | NibIsConnected(definitions)
+  | ConnectionCrossesScopeError;
 
 type createConnection = {
   source: connectionSide,

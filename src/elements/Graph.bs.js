@@ -424,7 +424,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                       ];
                                     var sink = match$10[1];
                                     var source = match$10[0];
-                                    if (DetectCycles$ReactTemplate.checkScopes(source, sink, implementation[/* nodes */2])) {
+                                    if (DetectCycles$ReactTemplate.checkConnectionScope(source, sink, implementation[/* nodes */2])) {
                                       if (DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */1], sink, source), implementation[/* nodes */2])) {
                                         return /* Update */Block.__(0, [/* record */[
                                                     /* pointers */state[/* pointers */0],

@@ -47,13 +47,15 @@ function make(definitionID, definitions, documentation, placeholder, emit, error
                                                 key: definitionID,
                                                 value: definitionID
                                               }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
-                                  }), uses)), error ? React.createElement("div", undefined, "This nib is connected in: ", React.createElement("ul", undefined, Helpers$ReactTemplate.renderStringMap((function (param) {
+                                  }), uses)), typeof error === "number" ? (
+                            error !== 0 ? React.createElement("div", undefined, "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.  You may have to remove some connections in order to change the scope of this node.") : null
+                          ) : React.createElement("div", undefined, "This nib is connected in: ", React.createElement("ul", undefined, Helpers$ReactTemplate.renderStringMap((function (param) {
                                           var definitionID = param[0];
                                           return React.createElement("li", undefined, React.createElement("a", {
                                                           key: definitionID,
                                                           href: "#" + definitionID
                                                         }, Definition$ReactTemplate.getDisplayName(param[1], "en")));
-                                        }), error[0]))) : null);
+                                        }), error[0]))));
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

@@ -16,7 +16,7 @@ let rec isParentScope = (parent: nodeID, child: nodeID, nodes: nodes) =>
     | NodeScope(nodeID) => isParentScope(parent, nodeID, nodes)
     };
   };
-let checkScopes =
+let checkConnectionScope =
     (source: connectionSide, sink: connectionSide, nodes: nodes): bool =>
   switch (sink.node, source.node) {
   | (_, GraphConnection) => true
@@ -58,3 +58,9 @@ let checkScopes =
       };
     };
   };
+
+let checkScopes = (connections: connections, nodes: nodes): bool =>
+  !
+    Belt.Map.some(connections, (sink, source) =>
+      !checkConnectionScope(source, sink, nodes)
+    );

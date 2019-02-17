@@ -15,6 +15,7 @@ var Graph$ReactTemplate = require("./Graph.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
+var DetectCycles$ReactTemplate = require("../edit/DetectCycles.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
 var ExpandDeletion$ReactTemplate = require("../edit/ExpandDeletion.bs.js");
 var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
@@ -154,7 +155,7 @@ function make(definitions, _children) {
                       return /* Update */Block.__(0, [/* record */[
                                   /* definitions */Belt_MapString.set(state[/* definitions */0], definitionID, definition),
                                   /* definitionID */state[/* definitionID */1],
-                                  /* error */state[/* error */2]
+                                  /* error : NoAppError */0
                                 ]]);
                     };
                     if (typeof action$1 === "number") {
@@ -570,15 +571,24 @@ function make(definitions, _children) {
                                   /* scope */nodeScope,
                                   newNode_001
                                 ];
-                                return updateDefinition(/* record */[
-                                            /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                                  /* interface */graphImplementation$8[/* interface */0],
-                                                  /* connections */graphImplementation$8[/* connections */1],
-                                                  /* nodes */Belt_MapString.set(graphImplementation$8[/* nodes */2], nodeID$1, newNode)
-                                                ]]),
-                                            /* documentation */definition[/* documentation */1],
-                                            /* display */definition[/* display */2]
-                                          ]);
+                                var nodes = Belt_MapString.set(graphImplementation$8[/* nodes */2], nodeID$1, newNode);
+                                if (DetectCycles$ReactTemplate.checkScopes(graphImplementation$8[/* connections */1], nodes)) {
+                                  return updateDefinition(/* record */[
+                                              /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                                    /* interface */graphImplementation$8[/* interface */0],
+                                                    /* connections */graphImplementation$8[/* connections */1],
+                                                    /* nodes */nodes
+                                                  ]]),
+                                              /* documentation */definition[/* documentation */1],
+                                              /* display */definition[/* display */2]
+                                            ]);
+                                } else {
+                                  return /* Update */Block.__(0, [/* record */[
+                                              /* definitions */state[/* definitions */0],
+                                              /* definitionID */state[/* definitionID */1],
+                                              /* error : ConnectionCrossesScopeError */1
+                                            ]]);
+                                }
                               } else {
                                 return /* NoUpdate */0;
                               }

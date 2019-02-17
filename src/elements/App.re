@@ -98,6 +98,7 @@ let make = (~definitions, _children) => {
           ...state,
           definitions:
             Belt.Map.String.set(state.definitions, definitionID, definition),
+          error: NoAppError,
         });
 
       switch (action) {
@@ -492,19 +493,23 @@ let make = (~definitions, _children) => {
             let node =
               Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
             let newNode = {...node, scope: nodeScope};
-            updateDefinition({
-              ...definition,
-              implementation:
-                GraphImplementation({
-                  ...graphImplementation,
-                  nodes:
-                    Belt.Map.String.set(
-                      graphImplementation.nodes,
-                      nodeID,
-                      newNode,
-                    ),
-                }),
-            });
+            let nodes =
+              Belt.Map.String.set(graphImplementation.nodes, nodeID, newNode);
+            if (DetectCycles.checkScopes(
+                  graphImplementation.connections,
+                  nodes,
+                )) {
+              updateDefinition({
+                ...definition,
+                implementation:
+                  GraphImplementation({...graphImplementation, nodes}),
+              });
+            } else {
+              ReasonReact.Update({
+                ...state,
+                error: ConnectionCrossesScopeError,
+              });
+            };
           } else {
             ReasonReact.NoUpdate;
           }

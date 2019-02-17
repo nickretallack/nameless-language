@@ -175,7 +175,12 @@ let make =
           } else {
             let (source, sink) =
               startIsSource ? (startNib, endNib) : (endNib, startNib);
-            if (!DetectCycles.checkScopes(source, sink, implementation.nodes)) {
+            if (!
+                  DetectCycles.checkConnectionScope(
+                    source,
+                    sink,
+                    implementation.nodes,
+                  )) {
               ReasonReact.Update({
                 ...state,
                 error:
@@ -478,7 +483,7 @@ let make =
                       pointerID: Mouse,
                       action: FinishDragging(NodeScope(nodeID)),
                     }),
-                  )
+                  );
                 | _ => ()
                 }
               }
