@@ -237,6 +237,102 @@ var plus = Definition$ReactTemplate.makeDefinition("+", "Add two numbers, result
           ]
         ]]), /* () */0);
 
+var minus = Definition$ReactTemplate.makeDefinition("-", "Subtract two numbers, resulting in a number.", /* array */[
+      /* tuple */[
+        "left",
+        "Left"
+      ],
+      /* tuple */[
+        "right",
+        "Right"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* ExternalImplementation */Block.__(2, [/* record */[
+          /* name */"-",
+          /* interface : record */[
+            /* inputTypes */Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "left",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "right",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]
+                ]),
+            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                    "result",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]])
+          ]
+        ]]), /* () */0);
+
+var times = Definition$ReactTemplate.makeDefinition("*", "Multiply two numbers, resulting in a number.", /* array */[
+      /* tuple */[
+        "left",
+        "Left"
+      ],
+      /* tuple */[
+        "right",
+        "Right"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* ExternalImplementation */Block.__(2, [/* record */[
+          /* name */"*",
+          /* interface : record */[
+            /* inputTypes */Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "left",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "right",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]
+                ]),
+            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                    "result",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]])
+          ]
+        ]]), /* () */0);
+
+var divide = Definition$ReactTemplate.makeDefinition("/", "Subtract two numbers, resulting in a number.", /* array */[
+      /* tuple */[
+        "left",
+        "Left"
+      ],
+      /* tuple */[
+        "right",
+        "Right"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* ExternalImplementation */Block.__(2, [/* record */[
+          /* name */"/",
+          /* interface : record */[
+            /* inputTypes */Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "left",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "right",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]
+                ]),
+            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                    "result",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]])
+          ]
+        ]]), /* () */0);
+
 var pointExample = Definition$ReactTemplate.makeGraph("Point Example", "", /* array */[], /* array */[
       /* tuple */[
         "x",
@@ -501,47 +597,323 @@ var booleanUnion = Definition$ReactTemplate.makeDefinition("Boolean", undefined,
               /* DefinedValueType */Block.__(1, ["no"])
             ], Definition$ReactTemplate.ValueTypeComparator)]), /* () */0);
 
-var definitions = Belt_MapString.fromArray(/* array */[
+var branch = Definition$ReactTemplate.makeDefinition("Branch", "Conditionally evaluate.", /* array */[
       /* tuple */[
-        "example",
-        example
+        "if",
+        "If"
       ],
       /* tuple */[
-        "simple",
-        simple
+        "then",
+        "Then"
       ],
+      /* tuple */[
+        "else",
+        "Otherwise"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* ExternalImplementation */Block.__(2, [/* record */[
+          /* name */"branch",
+          /* interface : record */[
+            /* inputTypes */Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "if",
+                    /* DefinedValueType */Block.__(1, ["boolean"])
+                  ],
+                  /* tuple */[
+                    "then",
+                    /* AnyType */0
+                  ],
+                  /* tuple */[
+                    "else",
+                    /* AnyType */0
+                  ]
+                ]),
+            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                    "result",
+                    /* AnyType */0
+                  ]])
+          ]
+        ]]), /* () */0);
+
+var equals = Definition$ReactTemplate.makeDefinition("=", undefined, /* array */[
+      /* tuple */[
+        "left",
+        "Left"
+      ],
+      /* tuple */[
+        "right",
+        "Right"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* ExternalImplementation */Block.__(2, [/* record */[
+          /* name */"=",
+          /* interface : record */[
+            /* inputTypes */Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "left",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "right",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]
+                ]),
+            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                    "result",
+                    /* DefinedValueType */Block.__(1, ["boolean"])
+                  ]])
+          ]
+        ]]), /* () */0);
+
+var lessThan = Definition$ReactTemplate.makeDefinition("<", undefined, /* array */[
+      /* tuple */[
+        "left",
+        "Left"
+      ],
+      /* tuple */[
+        "right",
+        "Right"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* ExternalImplementation */Block.__(2, [/* record */[
+          /* name */"<",
+          /* interface : record */[
+            /* inputTypes */Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "left",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "right",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]
+                ]),
+            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                    "result",
+                    /* DefinedValueType */Block.__(1, ["boolean"])
+                  ]])
+          ]
+        ]]), /* () */0);
+
+var greaterThan = Definition$ReactTemplate.makeDefinition(">", undefined, /* array */[
+      /* tuple */[
+        "left",
+        "Left"
+      ],
+      /* tuple */[
+        "right",
+        "Right"
+      ]
+    ], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* ExternalImplementation */Block.__(2, [/* record */[
+          /* name */">",
+          /* interface : record */[
+            /* inputTypes */Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "left",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "right",
+                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                  ]
+                ]),
+            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                    "result",
+                    /* DefinedValueType */Block.__(1, ["boolean"])
+                  ]])
+          ]
+        ]]), /* () */0);
+
+var factorial = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* array */[/* tuple */[
+        "input",
+        "Input"
+      ]], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* array */[
       /* tuple */[
         "one",
-        one
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
       ],
       /* tuple */[
-        "plus",
-        plus
+        "branch",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"branch"
+              ]])
+        ]
       ],
       /* tuple */[
-        "point",
-        point
+        "less-than",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"less-than"
+              ]])
+        ]
       ],
       /* tuple */[
-        "point-example",
-        pointExample
+        "times",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"times"
+              ]])
+        ]
       ],
       /* tuple */[
-        "reference-example",
-        referenceExample
+        "minus",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"minus"
+              ]])
+        ]
       ],
       /* tuple */[
-        "example-interface",
-        exampleInterface
+        "factorial",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"factorial"
+              ]])
+        ]
+      ]
+    ], /* array */[
+      /* tuple */[
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
       ],
       /* tuple */[
-        "interface-example",
-        interfaceExample
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["if"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["one"],
+          /* nib : ValueConnection */0
+        ]
       ],
       /* tuple */[
-        "nested-inline-example",
-        nestedInlineExample
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["then"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["less-than"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
       ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["less-than"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ],
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["less-than"],
+          /* nib : NibConnection */Block.__(0, ["right"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["one"],
+          /* nib : ValueConnection */0
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["else"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["times"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["times"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ],
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["times"],
+          /* nib : NibConnection */Block.__(0, ["right"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["factorial"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["factorial"],
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["minus"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["minus"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ],
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["minus"],
+          /* nib : NibConnection */Block.__(0, ["right"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["one"],
+          /* nib : ValueConnection */0
+        ]
+      ]
+    ], /* () */0);
+
+var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "yes",
         yesLabel
@@ -553,6 +925,74 @@ var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "boolean",
         booleanUnion
+      ],
+      /* tuple */[
+        "plus",
+        plus
+      ],
+      /* tuple */[
+        "minus",
+        minus
+      ],
+      /* tuple */[
+        "times",
+        times
+      ],
+      /* tuple */[
+        "divide",
+        divide
+      ],
+      /* tuple */[
+        "less-than",
+        lessThan
+      ],
+      /* tuple */[
+        "greater-than",
+        greaterThan
+      ],
+      /* tuple */[
+        "branch",
+        branch
+      ],
+      /* tuple */[
+        "one",
+        one
+      ],
+      /* tuple */[
+        "point",
+        point
+      ],
+      /* tuple */[
+        "example-interface",
+        exampleInterface
+      ],
+      /* tuple */[
+        "example",
+        example
+      ],
+      /* tuple */[
+        "simple",
+        simple
+      ],
+      /* tuple */[
+        "point-example",
+        pointExample
+      ],
+      /* tuple */[
+        "reference-example",
+        referenceExample
+      ],
+      /* tuple */[
+        "interface-example",
+        interfaceExample
+      ],
+      /* tuple */[
+        "nested-inline-example",
+        nestedInlineExample
+      ],
+      /* tuple */[
+        "factorial",
+        factorial
       ]
     ]);
 
@@ -563,6 +1003,9 @@ exports.simple = simple;
 exports.one = one;
 exports.point = point;
 exports.plus = plus;
+exports.minus = minus;
+exports.times = times;
+exports.divide = divide;
 exports.pointExample = pointExample;
 exports.referenceExample = referenceExample;
 exports.exampleInterface = exampleInterface;
@@ -571,5 +1014,10 @@ exports.nestedInlineExample = nestedInlineExample;
 exports.yesLabel = yesLabel;
 exports.noLabel = noLabel;
 exports.booleanUnion = booleanUnion;
+exports.branch = branch;
+exports.equals = equals;
+exports.lessThan = lessThan;
+exports.greaterThan = greaterThan;
+exports.factorial = factorial;
 exports.definitions = definitions;
 /* example Not a pure module */

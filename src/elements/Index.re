@@ -142,6 +142,78 @@ let plus =
     (),
   );
 
+let minus =
+  makeDefinition(
+    ~name="-",
+    ~description="Subtract two numbers, resulting in a number.",
+    ~inputs=[|("left", "Left"), ("right", "Right")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      ExternalImplementation({
+        name: "-",
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray([|
+              ("left", PrimitiveValueType(NumberType)),
+              ("right", PrimitiveValueType(NumberType)),
+            |]),
+          outputTypes:
+            Belt.Map.String.fromArray([|
+              ("result", PrimitiveValueType(NumberType)),
+            |]),
+        },
+      }),
+    (),
+  );
+
+let times =
+  makeDefinition(
+    ~name="*",
+    ~description="Multiply two numbers, resulting in a number.",
+    ~inputs=[|("left", "Left"), ("right", "Right")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      ExternalImplementation({
+        name: "*",
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray([|
+              ("left", PrimitiveValueType(NumberType)),
+              ("right", PrimitiveValueType(NumberType)),
+            |]),
+          outputTypes:
+            Belt.Map.String.fromArray([|
+              ("result", PrimitiveValueType(NumberType)),
+            |]),
+        },
+      }),
+    (),
+  );
+
+let divide =
+  makeDefinition(
+    ~name="/",
+    ~description="Subtract two numbers, resulting in a number.",
+    ~inputs=[|("left", "Left"), ("right", "Right")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      ExternalImplementation({
+        name: "/",
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray([|
+              ("left", PrimitiveValueType(NumberType)),
+              ("right", PrimitiveValueType(NumberType)),
+            |]),
+          outputTypes:
+            Belt.Map.String.fromArray([|
+              ("result", PrimitiveValueType(NumberType)),
+            |]),
+        },
+      }),
+    (),
+  );
+
 let pointExample =
   makeGraph(
     ~name="Point Example",
@@ -413,21 +485,223 @@ let booleanUnion =
     (),
   );
 
+let branch =
+  makeDefinition(
+    ~name="Branch",
+    ~description="Conditionally evaluate.",
+    ~inputs=[|("if", "If"), ("then", "Then"), ("else", "Otherwise")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      ExternalImplementation({
+        name: "branch",
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray([|
+              ("if", DefinedValueType("boolean")),
+              ("then", AnyType),
+              ("else", AnyType),
+            |]),
+          outputTypes: Belt.Map.String.fromArray([|("result", AnyType)|]),
+        },
+      }),
+    (),
+  );
+
+let equals =
+  makeDefinition(
+    ~name="=",
+    ~inputs=[|("left", "Left"), ("right", "Right")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      ExternalImplementation({
+        name: "=",
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray([|
+              ("left", PrimitiveValueType(NumberType)),
+              ("right", PrimitiveValueType(NumberType)),
+            |]),
+          outputTypes:
+            Belt.Map.String.fromArray([|
+              ("result", DefinedValueType("boolean")),
+            |]),
+        },
+      }),
+    (),
+  );
+
+let lessThan =
+  makeDefinition(
+    ~name="<",
+    ~inputs=[|("left", "Left"), ("right", "Right")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      ExternalImplementation({
+        name: "<",
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray([|
+              ("left", PrimitiveValueType(NumberType)),
+              ("right", PrimitiveValueType(NumberType)),
+            |]),
+          outputTypes:
+            Belt.Map.String.fromArray([|
+              ("result", DefinedValueType("boolean")),
+            |]),
+        },
+      }),
+    (),
+  );
+
+let greaterThan =
+  makeDefinition(
+    ~name=">",
+    ~inputs=[|("left", "Left"), ("right", "Right")|],
+    ~outputs=[|("result", "Result")|],
+    ~implementation=
+      ExternalImplementation({
+        name: ">",
+        interface: {
+          inputTypes:
+            Belt.Map.String.fromArray([|
+              ("left", PrimitiveValueType(NumberType)),
+              ("right", PrimitiveValueType(NumberType)),
+            |]),
+          outputTypes:
+            Belt.Map.String.fromArray([|
+              ("result", DefinedValueType("boolean")),
+            |]),
+        },
+      }),
+    (),
+  );
+
+let factorial =
+  makeGraph(
+    ~name="Factorial",
+    ~outputs=[|("result", "Result")|],
+    ~inputs=[|("input", "Input")|],
+    ~nodes=[|
+      (
+        "one",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "branch",
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "branch"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "less-than",
+        {
+          kind:
+            DefinedNode({kind: FunctionCallNode, definitionID: "less-than"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "times",
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "times"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "minus",
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "minus"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "factorial",
+        {
+          kind:
+            DefinedNode({kind: FunctionCallNode, definitionID: "factorial"}),
+          scope: GraphScope,
+        },
+      ),
+    |],
+    ~connections=[|
+      (
+        {node: GraphConnection, nib: NibConnection("result")},
+        {node: NodeConnection("branch"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("branch"), nib: NibConnection("if")},
+        {node: NodeConnection("one"), nib: ValueConnection},
+      ),
+      (
+        {node: NodeConnection("branch"), nib: NibConnection("then")},
+        {node: NodeConnection("less-than"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("less-than"), nib: NibConnection("left")},
+        {node: GraphConnection, nib: NibConnection("input")},
+      ),
+      (
+        {node: NodeConnection("less-than"), nib: NibConnection("right")},
+        {node: NodeConnection("one"), nib: ValueConnection},
+      ),
+      (
+        {node: NodeConnection("branch"), nib: NibConnection("else")},
+        {node: NodeConnection("times"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("times"), nib: NibConnection("left")},
+        {node: GraphConnection, nib: NibConnection("input")},
+      ),
+      (
+        {node: NodeConnection("times"), nib: NibConnection("right")},
+        {node: NodeConnection("factorial"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("factorial"), nib: NibConnection("input")},
+        {node: NodeConnection("minus"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("minus"), nib: NibConnection("left")},
+        {node: GraphConnection, nib: NibConnection("input")},
+      ),
+      (
+        {node: NodeConnection("minus"), nib: NibConnection("right")},
+        {node: NodeConnection("one"), nib: ValueConnection},
+      ),
+    |],
+    (),
+  );
+
 let definitions =
   Belt.Map.String.fromArray([|
-    ("example", example),
-    ("simple", simple),
-    ("one", one),
-    ("plus", plus),
-    ("point", point),
-    ("point-example", pointExample),
-    ("reference-example", referenceExample),
-    ("example-interface", exampleInterface),
-    ("interface-example", interfaceExample),
-    ("nested-inline-example", nestedInlineExample),
+    // Core types
     ("yes", yesLabel),
     ("no", noLabel),
     ("boolean", booleanUnion),
+    // Externals
+    ("plus", plus),
+    ("minus", minus),
+    ("times", times),
+    ("divide", divide),
+    ("less-than", lessThan),
+    ("greater-than", greaterThan),
+    ("branch", branch),
+    // Stuff used in examples
+    ("one", one),
+    ("point", point),
+    ("example-interface", exampleInterface),
+    // Examples
+    ("example", example),
+    ("simple", simple),
+    ("point-example", pointExample),
+    ("reference-example", referenceExample),
+    ("interface-example", interfaceExample),
+    ("nested-inline-example", nestedInlineExample),
+    ("factorial", factorial),
   |]);
 
 ReactDOMRe.renderToElementWithId(<App definitions />, "graph");
