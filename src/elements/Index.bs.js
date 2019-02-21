@@ -817,8 +817,8 @@ var factorial = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* ar
           /* nib : NibConnection */Block.__(0, ["if"])
         ],
         /* record */[
-          /* node : NodeConnection */["one"],
-          /* nib : ValueConnection */0
+          /* node : NodeConnection */["less-than"],
+          /* nib : NibConnection */Block.__(0, ["result"])
         ]
       ],
       /* tuple */[
@@ -827,8 +827,8 @@ var factorial = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* ar
           /* nib : NibConnection */Block.__(0, ["then"])
         ],
         /* record */[
-          /* node : NodeConnection */["less-than"],
-          /* nib : NibConnection */Block.__(0, ["result"])
+          /* node : NodeConnection */["one"],
+          /* nib : ValueConnection */0
         ]
       ],
       /* tuple */[

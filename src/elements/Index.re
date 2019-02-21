@@ -634,11 +634,11 @@ let factorial =
       ),
       (
         {node: NodeConnection("branch"), nib: NibConnection("if")},
-        {node: NodeConnection("one"), nib: ValueConnection},
+        {node: NodeConnection("less-than"), nib: NibConnection("result")},
       ),
       (
         {node: NodeConnection("branch"), nib: NibConnection("then")},
-        {node: NodeConnection("less-than"), nib: NibConnection("result")},
+        {node: NodeConnection("one"), nib: ValueConnection},
       ),
       (
         {node: NodeConnection("less-than"), nib: NibConnection("left")},

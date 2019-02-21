@@ -3,8 +3,11 @@
 
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Belt_Set = require("bs-platform/lib/js/belt_Set.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
+var Pervasives = require("bs-platform/lib/js/pervasives.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 
@@ -105,7 +108,82 @@ function columnizeNodes(nodes, connections) {
                   })), connections, Belt_Set.fromArray(/* array */[/* GraphScope */0], Definition$ReactTemplate.ScopeComparator));
 }
 
+function rankConnection(sink, columns, nodeToColumnIndex, definitions, display) {
+  var match = sink[/* node */0];
+  if (match) {
+    var sinkNodeID = match[0];
+    var sinkColumnIndex = Belt_MapString.getExn(nodeToColumnIndex, sinkNodeID);
+    var column = Belt_List.getExn(columns, sinkColumnIndex);
+    var sinkIndexInColumn = Helpers$ReactTemplate.findByIndexExn(column, (function (node) {
+            return node[/* id */0] === sinkNodeID;
+          }));
+    var node = Belt_List.getExn(column, sinkIndexInColumn);
+    var nodeDisplay = Definition$ReactTemplate.displayNode(node[/* node */1], definitions, "en");
+    var match$1 = Definition$ReactTemplate.isFunctionDefinitionNode(node[/* node */1]);
+    var nibCollection = match$1 ? nodeDisplay[/* internalOutputs */3] : nodeDisplay[/* inputs */0];
+    var sinkIndex = Helpers$ReactTemplate.findByIndexExn(nibCollection, (function (param) {
+            return Caml_obj.caml_equal(param[/* nib */1], sink[/* nib */1]);
+          }));
+    return /* tuple */[
+            -sinkColumnIndex | 0,
+            sinkIndexInColumn,
+            sinkIndex
+          ];
+  } else {
+    var match$2 = sink[/* nib */1];
+    var sinkIndex$1;
+    if (typeof match$2 === "number") {
+      throw Caml_builtin_exceptions.not_found;
+    } else if (match$2.tag) {
+      throw Caml_builtin_exceptions.not_found;
+    } else {
+      sinkIndex$1 = Helpers$ReactTemplate.findIndexExn(display[/* outputOrdering */1], match$2[0]);
+    }
+    return /* tuple */[
+            1,
+            0,
+            sinkIndex$1
+          ];
+  }
+}
+
+function sortedColumnizedNodes(nodes, connections, definitions, display) {
+  var columns = columnizeNodes(nodes, connections);
+  var nodeToColumnIndex = Belt_List.reduceWithIndex(columns, Belt_MapString.empty, (function (acc, column, index) {
+          return Belt_List.reduce(column, acc, (function (acc, node) {
+                        return Belt_MapString.set(acc, node[/* id */0], index);
+                      }));
+        }));
+  return Belt_List.map(columns, (function (column) {
+                return Helpers$ReactTemplate.sortBy(column, (function (nodeWithID) {
+                              var relevantConnections = Belt_Map.keep(connections, (function (_sink, source) {
+                                      var match = source[/* node */0];
+                                      if (match) {
+                                        return match[0] === nodeWithID[/* id */0];
+                                      } else {
+                                        return false;
+                                      }
+                                    }));
+                              return Belt_Map.reduce(relevantConnections, /* tuple */[
+                                          Pervasives.max_int,
+                                          Pervasives.max_int,
+                                          Pervasives.max_int
+                                        ], (function (acc, sink, _source) {
+                                            var newRanking = rankConnection(sink, columns, nodeToColumnIndex, definitions, display);
+                                            var match = Caml_obj.caml_compare(acc, newRanking) < 0;
+                                            if (match) {
+                                              return acc;
+                                            } else {
+                                              return newRanking;
+                                            }
+                                          }));
+                            }));
+              }));
+}
+
 exports.isRootNode = isRootNode;
 exports.topoSort = topoSort;
 exports.columnizeNodes = columnizeNodes;
-/* Definition-ReactTemplate Not a pure module */
+exports.rankConnection = rankConnection;
+exports.sortedColumnizedNodes = sortedColumnizedNodes;
+/* Helpers-ReactTemplate Not a pure module */

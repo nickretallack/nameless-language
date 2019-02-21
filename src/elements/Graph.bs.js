@@ -64,7 +64,7 @@ function make(definitionID, definitions, implementation, definition, display, do
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
-              var columnizedNodes = ColumnizeNodes$ReactTemplate.columnizeNodes(implementation[/* nodes */2], implementation[/* connections */1]);
+              var columnizedNodes = ColumnizeNodes$ReactTemplate.sortedColumnizedNodes(implementation[/* nodes */2], implementation[/* connections */1], definitions, display);
               var scopedNodeIDs = Belt_MapString.reduce(implementation[/* nodes */2], Belt_Map.make(Definition$ReactTemplate.ScopeComparator), (function (scopes, id, node) {
                       return Belt_Map.update(scopes, node[/* scope */0], (function (nodeIDs) {
                                     return Caml_option.some(Belt_SetString.add(nodeIDs !== undefined ? Caml_option.valFromOption(nodeIDs) : Belt_SetString.empty, id));

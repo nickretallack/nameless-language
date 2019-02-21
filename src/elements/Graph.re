@@ -235,9 +235,11 @@ let make =
       Belt.Map.String.getExn(implementation.nodes, nodeID);
 
     let columnizedNodes =
-      ColumnizeNodes.columnizeNodes(
+      ColumnizeNodes.sortedColumnizedNodes(
         implementation.nodes,
         implementation.connections,
+        definitions,
+        display,
       );
 
     let scopedNodeIDs =
