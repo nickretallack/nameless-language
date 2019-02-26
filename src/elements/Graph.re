@@ -4,6 +4,18 @@ open! GraphActions;
 open! Definition;
 open Helpers;
 
+let connectionColors = [|
+  "#f58231",
+  "#ffe119",
+  "#bfef45",
+  "#3cb44b",
+  "#42d4f4",
+  "#4363d8",
+  "#911eb4",
+  "#f032e6",
+  "#469990",
+|];
+
 module PointerComparator =
   Belt.Id.MakeComparable({
     type t = pointerID;
@@ -231,6 +243,25 @@ let make =
       }
     },
   render: self => {
+    let sourceToColor =
+      Belt.Map.reduce(
+        implementation.connections,
+        Belt.Map.fromArray([||], ~id=(module ConnectionComparator)),
+        (acc, _sink, source) =>
+        if (!Belt.Map.has(acc, source)) {
+          Belt.Map.set(
+            acc,
+            source,
+            Belt.Array.getExn(
+              connectionColors,
+              Belt.Map.size(acc) mod Belt.Array.size(connectionColors),
+            ),
+          );
+        } else {
+          acc;
+        }
+      );
+
     let getNode = (nodeID: nodeID) =>
       Belt.Map.String.getExn(implementation.nodes, nodeID);
 
@@ -370,17 +401,17 @@ let make =
         );
       };
 
-    let getNibNudge = (source: connectionSide) =>
-      switch (source.node) {
-      | NodeConnection(nodeID) =>
-        let node = getNode(nodeID);
-        getOutputIndex(node, definitions, source.nib);
-      | GraphConnection =>
-        switch (source.nib) {
-        | NibConnection(nibID) => findIndexExn(display.inputOrdering, nibID)
-        | _ => raise(Not_found)
-        }
-      };
+    // let getNibNudge = (source: connectionSide) =>
+    //   switch (source.node) {
+    //   | NodeConnection(nodeID) =>
+    //     let node = getNode(nodeID);
+    //     getOutputIndex(node, definitions, source.nib);
+    //   | GraphConnection =>
+    //     switch (source.nib) {
+    //     | NibConnection(nibID) => findIndexExn(display.inputOrdering, nibID)
+    //     | _ => raise(Not_found)
+    //     }
+    //   };
 
     /* let evaluate = outputID =>
        Js.log(
@@ -390,17 +421,18 @@ let make =
     let allNibs = collectAllGraphNibs(definition, definitions);
 
     let renderedConnections =
-      renderMap(
-        ((sink, source)) =>
+      ReasonReact.array(
+        Belt.Array.map(
+          Belt.Map.toArray(implementation.connections), ((sink, source)) =>
           <Connection
             key={connectionSideToString(sink)}
             sinkPosition={getNibPosition(sink, true)}
             sourcePosition={getNibPosition(source, false)}
-            nudge={getNibNudge(source)}
             onClick={_event => self.send(SelectConnection(sink))}
             isSelected={self.state.selection == SelectedConnection(sink)}
-          />,
-        implementation.connections,
+            color={Belt.Map.getExn(sourceToColor, source)}
+          />
+        ),
       );
     let renderedNibs =
       ReasonReact.array(
@@ -516,6 +548,7 @@ let make =
                 startIsSource ?
                   adjustedPoint : getNibPosition(connectionSide, true)
               }
+              color="black"
             />;
           | _ => ReasonReact.null
           },

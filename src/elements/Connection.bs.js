@@ -11,7 +11,7 @@ var Caml_primitive = require("bs-platform/lib/js/caml_primitive.js");
 
 var component = ReasonReact.statelessComponent("Connection");
 
-function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, $staropt$star$2, onClick, _children) {
+function make(sourcePosition, sinkPosition, $staropt$star, color, onClick, _children) {
   var isSelected = $staropt$star !== undefined ? $staropt$star : false;
   return /* record */[
           /* debugName */component[/* debugName */0],
@@ -176,8 +176,8 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, $sta
                     ]),
                 fill: "transparent",
                 pointerEvents: "visibleStroke",
-                stroke: isSelected ? "red" : "black",
-                strokeOpacity: isSelected ? "0.5" : ".1",
+                stroke: isSelected ? "red" : color,
+                strokeOpacity: "0.5",
                 strokeWidth: "5"
               };
               if (onClick !== undefined) {

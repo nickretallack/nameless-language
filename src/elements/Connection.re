@@ -8,8 +8,9 @@ let make =
       ~sourcePosition: point,
       ~sinkPosition: point,
       ~isSelected: bool=false,
-      ~nudge=0,
-      ~maxNudge=1,
+      ~color: string,
+      // ~nudge=0,
+      // ~maxNudge=1,
       ~onClick=?,
       _children,
     ) => {
@@ -32,9 +33,9 @@ let make =
 
     <path
       fill="transparent"
-      stroke={isSelected ? "red" : "black"}
+      stroke={isSelected ? "red" : color}
       strokeWidth="5"
-      strokeOpacity={isSelected ? "0.5" : ".1"}
+      strokeOpacity="0.5"
       pointerEvents="visibleStroke"
       d={Printf.sprintf(
         "M%f,%f h %f a %f,%f 0 0,%i %f,%f v %f a %f,%f 0 0,%i %f,%f h %f",

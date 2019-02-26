@@ -9,6 +9,7 @@ var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Caml_int32 = require("bs-platform/lib/js/caml_int32.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
@@ -18,7 +19,6 @@ var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
-var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Interface$ReactTemplate = require("./Interface.bs.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
@@ -28,6 +28,18 @@ var GraphActions$ReactTemplate = require("../edit/GraphActions.bs.js");
 var DefinitionBox$ReactTemplate = require("./DefinitionBox.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
 var DefinitionHeader$ReactTemplate = require("./DefinitionHeader.bs.js");
+
+var connectionColors = /* array */[
+  "#f58231",
+  "#ffe119",
+  "#bfef45",
+  "#3cb44b",
+  "#42d4f4",
+  "#4363d8",
+  "#911eb4",
+  "#f032e6",
+  "#469990"
+];
 
 var cmp = Caml_obj.caml_compare;
 
@@ -64,6 +76,13 @@ function make(definitionID, definitions, implementation, definition, display, do
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
+              var sourceToColor = Belt_Map.reduce(implementation[/* connections */1], Belt_Map.fromArray(/* array */[], Definition$ReactTemplate.ConnectionComparator), (function (acc, _sink, source) {
+                      if (Belt_Map.has(acc, source)) {
+                        return acc;
+                      } else {
+                        return Belt_Map.set(acc, source, Belt_Array.getExn(connectionColors, Caml_int32.mod_(Belt_Map.size(acc), connectionColors.length)));
+                      }
+                    }));
               var columnizedNodes = ColumnizeNodes$ReactTemplate.sortedColumnizedNodes(implementation[/* nodes */2], implementation[/* connections */1], definitions, display);
               var scopedNodeIDs = Belt_MapString.reduce(implementation[/* nodes */2], Belt_Map.make(Definition$ReactTemplate.ScopeComparator), (function (scopes, id, node) {
                       return Belt_Map.update(scopes, node[/* scope */0], (function (nodeIDs) {
@@ -138,30 +157,14 @@ function make(definitionID, definitions, implementation, definition, display, do
                             ], graphSizePixels, nibIndex$1);
                 }
               };
-              var getNibNudge = function (source) {
-                var match = source[/* node */0];
-                if (match) {
-                  var node = Belt_MapString.getExn(implementation[/* nodes */2], match[0]);
-                  return Definition$ReactTemplate.getOutputIndex(node, definitions, source[/* nib */1]);
-                } else {
-                  var match$1 = source[/* nib */1];
-                  if (typeof match$1 === "number") {
-                    throw Caml_builtin_exceptions.not_found;
-                  } else if (match$1.tag) {
-                    throw Caml_builtin_exceptions.not_found;
-                  } else {
-                    return Helpers$ReactTemplate.findIndexExn(display[/* inputOrdering */0], match$1[0]);
-                  }
-                }
-              };
               var allNibs = Definition$ReactTemplate.collectAllGraphNibs(definition, definitions);
-              var renderedConnections = Helpers$ReactTemplate.renderMap((function (param) {
+              var renderedConnections = Belt_Array.map(Belt_Map.toArray(implementation[/* connections */1]), (function (param) {
                       var source = param[1];
                       var sink = param[0];
-                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), getNibNudge(source), undefined, (function (_event) {
+                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), Belt_Map.getExn(sourceToColor, source), (function (_event) {
                                         return Curry._1(self[/* send */3], /* SelectConnection */Block.__(1, [sink]));
                                       }), /* array */[]));
-                    }), implementation[/* connections */1]);
+                    }));
               var renderedNibs = Belt_Array.map(Belt_List.toArray(allNibs), (function (param) {
                       var explicitConnectionSide = param[/* explicitConnectionSide */1];
                       var isSource = explicitConnectionSide[/* isSource */1];
@@ -221,7 +224,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                           adjustedPoint_000,
                           adjustedPoint_001
                         ];
-                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, undefined, undefined, undefined, /* array */[]));
+                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, "black", undefined, /* array */[]));
                       }
                     }), self[/* state */1][/* pointers */0]);
               var match$1 = self[/* state */1][/* error */1];
@@ -521,6 +524,7 @@ function make(definitionID, definitions, implementation, definition, display, do
         ];
 }
 
+exports.connectionColors = connectionColors;
 exports.PointerComparator = PointerComparator;
 exports.$$document = $$document;
 exports.preventDefault = preventDefault;
