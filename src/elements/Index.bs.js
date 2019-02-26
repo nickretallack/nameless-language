@@ -913,6 +913,206 @@ var factorial = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* ar
       ]
     ], /* () */0);
 
+var factorial2 = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* array */[/* tuple */[
+        "input",
+        "Input"
+      ]], /* array */[/* tuple */[
+        "result",
+        "Result"
+      ]], /* array */[
+      /* tuple */[
+        "one1",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "one2",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "one3",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : ValueNode */1,
+                /* definitionID */"one"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "branch",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"branch"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "less-than",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"less-than"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "times",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"times"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "minus",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"minus"
+              ]])
+        ]
+      ],
+      /* tuple */[
+        "factorial",
+        /* record */[
+          /* scope : GraphScope */0,
+          /* kind : DefinedNode */Block.__(1, [/* record */[
+                /* kind : FunctionCallNode */0,
+                /* definitionID */"factorial"
+              ]])
+        ]
+      ]
+    ], /* array */[
+      /* tuple */[
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["if"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["less-than"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["then"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["one1"],
+          /* nib : ValueConnection */0
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["less-than"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ],
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["less-than"],
+          /* nib : NibConnection */Block.__(0, ["right"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["one2"],
+          /* nib : ValueConnection */0
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["branch"],
+          /* nib : NibConnection */Block.__(0, ["else"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["times"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["times"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ],
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["times"],
+          /* nib : NibConnection */Block.__(0, ["right"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["factorial"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["factorial"],
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["minus"],
+          /* nib : NibConnection */Block.__(0, ["result"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["minus"],
+          /* nib : NibConnection */Block.__(0, ["left"])
+        ],
+        /* record */[
+          /* node : GraphConnection */0,
+          /* nib : NibConnection */Block.__(0, ["input"])
+        ]
+      ],
+      /* tuple */[
+        /* record */[
+          /* node : NodeConnection */["minus"],
+          /* nib : NibConnection */Block.__(0, ["right"])
+        ],
+        /* record */[
+          /* node : NodeConnection */["one3"],
+          /* nib : ValueConnection */0
+        ]
+      ]
+    ], /* () */0);
+
 var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "yes",
@@ -993,6 +1193,10 @@ var definitions = Belt_MapString.fromArray(/* array */[
       /* tuple */[
         "factorial",
         factorial
+      ],
+      /* tuple */[
+        "factorial2",
+        factorial2
       ]
     ]);
 
@@ -1019,5 +1223,6 @@ exports.equals = equals;
 exports.lessThan = lessThan;
 exports.greaterThan = greaterThan;
 exports.factorial = factorial;
+exports.factorial2 = factorial2;
 exports.definitions = definitions;
 /* example Not a pure module */

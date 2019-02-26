@@ -35,6 +35,7 @@ let make =
       stroke={isSelected ? "red" : "black"}
       strokeWidth="5"
       strokeOpacity={isSelected ? "0.5" : ".1"}
+      pointerEvents="visibleStroke"
       d={Printf.sprintf(
         "M%f,%f h %f a %f,%f 0 0,%i %f,%f v %f a %f,%f 0 0,%i %f,%f h %f",
         sourcePosition.x,

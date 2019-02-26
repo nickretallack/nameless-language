@@ -175,6 +175,7 @@ function make(sourcePosition, sinkPosition, $staropt$star, $staropt$star$1, $sta
                       delta_000 / 2.0 - curveSize_000 * direction_000
                     ]),
                 fill: "transparent",
+                pointerEvents: "visibleStroke",
                 stroke: isSelected ? "red" : "black",
                 strokeOpacity: isSelected ? "0.5" : ".1",
                 strokeWidth: "5"

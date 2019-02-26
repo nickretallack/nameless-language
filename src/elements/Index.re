@@ -676,6 +676,120 @@ let factorial =
     (),
   );
 
+let factorial2 =
+  makeGraph(
+    ~name="Factorial",
+    ~outputs=[|("result", "Result")|],
+    ~inputs=[|("input", "Input")|],
+    ~nodes=[|
+      (
+        "one1",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "one2",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "one3",
+        {
+          kind: DefinedNode({kind: ValueNode, definitionID: "one"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "branch",
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "branch"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "less-than",
+        {
+          kind:
+            DefinedNode({kind: FunctionCallNode, definitionID: "less-than"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "times",
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "times"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "minus",
+        {
+          kind: DefinedNode({kind: FunctionCallNode, definitionID: "minus"}),
+          scope: GraphScope,
+        },
+      ),
+      (
+        "factorial",
+        {
+          kind:
+            DefinedNode({kind: FunctionCallNode, definitionID: "factorial"}),
+          scope: GraphScope,
+        },
+      ),
+    |],
+    ~connections=[|
+      (
+        {node: GraphConnection, nib: NibConnection("result")},
+        {node: NodeConnection("branch"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("branch"), nib: NibConnection("if")},
+        {node: NodeConnection("less-than"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("branch"), nib: NibConnection("then")},
+        {node: NodeConnection("one1"), nib: ValueConnection},
+      ),
+      (
+        {node: NodeConnection("less-than"), nib: NibConnection("left")},
+        {node: GraphConnection, nib: NibConnection("input")},
+      ),
+      (
+        {node: NodeConnection("less-than"), nib: NibConnection("right")},
+        {node: NodeConnection("one2"), nib: ValueConnection},
+      ),
+      (
+        {node: NodeConnection("branch"), nib: NibConnection("else")},
+        {node: NodeConnection("times"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("times"), nib: NibConnection("left")},
+        {node: GraphConnection, nib: NibConnection("input")},
+      ),
+      (
+        {node: NodeConnection("times"), nib: NibConnection("right")},
+        {node: NodeConnection("factorial"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("factorial"), nib: NibConnection("input")},
+        {node: NodeConnection("minus"), nib: NibConnection("result")},
+      ),
+      (
+        {node: NodeConnection("minus"), nib: NibConnection("left")},
+        {node: GraphConnection, nib: NibConnection("input")},
+      ),
+      (
+        {node: NodeConnection("minus"), nib: NibConnection("right")},
+        {node: NodeConnection("one3"), nib: ValueConnection},
+      ),
+    |],
+    (),
+  );
+
 let definitions =
   Belt.Map.String.fromArray([|
     // Core types
@@ -702,6 +816,7 @@ let definitions =
     ("interface-example", interfaceExample),
     ("nested-inline-example", nestedInlineExample),
     ("factorial", factorial),
+    ("factorial2", factorial2),
   |]);
 
 ReactDOMRe.renderToElementWithId(<App definitions />, "graph");
