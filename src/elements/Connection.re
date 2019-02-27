@@ -19,9 +19,7 @@ let curveConnect = (sourcePosition: point, sinkPosition: point) => {
     y: min(abs_float(delta.y) /. 2.0, radius),
   };
   Printf.sprintf(
-    "M%f,%f h %f a %f,%f 0 0,%i %f,%f v %f a %f,%f 0 0,%i %f,%f h %f",
-    sourcePosition.x,
-    sourcePosition.y,
+    "h %f a %f,%f 0 0,%i %f,%f v %f a %f,%f 0 0,%i %f,%f h %f",
     delta.x /. 2.0 -. curveSize.x *. direction.x,
     curveSize.x,
     curveSize.y,
@@ -44,7 +42,9 @@ let make =
       ~sinkPosition: point,
       ~isSelected: bool=false,
       ~color: string,
-      ~segments: list(int)=[],
+      ~segments: list(float)=[],
+      ~nodeWidth: float,
+      ~xPadding: float,
       // ~nudge=0,
       // ~maxNudge=1,
       ~onClick=?,
@@ -52,13 +52,46 @@ let make =
     ) => {
   ...component,
   render: _self => {
+    let path =
+      Printf.sprintf("M%f,%f ", sourcePosition.x, sourcePosition.y)
+      ++ (
+        if (Belt.List.length(segments) == 0) {
+          curveConnect(sourcePosition, sinkPosition);
+        } else {
+          let (parts, lastPosition) =
+            Belt.List.reduce(
+              segments,
+              ([], sourcePosition),
+              ((acc, lastPosition), segmentY) =>
+              (
+                [
+                  curveConnect(
+                    lastPosition,
+                    {x: lastPosition.x -. xPadding, y: segmentY},
+                  )
+                  ++ Printf.sprintf(" h %f ", -. nodeWidth),
+                  ...acc,
+                ],
+                {x: lastPosition.x -. xPadding -. nodeWidth, y: segmentY},
+              )
+            );
+          String.concat(
+            " ",
+            Belt.List.reverse([
+              curveConnect(lastPosition, sinkPosition),
+              ...parts,
+            ]),
+          );
+        }
+      );
+
     <path
       fill="transparent"
       stroke={isSelected ? "red" : color}
       strokeWidth="5"
       strokeOpacity="0.5"
       pointerEvents="visibleStroke"
-      d={curveConnect(sourcePosition, sinkPosition)}
+      d=path
       ?onClick
     />;
   },

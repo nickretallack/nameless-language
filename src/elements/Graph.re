@@ -304,6 +304,8 @@ let make =
         nodeLayouts,
         implementation.connections,
         implementation.nodes,
+        definition,
+        definitions,
         graphSize.columns,
       );
 
@@ -439,7 +441,12 @@ let make =
             onClick={_event => self.send(SelectConnection(sink))}
             isSelected={self.state.selection == SelectedConnection(sink)}
             color={Belt.Map.getExn(sourceToColor, source)}
-            segments={Belt.Map.getExn(connectionBypasses, sink)}
+            segments={Belt.List.map(
+              Belt.Map.getExn(connectionBypasses, sink), column =>
+              (float_of_int(column) +. 0.5) *. textHeight
+            )}
+            nodeWidth
+            xPadding
           />
         ),
       );
@@ -558,6 +565,8 @@ let make =
                   adjustedPoint : getNibPosition(connectionSide, true)
               }
               color="black"
+              nodeWidth
+              xPadding
             />;
           | _ => ReasonReact.null
           },

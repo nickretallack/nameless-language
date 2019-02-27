@@ -3,13 +3,34 @@ open Definition;
 let getColumn =
     (
       connectionSide: connectionSide,
-      default: LayoutGraph.nodePosition,
+      isSink: bool,
       nodeLayouts: Belt.Map.String.t(LayoutGraph.nodeLayout),
-    ) =>
+      nodes: nodes,
+      definition: definition,
+      graphWidth: int,
+      definitions: definitions,
+    )
+    : LayoutGraph.nodePosition =>
   switch (connectionSide.node) {
-  | GraphConnection => default
+  | GraphConnection =>
+    let nibIndex =
+      Helpers.findByIndexExn(
+        isSink ?
+          definition.display.outputOrdering : definition.display.inputOrdering,
+        nibID =>
+        NibConnection(nibID) == connectionSide.nib
+      );
+    {columns: isSink ? 0 : graphWidth - 2, rows: nibIndex + 1};
   | NodeConnection(nodeID) =>
-    Belt.Map.String.getExn(nodeLayouts, nodeID).position
+    let nodePosition = Belt.Map.String.getExn(nodeLayouts, nodeID).position;
+    let nibIndex =
+      getNodeNibIndex(
+        Belt.Map.String.getExn(nodes, nodeID),
+        definitions,
+        connectionSide.nib,
+        isSink,
+      );
+    {columns: nodePosition.columns, rows: nodePosition.rows + nibIndex};
   };
 
 let rec getParentScopes = (nodeID: nodeID, nodes: nodes): list(nodeID) => {
@@ -26,7 +47,7 @@ let collisionDetect =
     )
     : bool =>
   nodePosition.columns >= nodeLayout.position.columns
-  && nodePosition.columns <= nodeLayout.position.columns
+  && nodePosition.columns < nodeLayout.position.columns
   + nodeLayout.size.columns
   && nodePosition.rows >= nodeLayout.position.rows
   && nodePosition.rows <= nodeLayout.position.rows
@@ -37,16 +58,34 @@ let calculate =
       nodeLayouts: Belt.Map.String.t(LayoutGraph.nodeLayout),
       connections: connections,
       nodes: nodes,
-      maxColumn: int,
+      definition: definition,
+      definitions: definitions,
+      graphWidth: int,
     )
     : Belt.Map.t(connectionSide, list(int), ConnectionComparator.identity) => {
   Belt.Map.mapWithKey(
     connections,
     (sink, source) => {
       let startPosition =
-        getColumn(sink, {columns: 0, rows: 0}, nodeLayouts);
+        getColumn(
+          sink,
+          true,
+          nodeLayouts,
+          nodes,
+          definition,
+          graphWidth,
+          definitions,
+        );
       let endPosition =
-        getColumn(source, {columns: maxColumn, rows: 0}, nodeLayouts);
+        getColumn(
+          source,
+          false,
+          nodeLayouts,
+          nodes,
+          definition,
+          graphWidth,
+          definitions,
+        );
       let length = endPosition.columns - startPosition.columns - 1;
       let parentScopes =
         Belt.Set.String.fromArray(
@@ -86,14 +125,14 @@ let calculate =
                     List.tl(collisions), List.hd(collisions), (acc, layout) =>
                     layout.depth > acc.depth ? layout : acc
                   );
-                let top =
+                let bottom =
                   outermostCollision.position.rows
                   + outermostCollision.size.rows;
                 if (abs(outermostCollision.position.rows - rows)
-                    > abs(top - rows)) {
+                    < abs(bottom - rows)) {
                   outermostCollision.position.rows - 1;
                 } else {
-                  top + 1;
+                  bottom + 1;
                 };
               };
             ([rows, ...results], rows);
