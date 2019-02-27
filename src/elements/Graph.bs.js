@@ -28,6 +28,7 @@ var GraphActions$ReactTemplate = require("../edit/GraphActions.bs.js");
 var DefinitionBox$ReactTemplate = require("./DefinitionBox.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
 var DefinitionHeader$ReactTemplate = require("./DefinitionHeader.bs.js");
+var ConnectionBypasses$ReactTemplate = require("../display/ConnectionBypasses.bs.js");
 
 var connectionColors = /* array */[
   "#f58231",
@@ -92,6 +93,7 @@ function make(definitionID, definitions, implementation, definition, display, do
               var match = LayoutGraph$ReactTemplate.layoutGraph(scopedNodeIDs, columnizedNodes, definitions, implementation[/* connections */1]);
               var graphSize = match[1];
               var nodeLayouts = match[0];
+              var connectionBypasses = ConnectionBypasses$ReactTemplate.calculate(nodeLayouts, implementation[/* connections */1], implementation[/* nodes */2], graphSize[/* columns */0]);
               var graphSize_000 = /* columns */graphSize[/* columns */0];
               var graphSize_001 = /* rows */Caml_primitive.caml_int_max(graphSize[/* rows */1], Caml_primitive.caml_int_max(Belt_List.length(definition[/* display */2][/* inputOrdering */0]), Belt_List.length(definition[/* display */2][/* outputOrdering */1])));
               var graphSize$1 = /* record */[
@@ -161,7 +163,7 @@ function make(definitionID, definitions, implementation, definition, display, do
               var renderedConnections = Belt_Array.map(Belt_Map.toArray(implementation[/* connections */1]), (function (param) {
                       var source = param[1];
                       var sink = param[0];
-                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), Belt_Map.getExn(sourceToColor, source), (function (_event) {
+                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), Belt_Map.getExn(sourceToColor, source), Belt_Map.getExn(connectionBypasses, sink), (function (_event) {
                                         return Curry._1(self[/* send */3], /* SelectConnection */Block.__(1, [sink]));
                                       }), /* array */[]));
                     }));
@@ -224,7 +226,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                           adjustedPoint_000,
                           adjustedPoint_001
                         ];
-                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, "black", undefined, /* array */[]));
+                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, "black", undefined, undefined, /* array */[]));
                       }
                     }), self[/* state */1][/* pointers */0]);
               var match$1 = self[/* state */1][/* error */1];

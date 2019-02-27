@@ -299,6 +299,14 @@ let make =
         implementation.connections,
       );
 
+    let connectionBypasses =
+      ConnectionBypasses.calculate(
+        nodeLayouts,
+        implementation.connections,
+        implementation.nodes,
+        graphSize.columns,
+      );
+
     let graphSize: LayoutGraph.nodePosition = {
       columns: graphSize.columns,
       rows:
@@ -431,6 +439,7 @@ let make =
             onClick={_event => self.send(SelectConnection(sink))}
             isSelected={self.state.selection == SelectedConnection(sink)}
             color={Belt.Map.getExn(sourceToColor, source)}
+            segments={Belt.Map.getExn(connectionBypasses, sink)}
           />
         ),
       );

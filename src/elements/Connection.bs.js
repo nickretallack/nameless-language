@@ -11,123 +11,108 @@ var Caml_primitive = require("bs-platform/lib/js/caml_primitive.js");
 
 var component = ReasonReact.statelessComponent("Connection");
 
-function make(sourcePosition, sinkPosition, $staropt$star, color, onClick, _children) {
-  var isSelected = $staropt$star !== undefined ? $staropt$star : false;
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (_self) {
-              var delta_000 = /* x */sinkPosition[/* x */0] - sourcePosition[/* x */0];
-              var delta_001 = /* y */sinkPosition[/* y */1] - sourcePosition[/* y */1];
-              var match = delta_000 < 0.0;
-              var match$1 = delta_001 < 0.0;
-              var direction_000 = /* x */match ? -1.0 : 1.0;
-              var direction_001 = /* y */match$1 ? -1.0 : 1.0;
-              var leftIsDownward = direction_001 < 0.0;
-              var curveSize_000 = /* x */Caml_primitive.caml_float_min(Math.abs(delta_000) / 2.0, 15.0);
-              var curveSize_001 = /* y */Caml_primitive.caml_float_min(Math.abs(delta_001) / 2.0, 15.0);
-              var tmp = {
-                d: Curry.app(Printf.sprintf(/* Format */[
+function curveConnect(sourcePosition, sinkPosition) {
+  var delta_000 = /* x */sinkPosition[/* x */0] - sourcePosition[/* x */0];
+  var delta_001 = /* y */sinkPosition[/* y */1] - sourcePosition[/* y */1];
+  var match = delta_000 < 0.0;
+  var match$1 = delta_001 < 0.0;
+  var direction_000 = /* x */match ? -1.0 : 1.0;
+  var direction_001 = /* y */match$1 ? -1.0 : 1.0;
+  var leftIsDownward = direction_001 < 0.0;
+  var curveSize_000 = /* x */Caml_primitive.caml_float_min(Math.abs(delta_000) / 2.0, 15.0);
+  var curveSize_001 = /* y */Caml_primitive.caml_float_min(Math.abs(delta_001) / 2.0, 15.0);
+  return Curry.app(Printf.sprintf(/* Format */[
+                  /* Char_literal */Block.__(12, [
+                      /* "M" */77,
+                      /* Float */Block.__(8, [
+                          /* Float_f */0,
+                          /* No_padding */0,
+                          /* No_precision */0,
                           /* Char_literal */Block.__(12, [
-                              /* "M" */77,
+                              /* "," */44,
                               /* Float */Block.__(8, [
                                   /* Float_f */0,
                                   /* No_padding */0,
                                   /* No_precision */0,
-                                  /* Char_literal */Block.__(12, [
-                                      /* "," */44,
+                                  /* String_literal */Block.__(11, [
+                                      " h ",
                                       /* Float */Block.__(8, [
                                           /* Float_f */0,
                                           /* No_padding */0,
                                           /* No_precision */0,
                                           /* String_literal */Block.__(11, [
-                                              " h ",
+                                              " a ",
                                               /* Float */Block.__(8, [
                                                   /* Float_f */0,
                                                   /* No_padding */0,
                                                   /* No_precision */0,
-                                                  /* String_literal */Block.__(11, [
-                                                      " a ",
+                                                  /* Char_literal */Block.__(12, [
+                                                      /* "," */44,
                                                       /* Float */Block.__(8, [
                                                           /* Float_f */0,
                                                           /* No_padding */0,
                                                           /* No_precision */0,
-                                                          /* Char_literal */Block.__(12, [
-                                                              /* "," */44,
-                                                              /* Float */Block.__(8, [
-                                                                  /* Float_f */0,
+                                                          /* String_literal */Block.__(11, [
+                                                              " 0 0,",
+                                                              /* Int */Block.__(4, [
+                                                                  /* Int_i */3,
                                                                   /* No_padding */0,
                                                                   /* No_precision */0,
-                                                                  /* String_literal */Block.__(11, [
-                                                                      " 0 0,",
-                                                                      /* Int */Block.__(4, [
-                                                                          /* Int_i */3,
+                                                                  /* Char_literal */Block.__(12, [
+                                                                      /* " " */32,
+                                                                      /* Float */Block.__(8, [
+                                                                          /* Float_f */0,
                                                                           /* No_padding */0,
                                                                           /* No_precision */0,
                                                                           /* Char_literal */Block.__(12, [
-                                                                              /* " " */32,
+                                                                              /* "," */44,
                                                                               /* Float */Block.__(8, [
                                                                                   /* Float_f */0,
                                                                                   /* No_padding */0,
                                                                                   /* No_precision */0,
-                                                                                  /* Char_literal */Block.__(12, [
-                                                                                      /* "," */44,
+                                                                                  /* String_literal */Block.__(11, [
+                                                                                      " v ",
                                                                                       /* Float */Block.__(8, [
                                                                                           /* Float_f */0,
                                                                                           /* No_padding */0,
                                                                                           /* No_precision */0,
                                                                                           /* String_literal */Block.__(11, [
-                                                                                              " v ",
+                                                                                              " a ",
                                                                                               /* Float */Block.__(8, [
                                                                                                   /* Float_f */0,
                                                                                                   /* No_padding */0,
                                                                                                   /* No_precision */0,
-                                                                                                  /* String_literal */Block.__(11, [
-                                                                                                      " a ",
+                                                                                                  /* Char_literal */Block.__(12, [
+                                                                                                      /* "," */44,
                                                                                                       /* Float */Block.__(8, [
                                                                                                           /* Float_f */0,
                                                                                                           /* No_padding */0,
                                                                                                           /* No_precision */0,
-                                                                                                          /* Char_literal */Block.__(12, [
-                                                                                                              /* "," */44,
-                                                                                                              /* Float */Block.__(8, [
-                                                                                                                  /* Float_f */0,
+                                                                                                          /* String_literal */Block.__(11, [
+                                                                                                              " 0 0,",
+                                                                                                              /* Int */Block.__(4, [
+                                                                                                                  /* Int_i */3,
                                                                                                                   /* No_padding */0,
                                                                                                                   /* No_precision */0,
-                                                                                                                  /* String_literal */Block.__(11, [
-                                                                                                                      " 0 0,",
-                                                                                                                      /* Int */Block.__(4, [
-                                                                                                                          /* Int_i */3,
+                                                                                                                  /* Char_literal */Block.__(12, [
+                                                                                                                      /* " " */32,
+                                                                                                                      /* Float */Block.__(8, [
+                                                                                                                          /* Float_f */0,
                                                                                                                           /* No_padding */0,
                                                                                                                           /* No_precision */0,
                                                                                                                           /* Char_literal */Block.__(12, [
-                                                                                                                              /* " " */32,
+                                                                                                                              /* "," */44,
                                                                                                                               /* Float */Block.__(8, [
                                                                                                                                   /* Float_f */0,
                                                                                                                                   /* No_padding */0,
                                                                                                                                   /* No_precision */0,
-                                                                                                                                  /* Char_literal */Block.__(12, [
-                                                                                                                                      /* "," */44,
+                                                                                                                                  /* String_literal */Block.__(11, [
+                                                                                                                                      " h ",
                                                                                                                                       /* Float */Block.__(8, [
                                                                                                                                           /* Float_f */0,
                                                                                                                                           /* No_padding */0,
                                                                                                                                           /* No_precision */0,
-                                                                                                                                          /* String_literal */Block.__(11, [
-                                                                                                                                              " h ",
-                                                                                                                                              /* Float */Block.__(8, [
-                                                                                                                                                  /* Float_f */0,
-                                                                                                                                                  /* No_padding */0,
-                                                                                                                                                  /* No_precision */0,
-                                                                                                                                                  /* End_of_format */0
-                                                                                                                                                ])
-                                                                                                                                            ])
+                                                                                                                                          /* End_of_format */0
                                                                                                                                         ])
                                                                                                                                     ])
                                                                                                                                 ])
@@ -155,25 +140,44 @@ function make(sourcePosition, sinkPosition, $staropt$star, color, onClick, _chil
                                         ])
                                     ])
                                 ])
-                            ]),
-                          "M%f,%f h %f a %f,%f 0 0,%i %f,%f v %f a %f,%f 0 0,%i %f,%f h %f"
-                        ]), [
-                      sourcePosition[/* x */0],
-                      sourcePosition[/* y */1],
-                      delta_000 / 2.0 - curveSize_000 * direction_000,
-                      curveSize_000,
-                      curveSize_001,
-                      leftIsDownward ? 1 : 0,
-                      curveSize_000 * direction_000,
-                      curveSize_001 * direction_001,
-                      delta_001 - curveSize_001 * 2.0 * direction_001,
-                      curveSize_000,
-                      curveSize_001,
-                      leftIsDownward ? 0 : 1,
-                      curveSize_000 * direction_000,
-                      curveSize_001 * direction_001,
-                      delta_000 / 2.0 - curveSize_000 * direction_000
+                            ])
+                        ])
                     ]),
+                  "M%f,%f h %f a %f,%f 0 0,%i %f,%f v %f a %f,%f 0 0,%i %f,%f h %f"
+                ]), [
+              sourcePosition[/* x */0],
+              sourcePosition[/* y */1],
+              delta_000 / 2.0 - curveSize_000 * direction_000,
+              curveSize_000,
+              curveSize_001,
+              leftIsDownward ? 1 : 0,
+              curveSize_000 * direction_000,
+              curveSize_001 * direction_001,
+              delta_001 - curveSize_001 * 2.0 * direction_001,
+              curveSize_000,
+              curveSize_001,
+              leftIsDownward ? 0 : 1,
+              curveSize_000 * direction_000,
+              curveSize_001 * direction_001,
+              delta_000 / 2.0 - curveSize_000 * direction_000
+            ]);
+}
+
+function make(sourcePosition, sinkPosition, $staropt$star, color, $staropt$star$1, onClick, _children) {
+  var isSelected = $staropt$star !== undefined ? $staropt$star : false;
+  return /* record */[
+          /* debugName */component[/* debugName */0],
+          /* reactClassInternal */component[/* reactClassInternal */1],
+          /* handedOffState */component[/* handedOffState */2],
+          /* willReceiveProps */component[/* willReceiveProps */3],
+          /* didMount */component[/* didMount */4],
+          /* didUpdate */component[/* didUpdate */5],
+          /* willUnmount */component[/* willUnmount */6],
+          /* willUpdate */component[/* willUpdate */7],
+          /* shouldUpdate */component[/* shouldUpdate */8],
+          /* render */(function (_self) {
+              var tmp = {
+                d: curveConnect(sourcePosition, sinkPosition),
                 fill: "transparent",
                 pointerEvents: "visibleStroke",
                 stroke: isSelected ? "red" : color,
@@ -193,5 +197,6 @@ function make(sourcePosition, sinkPosition, $staropt$star, color, onClick, _chil
 }
 
 exports.component = component;
+exports.curveConnect = curveConnect;
 exports.make = make;
 /* component Not a pure module */
