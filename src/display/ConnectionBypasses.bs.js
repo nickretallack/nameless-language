@@ -12,7 +12,7 @@ var Belt_SetString = require("bs-platform/lib/js/belt_SetString.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 
-function getColumn(connectionSide, isSink, nodeLayouts, nodes, definition, graphWidth, definitions) {
+function getNibPosition(connectionSide, isSink, nodeLayouts, nodes, definition, graphWidth, definitions) {
   var match = connectionSide[/* node */0];
   if (match) {
     var nodeID = match[0];
@@ -27,7 +27,7 @@ function getColumn(connectionSide, isSink, nodeLayouts, nodes, definition, graph
             return Caml_obj.caml_equal(/* NibConnection */Block.__(0, [nibID]), connectionSide[/* nib */1]);
           }));
     return /* record */[
-            /* columns */isSink ? 0 : graphWidth - 2 | 0,
+            /* columns */isSink ? -1 : graphWidth - 2 | 0,
             /* rows */nibIndex$1 + 1 | 0
           ];
   }
@@ -56,58 +56,58 @@ function collisionDetect(nodeLayout, nodePosition) {
 
 function calculate(nodeLayouts, connections, nodes, definition, definitions, graphWidth) {
   return Belt_Map.mapWithKey(connections, (function (sink, source) {
-                var startPosition = getColumn(sink, true, nodeLayouts, nodes, definition, graphWidth, definitions);
-                var endPosition = getColumn(source, false, nodeLayouts, nodes, definition, graphWidth, definitions);
+                var startPosition = getNibPosition(sink, true, nodeLayouts, nodes, definition, graphWidth, definitions);
+                var endPosition = getNibPosition(source, false, nodeLayouts, nodes, definition, graphWidth, definitions);
                 var length = (endPosition[/* columns */0] - startPosition[/* columns */0] | 0) - 1 | 0;
                 var match = sink[/* node */0];
                 var parentScopes = Belt_SetString.fromArray(Belt_List.toArray(match ? getParentScopes(match[0], nodes) : /* [] */0));
-                return Belt_List.reduce(Belt_List.makeBy(length, (function (index) {
-                                    return index;
-                                  })), /* tuple */[
-                              /* [] */0,
-                              endPosition[/* rows */1]
-                            ], (function (param, index) {
-                                var rows = param[1];
-                                var columns = endPosition[/* columns */0] - index | 0;
-                                var position = /* record */[
-                                  /* columns */columns,
-                                  /* rows */rows
-                                ];
-                                var collisions = Belt_MapString.keep(nodeLayouts, (function (nodeID, layout) {
-                                        if (Belt_SetString.has(parentScopes, nodeID)) {
-                                          return false;
-                                        } else {
-                                          return collisionDetect(layout, position);
-                                        }
-                                      }));
-                                var rows$1;
-                                if (Belt_MapString.isEmpty(collisions)) {
-                                  rows$1 = rows;
-                                } else {
-                                  var collisions$1 = Belt_List.fromArray(Belt_MapString.valuesToArray(collisions));
-                                  var outermostCollision = Belt_List.reduce(List.tl(collisions$1), List.hd(collisions$1), (function (acc, layout) {
-                                          var match = layout[/* depth */2] > acc[/* depth */2];
-                                          if (match) {
-                                            return layout;
-                                          } else {
-                                            return acc;
-                                          }
-                                        }));
-                                  var bottom = outermostCollision[/* position */0][/* rows */1] + outermostCollision[/* size */1][/* rows */1] | 0;
-                                  rows$1 = Pervasives.abs(outermostCollision[/* position */0][/* rows */1] - rows | 0) < Pervasives.abs(bottom - rows | 0) ? outermostCollision[/* position */0][/* rows */1] - 1 | 0 : bottom + 1 | 0;
-                                }
-                                return /* tuple */[
-                                        /* :: */[
-                                          rows$1,
-                                          param[0]
-                                        ],
-                                        rows$1
-                                      ];
-                              }))[0];
+                return Belt_List.reverse(Belt_List.reduce(Belt_List.makeBy(length, (function (index) {
+                                        return index;
+                                      })), /* tuple */[
+                                  /* [] */0,
+                                  endPosition[/* rows */1]
+                                ], (function (param, index) {
+                                    var rows = param[1];
+                                    var columns = (endPosition[/* columns */0] - index | 0) - 1 | 0;
+                                    var position = /* record */[
+                                      /* columns */columns,
+                                      /* rows */rows
+                                    ];
+                                    var collisions = Belt_MapString.keep(nodeLayouts, (function (nodeID, layout) {
+                                            if (Belt_SetString.has(parentScopes, nodeID)) {
+                                              return false;
+                                            } else {
+                                              return collisionDetect(layout, position);
+                                            }
+                                          }));
+                                    var rows$1;
+                                    if (Belt_MapString.isEmpty(collisions)) {
+                                      rows$1 = rows;
+                                    } else {
+                                      var collisions$1 = Belt_List.fromArray(Belt_MapString.valuesToArray(collisions));
+                                      var outermostCollision = Belt_List.reduce(List.tl(collisions$1), List.hd(collisions$1), (function (acc, layout) {
+                                              var match = layout[/* depth */2] > acc[/* depth */2];
+                                              if (match) {
+                                                return layout;
+                                              } else {
+                                                return acc;
+                                              }
+                                            }));
+                                      var bottom = outermostCollision[/* position */0][/* rows */1] + outermostCollision[/* size */1][/* rows */1] | 0;
+                                      rows$1 = Pervasives.abs(outermostCollision[/* position */0][/* rows */1] - rows | 0) < Pervasives.abs(bottom - rows | 0) ? outermostCollision[/* position */0][/* rows */1] - 1 | 0 : bottom;
+                                    }
+                                    return /* tuple */[
+                                            /* :: */[
+                                              rows$1,
+                                              param[0]
+                                            ],
+                                            rows$1
+                                          ];
+                                  }))[0]);
               }));
 }
 
-exports.getColumn = getColumn;
+exports.getNibPosition = getNibPosition;
 exports.getParentScopes = getParentScopes;
 exports.collisionDetect = collisionDetect;
 exports.calculate = calculate;

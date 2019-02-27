@@ -1,6 +1,6 @@
 open Definition;
 
-let getColumn =
+let getNibPosition =
     (
       connectionSide: connectionSide,
       isSink: bool,
@@ -20,7 +20,7 @@ let getColumn =
         nibID =>
         NibConnection(nibID) == connectionSide.nib
       );
-    {columns: isSink ? 0 : graphWidth - 2, rows: nibIndex + 1};
+    {columns: isSink ? (-1) : graphWidth - 2, rows: nibIndex + 1};
   | NodeConnection(nodeID) =>
     let nodePosition = Belt.Map.String.getExn(nodeLayouts, nodeID).position;
     let nibIndex =
@@ -67,7 +67,7 @@ let calculate =
     connections,
     (sink, source) => {
       let startPosition =
-        getColumn(
+        getNibPosition(
           sink,
           true,
           nodeLayouts,
@@ -77,7 +77,7 @@ let calculate =
           definitions,
         );
       let endPosition =
-        getColumn(
+        getNibPosition(
           source,
           false,
           nodeLayouts,
@@ -100,43 +100,47 @@ let calculate =
       // ignores all parent scopes of the sink
       // collision detects with all other nodes at each iteration
       // can use color index as a slight vertical offset later
-      fst(
-        Belt.List.reduce(
-          Belt.List.makeBy(length, index => index),
-          ([], endPosition.rows),
-          ((results, rows), index) => {
-            let columns = endPosition.columns - index;
-            let position: LayoutGraph.nodePosition = {columns, rows};
-            let collisions =
-              Belt.Map.String.keep(nodeLayouts, (nodeID, layout) =>
-                !Belt.Set.String.has(parentScopes, nodeID)
-                && collisionDetect(layout, position)
-              );
-            let rows =
-              if (Belt.Map.String.isEmpty(collisions)) {
-                rows;
-              } else {
-                let collisions =
-                  Belt.List.fromArray(
-                    Belt.Map.String.valuesToArray(collisions),
-                  );
-                let outermostCollision =
-                  Belt.List.reduce(
-                    List.tl(collisions), List.hd(collisions), (acc, layout) =>
-                    layout.depth > acc.depth ? layout : acc
-                  );
-                let bottom =
-                  outermostCollision.position.rows
-                  + outermostCollision.size.rows;
-                if (abs(outermostCollision.position.rows - rows)
-                    < abs(bottom - rows)) {
-                  outermostCollision.position.rows - 1;
+      Belt.List.reverse(
+        fst(
+          Belt.List.reduce(
+            Belt.List.makeBy(length, index => index),
+            ([], endPosition.rows),
+            ((results, rows), index) => {
+              let columns = endPosition.columns - index - 1;
+              let position: LayoutGraph.nodePosition = {columns, rows};
+              let collisions =
+                Belt.Map.String.keep(nodeLayouts, (nodeID, layout) =>
+                  !Belt.Set.String.has(parentScopes, nodeID)
+                  && collisionDetect(layout, position)
+                );
+              let rows =
+                if (Belt.Map.String.isEmpty(collisions)) {
+                  rows;
                 } else {
-                  bottom + 1;
+                  let collisions =
+                    Belt.List.fromArray(
+                      Belt.Map.String.valuesToArray(collisions),
+                    );
+                  let outermostCollision =
+                    Belt.List.reduce(
+                      List.tl(collisions),
+                      List.hd(collisions),
+                      (acc, layout) =>
+                      layout.depth > acc.depth ? layout : acc
+                    );
+                  let bottom =
+                    outermostCollision.position.rows
+                    + outermostCollision.size.rows;
+                  if (abs(outermostCollision.position.rows - rows)
+                      < abs(bottom - rows)) {
+                    outermostCollision.position.rows - 1;
+                  } else {
+                    bottom;
+                  };
                 };
-              };
-            ([rows, ...results], rows);
-          },
+              ([rows, ...results], rows);
+            },
+          ),
         ),
       );
     },

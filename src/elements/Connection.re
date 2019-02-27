@@ -76,7 +76,7 @@ let make =
               )
             );
           String.concat(
-            " ",
+            "               ",
             Belt.List.reverse([
               curveConnect(lastPosition, sinkPosition),
               ...parts,

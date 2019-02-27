@@ -198,7 +198,7 @@ function make(sourcePosition, sinkPosition, $staropt$star, color, $staropt$star$
                                 ]
                               ];
                       }));
-                tmp = $$String.concat(" ", Belt_List.reverse(/* :: */[
+                tmp = $$String.concat("               ", Belt_List.reverse(/* :: */[
                           curveConnect(match[1], sinkPosition),
                           match[0]
                         ]));
