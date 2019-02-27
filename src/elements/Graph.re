@@ -243,20 +243,13 @@ let make =
       }
     },
   render: self => {
-    let sourceToColor =
+    let sourceToIndex =
       Belt.Map.reduce(
         implementation.connections,
         Belt.Map.fromArray([||], ~id=(module ConnectionComparator)),
         (acc, _sink, source) =>
         if (!Belt.Map.has(acc, source)) {
-          Belt.Map.set(
-            acc,
-            source,
-            Belt.Array.getExn(
-              connectionColors,
-              Belt.Map.size(acc) mod Belt.Array.size(connectionColors),
-            ),
-          );
+          Belt.Map.set(acc, source, Belt.Map.size(acc));
         } else {
           acc;
         }
@@ -433,21 +426,28 @@ let make =
     let renderedConnections =
       ReasonReact.array(
         Belt.Array.map(
-          Belt.Map.toArray(implementation.connections), ((sink, source)) =>
-          <Connection
-            key={connectionSideToString(sink)}
-            sinkPosition={getNibPosition(sink, true)}
-            sourcePosition={getNibPosition(source, false)}
-            onClick={_event => self.send(SelectConnection(sink))}
-            isSelected={self.state.selection == SelectedConnection(sink)}
-            color={Belt.Map.getExn(sourceToColor, source)}
-            segments={Belt.List.map(
-              Belt.Map.getExn(connectionBypasses, sink), column =>
-              (float_of_int(column) +. 0.5) *. textHeight
-            )}
-            nodeWidth
-            xPadding
-          />
+          Belt.Map.toArray(implementation.connections),
+          ((sink, source)) => {
+            let sourceIndex = Belt.Map.getExn(sourceToIndex, source);
+            <Connection
+              key={connectionSideToString(sink)}
+              sinkPosition={getNibPosition(sink, true)}
+              sourcePosition={getNibPosition(source, false)}
+              onClick={_event => self.send(SelectConnection(sink))}
+              isSelected={self.state.selection == SelectedConnection(sink)}
+              color={Belt.Array.getExn(
+                connectionColors,
+                sourceIndex mod Belt.Array.length(connectionColors),
+              )}
+              segments={Belt.List.map(
+                Belt.Map.getExn(connectionBypasses, sink), column =>
+                (float_of_int(column) +. 0.5) *. textHeight
+              )}
+              nodeWidth
+              xPadding
+              sourceIndex
+            />;
+          },
         ),
       );
     let renderedNibs =
@@ -567,6 +567,7 @@ let make =
               color="black"
               nodeWidth
               xPadding
+              sourceIndex=0
             />;
           | _ => ReasonReact.null
           },

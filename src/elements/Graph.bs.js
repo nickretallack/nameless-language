@@ -77,11 +77,11 @@ function make(definitionID, definitions, implementation, definition, display, do
           /* willUpdate */component[/* willUpdate */7],
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (self) {
-              var sourceToColor = Belt_Map.reduce(implementation[/* connections */1], Belt_Map.fromArray(/* array */[], Definition$ReactTemplate.ConnectionComparator), (function (acc, _sink, source) {
+              var sourceToIndex = Belt_Map.reduce(implementation[/* connections */1], Belt_Map.fromArray(/* array */[], Definition$ReactTemplate.ConnectionComparator), (function (acc, _sink, source) {
                       if (Belt_Map.has(acc, source)) {
                         return acc;
                       } else {
-                        return Belt_Map.set(acc, source, Belt_Array.getExn(connectionColors, Caml_int32.mod_(Belt_Map.size(acc), connectionColors.length)));
+                        return Belt_Map.set(acc, source, Belt_Map.size(acc));
                       }
                     }));
               var columnizedNodes = ColumnizeNodes$ReactTemplate.sortedColumnizedNodes(implementation[/* nodes */2], implementation[/* connections */1], definitions, display);
@@ -163,11 +163,12 @@ function make(definitionID, definitions, implementation, definition, display, do
               var renderedConnections = Belt_Array.map(Belt_Map.toArray(implementation[/* connections */1]), (function (param) {
                       var source = param[1];
                       var sink = param[0];
-                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), Belt_Map.getExn(sourceToColor, source), Belt_List.map(Belt_Map.getExn(connectionBypasses, sink), (function (column) {
+                      var sourceIndex = Belt_Map.getExn(sourceToIndex, source);
+                      return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), Belt_Array.getExn(connectionColors, Caml_int32.mod_(sourceIndex, connectionColors.length)), Belt_List.map(Belt_Map.getExn(connectionBypasses, sink), (function (column) {
                                             return (column + 0.5) * 20.0;
                                           })), 120.0, 60.0, (function (_event) {
                                         return Curry._1(self[/* send */3], /* SelectConnection */Block.__(1, [sink]));
-                                      }), /* array */[]));
+                                      }), sourceIndex, /* array */[]));
                     }));
               var renderedNibs = Belt_Array.map(Belt_List.toArray(allNibs), (function (param) {
                       var explicitConnectionSide = param[/* explicitConnectionSide */1];
@@ -228,7 +229,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                           adjustedPoint_000,
                           adjustedPoint_001
                         ];
-                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, "black", undefined, 120.0, 60.0, undefined, /* array */[]));
+                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, "black", undefined, 120.0, 60.0, undefined, 0, /* array */[]));
                       }
                     }), self[/* state */1][/* pointers */0]);
               var match$1 = self[/* state */1][/* error */1];
