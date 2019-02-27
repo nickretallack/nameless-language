@@ -13,7 +13,8 @@ let curveConnect = (sourcePosition: point, sinkPosition: point, nudge: float) =>
     x: delta.x < 0.0 ? (-1.0) : 1.0,
     y: delta.y < 0.0 ? (-1.0) : 1.0,
   };
-  let leftIsDownward = direction.y < 0.0;
+  let goesUpward = direction.x < 0.0;
+  let leftIsDownward = direction.y < 0.0 ? goesUpward : !goesUpward;
   let curveSize = {
     x: min(abs_float(delta.x) /. 2.0, radius),
     y: min(abs_float(delta.y) /. 2.0, radius),

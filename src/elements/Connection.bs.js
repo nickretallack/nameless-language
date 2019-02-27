@@ -20,7 +20,9 @@ function curveConnect(sourcePosition, sinkPosition, nudge) {
   var match$1 = delta_001 < 0.0;
   var direction_000 = /* x */match ? -1.0 : 1.0;
   var direction_001 = /* y */match$1 ? -1.0 : 1.0;
-  var leftIsDownward = direction_001 < 0.0;
+  var goesUpward = direction_000 < 0.0;
+  var match$2 = direction_001 < 0.0;
+  var leftIsDownward = match$2 ? goesUpward : !goesUpward;
   var curveSize_000 = /* x */Caml_primitive.caml_float_min(Math.abs(delta_000) / 2.0, 15.0);
   var curveSize_001 = /* y */Caml_primitive.caml_float_min(Math.abs(delta_001) / 2.0, 15.0);
   return Curry.app(Printf.sprintf(/* Format */[
