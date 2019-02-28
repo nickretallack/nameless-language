@@ -164,7 +164,7 @@ function make(sourcePosition, sinkPosition, $staropt$star, color, $staropt$star$
           /* shouldUpdate */component[/* shouldUpdate */8],
           /* render */(function (_self) {
               var nudge = 5.0 * (
-                sourceIndex % 2 === 0 ? sourceIndex / 2 | 0 : (-(sourceIndex - 1 | 0) | 0) / 2 | 0
+                sourceIndex % 2 === 0 ? sourceIndex / 2 | 0 : (-(sourceIndex + 1 | 0) | 0) / 2 | 0
               );
               var tmp;
               if (Belt_List.length(segments) === 0) {

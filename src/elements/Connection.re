@@ -60,7 +60,7 @@ let make =
            if (sourceIndex mod 2 == 0) {
              sourceIndex / 2;
            } else {
-             - (sourceIndex - 1) / 2;
+             - (sourceIndex + 1) / 2;
            },
          );
 
