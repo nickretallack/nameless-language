@@ -72,7 +72,7 @@ function checkConnectionScope(source, sink, nodes) {
           } else {
             var match$4 = sinkNode[/* scope */0];
             if (match$4) {
-              return isParentScope(match$4[0], sourceScopeNodeID, nodes);
+              return isParentScope(sourceScopeNodeID, match$4[0], nodes);
             } else {
               return false;
             }

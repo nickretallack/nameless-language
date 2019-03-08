@@ -52,7 +52,7 @@ let checkConnectionScope =
           switch (sinkNode.scope) {
           | GraphScope => false
           | NodeScope(sinkScopeNodeID) =>
-            isParentScope(sinkScopeNodeID, sourceScopeNodeID, nodes)
+            isParentScope(sourceScopeNodeID, sinkScopeNodeID, nodes)
           }
         )
       };
