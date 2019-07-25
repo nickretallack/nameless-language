@@ -8,17 +8,60 @@ let getNumber = (value: value): float =>
   | _ => raise(Not_found)
   };
 
-let addNumbers = (inputs: list(unit => value)): list(value) => {
-  let left = Belt.List.getExn(inputs, 0);
-  let right = Belt.List.getExn(inputs, 1);
-  [PrimitiveValue(NumberValue(getNumber(left()) +. getNumber(right())))];
+let conditionalBranch = (inputs: list(unit => value)): list(value) => {
+  let condition = Belt.List.getExn(inputs, 0);
+  let thenBranch = Belt.List.getExn(inputs, 1);
+  let elseBranch = Belt.List.getExn(inputs, 2);
+  switch (condition()) {
+  | DefinedValue({definitionID: "yes"}) => [thenBranch()]
+  | DefinedValue({definitionID: "no"}) => [elseBranch()]
+  | _ => raise(Not_found)
+  };
 };
 
+// A function that takes two values as inputs and returns one value as an output.
+let operator =
+    (operation: (value, value) => value, inputs: list(unit => value))
+    : list(value) => {
+  let left = Belt.List.getExn(inputs, 0, ());
+  let right = Belt.List.getExn(inputs, 1, ());
+  [operation(left, right)];
+};
+
+let numericOperator =
+    (operation: (float, float) => float, inputs: list(unit => value))
+    : list(value) => {
+  let left = Belt.List.getExn(inputs, 0, ());
+  let right = Belt.List.getExn(inputs, 1, ());
+  [
+    PrimitiveValue(
+      NumberValue(operation(getNumber(left), getNumber(right))),
+    ),
+  ];
+};
+
+let addNumbers = numericOperator((+.));
+let subtractNumbers = numericOperator((-.));
+let multiplyNumbers = numericOperator(( *. ));
+let divideNumbers = numericOperator((/.));
+
+let lessThan =
+  operator((left: value, right: value) =>
+    (
+      DefinedValue({definitionID: left < right ? "yes" : "no", values: []}): value
+    )
+  );
+
 let evaluateExternal =
-    (name: string, outputIndex: int, inputs: list(unit => value)) => {
+    (name: string, outputIndex: int, inputs: list(unit => value)): value => {
   let externalFunction =
     switch (name) {
     | "+" => addNumbers
+    | "-" => subtractNumbers
+    | "*" => multiplyNumbers
+    | "/" => divideNumbers
+    | "<" => lessThan
+    | "branch" => conditionalBranch
     | _ => raise(Not_found)
     };
   let outputs = externalFunction(inputs);
@@ -30,6 +73,7 @@ let rec evaluateConnection =
           definitions: definitions,
           graphImplementation: graphImplementation,
           sink: connectionSide,
+          graphLazyInputs: list(unit => value),
         )
         : value => {
   let source = Belt.Map.getExn(graphImplementation.connections, sink);
@@ -62,9 +106,30 @@ let rec evaluateConnection =
                   definitions,
                   graphImplementation,
                   {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
+                  graphLazyInputs,
                 )
               );
             evaluateExternal(name, outputIndex, lazyInputs);
+          | _ => raise(Not_found)
+          }
+        | GraphImplementation(graphImplementation) =>
+          switch (source.nib) {
+          | NibConnection(outputID) =>
+            let lazyInputs =
+              Belt.List.map(nodeDefinition.display.inputOrdering, (nibID, ()) =>
+                evaluateConnection(
+                  definitions,
+                  graphImplementation,
+                  {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
+                  graphLazyInputs,
+                )
+              );
+            evaluateGraphOutput(
+              definitions,
+              graphImplementation,
+              outputID,
+              lazyInputs,
+            );
           | _ => raise(Not_found)
           }
         | _ => PrimitiveValue(TextValue("Value?"))
@@ -79,6 +144,7 @@ let rec evaluateConnection =
                 definitions,
                 graphImplementation,
                 {node: NodeConnection(nodeID), nib: ValueConnection},
+                graphLazyInputs,
               );
             switch (value) {
             | DefinedValue(definedValue) =>
@@ -109,6 +175,7 @@ let rec evaluateConnection =
                   definitions,
                   graphImplementation,
                   {node: NodeConnection(nodeID), nib: NibConnection(nibID)},
+                  graphLazyInputs,
                 )
               ),
           })
@@ -118,17 +185,36 @@ let rec evaluateConnection =
       };
     };
   };
-};
-let evaluateGraphOutput =
+}
+and evaluateGraphOutput =
     (
       definitions: definitions,
       graphImplementation: graphImplementation,
       outputID: nibID,
+      lazyInputs: list(unit => value),
     )
     : value => {
   evaluateConnection(
     definitions,
     graphImplementation,
     {node: GraphConnection, nib: NibConnection(outputID)},
+    lazyInputs,
   );
+};
+
+type scope = {
+  definitionID,
+  sourceValues:
+    Belt.Map.t(connectionSide, value, ConnectionComparator.identity),
+};
+
+type scopeID = string;
+type stackFrame = {
+  scopeID,
+  explicitConnectionSide,
+};
+
+type execution = {
+  scopes: Belt.Map.String.t(scope),
+  stack: list(stackFrame),
 };

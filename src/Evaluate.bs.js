@@ -4,6 +4,7 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
@@ -25,27 +26,112 @@ function getNumber(value) {
   }
 }
 
-function addNumbers(inputs) {
-  var left = Belt_List.getExn(inputs, 0);
-  var right = Belt_List.getExn(inputs, 1);
+function conditionalBranch(inputs) {
+  var condition = Belt_List.getExn(inputs, 0);
+  var thenBranch = Belt_List.getExn(inputs, 1);
+  var elseBranch = Belt_List.getExn(inputs, 2);
+  var match = Curry._1(condition, /* () */0);
+  if (match.tag) {
+    switch (match[0][/* definitionID */0]) {
+      case "no" : 
+          return /* :: */[
+                  Curry._1(elseBranch, /* () */0),
+                  /* [] */0
+                ];
+      case "yes" : 
+          return /* :: */[
+                  Curry._1(thenBranch, /* () */0),
+                  /* [] */0
+                ];
+      default:
+        throw Caml_builtin_exceptions.not_found;
+    }
+  } else {
+    throw Caml_builtin_exceptions.not_found;
+  }
+}
+
+function operator(operation, inputs) {
+  var left = Curry._1(Belt_List.getExn(inputs, 0), /* () */0);
+  var right = Curry._1(Belt_List.getExn(inputs, 1), /* () */0);
   return /* :: */[
-          /* PrimitiveValue */Block.__(0, [/* NumberValue */Block.__(1, [getNumber(Curry._1(left, /* () */0)) + getNumber(Curry._1(right, /* () */0))])]),
+          Curry._2(operation, left, right),
           /* [] */0
         ];
 }
 
+function numericOperator(operation, inputs) {
+  var left = Curry._1(Belt_List.getExn(inputs, 0), /* () */0);
+  var right = Curry._1(Belt_List.getExn(inputs, 1), /* () */0);
+  return /* :: */[
+          /* PrimitiveValue */Block.__(0, [/* NumberValue */Block.__(1, [Curry._2(operation, getNumber(left), getNumber(right))])]),
+          /* [] */0
+        ];
+}
+
+function addNumbers(param) {
+  return numericOperator((function (prim, prim$1) {
+                return prim + prim$1;
+              }), param);
+}
+
+function subtractNumbers(param) {
+  return numericOperator((function (prim, prim$1) {
+                return prim - prim$1;
+              }), param);
+}
+
+function multiplyNumbers(param) {
+  return numericOperator((function (prim, prim$1) {
+                return prim * prim$1;
+              }), param);
+}
+
+function divideNumbers(param) {
+  return numericOperator((function (prim, prim$1) {
+                return prim / prim$1;
+              }), param);
+}
+
+function lessThan(param) {
+  return operator((function (left, right) {
+                var match = Caml_obj.caml_lessthan(left, right);
+                return /* DefinedValue */Block.__(1, [/* record */[
+                            /* definitionID */match ? "yes" : "no",
+                            /* values : [] */0
+                          ]]);
+              }), param);
+}
+
 function evaluateExternal(name, outputIndex, inputs) {
   var externalFunction;
-  if (name === "+") {
-    externalFunction = addNumbers;
-  } else {
-    throw Caml_builtin_exceptions.not_found;
+  switch (name) {
+    case "*" : 
+        externalFunction = multiplyNumbers;
+        break;
+    case "+" : 
+        externalFunction = addNumbers;
+        break;
+    case "-" : 
+        externalFunction = subtractNumbers;
+        break;
+    case "/" : 
+        externalFunction = divideNumbers;
+        break;
+    case "<" : 
+        externalFunction = lessThan;
+        break;
+    case "branch" : 
+        externalFunction = conditionalBranch;
+        break;
+    default:
+      throw Caml_builtin_exceptions.not_found;
   }
   var outputs = Curry._1(externalFunction, inputs);
   return Belt_List.getExn(outputs, outputIndex);
 }
 
-function evaluateConnection(definitions, graphImplementation, sink) {
+function evaluateConnection(definitions, graphImplementation, sink, graphLazyInputs) {
   var source = Belt_Map.getExn(graphImplementation[/* connections */1], sink);
   var match = source[/* node */0];
   if (match) {
@@ -61,69 +147,86 @@ function evaluateConnection(definitions, graphImplementation, sink) {
       switch (match$2[/* kind */0]) {
         case 0 : 
             var match$3 = nodeDefinition[/* implementation */0];
-            if (match$3.tag === 2) {
-              var match$4 = source[/* nib */1];
-              if (typeof match$4 === "number") {
-                throw Caml_builtin_exceptions.not_found;
-              } else if (match$4.tag) {
-                throw Caml_builtin_exceptions.not_found;
-              } else {
-                var outputIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* outputOrdering */1], match$4[0]);
-                var lazyInputs = Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID, param) {
-                        return evaluateConnection(definitions, graphImplementation, /* record */[
-                                    /* node : NodeConnection */[nodeID],
-                                    /* nib : NibConnection */Block.__(0, [nibID])
-                                  ]);
-                      }));
-                return evaluateExternal(match$3[0][/* name */0], outputIndex, lazyInputs);
-              }
-            } else {
-              return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Value?"])]);
+            switch (match$3.tag | 0) {
+              case 2 : 
+                  var match$4 = source[/* nib */1];
+                  if (typeof match$4 === "number") {
+                    throw Caml_builtin_exceptions.not_found;
+                  } else if (match$4.tag) {
+                    throw Caml_builtin_exceptions.not_found;
+                  } else {
+                    var outputIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* outputOrdering */1], match$4[0]);
+                    var lazyInputs = Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID, param) {
+                            return evaluateConnection(definitions, graphImplementation, /* record */[
+                                        /* node : NodeConnection */[nodeID],
+                                        /* nib : NibConnection */Block.__(0, [nibID])
+                                      ], graphLazyInputs);
+                          }));
+                    return evaluateExternal(match$3[0][/* name */0], outputIndex, lazyInputs);
+                  }
+              case 3 : 
+                  var graphImplementation$1 = match$3[0];
+                  var match$5 = source[/* nib */1];
+                  if (typeof match$5 === "number") {
+                    throw Caml_builtin_exceptions.not_found;
+                  } else if (match$5.tag) {
+                    throw Caml_builtin_exceptions.not_found;
+                  } else {
+                    var lazyInputs$1 = Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID, param) {
+                            return evaluateConnection(definitions, graphImplementation$1, /* record */[
+                                        /* node : NodeConnection */[nodeID],
+                                        /* nib : NibConnection */Block.__(0, [nibID])
+                                      ], graphLazyInputs);
+                          }));
+                    return evaluateGraphOutput(definitions, graphImplementation$1, match$5[0], lazyInputs$1);
+                  }
+              default:
+                return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Value?"])]);
             }
         case 1 : 
-            var match$5 = nodeDefinition[/* implementation */0];
-            if (match$5.tag) {
+            var match$6 = nodeDefinition[/* implementation */0];
+            if (match$6.tag) {
               return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Value?"])]);
             } else {
-              return /* PrimitiveValue */Block.__(0, [match$5[0]]);
+              return /* PrimitiveValue */Block.__(0, [match$6[0]]);
             }
         case 2 : 
         case 3 : 
             return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Defined node?"])]);
         case 4 : 
-            var match$6 = nodeDefinition[/* implementation */0];
-            if (match$6.tag === 4) {
+            var match$7 = nodeDefinition[/* implementation */0];
+            if (match$7.tag === 4) {
               return /* DefinedValue */Block.__(1, [/* record */[
                           /* definitionID */definitionID,
                           /* values */Belt_List.map(nodeDefinition[/* display */2][/* inputOrdering */0], (function (nibID, param) {
                                   return evaluateConnection(definitions, graphImplementation, /* record */[
                                               /* node : NodeConnection */[nodeID],
                                               /* nib : NibConnection */Block.__(0, [nibID])
-                                            ]);
+                                            ], graphLazyInputs);
                                 }))
                         ]]);
             } else {
               return /* PrimitiveValue */Block.__(0, [/* TextValue */Block.__(2, ["Accessor?"])]);
             }
         case 5 : 
-            var match$7 = nodeDefinition[/* implementation */0];
-            if (match$7.tag === 4) {
-              var match$8 = source[/* nib */1];
-              if (typeof match$8 === "number") {
+            var match$8 = nodeDefinition[/* implementation */0];
+            if (match$8.tag === 4) {
+              var match$9 = source[/* nib */1];
+              if (typeof match$9 === "number") {
                 throw Caml_builtin_exceptions.not_found;
-              } else if (match$8.tag) {
+              } else if (match$9.tag) {
                 throw Caml_builtin_exceptions.not_found;
               } else {
                 var value = evaluateConnection(definitions, graphImplementation, /* record */[
                       /* node : NodeConnection */[nodeID],
                       /* nib : ValueConnection */0
-                    ]);
+                    ], graphLazyInputs);
                 if (value.tag) {
                   var definedValue = value[0];
                   if (definedValue[/* definitionID */0] !== definitionID) {
                     throw Caml_builtin_exceptions.not_found;
                   } else {
-                    var fieldIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* inputOrdering */0], match$8[0]);
+                    var fieldIndex = Helpers$ReactTemplate.findIndexExn(nodeDefinition[/* display */2][/* inputOrdering */0], match$9[0]);
                     return Curry._1(Belt_List.getExn(definedValue[/* values */1], fieldIndex), /* () */0);
                   }
                 } else {
@@ -143,15 +246,22 @@ function evaluateConnection(definitions, graphImplementation, sink) {
   }
 }
 
-function evaluateGraphOutput(definitions, graphImplementation, outputID) {
+function evaluateGraphOutput(definitions, graphImplementation, outputID, lazyInputs) {
   return evaluateConnection(definitions, graphImplementation, /* record */[
               /* node : GraphConnection */0,
               /* nib : NibConnection */Block.__(0, [outputID])
-            ]);
+            ], lazyInputs);
 }
 
 exports.getNumber = getNumber;
+exports.conditionalBranch = conditionalBranch;
+exports.operator = operator;
+exports.numericOperator = numericOperator;
 exports.addNumbers = addNumbers;
+exports.subtractNumbers = subtractNumbers;
+exports.multiplyNumbers = multiplyNumbers;
+exports.divideNumbers = divideNumbers;
+exports.lessThan = lessThan;
 exports.evaluateExternal = evaluateExternal;
 exports.evaluateConnection = evaluateConnection;
 exports.evaluateGraphOutput = evaluateGraphOutput;
