@@ -421,6 +421,12 @@ and value =
   | PrimitiveValue(primitiveValue)
   | DefinedValue(definedValue);
 
+let displayValue = (value: value) =>
+  switch (value) {
+  | PrimitiveValue(primitiveValue) => displayPrimitiveValue(primitiveValue)
+  | DefinedValue(_) => "TODO: defined value"
+  };
+
 /* Implementation */
 
 type implementation =

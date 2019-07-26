@@ -149,9 +149,10 @@ function curveConnect(sourcePosition, sinkPosition, nudge) {
             ]);
 }
 
-function make(sourcePosition, sinkPosition, $staropt$star, color, $staropt$star$1, nodeWidth, xPadding, onClick, sourceIndex, _children) {
+function make(sourcePosition, sinkPosition, $staropt$star, color, $staropt$star$1, nodeWidth, xPadding, onClick, sourceIndex, $staropt$star$2, _children) {
   var isSelected = $staropt$star !== undefined ? $staropt$star : false;
   var segments = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
+  var debugState = $staropt$star$2 !== undefined ? $staropt$star$2 : /* NoDebugConnection */2;
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -231,17 +232,30 @@ function make(sourcePosition, sinkPosition, $staropt$star, color, $staropt$star$
                           ]),
                         "M%f,%f "
                       ]), sourcePosition[/* x */0], sourcePosition[/* y */1]) + tmp;
-              var tmp$1 = {
+              var tmp$1;
+              switch (debugState) {
+                case 0 : 
+                    tmp$1 = "blue";
+                    break;
+                case 1 : 
+                    tmp$1 = "green";
+                    break;
+                case 2 : 
+                    tmp$1 = isSelected ? "red" : color;
+                    break;
+                
+              }
+              var tmp$2 = {
                 d: path,
                 fill: "transparent",
                 pointerEvents: "visibleStroke",
-                stroke: isSelected ? "red" : color,
+                stroke: tmp$1,
                 strokeWidth: "5"
               };
               if (onClick !== undefined) {
-                tmp$1.onClick = Caml_option.valFromOption(onClick);
+                tmp$2.onClick = Caml_option.valFromOption(onClick);
               }
-              return React.createElement("path", tmp$1);
+              return React.createElement("path", tmp$2);
             }),
           /* initialState */component[/* initialState */10],
           /* retainedProps */component[/* retainedProps */11],

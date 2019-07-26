@@ -469,6 +469,14 @@ function primitiveValueToTypeString(x) {
   return primitiveValueTypeToString(primitiveValueToType(x));
 }
 
+function displayValue(value) {
+  if (value.tag) {
+    return "TODO: defined value";
+  } else {
+    return displayPrimitiveValue(value[0]);
+  }
+}
+
 function implementationName(implementation) {
   switch (implementation.tag | 0) {
     case 0 : 
@@ -912,6 +920,7 @@ exports.primitiveValueToType = primitiveValueToType;
 exports.primitiveValueToString = primitiveValueToString;
 exports.displayPrimitiveValue = displayPrimitiveValue;
 exports.primitiveValueToTypeString = primitiveValueToTypeString;
+exports.displayValue = displayValue;
 exports.implementationName = implementationName;
 exports.getTranslated = getTranslated;
 exports.setTranslated = setTranslated;

@@ -4,6 +4,7 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
@@ -111,12 +112,37 @@ function make(definitions, _children) {
                                     /* action */action
                                   ]]));
                   };
-                  tmp = implementation.tag === 3 ? ReasonReact.element(definitionID, undefined, Graph$ReactTemplate.make(definitionID, self[/* state */1][/* definitions */1], implementation[0], definition, definition[/* display */2], definition[/* documentation */1], emit, self[/* state */1][/* error */3], /* array */[])) : ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definitionID, definition, definitions, self[/* state */1][/* error */3], emit, /* array */[]));
+                  var match$2 = self[/* state */1][/* execution */0];
+                  var stackFrame;
+                  if (match$2 !== undefined) {
+                    var execution = match$2;
+                    var match$3 = Belt_List.headExn(execution[/* stack */1]);
+                    var scope = Belt_MapString.getExn(execution[/* scopes */0], match$3[/* scopeID */0]);
+                    stackFrame = /* record */[
+                      /* scope */scope,
+                      /* explicitConnectionSide */match$3[/* explicitConnectionSide */1],
+                      /* action */match$3[/* action */2]
+                    ];
+                  } else {
+                    stackFrame = undefined;
+                  }
+                  tmp = implementation.tag === 3 ? ReasonReact.element(definitionID, undefined, Graph$ReactTemplate.make(definitionID, self[/* state */1][/* definitions */1], implementation[0], definition, definition[/* display */2], definition[/* documentation */1], emit, self[/* state */1][/* error */3], stackFrame, /* array */[])) : ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definitionID, definition, definitions, self[/* state */1][/* error */3], emit, /* array */[]));
                 } else {
                   tmp = "Not found";
                 }
               }
-              var match$2 = self[/* state */1][/* execution */0];
+              var match$4 = self[/* state */1][/* execution */0];
+              var tmp$1;
+              if (match$4 !== undefined) {
+                var match$5 = match$4[/* result */2];
+                tmp$1 = React.createElement("div", undefined, React.createElement("button", {
+                          onClick: (function (param) {
+                              return Curry._1(self[/* send */3], /* Step */0);
+                            })
+                        }, "step"), match$5 !== undefined ? "Result: " + Definition$ReactTemplate.displayValue(match$5) : null);
+              } else {
+                tmp$1 = null;
+              }
               return React.createElement("div", undefined, React.createElement("a", {
                               href: "#"
                             }, "Library"), " New:", Belt_Array.mapWithIndex(makers, (function (index, param) {
@@ -128,11 +154,7 @@ function make(definitions, _children) {
                                                 return Curry._1(self[/* send */3], /* CreateDefinition */Block.__(1, [Curry._1(maker, /* () */0)]));
                                               })
                                           }, param[0]);
-                              })), tmp, match$2 !== undefined ? React.createElement("div", undefined, React.createElement("button", {
-                                    onClick: (function (param) {
-                                        return Curry._1(self[/* send */3], /* Step */0);
-                                      })
-                                  }, "step")) : null);
+                              })), tmp, tmp$1);
             }),
           /* initialState */(function (param) {
               return /* record */[

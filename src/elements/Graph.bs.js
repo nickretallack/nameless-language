@@ -56,7 +56,7 @@ function preventDefault($$event) {
 
 var component = ReasonReact.reducerComponent("Graph");
 
-function make(definitionID, definitions, implementation, definition, display, documentation, emit, error, _children) {
+function make(definitionID, definitions, implementation, definition, display, documentation, emit, error, stackFrame, _children) {
   return /* record */[
           /* debugName */component[/* debugName */0],
           /* reactClassInternal */component[/* reactClassInternal */1],
@@ -165,11 +165,25 @@ function make(definitionID, definitions, implementation, definition, display, do
                       var source = param[1];
                       var sink = param[0];
                       var sourceIndex = Belt_Map.getExn(sourceToIndex, source);
+                      var debugState;
+                      if (stackFrame !== undefined) {
+                        var stackFrame$1 = stackFrame;
+                        console.log("YEAH!!!");
+                        var stackConnectionSide = stackFrame$1[/* explicitConnectionSide */1];
+                        if (!stackConnectionSide[/* isSource */1] && Caml_obj.caml_equal(stackConnectionSide[/* connectionSide */0], sink)) {
+                          var match = stackFrame$1[/* action */2];
+                          debugState = match ? /* ReturningConnection */1 : /* EvaluatingConnection */0;
+                        } else {
+                          debugState = /* NoDebugConnection */2;
+                        }
+                      } else {
+                        debugState = /* NoDebugConnection */2;
+                      }
                       return ReasonReact.element(Definition$ReactTemplate.connectionSideToString(sink), undefined, Connection$ReactTemplate.make(getNibPosition(source, false), getNibPosition(sink, true), Caml_obj.caml_equal(self[/* state */1][/* selection */2], /* SelectedConnection */Block.__(0, [sink])), Belt_Array.getExn(connectionColors, Caml_int32.mod_(sourceIndex, connectionColors.length)), Belt_List.map(Belt_Map.getExn(connectionBypasses, sink), (function (column) {
                                             return (column + 0.5) * 20.0;
                                           })), 120.0, 60.0, (function (_event) {
                                         return Curry._1(self[/* send */3], /* SelectConnection */Block.__(1, [sink]));
-                                      }), sourceIndex, /* array */[]));
+                                      }), sourceIndex, debugState, /* array */[]));
                     }));
               var renderedNibs = Belt_Array.map(Belt_List.toArray(allNibs), (function (param) {
                       var explicitConnectionSide = param[/* explicitConnectionSide */1];
@@ -230,7 +244,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                           adjustedPoint_000,
                           adjustedPoint_001
                         ];
-                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, "black", undefined, 120.0, 60.0, undefined, 0, /* array */[]));
+                        return ReasonReact.element(GraphActions$ReactTemplate.pointerIDToString(param[0]), undefined, Connection$ReactTemplate.make(startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint, startIsSource ? adjustedPoint : getNibPosition(connectionSide, true), undefined, "black", undefined, 120.0, 60.0, undefined, 0, undefined, /* array */[]));
                       }
                     }), self[/* state */1][/* pointers */0]);
               var match$1 = self[/* state */1][/* error */1];

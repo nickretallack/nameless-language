@@ -1,6 +1,11 @@
 [%%debugger.chrome];
 open Helpers;
 
+type connectionDebug =
+  | EvaluatingConnection
+  | ReturningConnection
+  | NoDebugConnection;
+
 let component = ReasonReact.statelessComponent("Connection");
 
 let curveConnect = (sourcePosition: point, sinkPosition: point, nudge: float) => {
@@ -50,6 +55,7 @@ let make =
       // ~maxNudge=1,
       ~onClick=?,
       ~sourceIndex: int,
+      ~debugState: connectionDebug=NoDebugConnection,
       _children,
     ) => {
   ...component,
@@ -103,7 +109,13 @@ let make =
 
     <path
       fill="transparent"
-      stroke={isSelected ? "red" : color}
+      stroke={
+        switch (debugState) {
+        | EvaluatingConnection => "blue"
+        | ReturningConnection => "green"
+        | NoDebugConnection => isSelected ? "red" : color
+        }
+      }
       strokeWidth="5"
       pointerEvents="visibleStroke"
       d=path

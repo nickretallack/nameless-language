@@ -22,39 +22,51 @@ function reducer(action, state) {
     if (match !== undefined) {
       var execution = match;
       var frame = Belt_List.headExn(execution[/* stack */1]);
-      var scope = Belt_MapString.getExn(execution[/* scopes */0], frame[/* scopeID */0]);
-      var definition = Belt_MapString.getExn(state[/* definitions */1], scope[/* definitionID */0]);
-      var match$1 = definition[/* implementation */0];
+      var match$1 = frame[/* action */2];
       var tmp$1;
-      if (match$1.tag === 3) {
-        var graphImplementation = match$1[0];
-        var match$2 = frame[/* explicitConnectionSide */1][/* isSource */1];
-        var source = match$2 ? frame[/* explicitConnectionSide */1][/* connectionSide */0] : Belt_Map.getExn(graphImplementation[/* connections */1], frame[/* explicitConnectionSide */1][/* connectionSide */0]);
-        var match$3 = source[/* node */0];
-        if (match$3) {
-          var node = Belt_MapString.getExn(graphImplementation[/* nodes */2], match$3[0]);
-          var match$4 = node[/* kind */1];
-          if (typeof match$4 === "number") {
-            throw Caml_builtin_exceptions.not_found;
-          } else if (match$4.tag) {
-            var match$5 = match$4[0];
-            var nodeDefinition = Belt_MapString.getExn(state[/* definitions */1], match$5[/* definitionID */1]);
-            if (match$5[/* kind */0] !== 1) {
+      if (match$1) {
+        tmp$1 = Belt_List.length(execution[/* stack */1]) === 1 ? /* record */[
+            /* scopes */execution[/* scopes */0],
+            /* stack */execution[/* stack */1],
+            /* result */match$1[0]
+          ] : execution;
+      } else {
+        var scope = Belt_MapString.getExn(execution[/* scopes */0], frame[/* scopeID */0]);
+        var definition = Belt_MapString.getExn(state[/* definitions */1], scope[/* definitionID */0]);
+        var match$2 = definition[/* implementation */0];
+        if (match$2.tag === 3) {
+          var graphImplementation = match$2[0];
+          var match$3 = frame[/* explicitConnectionSide */1][/* isSource */1];
+          var source = match$3 ? frame[/* explicitConnectionSide */1][/* connectionSide */0] : Belt_Map.getExn(graphImplementation[/* connections */1], frame[/* explicitConnectionSide */1][/* connectionSide */0]);
+          var match$4 = source[/* node */0];
+          if (match$4) {
+            var node = Belt_MapString.getExn(graphImplementation[/* nodes */2], match$4[0]);
+            var match$5 = node[/* kind */1];
+            if (typeof match$5 === "number") {
               throw Caml_builtin_exceptions.not_found;
-            } else {
-              var match$6 = nodeDefinition[/* implementation */0];
-              if (match$6.tag) {
+            } else if (match$5.tag) {
+              var match$6 = match$5[0];
+              var nodeDefinition = Belt_MapString.getExn(state[/* definitions */1], match$6[/* definitionID */1]);
+              if (match$6[/* kind */0] !== 1) {
                 throw Caml_builtin_exceptions.not_found;
               } else {
-                tmp$1 = /* record */[
-                  /* scopes */execution[/* scopes */0],
-                  /* stack */Belt_List.add(Belt_List.tailExn(execution[/* stack */1]), /* record */[
-                        /* scopeID */frame[/* scopeID */0],
-                        /* explicitConnectionSide */frame[/* explicitConnectionSide */1],
-                        /* action : Returning */[/* PrimitiveValue */Block.__(0, [match$6[0]])]
-                      ])
-                ];
+                var match$7 = nodeDefinition[/* implementation */0];
+                if (match$7.tag) {
+                  throw Caml_builtin_exceptions.not_found;
+                } else {
+                  tmp$1 = /* record */[
+                    /* scopes */execution[/* scopes */0],
+                    /* stack */Belt_List.add(Belt_List.tailExn(execution[/* stack */1]), /* record */[
+                          /* scopeID */frame[/* scopeID */0],
+                          /* explicitConnectionSide */frame[/* explicitConnectionSide */1],
+                          /* action : Returning */[/* PrimitiveValue */Block.__(0, [match$7[0]])]
+                        ]),
+                    /* result */execution[/* result */2]
+                  ];
+                }
               }
+            } else {
+              throw Caml_builtin_exceptions.not_found;
             }
           } else {
             throw Caml_builtin_exceptions.not_found;
@@ -62,8 +74,6 @@ function reducer(action, state) {
         } else {
           throw Caml_builtin_exceptions.not_found;
         }
-      } else {
-        throw Caml_builtin_exceptions.not_found;
       }
       tmp = tmp$1;
     } else {
@@ -78,9 +88,9 @@ function reducer(action, state) {
   } else {
     switch (action.tag | 0) {
       case 0 : 
-          var match$7 = action[0];
-          var action$1 = match$7[/* action */1];
-          var definitionID = match$7[/* definitionID */0];
+          var match$8 = action[0];
+          var action$1 = match$8[/* action */1];
+          var definitionID = match$8[/* definitionID */0];
           var definition$1 = Belt_MapString.getExn(state[/* definitions */1], definitionID);
           var updateDefinition = function (definition) {
             return /* Update */Block.__(0, [/* record */[
@@ -94,18 +104,18 @@ function reducer(action, state) {
             switch (action$1) {
               case 0 : 
                   var nibID = Helpers$ReactTemplate.randomID(/* () */0);
-                  var match$8 = definition$1[/* implementation */0];
+                  var match$9 = definition$1[/* implementation */0];
                   var tmp$2;
-                  switch (match$8.tag | 0) {
+                  switch (match$9.tag | 0) {
                     case 1 : 
-                        var $$interface = match$8[0];
+                        var $$interface = match$9[0];
                         tmp$2 = /* InterfaceImplementation */Block.__(1, [/* record */[
                               /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2])),
                               /* outputTypes */$$interface[/* outputTypes */1]
                             ]]);
                         break;
                     case 3 : 
-                        var graphImplementation$1 = match$8[0];
+                        var graphImplementation$1 = match$9[0];
                         var init = graphImplementation$1[/* interface */0];
                         tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
                               /* interface : record */[
@@ -117,7 +127,7 @@ function reducer(action, state) {
                             ]]);
                         break;
                     case 4 : 
-                        tmp$2 = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$8[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
+                        tmp$2 = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$9[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
                         break;
                     default:
                       tmp$2 = definition$1[/* implementation */0];
@@ -142,18 +152,18 @@ function reducer(action, state) {
                             ]);
               case 1 : 
                   var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
-                  var match$9 = definition$1[/* implementation */0];
+                  var match$10 = definition$1[/* implementation */0];
                   var tmp$3;
-                  switch (match$9.tag | 0) {
+                  switch (match$10.tag | 0) {
                     case 1 : 
-                        var $$interface$1 = match$9[0];
+                        var $$interface$1 = match$10[0];
                         tmp$3 = /* InterfaceImplementation */Block.__(1, [/* record */[
                               /* inputTypes */$$interface$1[/* inputTypes */0],
                               /* outputTypes */Belt_MapString.set($$interface$1[/* outputTypes */1], nibID$1, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]))
                             ]]);
                         break;
                     case 3 : 
-                        var graphImplementation$2 = match$9[0];
+                        var graphImplementation$2 = match$10[0];
                         var init$3 = graphImplementation$2[/* interface */0];
                         tmp$3 = /* GraphImplementation */Block.__(3, [/* record */[
                               /* interface : record */[
@@ -203,14 +213,14 @@ function reducer(action, state) {
           } else {
             switch (action$1.tag | 0) {
               case 0 : 
-                  var match$10 = action$1[0];
-                  var match$11 = definition$1[/* implementation */0];
-                  if (match$11.tag === 3) {
-                    var graphImplementation$3 = match$11[0];
+                  var match$11 = action$1[0];
+                  var match$12 = definition$1[/* implementation */0];
+                  if (match$12.tag === 3) {
+                    var graphImplementation$3 = match$12[0];
                     return updateDefinition(/* record */[
                                 /* implementation : GraphImplementation */Block.__(3, [/* record */[
                                       /* interface */graphImplementation$3[/* interface */0],
-                                      /* connections */Belt_Map.set(graphImplementation$3[/* connections */1], match$10[/* sink */1], match$10[/* source */0]),
+                                      /* connections */Belt_Map.set(graphImplementation$3[/* connections */1], match$11[/* sink */1], match$11[/* source */0]),
                                       /* nodes */graphImplementation$3[/* nodes */2]
                                     ]]),
                                 /* documentation */definition$1[/* documentation */1],
@@ -244,8 +254,8 @@ function reducer(action, state) {
                               /* display */definition$1[/* display */2]
                             ]);
               case 3 : 
-                  var match$12 = definition$1[/* implementation */0];
-                  if (match$12.tag) {
+                  var match$13 = definition$1[/* implementation */0];
+                  if (match$13.tag) {
                     throw Caml_builtin_exceptions.not_found;
                   } else {
                     return updateDefinition(/* record */[
@@ -255,31 +265,31 @@ function reducer(action, state) {
                               ]);
                   }
               case 4 : 
-                  var match$13 = action$1[0];
-                  var explicitConnectionSide = match$13[/* explicitConnectionSide */1];
+                  var match$14 = action$1[0];
+                  var explicitConnectionSide = match$14[/* explicitConnectionSide */1];
                   var nodeID = Helpers$ReactTemplate.randomID(/* () */0);
                   var nodeConnectionSide_000 = /* node : NodeConnection */[nodeID];
-                  var nodeConnectionSide_001 = /* nib */match$13[/* connectionNib */2];
+                  var nodeConnectionSide_001 = /* nib */match$14[/* connectionNib */2];
                   var nodeConnectionSide = /* record */[
                     nodeConnectionSide_000,
                     nodeConnectionSide_001
                   ];
-                  var match$14 = explicitConnectionSide[/* isSource */1];
-                  var match$15 = match$14 ? /* tuple */[
+                  var match$15 = explicitConnectionSide[/* isSource */1];
+                  var match$16 = match$15 ? /* tuple */[
                       explicitConnectionSide[/* connectionSide */0],
                       nodeConnectionSide
                     ] : /* tuple */[
                       nodeConnectionSide,
                       explicitConnectionSide[/* connectionSide */0]
                     ];
-                  var match$16 = definition$1[/* implementation */0];
-                  if (match$16.tag === 3) {
-                    var graphImplementation$4 = match$16[0];
+                  var match$17 = definition$1[/* implementation */0];
+                  if (match$17.tag === 3) {
+                    var graphImplementation$4 = match$17[0];
                     return updateDefinition(/* record */[
                                 /* implementation : GraphImplementation */Block.__(3, [/* record */[
                                       /* interface */graphImplementation$4[/* interface */0],
-                                      /* connections */Belt_Map.set(graphImplementation$4[/* connections */1], match$15[1], match$15[0]),
-                                      /* nodes */Belt_MapString.set(graphImplementation$4[/* nodes */2], nodeID, match$13[/* node */0])
+                                      /* connections */Belt_Map.set(graphImplementation$4[/* connections */1], match$16[1], match$16[0]),
+                                      /* nodes */Belt_MapString.set(graphImplementation$4[/* nodes */2], nodeID, match$14[/* node */0])
                                     ]]),
                                 /* documentation */definition$1[/* documentation */1],
                                 /* display */definition$1[/* display */2]
@@ -288,10 +298,10 @@ function reducer(action, state) {
                     return /* NoUpdate */0;
                   }
               case 5 : 
-                  var match$17 = action$1[0];
-                  var action$2 = match$17[/* action */2];
-                  var isInput = match$17[/* isInput */1];
-                  var nibID$2 = match$17[/* nibID */0];
+                  var match$18 = action$1[0];
+                  var action$2 = match$18[/* action */2];
+                  var isInput = match$18[/* isInput */1];
+                  var nibID$2 = match$18[/* nibID */0];
                   if (typeof action$2 === "number") {
                     var uses = AffectedDefinitions$ReactTemplate.findConnectedDefinitions(definitionID, nibID$2, isInput, state[/* definitions */1]);
                     if (Belt_MapString.isEmpty(uses)) {
@@ -390,14 +400,14 @@ function reducer(action, state) {
                                     ]);
                       case 1 : 
                           var valueType = action$2[0];
-                          var match$18 = definition$1[/* implementation */0];
+                          var match$19 = definition$1[/* implementation */0];
                           var tmp$6;
-                          switch (match$18.tag | 0) {
+                          switch (match$19.tag | 0) {
                             case 1 : 
-                                tmp$6 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$18[0], isInput, nibID$2, valueType)]);
+                                tmp$6 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$19[0], isInput, nibID$2, valueType)]);
                                 break;
                             case 3 : 
-                                var graphImplementation$6 = match$18[0];
+                                var graphImplementation$6 = match$19[0];
                                 tmp$6 = /* GraphImplementation */Block.__(3, [/* record */[
                                       /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$6[/* interface */0], isInput, nibID$2, valueType),
                                       /* connections */graphImplementation$6[/* connections */1],
@@ -407,7 +417,7 @@ function reducer(action, state) {
                             case 4 : 
                                 var tmp$7;
                                 if (isInput) {
-                                  tmp$7 = Definition$ReactTemplate.changeTypedFields(match$18[0], nibID$2, valueType);
+                                  tmp$7 = Definition$ReactTemplate.changeTypedFields(match$19[0], nibID$2, valueType);
                                 } else {
                                   throw Caml_builtin_exceptions.not_found;
                                 }
@@ -446,10 +456,10 @@ function reducer(action, state) {
                     }
                   }
               case 6 : 
-                  var match$19 = definition$1[/* implementation */0];
+                  var match$20 = definition$1[/* implementation */0];
                   var tmp$9;
-                  if (match$19.tag === 3) {
-                    var graphImplementation$7 = match$19[0];
+                  if (match$20.tag === 3) {
+                    var graphImplementation$7 = match$20[0];
                     tmp$9 = /* GraphImplementation */Block.__(3, [/* record */[
                           /* interface */graphImplementation$7[/* interface */0],
                           /* connections */Belt_Map.remove(graphImplementation$7[/* connections */1], action$1[0]),
@@ -464,10 +474,10 @@ function reducer(action, state) {
                               /* display */definition$1[/* display */2]
                             ]);
               case 7 : 
-                  var match$20 = definition$1[/* implementation */0];
+                  var match$21 = definition$1[/* implementation */0];
                   var tmp$10;
-                  if (match$20.tag === 3) {
-                    var graphImplementation$8 = match$20[0];
+                  if (match$21.tag === 3) {
+                    var graphImplementation$8 = match$21[0];
                     var nodeIDs = ExpandDeletion$ReactTemplate.getAffectedNodes(action$1[0], graphImplementation$8[/* nodes */2]);
                     tmp$10 = /* GraphImplementation */Block.__(3, [/* record */[
                           /* interface */graphImplementation$8[/* interface */0],
@@ -485,12 +495,12 @@ function reducer(action, state) {
                               /* display */definition$1[/* display */2]
                             ]);
               case 8 : 
-                  var match$21 = action$1[0];
-                  var nodeScope = match$21[/* nodeScope */1];
-                  var nodeID$1 = match$21[/* nodeID */0];
-                  var match$22 = definition$1[/* implementation */0];
-                  if (match$22.tag === 3) {
-                    var graphImplementation$9 = match$22[0];
+                  var match$22 = action$1[0];
+                  var nodeScope = match$22[/* nodeScope */1];
+                  var nodeID$1 = match$22[/* nodeID */0];
+                  var match$23 = definition$1[/* implementation */0];
+                  if (match$23.tag === 3) {
+                    var graphImplementation$9 = match$23[0];
                     var tmp$11;
                     if (nodeScope) {
                       var scopeNodeID = nodeScope[0];
@@ -548,7 +558,8 @@ function reducer(action, state) {
                                     /* action : Evaluating */0
                                   ],
                                   /* [] */0
-                                ]
+                                ],
+                                /* result */undefined
                               ],
                               /* definitions */state[/* definitions */1],
                               /* definitionID */state[/* definitionID */2],

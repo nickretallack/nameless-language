@@ -3,6 +3,8 @@ open AppActions;
 open! GraphActions;
 open! Definition;
 open Helpers;
+open! Evaluate;
+open Connection;
 
 let connectionColors = [|
   "#f58231",
@@ -50,6 +52,7 @@ let make =
       ~documentation: documentation,
       ~emit: definitionAction => unit,
       ~error: AppActions.appError,
+      ~stackFrame: option(materializedStackFrame),
       _children,
     ) => {
   ...component,
@@ -442,6 +445,24 @@ let make =
           Belt.Map.toArray(implementation.connections),
           ((sink, source)) => {
             let sourceIndex = Belt.Map.getExn(sourceToIndex, source);
+
+            let debugState =
+              switch (stackFrame) {
+              | None => NoDebugConnection
+              | Some(stackFrame) =>
+                Js.log("YEAH!!!")
+                let stackConnectionSide = stackFrame.explicitConnectionSide;
+                if (!stackConnectionSide.isSource
+                    && stackConnectionSide.connectionSide == sink) {
+                  switch (stackFrame.action) {
+                  | Evaluating => EvaluatingConnection
+                  | Returning(_) => ReturningConnection
+                  };
+                } else {
+                  NoDebugConnection;
+                };
+              };
+
             <Connection
               key={connectionSideToString(sink)}
               sinkPosition={getNibPosition(sink, true)}
@@ -459,6 +480,7 @@ let make =
               nodeWidth
               xPadding
               sourceIndex
+              debugState
             />;
           },
         ),

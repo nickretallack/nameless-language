@@ -222,4 +222,11 @@ type stackFrame = {
 type execution = {
   scopes: Belt.Map.String.t(scope),
   stack: list(stackFrame),
+  result: option(value),
+};
+
+type materializedStackFrame = {
+  scope,
+  explicitConnectionSide,
+  action: evaluationAction,
 };

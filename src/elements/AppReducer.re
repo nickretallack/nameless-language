@@ -447,6 +447,7 @@ let reducer = (action: appAction, state: appState) =>
         ...state,
         execution:
           Some({
+            result: None,
             scopes:
               Belt.Map.String.fromArray([|
                 (
@@ -470,52 +471,62 @@ let reducer = (action: appAction, state: appState) =>
         | None => None
         | Some(execution) =>
           let frame = Belt.List.headExn(execution.stack);
-          let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID);
-          let definition =
-            Belt.Map.String.getExn(state.definitions, scope.definitionID);
-
           Some(
-            switch (definition.implementation) {
-            | GraphImplementation(graphImplementation) =>
-              let source =
-                frame.explicitConnectionSide.isSource ?
-                  frame.explicitConnectionSide.connectionSide :
-                  Belt.Map.getExn(
-                    graphImplementation.connections,
-                    frame.explicitConnectionSide.connectionSide,
-                  );
-              switch (source.node) {
-              | NodeConnection(nodeID) =>
-                let node =
-                  Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
-                switch (node.kind) {
-                | DefinedNode({kind, definitionID}) =>
-                  let nodeDefinition =
-                    Belt.Map.String.getExn(state.definitions, definitionID);
-                  switch (kind) {
-                  | ValueNode =>
-                    switch (nodeDefinition.implementation) {
-                    | ConstantImplementation(primitiveValue) => {
-                        ...execution,
-                        stack:
-                          Belt.List.add(
-                            Belt.List.tailExn(execution.stack),
-                            {
-                              ...frame,
-                              action:
-                                Returning(PrimitiveValue(primitiveValue)),
-                            },
-                          ),
+            switch (frame.action) {
+            | Evaluating =>
+              let scope =
+                Belt.Map.String.getExn(execution.scopes, frame.scopeID);
+              let definition =
+                Belt.Map.String.getExn(state.definitions, scope.definitionID);
+
+              switch (definition.implementation) {
+              | GraphImplementation(graphImplementation) =>
+                let source =
+                  frame.explicitConnectionSide.isSource ?
+                    frame.explicitConnectionSide.connectionSide :
+                    Belt.Map.getExn(
+                      graphImplementation.connections,
+                      frame.explicitConnectionSide.connectionSide,
+                    );
+                switch (source.node) {
+                | NodeConnection(nodeID) =>
+                  let node =
+                    Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
+                  switch (node.kind) {
+                  | DefinedNode({kind, definitionID}) =>
+                    let nodeDefinition =
+                      Belt.Map.String.getExn(state.definitions, definitionID);
+                    switch (kind) {
+                    | ValueNode =>
+                      switch (nodeDefinition.implementation) {
+                      | ConstantImplementation(primitiveValue) => {
+                          ...execution,
+                          stack:
+                            Belt.List.add(
+                              Belt.List.tailExn(execution.stack),
+                              {
+                                ...frame,
+                                action:
+                                  Returning(PrimitiveValue(primitiveValue)),
+                              },
+                            ),
+                        }
+                      | _ => raise(Not_found) // todo
                       }
                     | _ => raise(Not_found) // todo
-                    }
+                    };
                   | _ => raise(Not_found) // todo
                   };
-                | _ => raise(Not_found) // todo
+                | GraphConnection => raise(Not_found) // todo
                 };
-              | GraphConnection => raise(Not_found) // todo
+              | _ => raise(Not_found) // todo
               };
-            | _ => raise(Not_found) // todo
+            | Returning(value) =>
+              if (Belt.List.length(execution.stack) == 1) {
+                {...execution, result: Some(value)};
+              } else {
+                execution;
+              }
             },
           );
         },

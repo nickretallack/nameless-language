@@ -93,6 +93,17 @@ let make = (~definitions, _children) => {
            let {implementation, display, documentation} = definition;
            let emit = (action: definitionAction) =>
              self.send(DefinitionAction({definitionID, action}));
+
+           let stackFrame =
+             switch (self.state.execution) {
+             | Some(execution) =>
+               let {scopeID, explicitConnectionSide, action} =
+                 Belt.List.headExn(execution.stack);
+               let scope = Belt.Map.String.getExn(execution.scopes, scopeID);
+               Some({scope, explicitConnectionSide, action});
+             | None => None
+             };
+
            switch (implementation) {
            | GraphImplementation(implementation) =>
              <Graph
@@ -105,6 +116,7 @@ let make = (~definitions, _children) => {
                documentation
                emit
                error={self.state.error}
+               stackFrame
              />
            | _ =>
              <SimpleDefinition
@@ -119,11 +131,16 @@ let make = (~definitions, _children) => {
        }}
       {switch (self.state.execution) {
        | None => ReasonReact.null
-       | Some(_) =>
+       | Some(execution) =>
          <div>
            <button onClick={_ => self.send(Step)}>
              {ReasonReact.string("step")}
            </button>
+           {switch (execution.result) {
+            | None => ReasonReact.null
+            | Some(value) =>
+              ReasonReact.string("Result: " ++ displayValue(value))
+            }}
          </div>
        }}
     </div>,
