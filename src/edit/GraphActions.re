@@ -27,7 +27,8 @@ type pointerAction =
   | MovePointer(point)
   | ReleasePointer
   | FinishDrawing(explicitConnectionSide)
-  | FinishDragging(nodeScope);
+  | FinishDragging(nodeScope)
+  | EvaluateSelectedNib;
 
 type pointerActionRecord = {
   pointerID,

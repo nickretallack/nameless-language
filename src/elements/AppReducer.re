@@ -2,7 +2,7 @@
 open Definition;
 open! AppActions;
 open Helpers;
-open Evaluate;
+open! Evaluate;
 
 type appState = {
   execution: option(execution),
@@ -439,8 +439,85 @@ let reducer = (action: appAction, state: appState) =>
         } else {
           ReasonReact.NoUpdate;
         }
-
       | _ => ReasonReact.NoUpdate
       }
+    | EvaluateNib(explicitConnectionSide) =>
+      let scopeID = randomID();
+      ReasonReact.Update({
+        ...state,
+        execution:
+          Some({
+            scopes:
+              Belt.Map.String.fromArray([|
+                (
+                  scopeID,
+                  {
+                    definitionID,
+                    sourceValues:
+                      Belt.Map.make(~id=(module ConnectionComparator)),
+                  },
+                ),
+              |]),
+            stack: [{scopeID, explicitConnectionSide, action: Evaluating}],
+          }),
+      });
     };
+  | Step =>
+    ReasonReact.Update({
+      ...state,
+      execution:
+        switch (state.execution) {
+        | None => None
+        | Some(execution) =>
+          let frame = Belt.List.headExn(execution.stack);
+          let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID);
+          let definition =
+            Belt.Map.String.getExn(state.definitions, scope.definitionID);
+
+          Some(
+            switch (definition.implementation) {
+            | GraphImplementation(graphImplementation) =>
+              let source =
+                frame.explicitConnectionSide.isSource ?
+                  frame.explicitConnectionSide.connectionSide :
+                  Belt.Map.getExn(
+                    graphImplementation.connections,
+                    frame.explicitConnectionSide.connectionSide,
+                  );
+              switch (source.node) {
+              | NodeConnection(nodeID) =>
+                let node =
+                  Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
+                switch (node.kind) {
+                | DefinedNode({kind, definitionID}) =>
+                  let nodeDefinition =
+                    Belt.Map.String.getExn(state.definitions, definitionID);
+                  switch (kind) {
+                  | ValueNode =>
+                    switch (nodeDefinition.implementation) {
+                    | ConstantImplementation(primitiveValue) => {
+                        ...execution,
+                        stack:
+                          Belt.List.add(
+                            Belt.List.tailExn(execution.stack),
+                            {
+                              ...frame,
+                              action:
+                                Returning(PrimitiveValue(primitiveValue)),
+                            },
+                          ),
+                      }
+                    | _ => raise(Not_found) // todo
+                    }
+                  | _ => raise(Not_found) // todo
+                  };
+                | _ => raise(Not_found) // todo
+                };
+              | GraphConnection => raise(Not_found) // todo
+              };
+            | _ => raise(Not_found) // todo
+            },
+          );
+        },
+    })
   };

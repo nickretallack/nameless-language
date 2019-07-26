@@ -240,6 +240,19 @@ let make =
           )
         | _ => ReasonReact.NoUpdate
         }
+      | EvaluateSelectedNib =>
+        switch (state.selection) {
+        | NoSelection
+        | SelectedNodes(_) => raise(Not_found)
+        | SelectedNib(explicitConnectionSide) =>
+          ReasonReact.SideEffects(
+            _ => emit(EvaluateNib(explicitConnectionSide)),
+          )
+        | SelectedConnection(connectionSide) =>
+          ReasonReact.SideEffects(
+            _ => emit(EvaluateNib({connectionSide, isSource: false})),
+          )
+        }
       }
     },
   render: self => {
@@ -416,10 +429,10 @@ let make =
     //     }
     //   };
 
-    /* let evaluate = outputID =>
-       Js.log(
-         Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
-       ); */
+    // let evaluate = outputID =>
+    //    Js.log(
+    //      Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
+    //    );
 
     let allNibs = collectAllGraphNibs(definition, definitions);
 
@@ -643,16 +656,31 @@ let make =
        }}
       {switch (self.state.selection) {
        | SelectedNib(explicitConnectionSide) =>
-         <NodeMenu
-           emit
-           definitions
-           nodes={implementation.nodes}
-           nib=explicitConnectionSide
-         />
+         <>
+           <button
+             onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
+             {ReasonReact.string("Evaluate")}
+           </button>
+           <NodeMenu
+             emit
+             definitions
+             nodes={implementation.nodes}
+             nib=explicitConnectionSide
+           />
+         </>
        | SelectedConnection(connectionSide) =>
-         <button onClick={_event => emit(RemoveConnection(connectionSide))}>
-           {ReasonReact.string("Remove connection")}
-         </button>
+         <>
+           <button
+             onClick={_event =>
+               emit(EvaluateNib({connectionSide, isSource: false}))
+             }>
+             {ReasonReact.string("Evaluate")}
+           </button>
+           <button
+             onClick={_event => emit(RemoveConnection(connectionSide))}>
+             {ReasonReact.string("Remove connection")}
+           </button>
+         </>
        | SelectedNodes(_) =>
          <button onClick={_event => self.send(RemoveSelectedNodes)}>
            {ReasonReact.string("Remove Node(s)")}

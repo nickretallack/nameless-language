@@ -116,6 +116,7 @@ function make(definitions, _children) {
                   tmp = "Not found";
                 }
               }
+              var match$2 = self[/* state */1][/* execution */0];
               return React.createElement("div", undefined, React.createElement("a", {
                               href: "#"
                             }, "Library"), " New:", Belt_Array.mapWithIndex(makers, (function (index, param) {
@@ -127,7 +128,11 @@ function make(definitions, _children) {
                                                 return Curry._1(self[/* send */3], /* CreateDefinition */Block.__(1, [Curry._1(maker, /* () */0)]));
                                               })
                                           }, param[0]);
-                              })), tmp);
+                              })), tmp, match$2 !== undefined ? React.createElement("div", undefined, React.createElement("button", {
+                                    onClick: (function (param) {
+                                        return Curry._1(self[/* send */3], /* Step */0);
+                                      })
+                                  }, "step")) : null);
             }),
           /* initialState */(function (param) {
               return /* record */[

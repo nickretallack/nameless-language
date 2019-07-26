@@ -208,10 +208,15 @@ type scope = {
     Belt.Map.t(connectionSide, value, ConnectionComparator.identity),
 };
 
+type evaluationAction =
+  | Evaluating
+  | Returning(value);
+
 type scopeID = string;
 type stackFrame = {
   scopeID,
   explicitConnectionSide,
+  action: evaluationAction,
 };
 
 type execution = {

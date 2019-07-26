@@ -117,5 +117,14 @@ let make = (~definitions, _children) => {
            };
          };
        }}
+      {switch (self.state.execution) {
+       | None => ReasonReact.null
+       | Some(_) =>
+         <div>
+           <button onClick={_ => self.send(Step)}>
+             {ReasonReact.string("step")}
+           </button>
+         </div>
+       }}
     </div>,
 };

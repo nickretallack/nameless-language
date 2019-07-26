@@ -58,7 +58,8 @@ type definitionAction =
   | RemoveConnection(connectionSide)
   | RemoveNodes(Belt.Set.String.t)
   | ChangeNodeScope(changeNodeScope)
-  | Fork;
+  | Fork
+  | EvaluateNib(explicitConnectionSide);
 
 type definitionActionRecord = {
   definitionID,
@@ -68,4 +69,5 @@ type definitionActionRecord = {
 type appAction =
   | DefinitionAction(definitionActionRecord)
   | CreateDefinition(definition)
-  | ChangeRoute(ReasonReact.Router.url);
+  | ChangeRoute(ReasonReact.Router.url)
+  | Step;

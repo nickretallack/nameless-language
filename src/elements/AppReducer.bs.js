@@ -16,484 +16,569 @@ var ExpandDeletion$ReactTemplate = require("../edit/ExpandDeletion.bs.js");
 var AffectedDefinitions$ReactTemplate = require("../edit/AffectedDefinitions.bs.js");
 
 function reducer(action, state) {
-  switch (action.tag | 0) {
-    case 0 : 
-        var match = action[0];
-        var action$1 = match[/* action */1];
-        var definitionID = match[/* definitionID */0];
-        var definition = Belt_MapString.getExn(state[/* definitions */1], definitionID);
-        var updateDefinition = function (definition) {
-          return /* Update */Block.__(0, [/* record */[
-                      /* execution */state[/* execution */0],
-                      /* definitions */Belt_MapString.set(state[/* definitions */1], definitionID, definition),
-                      /* definitionID */state[/* definitionID */2],
-                      /* error : NoAppError */0
-                    ]]);
-        };
-        if (typeof action$1 === "number") {
-          switch (action$1) {
-            case 0 : 
-                var nibID = Helpers$ReactTemplate.randomID(/* () */0);
-                var match$1 = definition[/* implementation */0];
-                var tmp;
-                switch (match$1.tag | 0) {
-                  case 1 : 
-                      var $$interface = match$1[0];
-                      tmp = /* InterfaceImplementation */Block.__(1, [/* record */[
-                            /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2])),
-                            /* outputTypes */$$interface[/* outputTypes */1]
-                          ]]);
-                      break;
-                  case 3 : 
-                      var graphImplementation = match$1[0];
-                      var init = graphImplementation[/* interface */0];
-                      tmp = /* GraphImplementation */Block.__(3, [/* record */[
-                            /* interface : record */[
-                              /* inputTypes */Belt_MapString.set(graphImplementation[/* interface */0][/* inputTypes */0], nibID, /* AnyType */0),
-                              /* outputTypes */init[/* outputTypes */1]
-                            ],
-                            /* connections */graphImplementation[/* connections */1],
-                            /* nodes */graphImplementation[/* nodes */2]
-                          ]]);
-                      break;
-                  case 4 : 
-                      tmp = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$1[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
-                      break;
-                  default:
-                    tmp = definition[/* implementation */0];
-                }
-                var init$1 = definition[/* documentation */1];
-                var init$2 = definition[/* display */2];
-                return updateDefinition(/* record */[
-                            /* implementation */tmp,
-                            /* documentation : record */[
-                              /* name */init$1[/* name */0],
-                              /* description */init$1[/* description */1],
-                              /* inputs */Belt_MapString.set(definition[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
-                              /* outputs */init$1[/* outputs */3]
-                            ],
-                            /* display : record */[
-                              /* inputOrdering */List.append(definition[/* display */2][/* inputOrdering */0], /* :: */[
-                                    nibID,
-                                    /* [] */0
-                                  ]),
-                              /* outputOrdering */init$2[/* outputOrdering */1]
-                            ]
-                          ]);
-            case 1 : 
-                var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
-                var match$2 = definition[/* implementation */0];
-                var tmp$1;
-                switch (match$2.tag | 0) {
-                  case 1 : 
-                      var $$interface$1 = match$2[0];
-                      tmp$1 = /* InterfaceImplementation */Block.__(1, [/* record */[
-                            /* inputTypes */$$interface$1[/* inputTypes */0],
-                            /* outputTypes */Belt_MapString.set($$interface$1[/* outputTypes */1], nibID$1, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]))
-                          ]]);
-                      break;
-                  case 3 : 
-                      var graphImplementation$1 = match$2[0];
-                      var init$3 = graphImplementation$1[/* interface */0];
-                      tmp$1 = /* GraphImplementation */Block.__(3, [/* record */[
-                            /* interface : record */[
-                              /* inputTypes */init$3[/* inputTypes */0],
-                              /* outputTypes */Belt_MapString.set(graphImplementation$1[/* interface */0][/* outputTypes */1], nibID$1, /* AnyType */0)
-                            ],
-                            /* connections */graphImplementation$1[/* connections */1],
-                            /* nodes */graphImplementation$1[/* nodes */2]
-                          ]]);
-                      break;
-                  default:
-                    tmp$1 = definition[/* implementation */0];
-                }
-                var init$4 = definition[/* documentation */1];
-                var init$5 = definition[/* display */2];
-                return updateDefinition(/* record */[
-                            /* implementation */tmp$1,
-                            /* documentation : record */[
-                              /* name */init$4[/* name */0],
-                              /* description */init$4[/* description */1],
-                              /* inputs */init$4[/* inputs */2],
-                              /* outputs */Belt_MapString.set(definition[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
-                            ],
-                            /* display : record */[
-                              /* inputOrdering */init$5[/* inputOrdering */0],
-                              /* outputOrdering */List.append(definition[/* display */2][/* outputOrdering */1], /* :: */[
-                                    nibID$1,
-                                    /* [] */0
-                                  ])
-                            ]
-                          ]);
-            case 2 : 
-                var newDefinitionID = Helpers$ReactTemplate.randomID(/* () */0);
-                return /* UpdateWithSideEffects */Block.__(2, [
-                          /* record */[
-                            /* execution */state[/* execution */0],
-                            /* definitions */Belt_MapString.set(state[/* definitions */1], newDefinitionID, definition),
-                            /* definitionID */state[/* definitionID */2],
-                            /* error */state[/* error */3]
-                          ],
-                          (function (param) {
-                              return ReasonReact.Router[/* push */0]("#" + newDefinitionID);
-                            })
-                        ]);
-            
+  if (typeof action === "number") {
+    var match = state[/* execution */0];
+    var tmp;
+    if (match !== undefined) {
+      var execution = match;
+      var frame = Belt_List.headExn(execution[/* stack */1]);
+      var scope = Belt_MapString.getExn(execution[/* scopes */0], frame[/* scopeID */0]);
+      var definition = Belt_MapString.getExn(state[/* definitions */1], scope[/* definitionID */0]);
+      var match$1 = definition[/* implementation */0];
+      var tmp$1;
+      if (match$1.tag === 3) {
+        var graphImplementation = match$1[0];
+        var match$2 = frame[/* explicitConnectionSide */1][/* isSource */1];
+        var source = match$2 ? frame[/* explicitConnectionSide */1][/* connectionSide */0] : Belt_Map.getExn(graphImplementation[/* connections */1], frame[/* explicitConnectionSide */1][/* connectionSide */0]);
+        var match$3 = source[/* node */0];
+        if (match$3) {
+          var node = Belt_MapString.getExn(graphImplementation[/* nodes */2], match$3[0]);
+          var match$4 = node[/* kind */1];
+          if (typeof match$4 === "number") {
+            throw Caml_builtin_exceptions.not_found;
+          } else if (match$4.tag) {
+            var match$5 = match$4[0];
+            var nodeDefinition = Belt_MapString.getExn(state[/* definitions */1], match$5[/* definitionID */1]);
+            if (match$5[/* kind */0] !== 1) {
+              throw Caml_builtin_exceptions.not_found;
+            } else {
+              var match$6 = nodeDefinition[/* implementation */0];
+              if (match$6.tag) {
+                throw Caml_builtin_exceptions.not_found;
+              } else {
+                tmp$1 = /* record */[
+                  /* scopes */execution[/* scopes */0],
+                  /* stack */Belt_List.add(Belt_List.tailExn(execution[/* stack */1]), /* record */[
+                        /* scopeID */frame[/* scopeID */0],
+                        /* explicitConnectionSide */frame[/* explicitConnectionSide */1],
+                        /* action : Returning */[/* PrimitiveValue */Block.__(0, [match$6[0]])]
+                      ])
+                ];
+              }
+            }
+          } else {
+            throw Caml_builtin_exceptions.not_found;
           }
         } else {
-          switch (action$1.tag | 0) {
-            case 0 : 
-                var match$3 = action$1[0];
-                var match$4 = definition[/* implementation */0];
-                if (match$4.tag === 3) {
-                  var graphImplementation$2 = match$4[0];
+          throw Caml_builtin_exceptions.not_found;
+        }
+      } else {
+        throw Caml_builtin_exceptions.not_found;
+      }
+      tmp = tmp$1;
+    } else {
+      tmp = undefined;
+    }
+    return /* Update */Block.__(0, [/* record */[
+                /* execution */tmp,
+                /* definitions */state[/* definitions */1],
+                /* definitionID */state[/* definitionID */2],
+                /* error */state[/* error */3]
+              ]]);
+  } else {
+    switch (action.tag | 0) {
+      case 0 : 
+          var match$7 = action[0];
+          var action$1 = match$7[/* action */1];
+          var definitionID = match$7[/* definitionID */0];
+          var definition$1 = Belt_MapString.getExn(state[/* definitions */1], definitionID);
+          var updateDefinition = function (definition) {
+            return /* Update */Block.__(0, [/* record */[
+                        /* execution */state[/* execution */0],
+                        /* definitions */Belt_MapString.set(state[/* definitions */1], definitionID, definition),
+                        /* definitionID */state[/* definitionID */2],
+                        /* error : NoAppError */0
+                      ]]);
+          };
+          if (typeof action$1 === "number") {
+            switch (action$1) {
+              case 0 : 
+                  var nibID = Helpers$ReactTemplate.randomID(/* () */0);
+                  var match$8 = definition$1[/* implementation */0];
+                  var tmp$2;
+                  switch (match$8.tag | 0) {
+                    case 1 : 
+                        var $$interface = match$8[0];
+                        tmp$2 = /* InterfaceImplementation */Block.__(1, [/* record */[
+                              /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2])),
+                              /* outputTypes */$$interface[/* outputTypes */1]
+                            ]]);
+                        break;
+                    case 3 : 
+                        var graphImplementation$1 = match$8[0];
+                        var init = graphImplementation$1[/* interface */0];
+                        tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
+                              /* interface : record */[
+                                /* inputTypes */Belt_MapString.set(graphImplementation$1[/* interface */0][/* inputTypes */0], nibID, /* AnyType */0),
+                                /* outputTypes */init[/* outputTypes */1]
+                              ],
+                              /* connections */graphImplementation$1[/* connections */1],
+                              /* nodes */graphImplementation$1[/* nodes */2]
+                            ]]);
+                        break;
+                    case 4 : 
+                        tmp$2 = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.set(match$8[0], nibID, /* PrimitiveValueType */Block.__(0, [/* TextType */2]))]);
+                        break;
+                    default:
+                      tmp$2 = definition$1[/* implementation */0];
+                  }
+                  var init$1 = definition$1[/* documentation */1];
+                  var init$2 = definition$1[/* display */2];
                   return updateDefinition(/* record */[
-                              /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                    /* interface */graphImplementation$2[/* interface */0],
-                                    /* connections */Belt_Map.set(graphImplementation$2[/* connections */1], match$3[/* sink */1], match$3[/* source */0]),
-                                    /* nodes */graphImplementation$2[/* nodes */2]
-                                  ]]),
-                              /* documentation */definition[/* documentation */1],
-                              /* display */definition[/* display */2]
+                              /* implementation */tmp$2,
+                              /* documentation : record */[
+                                /* name */init$1[/* name */0],
+                                /* description */init$1[/* description */1],
+                                /* inputs */Belt_MapString.set(definition$1[/* documentation */1][/* inputs */2], nibID, Definition$ReactTemplate.emptyTranslatable),
+                                /* outputs */init$1[/* outputs */3]
+                              ],
+                              /* display : record */[
+                                /* inputOrdering */List.append(definition$1[/* display */2][/* inputOrdering */0], /* :: */[
+                                      nibID,
+                                      /* [] */0
+                                    ]),
+                                /* outputOrdering */init$2[/* outputOrdering */1]
+                              ]
                             ]);
-                } else {
-                  return /* NoUpdate */0;
-                }
-            case 1 : 
-                var init$6 = definition[/* documentation */1];
-                return updateDefinition(/* record */[
-                            /* implementation */definition[/* implementation */0],
-                            /* documentation : record */[
-                              /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* name */0], "en", action$1[0]),
-                              /* description */init$6[/* description */1],
-                              /* inputs */init$6[/* inputs */2],
-                              /* outputs */init$6[/* outputs */3]
+              case 1 : 
+                  var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
+                  var match$9 = definition$1[/* implementation */0];
+                  var tmp$3;
+                  switch (match$9.tag | 0) {
+                    case 1 : 
+                        var $$interface$1 = match$9[0];
+                        tmp$3 = /* InterfaceImplementation */Block.__(1, [/* record */[
+                              /* inputTypes */$$interface$1[/* inputTypes */0],
+                              /* outputTypes */Belt_MapString.set($$interface$1[/* outputTypes */1], nibID$1, /* PrimitiveValueType */Block.__(0, [/* NumberType */1]))
+                            ]]);
+                        break;
+                    case 3 : 
+                        var graphImplementation$2 = match$9[0];
+                        var init$3 = graphImplementation$2[/* interface */0];
+                        tmp$3 = /* GraphImplementation */Block.__(3, [/* record */[
+                              /* interface : record */[
+                                /* inputTypes */init$3[/* inputTypes */0],
+                                /* outputTypes */Belt_MapString.set(graphImplementation$2[/* interface */0][/* outputTypes */1], nibID$1, /* AnyType */0)
+                              ],
+                              /* connections */graphImplementation$2[/* connections */1],
+                              /* nodes */graphImplementation$2[/* nodes */2]
+                            ]]);
+                        break;
+                    default:
+                      tmp$3 = definition$1[/* implementation */0];
+                  }
+                  var init$4 = definition$1[/* documentation */1];
+                  var init$5 = definition$1[/* display */2];
+                  return updateDefinition(/* record */[
+                              /* implementation */tmp$3,
+                              /* documentation : record */[
+                                /* name */init$4[/* name */0],
+                                /* description */init$4[/* description */1],
+                                /* inputs */init$4[/* inputs */2],
+                                /* outputs */Belt_MapString.set(definition$1[/* documentation */1][/* outputs */3], nibID$1, Definition$ReactTemplate.emptyTranslatable)
+                              ],
+                              /* display : record */[
+                                /* inputOrdering */init$5[/* inputOrdering */0],
+                                /* outputOrdering */List.append(definition$1[/* display */2][/* outputOrdering */1], /* :: */[
+                                      nibID$1,
+                                      /* [] */0
+                                    ])
+                              ]
+                            ]);
+              case 2 : 
+                  var newDefinitionID = Helpers$ReactTemplate.randomID(/* () */0);
+                  return /* UpdateWithSideEffects */Block.__(2, [
+                            /* record */[
+                              /* execution */state[/* execution */0],
+                              /* definitions */Belt_MapString.set(state[/* definitions */1], newDefinitionID, definition$1),
+                              /* definitionID */state[/* definitionID */2],
+                              /* error */state[/* error */3]
                             ],
-                            /* display */definition[/* display */2]
+                            (function (param) {
+                                return ReasonReact.Router[/* push */0]("#" + newDefinitionID);
+                              })
                           ]);
-            case 2 : 
-                var init$7 = definition[/* documentation */1];
-                return updateDefinition(/* record */[
-                            /* implementation */definition[/* implementation */0],
-                            /* documentation : record */[
-                              /* name */Definition$ReactTemplate.setTranslated(definition[/* documentation */1][/* description */1], "en", action$1[0]),
-                              /* description */init$7[/* description */1],
-                              /* inputs */init$7[/* inputs */2],
-                              /* outputs */init$7[/* outputs */3]
-                            ],
-                            /* display */definition[/* display */2]
-                          ]);
-            case 3 : 
-                var match$5 = definition[/* implementation */0];
-                if (match$5.tag) {
-                  throw Caml_builtin_exceptions.not_found;
-                } else {
-                  return updateDefinition(/* record */[
-                              /* implementation : ConstantImplementation */Block.__(0, [action$1[0]]),
-                              /* documentation */definition[/* documentation */1],
-                              /* display */definition[/* display */2]
-                            ]);
-                }
-            case 4 : 
-                var match$6 = action$1[0];
-                var explicitConnectionSide = match$6[/* explicitConnectionSide */1];
-                var nodeID = Helpers$ReactTemplate.randomID(/* () */0);
-                var nodeConnectionSide_000 = /* node : NodeConnection */[nodeID];
-                var nodeConnectionSide_001 = /* nib */match$6[/* connectionNib */2];
-                var nodeConnectionSide = /* record */[
-                  nodeConnectionSide_000,
-                  nodeConnectionSide_001
-                ];
-                var match$7 = explicitConnectionSide[/* isSource */1];
-                var match$8 = match$7 ? /* tuple */[
-                    explicitConnectionSide[/* connectionSide */0],
-                    nodeConnectionSide
-                  ] : /* tuple */[
-                    nodeConnectionSide,
-                    explicitConnectionSide[/* connectionSide */0]
-                  ];
-                var match$9 = definition[/* implementation */0];
-                if (match$9.tag === 3) {
-                  var graphImplementation$3 = match$9[0];
-                  return updateDefinition(/* record */[
-                              /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                    /* interface */graphImplementation$3[/* interface */0],
-                                    /* connections */Belt_Map.set(graphImplementation$3[/* connections */1], match$8[1], match$8[0]),
-                                    /* nodes */Belt_MapString.set(graphImplementation$3[/* nodes */2], nodeID, match$6[/* node */0])
-                                  ]]),
-                              /* documentation */definition[/* documentation */1],
-                              /* display */definition[/* display */2]
-                            ]);
-                } else {
-                  return /* NoUpdate */0;
-                }
-            case 5 : 
-                var match$10 = action$1[0];
-                var action$2 = match$10[/* action */2];
-                var isInput = match$10[/* isInput */1];
-                var nibID$2 = match$10[/* nibID */0];
-                if (typeof action$2 === "number") {
-                  var uses = AffectedDefinitions$ReactTemplate.findConnectedDefinitions(definitionID, nibID$2, isInput, state[/* definitions */1]);
-                  if (Belt_MapString.isEmpty(uses)) {
-                    var other = definition[/* implementation */0];
-                    var tmp$2;
-                    switch (other.tag | 0) {
-                      case 1 : 
-                          tmp$2 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.removeInterfaceNib(other[0], nibID$2, isInput)]);
-                          break;
-                      case 3 : 
-                          var graphImplementation$4 = other[0];
-                          tmp$2 = /* GraphImplementation */Block.__(3, [/* record */[
-                                /* interface */Definition$ReactTemplate.removeInterfaceNib(graphImplementation$4[/* interface */0], nibID$2, isInput),
-                                /* connections */Belt_Map.keep(graphImplementation$4[/* connections */1], (function (sink, source) {
-                                        var match = isInput ? source : sink;
-                                        var tmp;
-                                        if (match[/* node */0]) {
-                                          tmp = false;
-                                        } else {
-                                          var match$1 = match[/* nib */1];
-                                          tmp = typeof match$1 === "number" || match$1.tag ? false : match$1[0] === nibID$2;
-                                        }
-                                        return !tmp;
-                                      })),
-                                /* nodes */graphImplementation$4[/* nodes */2]
-                              ]]);
-                          break;
-                      case 4 : 
-                          tmp$2 = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.keep(other[0], (function (fieldNibID, param) {
-                                      return fieldNibID !== nibID$2;
-                                    }))]);
-                          break;
-                      default:
-                        tmp$2 = other;
-                    }
-                    var tmp$3;
-                    if (isInput) {
-                      var init$8 = definition[/* display */2];
-                      tmp$3 = /* record */[
-                        /* inputOrdering */Belt_List.keep(definition[/* display */2][/* inputOrdering */0], (function (item) {
-                                return item !== nibID$2;
-                              })),
-                        /* outputOrdering */init$8[/* outputOrdering */1]
-                      ];
-                    } else {
-                      var init$9 = definition[/* display */2];
-                      tmp$3 = /* record */[
-                        /* inputOrdering */init$9[/* inputOrdering */0],
-                        /* outputOrdering */Belt_List.keep(definition[/* display */2][/* outputOrdering */1], (function (item) {
-                                return item !== nibID$2;
-                              }))
-                      ];
-                    }
+              
+            }
+          } else {
+            switch (action$1.tag | 0) {
+              case 0 : 
+                  var match$10 = action$1[0];
+                  var match$11 = definition$1[/* implementation */0];
+                  if (match$11.tag === 3) {
+                    var graphImplementation$3 = match$11[0];
                     return updateDefinition(/* record */[
-                                /* implementation */tmp$2,
-                                /* documentation */definition[/* documentation */1],
-                                /* display */tmp$3
+                                /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                      /* interface */graphImplementation$3[/* interface */0],
+                                      /* connections */Belt_Map.set(graphImplementation$3[/* connections */1], match$10[/* sink */1], match$10[/* source */0]),
+                                      /* nodes */graphImplementation$3[/* nodes */2]
+                                    ]]),
+                                /* documentation */definition$1[/* documentation */1],
+                                /* display */definition$1[/* display */2]
                               ]);
                   } else {
-                    return /* Update */Block.__(0, [/* record */[
-                                /* execution */state[/* execution */0],
-                                /* definitions */state[/* definitions */1],
-                                /* definitionID */state[/* definitionID */2],
-                                /* error : NibIsConnected */[uses]
-                              ]]);
+                    return /* NoUpdate */0;
                   }
-                } else {
-                  switch (action$2.tag | 0) {
-                    case 0 : 
-                        var nibs = isInput ? definition[/* documentation */1][/* inputs */2] : definition[/* documentation */1][/* outputs */3];
-                        var nib = Belt_MapString.getExn(nibs, nibID$2);
-                        var newNib = Definition$ReactTemplate.setTranslated(nib, "en", action$2[0]);
-                        var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
-                        var documentation;
-                        if (isInput) {
-                          var init$10 = definition[/* documentation */1];
-                          documentation = /* record */[
-                            /* name */init$10[/* name */0],
-                            /* description */init$10[/* description */1],
-                            /* inputs */newNibs,
-                            /* outputs */init$10[/* outputs */3]
-                          ];
-                        } else {
-                          var init$11 = definition[/* documentation */1];
-                          documentation = /* record */[
-                            /* name */init$11[/* name */0],
-                            /* description */init$11[/* description */1],
-                            /* inputs */init$11[/* inputs */2],
-                            /* outputs */newNibs
-                          ];
-                        }
-                        return updateDefinition(/* record */[
-                                    /* implementation */definition[/* implementation */0],
-                                    /* documentation */documentation,
-                                    /* display */definition[/* display */2]
-                                  ]);
-                    case 1 : 
-                        var valueType = action$2[0];
-                        var match$11 = definition[/* implementation */0];
-                        var tmp$4;
-                        switch (match$11.tag | 0) {
-                          case 1 : 
-                              tmp$4 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$11[0], isInput, nibID$2, valueType)]);
-                              break;
-                          case 3 : 
-                              var graphImplementation$5 = match$11[0];
-                              tmp$4 = /* GraphImplementation */Block.__(3, [/* record */[
-                                    /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$5[/* interface */0], isInput, nibID$2, valueType),
-                                    /* connections */graphImplementation$5[/* connections */1],
-                                    /* nodes */graphImplementation$5[/* nodes */2]
-                                  ]]);
-                              break;
-                          case 4 : 
-                              var tmp$5;
-                              if (isInput) {
-                                tmp$5 = Definition$ReactTemplate.changeTypedFields(match$11[0], nibID$2, valueType);
-                              } else {
-                                throw Caml_builtin_exceptions.not_found;
-                              }
-                              tmp$4 = /* RecordTypeImplementation */Block.__(4, [tmp$5]);
-                              break;
-                          default:
-                            throw Caml_builtin_exceptions.not_found;
-                        }
-                        return updateDefinition(/* record */[
-                                    /* implementation */tmp$4,
-                                    /* documentation */definition[/* documentation */1],
-                                    /* display */definition[/* display */2]
-                                  ]);
-                    case 2 : 
-                        var index = action$2[0];
-                        var tmp$6;
-                        if (isInput) {
-                          var init$12 = definition[/* display */2];
-                          tmp$6 = /* record */[
-                            /* inputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* inputOrdering */0], nibID$2, index),
-                            /* outputOrdering */init$12[/* outputOrdering */1]
-                          ];
-                        } else {
-                          var init$13 = definition[/* display */2];
-                          tmp$6 = /* record */[
-                            /* inputOrdering */init$13[/* inputOrdering */0],
-                            /* outputOrdering */Helpers$ReactTemplate.moveToListIndex(definition[/* display */2][/* outputOrdering */1], nibID$2, index)
-                          ];
-                        }
-                        return updateDefinition(/* record */[
-                                    /* implementation */definition[/* implementation */0],
-                                    /* documentation */definition[/* documentation */1],
-                                    /* display */tmp$6
-                                  ]);
-                    
-                  }
-                }
-            case 6 : 
-                var match$12 = definition[/* implementation */0];
-                var tmp$7;
-                if (match$12.tag === 3) {
-                  var graphImplementation$6 = match$12[0];
-                  tmp$7 = /* GraphImplementation */Block.__(3, [/* record */[
-                        /* interface */graphImplementation$6[/* interface */0],
-                        /* connections */Belt_Map.remove(graphImplementation$6[/* connections */1], action$1[0]),
-                        /* nodes */graphImplementation$6[/* nodes */2]
-                      ]]);
-                } else {
-                  throw Caml_builtin_exceptions.not_found;
-                }
-                return updateDefinition(/* record */[
-                            /* implementation */tmp$7,
-                            /* documentation */definition[/* documentation */1],
-                            /* display */definition[/* display */2]
-                          ]);
-            case 7 : 
-                var match$13 = definition[/* implementation */0];
-                var tmp$8;
-                if (match$13.tag === 3) {
-                  var graphImplementation$7 = match$13[0];
-                  var nodeIDs = ExpandDeletion$ReactTemplate.getAffectedNodes(action$1[0], graphImplementation$7[/* nodes */2]);
-                  tmp$8 = /* GraphImplementation */Block.__(3, [/* record */[
-                        /* interface */graphImplementation$7[/* interface */0],
-                        /* connections */Belt_Map.keep(graphImplementation$7[/* connections */1], (function (sink, source) {
-                                return !(ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(sink, nodeIDs) || ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(source, nodeIDs));
-                              })),
-                        /* nodes */Belt_MapString.removeMany(graphImplementation$7[/* nodes */2], Belt_SetString.toArray(nodeIDs))
-                      ]]);
-                } else {
-                  throw Caml_builtin_exceptions.not_found;
-                }
-                return updateDefinition(/* record */[
-                            /* implementation */tmp$8,
-                            /* documentation */definition[/* documentation */1],
-                            /* display */definition[/* display */2]
-                          ]);
-            case 8 : 
-                var match$14 = action$1[0];
-                var nodeScope = match$14[/* nodeScope */1];
-                var nodeID$1 = match$14[/* nodeID */0];
-                var match$15 = definition[/* implementation */0];
-                if (match$15.tag === 3) {
-                  var graphImplementation$8 = match$15[0];
-                  var tmp$9;
-                  if (nodeScope) {
-                    var scopeNodeID = nodeScope[0];
-                    tmp$9 = Definition$ReactTemplate.isFunctionDefinitionNode(Belt_MapString.getExn(graphImplementation$8[/* nodes */2], scopeNodeID)) && nodeID$1 !== scopeNodeID;
+              case 1 : 
+                  var init$6 = definition$1[/* documentation */1];
+                  return updateDefinition(/* record */[
+                              /* implementation */definition$1[/* implementation */0],
+                              /* documentation : record */[
+                                /* name */Definition$ReactTemplate.setTranslated(definition$1[/* documentation */1][/* name */0], "en", action$1[0]),
+                                /* description */init$6[/* description */1],
+                                /* inputs */init$6[/* inputs */2],
+                                /* outputs */init$6[/* outputs */3]
+                              ],
+                              /* display */definition$1[/* display */2]
+                            ]);
+              case 2 : 
+                  var init$7 = definition$1[/* documentation */1];
+                  return updateDefinition(/* record */[
+                              /* implementation */definition$1[/* implementation */0],
+                              /* documentation : record */[
+                                /* name */Definition$ReactTemplate.setTranslated(definition$1[/* documentation */1][/* description */1], "en", action$1[0]),
+                                /* description */init$7[/* description */1],
+                                /* inputs */init$7[/* inputs */2],
+                                /* outputs */init$7[/* outputs */3]
+                              ],
+                              /* display */definition$1[/* display */2]
+                            ]);
+              case 3 : 
+                  var match$12 = definition$1[/* implementation */0];
+                  if (match$12.tag) {
+                    throw Caml_builtin_exceptions.not_found;
                   } else {
-                    tmp$9 = true;
+                    return updateDefinition(/* record */[
+                                /* implementation : ConstantImplementation */Block.__(0, [action$1[0]]),
+                                /* documentation */definition$1[/* documentation */1],
+                                /* display */definition$1[/* display */2]
+                              ]);
                   }
-                  if (tmp$9) {
-                    var node = Belt_MapString.getExn(graphImplementation$8[/* nodes */2], nodeID$1);
-                    var newNode_001 = /* kind */node[/* kind */1];
-                    var newNode = /* record */[
-                      /* scope */nodeScope,
-                      newNode_001
+              case 4 : 
+                  var match$13 = action$1[0];
+                  var explicitConnectionSide = match$13[/* explicitConnectionSide */1];
+                  var nodeID = Helpers$ReactTemplate.randomID(/* () */0);
+                  var nodeConnectionSide_000 = /* node : NodeConnection */[nodeID];
+                  var nodeConnectionSide_001 = /* nib */match$13[/* connectionNib */2];
+                  var nodeConnectionSide = /* record */[
+                    nodeConnectionSide_000,
+                    nodeConnectionSide_001
+                  ];
+                  var match$14 = explicitConnectionSide[/* isSource */1];
+                  var match$15 = match$14 ? /* tuple */[
+                      explicitConnectionSide[/* connectionSide */0],
+                      nodeConnectionSide
+                    ] : /* tuple */[
+                      nodeConnectionSide,
+                      explicitConnectionSide[/* connectionSide */0]
                     ];
-                    var nodes = Belt_MapString.set(graphImplementation$8[/* nodes */2], nodeID$1, newNode);
-                    if (DetectCycles$ReactTemplate.checkScopes(graphImplementation$8[/* connections */1], nodes)) {
+                  var match$16 = definition$1[/* implementation */0];
+                  if (match$16.tag === 3) {
+                    var graphImplementation$4 = match$16[0];
+                    return updateDefinition(/* record */[
+                                /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                      /* interface */graphImplementation$4[/* interface */0],
+                                      /* connections */Belt_Map.set(graphImplementation$4[/* connections */1], match$15[1], match$15[0]),
+                                      /* nodes */Belt_MapString.set(graphImplementation$4[/* nodes */2], nodeID, match$13[/* node */0])
+                                    ]]),
+                                /* documentation */definition$1[/* documentation */1],
+                                /* display */definition$1[/* display */2]
+                              ]);
+                  } else {
+                    return /* NoUpdate */0;
+                  }
+              case 5 : 
+                  var match$17 = action$1[0];
+                  var action$2 = match$17[/* action */2];
+                  var isInput = match$17[/* isInput */1];
+                  var nibID$2 = match$17[/* nibID */0];
+                  if (typeof action$2 === "number") {
+                    var uses = AffectedDefinitions$ReactTemplate.findConnectedDefinitions(definitionID, nibID$2, isInput, state[/* definitions */1]);
+                    if (Belt_MapString.isEmpty(uses)) {
+                      var other = definition$1[/* implementation */0];
+                      var tmp$4;
+                      switch (other.tag | 0) {
+                        case 1 : 
+                            tmp$4 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.removeInterfaceNib(other[0], nibID$2, isInput)]);
+                            break;
+                        case 3 : 
+                            var graphImplementation$5 = other[0];
+                            tmp$4 = /* GraphImplementation */Block.__(3, [/* record */[
+                                  /* interface */Definition$ReactTemplate.removeInterfaceNib(graphImplementation$5[/* interface */0], nibID$2, isInput),
+                                  /* connections */Belt_Map.keep(graphImplementation$5[/* connections */1], (function (sink, source) {
+                                          var match = isInput ? source : sink;
+                                          var tmp;
+                                          if (match[/* node */0]) {
+                                            tmp = false;
+                                          } else {
+                                            var match$1 = match[/* nib */1];
+                                            tmp = typeof match$1 === "number" || match$1.tag ? false : match$1[0] === nibID$2;
+                                          }
+                                          return !tmp;
+                                        })),
+                                  /* nodes */graphImplementation$5[/* nodes */2]
+                                ]]);
+                            break;
+                        case 4 : 
+                            tmp$4 = /* RecordTypeImplementation */Block.__(4, [Belt_MapString.keep(other[0], (function (fieldNibID, param) {
+                                        return fieldNibID !== nibID$2;
+                                      }))]);
+                            break;
+                        default:
+                          tmp$4 = other;
+                      }
+                      var tmp$5;
+                      if (isInput) {
+                        var init$8 = definition$1[/* display */2];
+                        tmp$5 = /* record */[
+                          /* inputOrdering */Belt_List.keep(definition$1[/* display */2][/* inputOrdering */0], (function (item) {
+                                  return item !== nibID$2;
+                                })),
+                          /* outputOrdering */init$8[/* outputOrdering */1]
+                        ];
+                      } else {
+                        var init$9 = definition$1[/* display */2];
+                        tmp$5 = /* record */[
+                          /* inputOrdering */init$9[/* inputOrdering */0],
+                          /* outputOrdering */Belt_List.keep(definition$1[/* display */2][/* outputOrdering */1], (function (item) {
+                                  return item !== nibID$2;
+                                }))
+                        ];
+                      }
                       return updateDefinition(/* record */[
-                                  /* implementation : GraphImplementation */Block.__(3, [/* record */[
-                                        /* interface */graphImplementation$8[/* interface */0],
-                                        /* connections */graphImplementation$8[/* connections */1],
-                                        /* nodes */nodes
-                                      ]]),
-                                  /* documentation */definition[/* documentation */1],
-                                  /* display */definition[/* display */2]
+                                  /* implementation */tmp$4,
+                                  /* documentation */definition$1[/* documentation */1],
+                                  /* display */tmp$5
                                 ]);
                     } else {
                       return /* Update */Block.__(0, [/* record */[
                                   /* execution */state[/* execution */0],
                                   /* definitions */state[/* definitions */1],
                                   /* definitionID */state[/* definitionID */2],
-                                  /* error : ConnectionCrossesScopeError */1
+                                  /* error : NibIsConnected */[uses]
                                 ]]);
+                    }
+                  } else {
+                    switch (action$2.tag | 0) {
+                      case 0 : 
+                          var nibs = isInput ? definition$1[/* documentation */1][/* inputs */2] : definition$1[/* documentation */1][/* outputs */3];
+                          var nib = Belt_MapString.getExn(nibs, nibID$2);
+                          var newNib = Definition$ReactTemplate.setTranslated(nib, "en", action$2[0]);
+                          var newNibs = Belt_MapString.set(nibs, nibID$2, newNib);
+                          var documentation;
+                          if (isInput) {
+                            var init$10 = definition$1[/* documentation */1];
+                            documentation = /* record */[
+                              /* name */init$10[/* name */0],
+                              /* description */init$10[/* description */1],
+                              /* inputs */newNibs,
+                              /* outputs */init$10[/* outputs */3]
+                            ];
+                          } else {
+                            var init$11 = definition$1[/* documentation */1];
+                            documentation = /* record */[
+                              /* name */init$11[/* name */0],
+                              /* description */init$11[/* description */1],
+                              /* inputs */init$11[/* inputs */2],
+                              /* outputs */newNibs
+                            ];
+                          }
+                          return updateDefinition(/* record */[
+                                      /* implementation */definition$1[/* implementation */0],
+                                      /* documentation */documentation,
+                                      /* display */definition$1[/* display */2]
+                                    ]);
+                      case 1 : 
+                          var valueType = action$2[0];
+                          var match$18 = definition$1[/* implementation */0];
+                          var tmp$6;
+                          switch (match$18.tag | 0) {
+                            case 1 : 
+                                tmp$6 = /* InterfaceImplementation */Block.__(1, [Definition$ReactTemplate.changeInterface(match$18[0], isInput, nibID$2, valueType)]);
+                                break;
+                            case 3 : 
+                                var graphImplementation$6 = match$18[0];
+                                tmp$6 = /* GraphImplementation */Block.__(3, [/* record */[
+                                      /* interface */Definition$ReactTemplate.changeInterface(graphImplementation$6[/* interface */0], isInput, nibID$2, valueType),
+                                      /* connections */graphImplementation$6[/* connections */1],
+                                      /* nodes */graphImplementation$6[/* nodes */2]
+                                    ]]);
+                                break;
+                            case 4 : 
+                                var tmp$7;
+                                if (isInput) {
+                                  tmp$7 = Definition$ReactTemplate.changeTypedFields(match$18[0], nibID$2, valueType);
+                                } else {
+                                  throw Caml_builtin_exceptions.not_found;
+                                }
+                                tmp$6 = /* RecordTypeImplementation */Block.__(4, [tmp$7]);
+                                break;
+                            default:
+                              throw Caml_builtin_exceptions.not_found;
+                          }
+                          return updateDefinition(/* record */[
+                                      /* implementation */tmp$6,
+                                      /* documentation */definition$1[/* documentation */1],
+                                      /* display */definition$1[/* display */2]
+                                    ]);
+                      case 2 : 
+                          var index = action$2[0];
+                          var tmp$8;
+                          if (isInput) {
+                            var init$12 = definition$1[/* display */2];
+                            tmp$8 = /* record */[
+                              /* inputOrdering */Helpers$ReactTemplate.moveToListIndex(definition$1[/* display */2][/* inputOrdering */0], nibID$2, index),
+                              /* outputOrdering */init$12[/* outputOrdering */1]
+                            ];
+                          } else {
+                            var init$13 = definition$1[/* display */2];
+                            tmp$8 = /* record */[
+                              /* inputOrdering */init$13[/* inputOrdering */0],
+                              /* outputOrdering */Helpers$ReactTemplate.moveToListIndex(definition$1[/* display */2][/* outputOrdering */1], nibID$2, index)
+                            ];
+                          }
+                          return updateDefinition(/* record */[
+                                      /* implementation */definition$1[/* implementation */0],
+                                      /* documentation */definition$1[/* documentation */1],
+                                      /* display */tmp$8
+                                    ]);
+                      
+                    }
+                  }
+              case 6 : 
+                  var match$19 = definition$1[/* implementation */0];
+                  var tmp$9;
+                  if (match$19.tag === 3) {
+                    var graphImplementation$7 = match$19[0];
+                    tmp$9 = /* GraphImplementation */Block.__(3, [/* record */[
+                          /* interface */graphImplementation$7[/* interface */0],
+                          /* connections */Belt_Map.remove(graphImplementation$7[/* connections */1], action$1[0]),
+                          /* nodes */graphImplementation$7[/* nodes */2]
+                        ]]);
+                  } else {
+                    throw Caml_builtin_exceptions.not_found;
+                  }
+                  return updateDefinition(/* record */[
+                              /* implementation */tmp$9,
+                              /* documentation */definition$1[/* documentation */1],
+                              /* display */definition$1[/* display */2]
+                            ]);
+              case 7 : 
+                  var match$20 = definition$1[/* implementation */0];
+                  var tmp$10;
+                  if (match$20.tag === 3) {
+                    var graphImplementation$8 = match$20[0];
+                    var nodeIDs = ExpandDeletion$ReactTemplate.getAffectedNodes(action$1[0], graphImplementation$8[/* nodes */2]);
+                    tmp$10 = /* GraphImplementation */Block.__(3, [/* record */[
+                          /* interface */graphImplementation$8[/* interface */0],
+                          /* connections */Belt_Map.keep(graphImplementation$8[/* connections */1], (function (sink, source) {
+                                  return !(ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(sink, nodeIDs) || ExpandDeletion$ReactTemplate.connectionSideInvolvesNodeIDs(source, nodeIDs));
+                                })),
+                          /* nodes */Belt_MapString.removeMany(graphImplementation$8[/* nodes */2], Belt_SetString.toArray(nodeIDs))
+                        ]]);
+                  } else {
+                    throw Caml_builtin_exceptions.not_found;
+                  }
+                  return updateDefinition(/* record */[
+                              /* implementation */tmp$10,
+                              /* documentation */definition$1[/* documentation */1],
+                              /* display */definition$1[/* display */2]
+                            ]);
+              case 8 : 
+                  var match$21 = action$1[0];
+                  var nodeScope = match$21[/* nodeScope */1];
+                  var nodeID$1 = match$21[/* nodeID */0];
+                  var match$22 = definition$1[/* implementation */0];
+                  if (match$22.tag === 3) {
+                    var graphImplementation$9 = match$22[0];
+                    var tmp$11;
+                    if (nodeScope) {
+                      var scopeNodeID = nodeScope[0];
+                      tmp$11 = Definition$ReactTemplate.isFunctionDefinitionNode(Belt_MapString.getExn(graphImplementation$9[/* nodes */2], scopeNodeID)) && nodeID$1 !== scopeNodeID;
+                    } else {
+                      tmp$11 = true;
+                    }
+                    if (tmp$11) {
+                      var node$1 = Belt_MapString.getExn(graphImplementation$9[/* nodes */2], nodeID$1);
+                      var newNode_001 = /* kind */node$1[/* kind */1];
+                      var newNode = /* record */[
+                        /* scope */nodeScope,
+                        newNode_001
+                      ];
+                      var nodes = Belt_MapString.set(graphImplementation$9[/* nodes */2], nodeID$1, newNode);
+                      if (DetectCycles$ReactTemplate.checkScopes(graphImplementation$9[/* connections */1], nodes)) {
+                        return updateDefinition(/* record */[
+                                    /* implementation : GraphImplementation */Block.__(3, [/* record */[
+                                          /* interface */graphImplementation$9[/* interface */0],
+                                          /* connections */graphImplementation$9[/* connections */1],
+                                          /* nodes */nodes
+                                        ]]),
+                                    /* documentation */definition$1[/* documentation */1],
+                                    /* display */definition$1[/* display */2]
+                                  ]);
+                      } else {
+                        return /* Update */Block.__(0, [/* record */[
+                                    /* execution */state[/* execution */0],
+                                    /* definitions */state[/* definitions */1],
+                                    /* definitionID */state[/* definitionID */2],
+                                    /* error : ConnectionCrossesScopeError */1
+                                  ]]);
+                      }
+                    } else {
+                      return /* NoUpdate */0;
                     }
                   } else {
                     return /* NoUpdate */0;
                   }
-                } else {
-                  return /* NoUpdate */0;
-                }
-            
+              case 9 : 
+                  var scopeID = Helpers$ReactTemplate.randomID(/* () */0);
+                  return /* Update */Block.__(0, [/* record */[
+                              /* execution *//* record */[
+                                /* scopes */Belt_MapString.fromArray(/* array */[/* tuple */[
+                                        scopeID,
+                                        /* record */[
+                                          /* definitionID */definitionID,
+                                          /* sourceValues */Belt_Map.make(Definition$ReactTemplate.ConnectionComparator)
+                                        ]
+                                      ]]),
+                                /* stack : :: */[
+                                  /* record */[
+                                    /* scopeID */scopeID,
+                                    /* explicitConnectionSide */action$1[0],
+                                    /* action : Evaluating */0
+                                  ],
+                                  /* [] */0
+                                ]
+                              ],
+                              /* definitions */state[/* definitions */1],
+                              /* definitionID */state[/* definitionID */2],
+                              /* error */state[/* error */3]
+                            ]]);
+              
+            }
           }
-        }
-    case 1 : 
-        var definitionID$1 = Helpers$ReactTemplate.randomID(/* () */0);
-        return /* UpdateWithSideEffects */Block.__(2, [
-                  /* record */[
-                    /* execution */state[/* execution */0],
-                    /* definitions */Belt_MapString.set(state[/* definitions */1], definitionID$1, action[0]),
-                    /* definitionID */state[/* definitionID */2],
-                    /* error */state[/* error */3]
-                  ],
-                  (function (param) {
-                      return ReasonReact.Router[/* push */0]("#" + definitionID$1);
-                    })
-                ]);
-    case 2 : 
-        return /* Update */Block.__(0, [/* record */[
-                    /* execution */state[/* execution */0],
-                    /* definitions */state[/* definitions */1],
-                    /* definitionID */action[0][/* hash */1],
-                    /* error : NoAppError */0
-                  ]]);
-    
+      case 1 : 
+          var definitionID$1 = Helpers$ReactTemplate.randomID(/* () */0);
+          return /* UpdateWithSideEffects */Block.__(2, [
+                    /* record */[
+                      /* execution */state[/* execution */0],
+                      /* definitions */Belt_MapString.set(state[/* definitions */1], definitionID$1, action[0]),
+                      /* definitionID */state[/* definitionID */2],
+                      /* error */state[/* error */3]
+                    ],
+                    (function (param) {
+                        return ReasonReact.Router[/* push */0]("#" + definitionID$1);
+                      })
+                  ]);
+      case 2 : 
+          return /* Update */Block.__(0, [/* record */[
+                      /* execution */state[/* execution */0],
+                      /* definitions */state[/* definitions */1],
+                      /* definitionID */action[0][/* hash */1],
+                      /* error : NoAppError */0
+                    ]]);
+      
+    }
   }
 }
 

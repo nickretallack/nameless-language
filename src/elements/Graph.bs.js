@@ -19,6 +19,7 @@ var Nib$ReactTemplate = require("./Nib.bs.js");
 var Node$ReactTemplate = require("./Node.bs.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var NodeMenu$ReactTemplate = require("./NodeMenu.bs.js");
+var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Interface$ReactTemplate = require("./Interface.bs.js");
 var Connection$ReactTemplate = require("./Connection.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
@@ -241,14 +242,26 @@ function make(definitionID, definitions, implementation, definition, display, do
                 switch (match$2.tag | 0) {
                   case 0 : 
                       var connectionSide = match$2[0];
-                      tmp = React.createElement("button", {
-                            onClick: (function (_event) {
-                                return Curry._1(emit, /* RemoveConnection */Block.__(6, [connectionSide]));
-                              })
-                          }, "Remove connection");
+                      tmp = React.createElement(React.Fragment, undefined, React.createElement("button", {
+                                onClick: (function (_event) {
+                                    return Curry._1(emit, /* EvaluateNib */Block.__(9, [/* record */[
+                                                    /* connectionSide */connectionSide,
+                                                    /* isSource */false
+                                                  ]]));
+                                  })
+                              }, "Evaluate"), React.createElement("button", {
+                                onClick: (function (_event) {
+                                    return Curry._1(emit, /* RemoveConnection */Block.__(6, [connectionSide]));
+                                  })
+                              }, "Remove connection"));
                       break;
                   case 1 : 
-                      tmp = ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], match$2[0], emit, /* array */[]));
+                      var explicitConnectionSide = match$2[0];
+                      tmp = React.createElement(React.Fragment, undefined, React.createElement("button", {
+                                onClick: (function (_event) {
+                                    return Curry._1(emit, /* EvaluateNib */Block.__(9, [explicitConnectionSide]));
+                                  })
+                              }, "Evaluate"), ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], explicitConnectionSide, emit, /* array */[])));
                       break;
                   case 2 : 
                       tmp = React.createElement("button", {
@@ -332,33 +345,59 @@ function make(definitionID, definitions, implementation, definition, display, do
                       var action$1 = match$1[/* action */1];
                       var pointerID = match$1[/* pointerID */0];
                       if (typeof action$1 === "number") {
-                        var match$2 = Belt_Map.get(state[/* pointers */0], pointerID);
-                        if (match$2 !== undefined) {
-                          var match$3 = match$2;
-                          if (match$3.tag) {
-                            var nodeID = match$3[0];
-                            return /* UpdateWithSideEffects */Block.__(2, [
-                                      /* record */[
-                                        /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
-                                        /* error */state[/* error */1],
-                                        /* selection */state[/* selection */2]
-                                      ],
-                                      (function (param) {
-                                          return Curry._1(emit, /* ChangeNodeScope */Block.__(8, [/* record */[
-                                                          /* nodeID */nodeID,
-                                                          /* nodeScope : GraphScope */0
-                                                        ]]));
-                                        })
-                                    ]);
+                        if (action$1 === 0) {
+                          var match$2 = Belt_Map.get(state[/* pointers */0], pointerID);
+                          if (match$2 !== undefined) {
+                            var match$3 = match$2;
+                            if (match$3.tag) {
+                              var nodeID = match$3[0];
+                              return /* UpdateWithSideEffects */Block.__(2, [
+                                        /* record */[
+                                          /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                                          /* error */state[/* error */1],
+                                          /* selection */state[/* selection */2]
+                                        ],
+                                        (function (param) {
+                                            return Curry._1(emit, /* ChangeNodeScope */Block.__(8, [/* record */[
+                                                            /* nodeID */nodeID,
+                                                            /* nodeScope : GraphScope */0
+                                                          ]]));
+                                          })
+                                      ]);
+                            } else {
+                              return /* Update */Block.__(0, [/* record */[
+                                          /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
+                                          /* error */state[/* error */1],
+                                          /* selection */state[/* selection */2]
+                                        ]]);
+                            }
                           } else {
-                            return /* Update */Block.__(0, [/* record */[
-                                        /* pointers */Belt_Map.remove(state[/* pointers */0], pointerID),
-                                        /* error */state[/* error */1],
-                                        /* selection */state[/* selection */2]
-                                      ]]);
+                            return /* NoUpdate */0;
                           }
                         } else {
-                          return /* NoUpdate */0;
+                          var match$4 = state[/* selection */2];
+                          if (typeof match$4 === "number") {
+                            throw Caml_builtin_exceptions.not_found;
+                          } else {
+                            switch (match$4.tag | 0) {
+                              case 0 : 
+                                  var connectionSide = match$4[0];
+                                  return /* SideEffects */Block.__(1, [(function (param) {
+                                                return Curry._1(emit, /* EvaluateNib */Block.__(9, [/* record */[
+                                                                /* connectionSide */connectionSide,
+                                                                /* isSource */false
+                                                              ]]));
+                                              })]);
+                              case 1 : 
+                                  var explicitConnectionSide = match$4[0];
+                                  return /* SideEffects */Block.__(1, [(function (param) {
+                                                return Curry._1(emit, /* EvaluateNib */Block.__(9, [explicitConnectionSide]));
+                                              })]);
+                              case 2 : 
+                                  throw Caml_builtin_exceptions.not_found;
+                              
+                            }
+                          }
                         }
                       } else {
                         switch (action$1.tag | 0) {
@@ -375,15 +414,15 @@ function make(definitionID, definitions, implementation, definition, display, do
                                           /* selection */state[/* selection */2]
                                         ]]);
                           case 2 : 
-                              var match$4 = Belt_Map.get(state[/* pointers */0], pointerID);
-                              if (match$4 !== undefined) {
-                                var match$5 = match$4;
-                                if (match$5.tag) {
+                              var match$5 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$5 !== undefined) {
+                                var match$6 = match$5;
+                                if (match$6.tag) {
                                   return /* NoUpdate */0;
                                 } else {
                                   return /* Update */Block.__(0, [/* record */[
                                               /* pointers */Belt_Map.set(state[/* pointers */0], pointerID, /* DrawingConnection */Block.__(0, [/* record */[
-                                                        /* explicitConnectionSide */match$5[0][/* explicitConnectionSide */0],
+                                                        /* explicitConnectionSide */match$6[0][/* explicitConnectionSide */0],
                                                         /* point */action$1[0]
                                                       ]])),
                                               /* error */state[/* error */1],
@@ -394,18 +433,18 @@ function make(definitionID, definitions, implementation, definition, display, do
                                 return /* NoUpdate */0;
                               }
                           case 3 : 
-                              var match$6 = action$1[0];
-                              var endNib = match$6[/* connectionSide */0];
-                              var match$7 = Belt_Map.get(state[/* pointers */0], pointerID);
-                              if (match$7 !== undefined) {
-                                var match$8 = match$7;
-                                if (match$8.tag) {
+                              var match$7 = action$1[0];
+                              var endNib = match$7[/* connectionSide */0];
+                              var match$8 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$8 !== undefined) {
+                                var match$9 = match$8;
+                                if (match$9.tag) {
                                   return /* NoUpdate */0;
                                 } else {
-                                  var match$9 = match$8[0][/* explicitConnectionSide */0];
-                                  var startIsSource = match$9[/* isSource */1];
-                                  var startNib = match$9[/* connectionSide */0];
-                                  if (startIsSource === match$6[/* isSource */1]) {
+                                  var match$10 = match$9[0][/* explicitConnectionSide */0];
+                                  var startIsSource = match$10[/* isSource */1];
+                                  var startNib = match$10[/* connectionSide */0];
+                                  if (startIsSource === match$7[/* isSource */1]) {
                                     if (Caml_obj.caml_equal(startNib, endNib)) {
                                       return /* Update */Block.__(0, [/* record */[
                                                   /* pointers */state[/* pointers */0],
@@ -423,15 +462,15 @@ function make(definitionID, definitions, implementation, definition, display, do
                                                 ]]);
                                     }
                                   } else {
-                                    var match$10 = startIsSource ? /* tuple */[
+                                    var match$11 = startIsSource ? /* tuple */[
                                         startNib,
                                         endNib
                                       ] : /* tuple */[
                                         endNib,
                                         startNib
                                       ];
-                                    var sink = match$10[1];
-                                    var source = match$10[0];
+                                    var sink = match$11[1];
+                                    var source = match$11[0];
                                     if (DetectCycles$ReactTemplate.checkConnectionScope(source, sink, implementation[/* nodes */2])) {
                                       if (DetectCycles$ReactTemplate.detectCycles(Belt_Map.set(implementation[/* connections */1], sink, source), implementation[/* nodes */2])) {
                                         return /* Update */Block.__(0, [/* record */[
@@ -468,11 +507,11 @@ function make(definitionID, definitions, implementation, definition, display, do
                               }
                           case 4 : 
                               var nodeScope = action$1[0];
-                              var match$11 = Belt_Map.get(state[/* pointers */0], pointerID);
-                              if (match$11 !== undefined) {
-                                var match$12 = match$11;
-                                if (match$12.tag) {
-                                  var nodeID$1 = match$12[0];
+                              var match$12 = Belt_Map.get(state[/* pointers */0], pointerID);
+                              if (match$12 !== undefined) {
+                                var match$13 = match$12;
+                                if (match$13.tag) {
+                                  var nodeID$1 = match$13[0];
                                   return /* SideEffects */Block.__(1, [(function (param) {
                                                 return Curry._1(emit, /* ChangeNodeScope */Block.__(8, [/* record */[
                                                                 /* nodeID */nodeID$1,
@@ -495,15 +534,15 @@ function make(definitionID, definitions, implementation, definition, display, do
                                   /* selection : SelectedConnection */Block.__(0, [action[0]])
                                 ]]);
                   case 2 : 
-                      var match$13 = action[0];
-                      var nodeID$2 = match$13[/* nodeID */0];
-                      var match$14 = state[/* selection */2];
+                      var match$14 = action[0];
+                      var nodeID$2 = match$14[/* nodeID */0];
+                      var match$15 = state[/* selection */2];
                       var tmp;
-                      if (typeof match$14 === "number") {
+                      if (typeof match$15 === "number") {
                         tmp = /* SelectedNodes */Block.__(2, [Belt_SetString.fromArray(/* array */[nodeID$2])]);
-                      } else if (match$14.tag === 2) {
-                        var nodeIDs$1 = match$14[0];
-                        if (match$13[/* additive */1]) {
+                      } else if (match$15.tag === 2) {
+                        var nodeIDs$1 = match$15[0];
+                        if (match$14[/* additive */1]) {
                           if (Belt_SetString.has(nodeIDs$1, nodeID$2)) {
                             var newNodeIDs = Belt_SetString.remove(nodeIDs$1, nodeID$2);
                             tmp = Belt_SetString.isEmpty(newNodeIDs) ? /* NoSelection */0 : /* SelectedNodes */Block.__(2, [newNodeIDs]);

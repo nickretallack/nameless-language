@@ -65,9 +65,12 @@ let make =
               )}
            </ul>
          </div>
-        | ConnectionCrossesScopeError =>
-          <div> {ReasonReact.string("When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.  You may have to remove some connections in order to change the scope of this node.")}
-          </div>
+       | ConnectionCrossesScopeError =>
+         <div>
+           {ReasonReact.string(
+              "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.  You may have to remove some connections in order to change the scope of this node.",
+            )}
+         </div>
        }}
     </>;
   },
