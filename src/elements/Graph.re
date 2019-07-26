@@ -420,23 +420,6 @@ let make =
         );
       };
 
-    // let getNibNudge = (source: connectionSide) =>
-    //   switch (source.node) {
-    //   | NodeConnection(nodeID) =>
-    //     let node = getNode(nodeID);
-    //     getOutputIndex(node, definitions, source.nib);
-    //   | GraphConnection =>
-    //     switch (source.nib) {
-    //     | NibConnection(nibID) => findIndexExn(display.inputOrdering, nibID)
-    //     | _ => raise(Not_found)
-    //     }
-    //   };
-
-    // let evaluate = outputID =>
-    //    Js.log(
-    //      Evaluate.evaluateGraphOutput(definitions, implementation, outputID),
-    //    );
-
     let allNibs = collectAllGraphNibs(definition, definitions);
 
     let renderedConnections =
@@ -450,7 +433,7 @@ let make =
               switch (stackFrame) {
               | None => NoDebugConnection
               | Some(stackFrame) =>
-                Js.log("YEAH!!!")
+                Js.log("YEAH!!!");
                 let stackConnectionSide = stackFrame.explicitConnectionSide;
                 if (!stackConnectionSide.isSource
                     && stackConnectionSide.connectionSide == sink) {
@@ -669,7 +652,7 @@ let make =
         documentation
         emit
         error
-        placeholder="(nameless graph)"
+        placeholder="(nameless function)"
       />
       {switch (self.state.error) {
        | Some(error) =>
@@ -681,7 +664,7 @@ let make =
          <>
            <button
              onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
-             {ReasonReact.string("Evaluate")}
+             {ReasonReact.string("Debug")}
            </button>
            <NodeMenu
              emit
@@ -696,7 +679,7 @@ let make =
              onClick={_event =>
                emit(EvaluateNib({connectionSide, isSource: false}))
              }>
-             {ReasonReact.string("Evaluate")}
+             {ReasonReact.string("Debug")}
            </button>
            <button
              onClick={_event => emit(RemoveConnection(connectionSide))}>

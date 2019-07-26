@@ -263,7 +263,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                                     /* isSource */false
                                                   ]]));
                                   })
-                              }, "Evaluate"), React.createElement("button", {
+                              }, "Debug"), React.createElement("button", {
                                 onClick: (function (_event) {
                                     return Curry._1(emit, /* RemoveConnection */Block.__(6, [connectionSide]));
                                   })
@@ -275,7 +275,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                 onClick: (function (_event) {
                                     return Curry._1(emit, /* EvaluateNib */Block.__(9, [explicitConnectionSide]));
                                   })
-                              }, "Evaluate"), ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], explicitConnectionSide, emit, /* array */[])));
+                              }, "Debug"), ReasonReact.element(undefined, undefined, NodeMenu$ReactTemplate.make(definitions, implementation[/* nodes */2], explicitConnectionSide, emit, /* array */[])));
                       break;
                   case 2 : 
                       tmp = React.createElement("button", {
@@ -322,7 +322,7 @@ function make(definitionID, definitions, implementation, definition, display, do
                                                               ]]));
                                               }));
                                 })
-                            }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(definitionID, definitions, documentation, "(nameless graph)", emit, error, /* array */[])), match$1 !== undefined ? React.createElement("div", {
+                            }, renderedSides, renderedNodes, renderedConnections, renderedDrawingConnections, renderedNibs), ReasonReact.element(undefined, undefined, DefinitionHeader$ReactTemplate.make(definitionID, definitions, documentation, "(nameless function)", emit, error, /* array */[])), match$1 !== undefined ? React.createElement("div", {
                                 className: "error-message"
                               }, match$1) : null, tmp, React.createElement("h2", undefined, "Interface"), ReasonReact.element(undefined, undefined, Interface$ReactTemplate.make(definitions, implementation[/* interface */0], documentation, display, emit, /* array */[])));
             }),
