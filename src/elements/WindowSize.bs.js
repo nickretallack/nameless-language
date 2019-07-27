@@ -3,50 +3,77 @@
 
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
+
+Belt_Debug.setupChromeDebugger(/* () */0);
 
 var component = ReasonReact.reducerComponent("WindowSize");
 
 function make(render, _children) {
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */(function (self) {
-              Curry._1(self[/* send */3], /* Resize */[/* record */[
-                      /* x */window.innerWidth,
-                      /* y */window.innerHeight
-                    ]]);
-              window.addEventListener("resize", (function (_event) {
-                      return Curry._1(self[/* send */3], /* Resize */[/* record */[
-                                    /* x */window.innerWidth,
-                                    /* y */window.innerHeight
-                                  ]]);
-                    }));
-              return /* () */0;
-            }),
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (self) {
-              return Curry._1(render, self[/* state */1]);
-            }),
-          /* initialState */(function (param) {
-              return /* record */[
-                      /* x */1366.0,
-                      /* y */768.0
-                    ];
-            }),
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */(function (action, _state) {
-              return /* Update */Block.__(0, [action[0]]);
-            }),
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+  return /* record */Block.record([
+            "debugName",
+            "reactClassInternal",
+            "handedOffState",
+            "willReceiveProps",
+            "didMount",
+            "didUpdate",
+            "willUnmount",
+            "willUpdate",
+            "shouldUpdate",
+            "render",
+            "initialState",
+            "retainedProps",
+            "reducer",
+            "jsElementWrapped"
+          ], [
+            component[/* debugName */0],
+            component[/* reactClassInternal */1],
+            component[/* handedOffState */2],
+            component[/* willReceiveProps */3],
+            (function (self) {
+                Curry._1(self[/* send */3], /* Resize */Block.simpleVariant("Resize", [/* record */Block.record([
+                            "x",
+                            "y"
+                          ], [
+                            window.innerWidth,
+                            window.innerHeight
+                          ])]));
+                window.addEventListener("resize", (function (_event) {
+                        return Curry._1(self[/* send */3], /* Resize */Block.simpleVariant("Resize", [/* record */Block.record([
+                                          "x",
+                                          "y"
+                                        ], [
+                                          window.innerWidth,
+                                          window.innerHeight
+                                        ])]));
+                      }));
+                return /* () */0;
+              }),
+            component[/* didUpdate */5],
+            component[/* willUnmount */6],
+            component[/* willUpdate */7],
+            component[/* shouldUpdate */8],
+            (function (self) {
+                return Curry._1(render, self[/* state */1]);
+              }),
+            (function (param) {
+                return /* record */Block.record([
+                          "x",
+                          "y"
+                        ], [
+                          1366.0,
+                          768.0
+                        ]);
+              }),
+            component[/* retainedProps */11],
+            (function (action, _state) {
+                return /* Update */Block.variant("Update", 0, [action[0]]);
+              }),
+            component[/* jsElementWrapped */13]
+          ]);
 }
 
 exports.component = component;
 exports.make = make;
-/* component Not a pure module */
+/*  Not a pure module */

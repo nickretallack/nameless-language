@@ -13,167 +13,167 @@ var NodeInputOrdering$ReactTemplate = require("./NodeInputOrdering.bs.js");
 
 function encodeNode(node) {
   if (typeof node === "number") {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "reference"
-                ],
-                /* [] */0
-              ]);
-  } else if (node.tag) {
-    var match = node[0];
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "defined"
-                ],
-                /* :: */[
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "kind",
-                    Definition$ReactTemplate.definedNodeKindToString(match[/* kind */0])
-                  ],
-                  /* :: */[
-                    /* tuple */[
-                      "contentID",
-                      match[/* contentID */1]
-                    ],
-                    /* [] */0
-                  ]
-                ]
-              ]);
-  } else {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "list"
-                ],
-                /* :: */[
-                  /* tuple */[
-                    "length",
-                    node[0]
+                    "type",
+                    "reference"
                   ],
                   /* [] */0
-                ]
-              ]);
+                ]));
+  } else if (node.tag) {
+    var match = node[0];
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "defined"
+                  ],
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "kind",
+                        Definition$ReactTemplate.definedNodeKindToString(match[/* kind */0])
+                      ],
+                      /* :: */Block.simpleVariant("::", [
+                          /* tuple */[
+                            "contentID",
+                            match[/* contentID */1]
+                          ],
+                          /* [] */0
+                        ])
+                    ])
+                ]));
+  } else {
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "list"
+                  ],
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "length",
+                        node[0]
+                      ],
+                      /* [] */0
+                    ])
+                ]));
   }
 }
 
 function encodeConnectionNode(connectionNode) {
   if (connectionNode) {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "node"
-                ],
-                /* :: */[
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "index",
-                    connectionNode[0]
+                    "type",
+                    "node"
+                  ],
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "index",
+                        connectionNode[0]
+                      ],
+                      /* [] */0
+                    ])
+                ]));
+  } else {
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "graph"
                   ],
                   /* [] */0
-                ]
-              ]);
-  } else {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "graph"
-                ],
-                /* [] */0
-              ]);
+                ]));
   }
 }
 
 function encodeConnectionNib(connectionNib) {
   if (connectionNib) {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "nib"
-                ],
-                /* :: */[
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "index",
-                    connectionNib[0]
+                    "type",
+                    "nib"
+                  ],
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "index",
+                        connectionNib[0]
+                      ],
+                      /* [] */0
+                    ])
+                ]));
+  } else {
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "value"
                   ],
                   /* [] */0
-                ]
-              ]);
-  } else {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "value"
-                ],
-                /* [] */0
-              ]);
+                ]));
   }
 }
 
 function encodeConnectionSide(connectionSide) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "node",
-                encodeConnectionNode(connectionSide[/* node */0])
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "nib",
-                  encodeConnectionNib(connectionSide[/* nib */1])
+                  "node",
+                  encodeConnectionNode(connectionSide[/* node */0])
                 ],
-                /* [] */0
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "nib",
+                      encodeConnectionNib(connectionSide[/* nib */1])
+                    ],
+                    /* [] */0
+                  ])
+              ]));
 }
 
 function encodeConnection(connection) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "source",
-                encodeConnectionSide(connection[/* source */0])
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "sink",
-                  encodeConnectionSide(connection[/* sink */1])
+                  "source",
+                  encodeConnectionSide(connection[/* source */0])
                 ],
-                /* [] */0
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "sink",
+                      encodeConnectionSide(connection[/* sink */1])
+                    ],
+                    /* [] */0
+                  ])
+              ]));
 }
 
 function encodeGraph(graph) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "type",
-                "graph"
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "inputCount",
-                  graph[/* inputCount */2]
+                  "type",
+                  "graph"
                 ],
-                /* :: */[
-                  /* tuple */[
-                    "outputCount",
-                    graph[/* inputCount */2]
-                  ],
-                  /* :: */[
+                /* :: */Block.simpleVariant("::", [
                     /* tuple */[
-                      "nodes",
-                      Json_encode.list(encodeNode, graph[/* nodes */0])
+                      "inputCount",
+                      graph[/* inputCount */2]
                     ],
-                    /* :: */[
-                      /* tuple */[
-                        "connections",
-                        Json_encode.list(encodeConnection, graph[/* connections */1])
-                      ],
-                      /* [] */0
-                    ]
-                  ]
-                ]
-              ]
-            ]);
+                    /* :: */Block.simpleVariant("::", [
+                        /* tuple */[
+                          "outputCount",
+                          graph[/* inputCount */2]
+                        ],
+                        /* :: */Block.simpleVariant("::", [
+                            /* tuple */[
+                              "nodes",
+                              Json_encode.list(encodeNode, graph[/* nodes */0])
+                            ],
+                            /* :: */Block.simpleVariant("::", [
+                                /* tuple */[
+                                  "connections",
+                                  Json_encode.list(encodeConnection, graph[/* connections */1])
+                                ],
+                                /* [] */0
+                              ])
+                          ])
+                      ])
+                  ])
+              ]));
 }
 
 function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibOrdering, connectionSide, isSink) {
@@ -190,7 +190,7 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
       }
     } else if (match$1.tag) {
       if (isSink) {
-        tmp = /* PublishingNibConnection */[match$1[0]];
+        tmp = /* PublishingNibConnection */Block.simpleVariant("PublishingNibConnection", [match$1[0]]);
       } else {
         throw Definition$ReactTemplate.InvalidConnection;
       }
@@ -200,15 +200,18 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
         throw Definition$ReactTemplate.InvalidConnection;
       } else if (match$2.tag) {
         var dependency = Belt_MapString.getExn(dependencies, match$2[0][/* definitionID */1]);
-        tmp = /* PublishingNibConnection */[Helpers$ReactTemplate.findIndexExn(isSink ? dependency[/* inputOrdering */1] : dependency[/* outputOrdering */2], match$1[0])];
+        tmp = /* PublishingNibConnection */Block.simpleVariant("PublishingNibConnection", [Helpers$ReactTemplate.findIndexExn(isSink ? dependency[/* inputOrdering */1] : dependency[/* outputOrdering */2], match$1[0])]);
       } else {
         throw Definition$ReactTemplate.InvalidConnection;
       }
     }
-    return /* record */[
-            /* node : PublishingNodeConnection */[Helpers$ReactTemplate.findIndexExn(nodeOrdering, nodeID)],
-            /* nib */tmp
-          ];
+    return /* record */Block.record([
+              "node",
+              "nib"
+            ], [
+              Block.simpleVariant("PublishingNodeConnection", [Helpers$ReactTemplate.findIndexExn(nodeOrdering, nodeID)]),
+              tmp
+            ]);
   } else {
     var match$3 = connectionSide[/* nib */1];
     var tmp$1;
@@ -217,41 +220,55 @@ function canonicalizeConnectionSide(graph, dependencies, nodeOrdering, graphNibO
     } else if (match$3.tag) {
       throw Definition$ReactTemplate.InvalidConnection;
     } else {
-      tmp$1 = /* PublishingNibConnection */[Helpers$ReactTemplate.findIndexExn(graphNibOrdering, match$3[0])];
+      tmp$1 = /* PublishingNibConnection */Block.simpleVariant("PublishingNibConnection", [Helpers$ReactTemplate.findIndexExn(graphNibOrdering, match$3[0])]);
     }
-    return /* record */[
-            /* node : PublishingGraphConnection */0,
-            /* nib */tmp$1
-          ];
+    return /* record */Block.record([
+              "node",
+              "nib"
+            ], [
+              0,
+              tmp$1
+            ]);
   }
 }
 
 function canonicalizeGraph(graph, dependencies, display) {
   var nodeOrdering = NodeInputOrdering$ReactTemplate.getNodeInputOrdering(graph, dependencies, display[/* outputOrdering */1]);
-  return /* record */[
-          /* nodes */Belt_List.map(nodeOrdering, (function (nodeID) {
-                  var match = Belt_MapString.getExn(graph[/* nodes */2], nodeID)[/* kind */1];
-                  if (typeof match === "number") {
-                    return /* PublishingReferenceNode */0;
-                  } else if (match.tag) {
-                    var match$1 = match[0];
-                    return /* PublishingDefinedNode */Block.__(1, [/* record */[
-                                /* kind */match$1[/* kind */0],
-                                /* contentID */Belt_MapString.getExn(dependencies, match$1[/* definitionID */1])[/* contentID */0]
-                              ]]);
-                  } else {
-                    return /* PublishingListNode */Block.__(0, [match[0]]);
-                  }
-                })),
-          /* connections */Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */1]), (function (param) {
-                      return /* record */[
-                              /* source */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* inputOrdering */0], param[1], false),
-                              /* sink */canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* outputOrdering */1], param[0], true)
-                            ];
-                    })), Caml_obj.caml_compare),
-          /* inputCount */Belt_List.size(display[/* inputOrdering */0]),
-          /* outputCount */Belt_List.size(display[/* outputOrdering */1])
-        ];
+  return /* record */Block.record([
+            "nodes",
+            "connections",
+            "inputCount",
+            "outputCount"
+          ], [
+            Belt_List.map(nodeOrdering, (function (nodeID) {
+                    var match = Belt_MapString.getExn(graph[/* nodes */2], nodeID)[/* kind */1];
+                    if (typeof match === "number") {
+                      return /* PublishingReferenceNode */0;
+                    } else if (match.tag) {
+                      var match$1 = match[0];
+                      return /* PublishingDefinedNode */Block.variant("PublishingDefinedNode", 1, [/* record */Block.record([
+                                    "kind",
+                                    "contentID"
+                                  ], [
+                                    match$1[/* kind */0],
+                                    Belt_MapString.getExn(dependencies, match$1[/* definitionID */1])[/* contentID */0]
+                                  ])]);
+                    } else {
+                      return /* PublishingListNode */Block.variant("PublishingListNode", 0, [match[0]]);
+                    }
+                  })),
+            Belt_List.sort(Belt_List.map(Belt_Map.toList(graph[/* connections */1]), (function (param) {
+                        return /* record */Block.record([
+                                  "source",
+                                  "sink"
+                                ], [
+                                  canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* inputOrdering */0], param[1], false),
+                                  canonicalizeConnectionSide(graph, dependencies, nodeOrdering, display[/* outputOrdering */1], param[0], true)
+                                ]);
+                      })), Caml_obj.caml_compare),
+            Belt_List.size(display[/* inputOrdering */0]),
+            Belt_List.size(display[/* outputOrdering */1])
+          ]);
 }
 
 function encodeCanonicalGraph(graph, dependencies, display) {

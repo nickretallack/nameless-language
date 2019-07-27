@@ -18,18 +18,24 @@ function getNibPosition(connectionSide, isSink, nodeLayouts, nodes, definition, 
     var nodeID = match[0];
     var nodePosition = Belt_MapString.getExn(nodeLayouts, nodeID)[/* position */0];
     var nibIndex = Definition$ReactTemplate.getNodeNibIndex(Belt_MapString.getExn(nodes, nodeID), definitions, connectionSide[/* nib */1], isSink);
-    return /* record */[
-            /* columns */nodePosition[/* columns */0],
-            /* rows */nodePosition[/* rows */1] + nibIndex | 0
-          ];
+    return /* record */Block.record([
+              "columns",
+              "rows"
+            ], [
+              nodePosition[/* columns */0],
+              nodePosition[/* rows */1] + nibIndex | 0
+            ]);
   } else {
     var nibIndex$1 = Helpers$ReactTemplate.findByIndexExn(isSink ? definition[/* display */2][/* outputOrdering */1] : definition[/* display */2][/* inputOrdering */0], (function (nibID) {
-            return Caml_obj.caml_equal(/* NibConnection */Block.__(0, [nibID]), connectionSide[/* nib */1]);
+            return Caml_obj.caml_equal(/* NibConnection */Block.variant("NibConnection", 0, [nibID]), connectionSide[/* nib */1]);
           }));
-    return /* record */[
-            /* columns */isSink ? -1 : graphWidth - 2 | 0,
-            /* rows */nibIndex$1 + 1 | 0
-          ];
+    return /* record */Block.record([
+              "columns",
+              "rows"
+            ], [
+              isSink ? -1 : graphWidth - 2 | 0,
+              nibIndex$1 + 1 | 0
+            ]);
   }
 }
 
@@ -37,10 +43,10 @@ function getParentScopes(nodeID, nodes) {
   var match = Belt_MapString.getExn(nodes, nodeID)[/* scope */0];
   if (match) {
     var nodeID$1 = match[0];
-    return /* :: */[
-            nodeID$1,
-            getParentScopes(nodeID$1, nodes)
-          ];
+    return /* :: */Block.simpleVariant("::", [
+              nodeID$1,
+              getParentScopes(nodeID$1, nodes)
+            ]);
   } else {
     return /* [] */0;
   }
@@ -69,10 +75,13 @@ function calculate(nodeLayouts, connections, nodes, definition, definitions, gra
                                 ], (function (param, index) {
                                     var rows = param[1];
                                     var columns = (endPosition[/* columns */0] - index | 0) - 1 | 0;
-                                    var position = /* record */[
-                                      /* columns */columns,
-                                      /* rows */rows
-                                    ];
+                                    var position = /* record */Block.record([
+                                        "columns",
+                                        "rows"
+                                      ], [
+                                        columns,
+                                        rows
+                                      ]);
                                     var collisions = Belt_MapString.keep(nodeLayouts, (function (nodeID, layout) {
                                             if (Belt_SetString.has(parentScopes, nodeID)) {
                                               return false;
@@ -97,10 +106,10 @@ function calculate(nodeLayouts, connections, nodes, definition, definitions, gra
                                       rows$1 = Pervasives.abs(outermostCollision[/* position */0][/* rows */1] - rows | 0) < Pervasives.abs(bottom - rows | 0) ? outermostCollision[/* position */0][/* rows */1] - 1 | 0 : bottom;
                                     }
                                     return /* tuple */[
-                                            /* :: */[
-                                              rows$1,
-                                              param[0]
-                                            ],
+                                            /* :: */Block.simpleVariant("::", [
+                                                rows$1,
+                                                param[0]
+                                              ]),
                                             rows$1
                                           ];
                                   }))[0]);

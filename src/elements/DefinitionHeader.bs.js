@@ -4,66 +4,84 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var AffectedDefinitions$ReactTemplate = require("../edit/AffectedDefinitions.bs.js");
 
+Belt_Debug.setupChromeDebugger(/* () */0);
+
 var component = ReasonReact.statelessComponent("DefinitionHeader");
 
 function make(definitionID, definitions, documentation, placeholder, emit, error, _children) {
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (_self) {
-              var changeName = function ($$event) {
-                return Curry._1(emit, /* ChangeName */Block.__(1, [Helpers$ReactTemplate.getEventValue($$event)]));
-              };
-              var uses = AffectedDefinitions$ReactTemplate.findDefinitionUses(definitionID, definitions);
-              return React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("input", {
-                                  className: "name",
-                                  placeholder: placeholder,
-                                  type: "text",
-                                  value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
-                                  onChange: changeName
-                                })), React.createElement("button", {
-                              onClick: (function (_event) {
-                                  return Curry._1(emit, /* Fork */2);
-                                })
-                            }, "Fork"), React.createElement("select", {
-                              onChange: (function ($$event) {
-                                  return ReasonReact.Router[/* push */0]("#" + $$event.target.value);
-                                })
-                            }, React.createElement("option", undefined, "Uses..."), Helpers$ReactTemplate.renderStringMap((function (param) {
-                                    var definitionID = param[0];
-                                    return React.createElement("option", {
-                                                key: definitionID,
-                                                value: definitionID
-                                              }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
-                                  }), uses)), typeof error === "number" ? (
-                            error !== 0 ? React.createElement("div", undefined, "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.  You may have to remove some connections in order to change the scope of this node.") : null
-                          ) : React.createElement("div", undefined, "This nib is connected in: ", React.createElement("ul", undefined, Helpers$ReactTemplate.renderStringMap((function (param) {
-                                          var definitionID = param[0];
-                                          return React.createElement("li", undefined, React.createElement("a", {
-                                                          key: definitionID,
-                                                          href: "#" + definitionID
-                                                        }, Definition$ReactTemplate.getDisplayName(param[1], "en")));
-                                        }), error[0]))));
-            }),
-          /* initialState */component[/* initialState */10],
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+  return /* record */Block.record([
+            "debugName",
+            "reactClassInternal",
+            "handedOffState",
+            "willReceiveProps",
+            "didMount",
+            "didUpdate",
+            "willUnmount",
+            "willUpdate",
+            "shouldUpdate",
+            "render",
+            "initialState",
+            "retainedProps",
+            "reducer",
+            "jsElementWrapped"
+          ], [
+            component[/* debugName */0],
+            component[/* reactClassInternal */1],
+            component[/* handedOffState */2],
+            component[/* willReceiveProps */3],
+            component[/* didMount */4],
+            component[/* didUpdate */5],
+            component[/* willUnmount */6],
+            component[/* willUpdate */7],
+            component[/* shouldUpdate */8],
+            (function (_self) {
+                var changeName = function ($$event) {
+                  return Curry._1(emit, /* ChangeName */Block.variant("ChangeName", 1, [Helpers$ReactTemplate.getEventValue($$event)]));
+                };
+                var uses = AffectedDefinitions$ReactTemplate.findDefinitionUses(definitionID, definitions);
+                return React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("input", {
+                                    className: "name",
+                                    placeholder: placeholder,
+                                    type: "text",
+                                    value: Definition$ReactTemplate.getTranslated(documentation[/* name */0], "en"),
+                                    onChange: changeName
+                                  })), React.createElement("button", {
+                                onClick: (function (_event) {
+                                    return Curry._1(emit, /* Fork */2);
+                                  })
+                              }, "Fork"), React.createElement("select", {
+                                onChange: (function ($$event) {
+                                    return ReasonReact.Router[/* push */0]("#" + $$event.target.value);
+                                  })
+                              }, React.createElement("option", undefined, "Uses..."), Helpers$ReactTemplate.renderStringMap((function (param) {
+                                      var definitionID = param[0];
+                                      return React.createElement("option", {
+                                                  key: definitionID,
+                                                  value: definitionID
+                                                }, Definition$ReactTemplate.getDisplayName(param[1], "en"));
+                                    }), uses)), typeof error === "number" ? (
+                              error !== 0 ? React.createElement("div", undefined, "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.  You may have to remove some connections in order to change the scope of this node.") : null
+                            ) : React.createElement("div", undefined, "This nib is connected in: ", React.createElement("ul", undefined, Helpers$ReactTemplate.renderStringMap((function (param) {
+                                            var definitionID = param[0];
+                                            return React.createElement("li", undefined, React.createElement("a", {
+                                                            key: definitionID,
+                                                            href: "#" + definitionID
+                                                          }, Definition$ReactTemplate.getDisplayName(param[1], "en")));
+                                          }), error[0]))));
+              }),
+            component[/* initialState */10],
+            component[/* retainedProps */11],
+            component[/* reducer */12],
+            component[/* jsElementWrapped */13]
+          ]);
 }
 
 exports.component = component;
 exports.make = make;
-/* component Not a pure module */
+/*  Not a pure module */

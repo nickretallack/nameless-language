@@ -22,41 +22,41 @@ function primitiveValueTypeToString(primitiveValueType) {
 
 function encodeValueType(valueType) {
   if (typeof valueType === "number") {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "any"
-                ],
-                /* [] */0
-              ]);
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "any"
+                  ],
+                  /* [] */0
+                ]));
   } else if (valueType.tag) {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "defined"
-                ],
-                /* :: */[
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "contentID",
-                    valueType[0]
+                    "type",
+                    "defined"
                   ],
-                  /* [] */0
-                ]
-              ]);
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "contentID",
+                        valueType[0]
+                      ],
+                      /* [] */0
+                    ])
+                ]));
   } else {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "primitive"
-                ],
-                /* :: */[
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "primitiveType",
-                    primitiveValueTypeToString(valueType[0])
+                    "type",
+                    "primitive"
                   ],
-                  /* [] */0
-                ]
-              ]);
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "primitiveType",
+                        primitiveValueTypeToString(valueType[0])
+                      ],
+                      /* [] */0
+                    ])
+                ]));
   }
 }
 
@@ -68,9 +68,9 @@ function canonicalizeType(valueType, dependencies) {
   if (typeof valueType === "number") {
     return /* PublishingAnyType */0;
   } else if (valueType.tag) {
-    return /* PublishingDefinedValueType */Block.__(1, [Belt_MapString.getExn(dependencies, valueType[0])[/* contentID */0]]);
+    return /* PublishingDefinedValueType */Block.variant("PublishingDefinedValueType", 1, [Belt_MapString.getExn(dependencies, valueType[0])[/* contentID */0]]);
   } else {
-    return /* PublishingPrimitiveValueType */Block.__(0, [valueType[0]]);
+    return /* PublishingPrimitiveValueType */Block.variant("PublishingPrimitiveValueType", 0, [valueType[0]]);
   }
 }
 
@@ -89,57 +89,57 @@ function canonicalizeTypeSet(typeSet, dependencies) {
 }
 
 function encodeRecordType(fields) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "type",
-                "record"
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "fields",
-                  Json_encode.list(encodeValueType, fields)
+                  "type",
+                  "record"
                 ],
-                /* [] */0
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "fields",
+                      Json_encode.list(encodeValueType, fields)
+                    ],
+                    /* [] */0
+                  ])
+              ]));
 }
 
 function encodeUnionType(fields) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "type",
-                "union"
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "types",
-                  Json_encode.list(encodeValueType, fields)
+                  "type",
+                  "union"
                 ],
-                /* [] */0
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "types",
+                      Json_encode.list(encodeValueType, fields)
+                    ],
+                    /* [] */0
+                  ])
+              ]));
 }
 
 function encodeLabeledType(id, valueType) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "type",
-                "label"
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "id",
-                  id
+                  "type",
+                  "label"
                 ],
-                /* :: */[
-                  /* tuple */[
-                    "wrapped",
-                    valueType !== undefined ? encodeValueType(valueType) : null
-                  ],
-                  /* [] */0
-                ]
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "id",
+                      id
+                    ],
+                    /* :: */Block.simpleVariant("::", [
+                        /* tuple */[
+                          "wrapped",
+                          valueType !== undefined ? encodeValueType(valueType) : null
+                        ],
+                        /* [] */0
+                      ])
+                  ])
+              ]));
 }
 
 function encodeCanonicalRecordType(typedFields, dependencies, fieldOrdering) {
@@ -155,32 +155,35 @@ function encodeCanonicalLabeledType(id, maybeValueType, dependencies) {
 }
 
 function canonicalizeInterface($$interface, dependencies, display) {
-  return /* record */[
-          /* inputs */canonicalizeTypedFields($$interface[/* inputTypes */0], dependencies, display[/* inputOrdering */0]),
-          /* outputs */canonicalizeTypedFields($$interface[/* outputTypes */1], dependencies, display[/* outputOrdering */1])
-        ];
+  return /* record */Block.record([
+            "inputs",
+            "outputs"
+          ], [
+            canonicalizeTypedFields($$interface[/* inputTypes */0], dependencies, display[/* inputOrdering */0]),
+            canonicalizeTypedFields($$interface[/* outputTypes */1], dependencies, display[/* outputOrdering */1])
+          ]);
 }
 
 function encodeInterface($$interface) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "type",
-                "interface"
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "inputs",
-                  Json_encode.list(encodeValueType, $$interface[/* inputs */0])
+                  "type",
+                  "interface"
                 ],
-                /* :: */[
-                  /* tuple */[
-                    "outputs",
-                    Json_encode.list(encodeValueType, $$interface[/* outputs */1])
-                  ],
-                  /* [] */0
-                ]
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "inputs",
+                      Json_encode.list(encodeValueType, $$interface[/* inputs */0])
+                    ],
+                    /* :: */Block.simpleVariant("::", [
+                        /* tuple */[
+                          "outputs",
+                          Json_encode.list(encodeValueType, $$interface[/* outputs */1])
+                        ],
+                        /* [] */0
+                      ])
+                  ])
+              ]));
 }
 
 function encodeCanonicalInterface($$interface, dependencies, display) {
@@ -188,32 +191,35 @@ function encodeCanonicalInterface($$interface, dependencies, display) {
 }
 
 function encodeExternal(publishingExternal) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "type",
-                "interface"
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "inputs",
-                  Json_encode.list(encodeValueType, publishingExternal[/* interface */1][/* inputs */0])
+                  "type",
+                  "interface"
                 ],
-                /* :: */[
-                  /* tuple */[
-                    "outputs",
-                    Json_encode.list(encodeValueType, publishingExternal[/* interface */1][/* outputs */1])
-                  ],
-                  /* [] */0
-                ]
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "inputs",
+                      Json_encode.list(encodeValueType, publishingExternal[/* interface */1][/* inputs */0])
+                    ],
+                    /* :: */Block.simpleVariant("::", [
+                        /* tuple */[
+                          "outputs",
+                          Json_encode.list(encodeValueType, publishingExternal[/* interface */1][/* outputs */1])
+                        ],
+                        /* [] */0
+                      ])
+                  ])
+              ]));
 }
 
 function encodeCanonicalExternal(externalImplementation, dependencies, display) {
-  return encodeExternal(/* record */[
-              /* name */externalImplementation[/* name */0],
-              /* interface */canonicalizeInterface(externalImplementation[/* interface */1], dependencies, display)
-            ]);
+  return encodeExternal(/* record */Block.record([
+                "name",
+                "interface"
+              ], [
+                externalImplementation[/* name */0],
+                canonicalizeInterface(externalImplementation[/* interface */1], dependencies, display)
+              ]));
 }
 
 exports.primitiveValueTypeToString = primitiveValueTypeToString;

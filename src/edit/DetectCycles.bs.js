@@ -2,9 +2,12 @@
 'use strict';
 
 var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var ColumnizeNodes$ReactTemplate = require("../display/ColumnizeNodes.bs.js");
+
+Belt_Debug.setupChromeDebugger(/* () */0);
 
 function detectCycles(connections, nodes) {
   try {
@@ -99,4 +102,4 @@ exports.detectCycles = detectCycles;
 exports.isParentScope = isParentScope;
 exports.checkConnectionScope = checkConnectionScope;
 exports.checkScopes = checkScopes;
-/* Definition-ReactTemplate Not a pure module */
+/*  Not a pure module */

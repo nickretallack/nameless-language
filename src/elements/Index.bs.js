@@ -3,11 +3,14 @@
 
 var Block = require("bs-platform/lib/js/block.js");
 var Belt_Set = require("bs-platform/lib/js/belt_Set.js");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var ReactDOMRe = require("reason-react/src/ReactDOMRe.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var App$ReactTemplate = require("./App.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
+
+Belt_Debug.setupChromeDebugger(/* () */0);
 
 var example = Definition$ReactTemplate.makeGraph("Example Definition", "An example function", /* array */[
       /* tuple */[
@@ -30,74 +33,116 @@ var example = Definition$ReactTemplate.makeGraph("Example Definition", "An examp
     ], /* array */[
       /* tuple */[
         "node1",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"example"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "example"
+                  ])])
+          ])
       ],
       /* tuple */[
         "node2",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"example"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "example"
+                  ])])
+          ])
       ],
       /* tuple */[
         "node3",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"example"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "example"
+                  ])])
+          ])
       ]
     ], /* array */[
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["node1"],
-          /* nib : NibConnection */Block.__(0, ["in1"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["node2"],
-          /* nib : NibConnection */Block.__(0, ["out1"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node1"]),
+            Block.variant("NibConnection", 0, ["in1"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node2"]),
+            Block.variant("NibConnection", 0, ["out1"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["node1"],
-          /* nib : NibConnection */Block.__(0, ["in2"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["node2"],
-          /* nib : NibConnection */Block.__(0, ["out2"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node1"]),
+            Block.variant("NibConnection", 0, ["in2"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node2"]),
+            Block.variant("NibConnection", 0, ["out2"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["out2"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["node1"],
-          /* nib : NibConnection */Block.__(0, ["out2"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["out2"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node1"]),
+            Block.variant("NibConnection", 0, ["out2"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["node2"],
-          /* nib : NibConnection */Block.__(0, ["in1"])
-        ],
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["in1"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node2"]),
+            Block.variant("NibConnection", 0, ["in1"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["in1"])
+          ])
       ]
     ], /* () */0);
 
@@ -122,68 +167,104 @@ var simple = Definition$ReactTemplate.makeGraph("Simple Definition", "A simple f
     ], /* array */[
       /* tuple */[
         "node1",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ],
       /* tuple */[
         "node2",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ],
       /* tuple */[
         "node3",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "plus"
+                  ])])
+          ])
       ]
     ], /* array */[
       /* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["out1"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["node3"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["out1"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node3"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["node3"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["node1"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node3"]),
+            Block.variant("NibConnection", 0, ["left"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node1"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["node3"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["node2"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node3"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["node2"]),
+            0
+          ])
       ]
     ], /* () */0);
 
-var one = Definition$ReactTemplate.makeDefinition(undefined, undefined, undefined, undefined, /* ConstantImplementation */Block.__(0, [/* NumberValue */Block.__(1, [1.0])]), /* () */0);
+var one = Definition$ReactTemplate.makeDefinition(undefined, undefined, undefined, undefined, /* ConstantImplementation */Block.variant("ConstantImplementation", 0, [/* NumberValue */Block.variant("NumberValue", 1, [1.0])]), /* () */0);
 
 var point = Definition$ReactTemplate.makeDefinition("2D Point", "X and Y coordinates", /* array */[
       /* tuple */[
@@ -194,14 +275,14 @@ var point = Definition$ReactTemplate.makeDefinition("2D Point", "X and Y coordin
         "y",
         "Y"
       ]
-    ], undefined, /* RecordTypeImplementation */Block.__(4, [Belt_MapString.fromArray(/* array */[
+    ], undefined, /* RecordTypeImplementation */Block.variant("RecordTypeImplementation", 4, [Belt_MapString.fromArray(/* array */[
               /* tuple */[
                 "x",
-                /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
               ],
               /* tuple */[
                 "y",
-                /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
+                /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
               ]
             ])]), /* () */0);
 
@@ -217,25 +298,31 @@ var plus = Definition$ReactTemplate.makeDefinition("+", "Add two numbers, result
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */"+",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "left",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ],
-                  /* tuple */[
-                    "right",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            "+",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "left",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ],
+                      /* tuple */[
+                        "right",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var minus = Definition$ReactTemplate.makeDefinition("-", "Subtract two numbers, resulting in a number.", /* array */[
       /* tuple */[
@@ -249,25 +336,31 @@ var minus = Definition$ReactTemplate.makeDefinition("-", "Subtract two numbers, 
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */"-",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "left",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ],
-                  /* tuple */[
-                    "right",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            "-",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "left",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ],
+                      /* tuple */[
+                        "right",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var times = Definition$ReactTemplate.makeDefinition("*", "Multiply two numbers, resulting in a number.", /* array */[
       /* tuple */[
@@ -281,25 +374,31 @@ var times = Definition$ReactTemplate.makeDefinition("*", "Multiply two numbers, 
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */"*",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "left",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ],
-                  /* tuple */[
-                    "right",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            "*",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "left",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ],
+                      /* tuple */[
+                        "right",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var divide = Definition$ReactTemplate.makeDefinition("/", "Subtract two numbers, resulting in a number.", /* array */[
       /* tuple */[
@@ -313,25 +412,31 @@ var divide = Definition$ReactTemplate.makeDefinition("/", "Subtract two numbers,
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */"/",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "left",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ],
-                  /* tuple */[
-                    "right",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            "/",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "left",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ],
+                      /* tuple */[
+                        "right",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var pointExample = Definition$ReactTemplate.makeGraph("Point Example", "", /* array */[], /* array */[
       /* tuple */[
@@ -345,94 +450,148 @@ var pointExample = Definition$ReactTemplate.makeGraph("Point Example", "", /* ar
     ], /* array */[
       /* tuple */[
         "constructor",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ConstructorNode */4,
-                /* definitionID */"point"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    4,
+                    "point"
+                  ])])
+          ])
       ],
       /* tuple */[
         "destructure",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : AccessorNode */5,
-                /* definitionID */"point"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    5,
+                    "point"
+                  ])])
+          ])
       ],
       /* tuple */[
         "x",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ],
       /* tuple */[
         "y",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ]
     ], /* array */[
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["constructor"],
-          /* nib : NibConnection */Block.__(0, ["x"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["x"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["constructor"]),
+            Block.variant("NibConnection", 0, ["x"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["x"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["constructor"],
-          /* nib : NibConnection */Block.__(0, ["y"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["y"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["constructor"]),
+            Block.variant("NibConnection", 0, ["y"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["y"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["destructure"],
-          /* nib : ValueConnection */0
-        ],
-        /* record */[
-          /* node : NodeConnection */["constructor"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["destructure"]),
+            0
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["constructor"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["x"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["destructure"],
-          /* nib : NibConnection */Block.__(0, ["x"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["x"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["destructure"]),
+            Block.variant("NibConnection", 0, ["x"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["y"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["destructure"],
-          /* nib : NibConnection */Block.__(0, ["y"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["y"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["destructure"]),
+            Block.variant("NibConnection", 0, ["y"])
+          ])
       ]
     ], /* () */0);
 
@@ -441,19 +600,28 @@ var referenceExample = Definition$ReactTemplate.makeGraph("Reference example", "
         "Reference"
       ]], /* array */[/* tuple */[
         "reference",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : ReferenceNode */0
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            0
+          ])
       ]], /* array */[/* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["reference"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["reference"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["reference"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["reference"]),
+            0
+          ])
       ]], /* () */0);
 
 var exampleInterface = Definition$ReactTemplate.makeDefinition("Example Interface", undefined, /* array */[
@@ -474,28 +642,31 @@ var exampleInterface = Definition$ReactTemplate.makeDefinition("Example Interfac
         "out-right",
         "Right"
       ]
-    ], /* InterfaceImplementation */Block.__(1, [/* record */[
-          /* inputTypes */Belt_MapString.fromArray(/* array */[
-                /* tuple */[
-                  "in-left",
-                  /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                ],
-                /* tuple */[
-                  "in-right",
-                  /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                ]
-              ]),
-          /* outputTypes */Belt_MapString.fromArray(/* array */[
-                /* tuple */[
-                  "out-left",
-                  /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                ],
-                /* tuple */[
-                  "out-right",
-                  /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                ]
-              ])
-        ]]), /* () */0);
+    ], /* InterfaceImplementation */Block.variant("InterfaceImplementation", 1, [/* record */Block.record([
+            "inputTypes",
+            "outputTypes"
+          ], [
+            Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "in-left",
+                    /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "in-right",
+                    /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                  ]
+                ]),
+            Belt_MapString.fromArray(/* array */[
+                  /* tuple */[
+                    "out-left",
+                    /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                  ],
+                  /* tuple */[
+                    "out-right",
+                    /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                  ]
+                ])
+          ])]), /* () */0);
 
 var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", undefined, undefined, /* array */[/* tuple */[
         "result",
@@ -503,23 +674,35 @@ var interfaceExample = Definition$ReactTemplate.makeGraph("Interface Example", u
       ]], /* array */[
       /* tuple */[
         "definition",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionDefinitionNode */3,
-                /* definitionID */"example-interface"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    3,
+                    "example-interface"
+                  ])])
+          ])
       ],
       /* tuple */[
         "plus1",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "plus"
+                  ])])
+          ])
       ]
     ], /* array */[], /* () */0);
 
@@ -529,72 +712,108 @@ var nestedInlineExample = Definition$ReactTemplate.makeGraph("Nested Inline Func
       ]], /* array */[
       /* tuple */[
         "definition",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionDefinitionNode */3,
-                /* definitionID */"example-interface"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    3,
+                    "example-interface"
+                  ])])
+          ])
       ],
       /* tuple */[
         "definition2",
-        /* record */[
-          /* scope : NodeScope */["definition"],
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionDefinitionNode */3,
-                /* definitionID */"example-interface"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            Block.simpleVariant("NodeScope", ["definition"]),
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    3,
+                    "example-interface"
+                  ])])
+          ])
       ],
       /* tuple */[
         "definition3",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionDefinitionNode */3,
-                /* definitionID */"example-interface"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    3,
+                    "example-interface"
+                  ])])
+          ])
       ],
       /* tuple */[
         "plus",
-        /* record */[
-          /* scope : NodeScope */["definition3"],
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            Block.simpleVariant("NodeScope", ["definition3"]),
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "plus"
+                  ])])
+          ])
       ],
       /* tuple */[
         "plus2",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"plus"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "plus"
+                  ])])
+          ])
       ]
     ], /* array */[/* tuple */[
-        /* record */[
-          /* node : NodeConnection */["plus"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["plus2"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["plus"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["plus2"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ]], /* () */0);
 
-var yesLabel = Definition$ReactTemplate.makeDefinition("Yes", undefined, undefined, undefined, /* LabeledTypeImplementation */Block.__(5, [undefined]), /* () */0);
+var yesLabel = Definition$ReactTemplate.makeDefinition("Yes", undefined, undefined, undefined, /* LabeledTypeImplementation */Block.variant("LabeledTypeImplementation", 5, [undefined]), /* () */0);
 
-var noLabel = Definition$ReactTemplate.makeDefinition("No", undefined, undefined, undefined, /* LabeledTypeImplementation */Block.__(5, [undefined]), /* () */0);
+var noLabel = Definition$ReactTemplate.makeDefinition("No", undefined, undefined, undefined, /* LabeledTypeImplementation */Block.variant("LabeledTypeImplementation", 5, [undefined]), /* () */0);
 
-var booleanUnion = Definition$ReactTemplate.makeDefinition("Boolean", undefined, undefined, undefined, /* UnionTypeImplementation */Block.__(6, [Belt_Set.fromArray(/* array */[
-              /* DefinedValueType */Block.__(1, ["yes"]),
-              /* DefinedValueType */Block.__(1, ["no"])
+var booleanUnion = Definition$ReactTemplate.makeDefinition("Boolean", undefined, undefined, undefined, /* UnionTypeImplementation */Block.variant("UnionTypeImplementation", 6, [Belt_Set.fromArray(/* array */[
+              /* DefinedValueType */Block.variant("DefinedValueType", 1, ["yes"]),
+              /* DefinedValueType */Block.variant("DefinedValueType", 1, ["no"])
             ], Definition$ReactTemplate.ValueTypeComparator)]), /* () */0);
 
 var branch = Definition$ReactTemplate.makeDefinition("Branch", "Conditionally evaluate.", /* array */[
@@ -613,29 +832,35 @@ var branch = Definition$ReactTemplate.makeDefinition("Branch", "Conditionally ev
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */"branch",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "if",
-                    /* DefinedValueType */Block.__(1, ["boolean"])
-                  ],
-                  /* tuple */[
-                    "then",
-                    /* AnyType */0
-                  ],
-                  /* tuple */[
-                    "else",
-                    /* AnyType */0
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* AnyType */0
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            "branch",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "if",
+                        /* DefinedValueType */Block.variant("DefinedValueType", 1, ["boolean"])
+                      ],
+                      /* tuple */[
+                        "then",
+                        /* AnyType */0
+                      ],
+                      /* tuple */[
+                        "else",
+                        /* AnyType */0
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* AnyType */0
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var equals = Definition$ReactTemplate.makeDefinition("=", undefined, /* array */[
       /* tuple */[
@@ -649,25 +874,31 @@ var equals = Definition$ReactTemplate.makeDefinition("=", undefined, /* array */
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */"=",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "left",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ],
-                  /* tuple */[
-                    "right",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* DefinedValueType */Block.__(1, ["boolean"])
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            "=",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "left",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ],
+                      /* tuple */[
+                        "right",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* DefinedValueType */Block.variant("DefinedValueType", 1, ["boolean"])
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var lessThan = Definition$ReactTemplate.makeDefinition("<", undefined, /* array */[
       /* tuple */[
@@ -681,25 +912,31 @@ var lessThan = Definition$ReactTemplate.makeDefinition("<", undefined, /* array 
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */"<",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "left",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ],
-                  /* tuple */[
-                    "right",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* DefinedValueType */Block.__(1, ["boolean"])
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            "<",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "left",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ],
+                      /* tuple */[
+                        "right",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* DefinedValueType */Block.variant("DefinedValueType", 1, ["boolean"])
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var greaterThan = Definition$ReactTemplate.makeDefinition(">", undefined, /* array */[
       /* tuple */[
@@ -713,25 +950,31 @@ var greaterThan = Definition$ReactTemplate.makeDefinition(">", undefined, /* arr
     ], /* array */[/* tuple */[
         "result",
         "Result"
-      ]], /* ExternalImplementation */Block.__(2, [/* record */[
-          /* name */">",
-          /* interface : record */[
-            /* inputTypes */Belt_MapString.fromArray(/* array */[
-                  /* tuple */[
-                    "left",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ],
-                  /* tuple */[
-                    "right",
-                    /* PrimitiveValueType */Block.__(0, [/* NumberType */1])
-                  ]
-                ]),
-            /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                    "result",
-                    /* DefinedValueType */Block.__(1, ["boolean"])
-                  ]])
-          ]
-        ]]), /* () */0);
+      ]], /* ExternalImplementation */Block.variant("ExternalImplementation", 2, [/* record */Block.record([
+            "name",
+            "interface"
+          ], [
+            ">",
+            Block.record([
+                "inputTypes",
+                "outputTypes"
+              ], [
+                Belt_MapString.fromArray(/* array */[
+                      /* tuple */[
+                        "left",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ],
+                      /* tuple */[
+                        "right",
+                        /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* NumberType */1])
+                      ]
+                    ]),
+                Belt_MapString.fromArray(/* array */[/* tuple */[
+                        "result",
+                        /* DefinedValueType */Block.variant("DefinedValueType", 1, ["boolean"])
+                      ]])
+              ])
+          ])]), /* () */0);
 
 var factorial = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* array */[/* tuple */[
         "input",
@@ -742,174 +985,276 @@ var factorial = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* ar
       ]], /* array */[
       /* tuple */[
         "one",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ],
       /* tuple */[
         "branch",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"branch"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "branch"
+                  ])])
+          ])
       ],
       /* tuple */[
         "less-than",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"less-than"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "less-than"
+                  ])])
+          ])
       ],
       /* tuple */[
         "times",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"times"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "times"
+                  ])])
+          ])
       ],
       /* tuple */[
         "minus",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"minus"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "minus"
+                  ])])
+          ])
       ],
       /* tuple */[
         "factorial",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"factorial"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "factorial"
+                  ])])
+          ])
       ]
     ], /* array */[
       /* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["result"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["if"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["less-than"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["if"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["less-than"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["then"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["one"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["then"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["one"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["less-than"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["less-than"]),
+            Block.variant("NibConnection", 0, ["left"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["input"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["less-than"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["one"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["less-than"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["one"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["else"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["times"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["else"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["times"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["times"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["times"]),
+            Block.variant("NibConnection", 0, ["left"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["input"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["times"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["factorial"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["times"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["factorial"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["factorial"],
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["minus"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["factorial"]),
+            Block.variant("NibConnection", 0, ["input"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["minus"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["minus"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["minus"]),
+            Block.variant("NibConnection", 0, ["left"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["input"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["minus"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["one"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["minus"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["one"]),
+            0
+          ])
       ]
     ], /* () */0);
 
@@ -922,194 +1267,308 @@ var factorial2 = Definition$ReactTemplate.makeGraph("Factorial", undefined, /* a
       ]], /* array */[
       /* tuple */[
         "one1",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ],
       /* tuple */[
         "one2",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ],
       /* tuple */[
         "one3",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : ValueNode */1,
-                /* definitionID */"one"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    1,
+                    "one"
+                  ])])
+          ])
       ],
       /* tuple */[
         "branch",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"branch"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "branch"
+                  ])])
+          ])
       ],
       /* tuple */[
         "less-than",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"less-than"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "less-than"
+                  ])])
+          ])
       ],
       /* tuple */[
         "times",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"times"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "times"
+                  ])])
+          ])
       ],
       /* tuple */[
         "minus",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"minus"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "minus"
+                  ])])
+          ])
       ],
       /* tuple */[
         "factorial",
-        /* record */[
-          /* scope : GraphScope */0,
-          /* kind : DefinedNode */Block.__(1, [/* record */[
-                /* kind : FunctionCallNode */0,
-                /* definitionID */"factorial"
-              ]])
-        ]
+        /* record */Block.record([
+            "scope",
+            "kind"
+          ], [
+            0,
+            Block.variant("DefinedNode", 1, [/* record */Block.record([
+                    "kind",
+                    "definitionID"
+                  ], [
+                    0,
+                    "factorial"
+                  ])])
+          ])
       ]
     ], /* array */[
       /* tuple */[
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["result"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["if"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["less-than"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["if"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["less-than"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["then"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["one1"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["then"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["one1"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["less-than"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["less-than"]),
+            Block.variant("NibConnection", 0, ["left"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["input"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["less-than"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["one2"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["less-than"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["one2"]),
+            0
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["branch"],
-          /* nib : NibConnection */Block.__(0, ["else"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["times"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["branch"]),
+            Block.variant("NibConnection", 0, ["else"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["times"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["times"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["times"]),
+            Block.variant("NibConnection", 0, ["left"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["input"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["times"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["factorial"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["times"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["factorial"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["factorial"],
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["minus"],
-          /* nib : NibConnection */Block.__(0, ["result"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["factorial"]),
+            Block.variant("NibConnection", 0, ["input"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["minus"]),
+            Block.variant("NibConnection", 0, ["result"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["minus"],
-          /* nib : NibConnection */Block.__(0, ["left"])
-        ],
-        /* record */[
-          /* node : GraphConnection */0,
-          /* nib : NibConnection */Block.__(0, ["input"])
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["minus"]),
+            Block.variant("NibConnection", 0, ["left"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            0,
+            Block.variant("NibConnection", 0, ["input"])
+          ])
       ],
       /* tuple */[
-        /* record */[
-          /* node : NodeConnection */["minus"],
-          /* nib : NibConnection */Block.__(0, ["right"])
-        ],
-        /* record */[
-          /* node : NodeConnection */["one3"],
-          /* nib : ValueConnection */0
-        ]
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["minus"]),
+            Block.variant("NibConnection", 0, ["right"])
+          ]),
+        /* record */Block.record([
+            "node",
+            "nib"
+          ], [
+            Block.simpleVariant("NodeConnection", ["one3"]),
+            0
+          ])
       ]
     ], /* () */0);
 
@@ -1225,4 +1684,4 @@ exports.greaterThan = greaterThan;
 exports.factorial = factorial;
 exports.factorial2 = factorial2;
 exports.definitions = definitions;
-/* example Not a pure module */
+/*  Not a pure module */

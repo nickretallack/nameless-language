@@ -11,12 +11,12 @@ var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exception
 function evaluateInput(inputs, inputID) {
   var match = Belt_MapString.getExn(inputs, inputID);
   if (match !== undefined) {
-    return /* EvaluationResult */Block.__(0, [match]);
+    return /* EvaluationResult */Block.variant("EvaluationResult", 0, [match]);
   } else {
-    return /* EvaluationRequired */Block.__(1, [/* :: */[
-                inputID,
-                /* [] */0
-              ]]);
+    return /* EvaluationRequired */Block.variant("EvaluationRequired", 1, [/* :: */Block.simpleVariant("::", [
+                  inputID,
+                  /* [] */0
+                ])]);
   }
 }
 
@@ -40,10 +40,10 @@ function conditionalBranch(inputs, outputID) {
       throw Caml_builtin_exceptions.not_found;
     }
   } else {
-    return /* EvaluationRequired */Block.__(1, [/* :: */[
-                "if",
-                /* [] */0
-              ]]);
+    return /* EvaluationRequired */Block.variant("EvaluationRequired", 1, [/* :: */Block.simpleVariant("::", [
+                  "if",
+                  /* [] */0
+                ])]);
   }
 }
 
@@ -68,9 +68,9 @@ function withAllValues(inputs, operation) {
         }));
   var needed = match[1];
   if (Belt_List.length(needed) !== 0) {
-    return /* EvaluationRequired */Block.__(1, [needed]);
+    return /* EvaluationRequired */Block.variant("EvaluationRequired", 1, [needed]);
   } else {
-    return /* EvaluationResult */Block.__(0, [Curry._1(operation, match[0])]);
+    return /* EvaluationResult */Block.variant("EvaluationResult", 0, [Curry._1(operation, match[0])]);
   }
 }
 
@@ -79,7 +79,7 @@ function addition(inputs, outputID) {
     throw Caml_builtin_exceptions.not_found;
   }
   return withAllValues(inputs, (function (values) {
-                return /* PrimitiveValue */Block.__(0, [/* NumberValue */Block.__(1, [Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")) + Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right"))])]);
+                return /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")) + Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right"))])]);
               }));
 }
 

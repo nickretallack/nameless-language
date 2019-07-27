@@ -12,9 +12,12 @@ var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
+
+Belt_Debug.setupChromeDebugger(/* () */0);
 
 function sortBy(list, func) {
   return Belt_List.map(Belt_List.sort(Belt_List.map(list, (function (item) {
@@ -71,10 +74,10 @@ function moveToListIndex(list, needle, newIndex) {
   } else {
     throw Caml_builtin_exceptions.not_found;
   }
-  return Belt_List.concat(removeElementFromList(match$2[0], needle), /* :: */[
-              needle,
-              removeElementFromList(match$2[1], needle)
-            ]);
+  return Belt_List.concat(removeElementFromList(match$2[0], needle), /* :: */Block.simpleVariant("::", [
+                needle,
+                removeElementFromList(match$2[1], needle)
+              ]));
 }
 
 function simpleMergeMaps(map1, map2) {
@@ -93,15 +96,15 @@ function arrayGetWithDefault(array, index, $$default) {
 Random.init(Date.now() | 0);
 
 function randomHex(param) {
-  return Curry._1(Printf.sprintf(/* Format */[
-                  /* Int */Block.__(4, [
-                      /* Int_x */6,
-                      /* No_padding */0,
-                      /* No_precision */0,
-                      /* End_of_format */0
-                    ]),
-                  "%x"
-                ]), Random.$$int(16));
+  return Curry._1(Printf.sprintf(/* Format */Block.simpleVariant("Format", [
+                    /* Int */Block.variant("Int", 4, [
+                        /* Int_x */6,
+                        /* No_padding */0,
+                        /* No_precision */0,
+                        /* End_of_format */0
+                      ]),
+                    "%x"
+                  ])), Random.$$int(16));
 }
 
 function randomID(param) {
@@ -111,37 +114,40 @@ function randomID(param) {
 }
 
 function floatToString(x) {
-  return Curry._1(Printf.sprintf(/* Format */[
-                  /* Float */Block.__(8, [
-                      /* Float_g */9,
-                      /* No_padding */0,
-                      /* No_precision */0,
-                      /* End_of_format */0
-                    ]),
-                  "%g"
-                ]), x);
+  return Curry._1(Printf.sprintf(/* Format */Block.simpleVariant("Format", [
+                    /* Float */Block.variant("Float", 8, [
+                        /* Float_g */9,
+                        /* No_padding */0,
+                        /* No_precision */0,
+                        /* End_of_format */0
+                      ]),
+                    "%g"
+                  ])), x);
 }
 
 function pixels(x) {
-  return Curry._1(Printf.sprintf(/* Format */[
-                  /* Float */Block.__(8, [
-                      /* Float_g */9,
-                      /* No_padding */0,
-                      /* No_precision */0,
-                      /* String_literal */Block.__(11, [
-                          "px",
-                          /* End_of_format */0
-                        ])
-                    ]),
-                  "%gpx"
-                ]), x);
+  return Curry._1(Printf.sprintf(/* Format */Block.simpleVariant("Format", [
+                    /* Float */Block.variant("Float", 8, [
+                        /* Float_g */9,
+                        /* No_padding */0,
+                        /* No_precision */0,
+                        /* String_literal */Block.variant("String_literal", 11, [
+                            "px",
+                            /* End_of_format */0
+                          ])
+                      ]),
+                    "%gpx"
+                  ])), x);
 }
 
 function pointFromMouse($$event) {
-  return /* record */[
-          /* x */$$event.pageX,
-          /* y */$$event.pageY
-        ];
+  return /* record */Block.record([
+            "x",
+            "y"
+          ], [
+            $$event.pageX,
+            $$event.pageY
+          ]);
 }
 
 function positionStyle(position) {

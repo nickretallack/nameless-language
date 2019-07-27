@@ -24,10 +24,10 @@ function visitConnection(graph, dependencies, connectionSide, nodes) {
       if (listHas(nodes, nodeID)) {
         return nodes;
       } else {
-        var nodeAcc = /* :: */[
-          nodeID,
-          nodes
-        ];
+        var nodeAcc = /* :: */Block.simpleVariant("::", [
+            nodeID,
+            nodes
+          ]);
         var match$1 = Belt_MapString.getExn(graph[/* nodes */2], nodeID)[/* kind */1];
         if (typeof match$1 === "number") {
           return nodeAcc;
@@ -56,10 +56,13 @@ function visitConnection(graph, dependencies, connectionSide, nodes) {
           
         } else {
           return Belt_List.reduce(Belt_List.makeBy(match$1[0], id), nodeAcc, (function (nodes, index) {
-                        return visitConnection(graph, dependencies, /* record */[
-                                    /* node : NodeConnection */[nodeID],
-                                    /* nib : PositionalConnection */Block.__(1, [index])
-                                  ], nodes);
+                        return visitConnection(graph, dependencies, /* record */Block.record([
+                                      "node",
+                                      "nib"
+                                    ], [
+                                      Block.simpleVariant("NodeConnection", [nodeID]),
+                                      Block.variant("PositionalConnection", 1, [index])
+                                    ]), nodes);
                       }));
         }
       }
@@ -72,28 +75,37 @@ function visitConnection(graph, dependencies, connectionSide, nodes) {
 }
 
 function visitValueConnection(graph, dependencies, nodeID, nodes) {
-  return visitConnection(graph, dependencies, /* record */[
-              /* node : NodeConnection */[nodeID],
-              /* nib : ValueConnection */0
-            ], nodes);
+  return visitConnection(graph, dependencies, /* record */Block.record([
+                "node",
+                "nib"
+              ], [
+                Block.simpleVariant("NodeConnection", [nodeID]),
+                0
+              ]), nodes);
 }
 
 function visitNibConnections(graph, dependencies, nodeID, definitionID, isInputs, nodes) {
   var dependency = Belt_MapString.getExn(dependencies, definitionID);
   return Belt_List.reduce(isInputs ? dependency[/* inputOrdering */1] : dependency[/* outputOrdering */2], nodes, (function (acc, nibID) {
-                return visitConnection(graph, dependencies, /* record */[
-                            /* node : NodeConnection */[nodeID],
-                            /* nib : NibConnection */Block.__(0, [nibID])
-                          ], acc);
+                return visitConnection(graph, dependencies, /* record */Block.record([
+                              "node",
+                              "nib"
+                            ], [
+                              Block.simpleVariant("NodeConnection", [nodeID]),
+                              Block.variant("NibConnection", 0, [nibID])
+                            ]), acc);
               }));
 }
 
 function getNodeInputOrdering(graph, dependencies, outputOrdering) {
   return Belt_List.reverse(Belt_List.reduce(outputOrdering, /* [] */0, (function (acc, nibID) {
-                    return visitConnection(graph, dependencies, /* record */[
-                                /* node : GraphConnection */0,
-                                /* nib : NibConnection */Block.__(0, [nibID])
-                              ], acc);
+                    return visitConnection(graph, dependencies, /* record */Block.record([
+                                  "node",
+                                  "nib"
+                                ], [
+                                  0,
+                                  Block.variant("NibConnection", 0, [nibID])
+                                ]), acc);
                   })));
 }
 

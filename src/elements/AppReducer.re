@@ -11,6 +11,111 @@ type appState = {
   error: appError,
 };
 
+let evaluate =
+    (scope: scope, stack: list(stackFrame), definitions: definitions)
+    : (list(stackFrame), scope) => {
+  let definition = Belt.Map.String.getExn(definitions, scope.definitionID);
+  let frame = Belt.List.headExn(stack);
+
+  switch (definition.implementation) {
+  | GraphImplementation(graphImplementation) =>
+    let source =
+      frame.explicitConnectionSide.isSource ?
+        frame.explicitConnectionSide.connectionSide :
+        Belt.Map.getExn(
+          graphImplementation.connections,
+          frame.explicitConnectionSide.connectionSide,
+        );
+    switch (source.node) {
+    | NodeConnection(nodeID) =>
+      let node = Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
+      switch (node.kind) {
+      | DefinedNode({kind, definitionID}) =>
+        let nodeDefinition =
+          Belt.Map.String.getExn(definitions, definitionID);
+        switch (kind) {
+        | ValueNode =>
+          switch (nodeDefinition.implementation) {
+          | ConstantImplementation(primitiveValue) =>
+            let value = PrimitiveValue(primitiveValue);
+            (
+              [
+                {...frame, action: Returning(value)},
+                ...Belt.List.tailExn(stack),
+              ],
+              {
+                ...scope,
+                sourceValues: Belt.Map.set(scope.sourceValues, source, value),
+              },
+            );
+          | _ => raise(Not_found) // todo
+          }
+        | FunctionCallNode =>
+          switch (nodeDefinition.implementation) {
+          | ExternalImplementation({name, interface}) =>
+            switch (source.nib) {
+            | NibConnection(outputID) =>
+              switch (
+                External.evaluateExternal(
+                  name,
+                  outputID,
+                  Belt.Map.String.mapWithKey(interface.inputTypes, (nibID, _) =>
+                    Belt.Map.get(
+                      scope.sourceValues,
+                      Belt.Map.getExn(
+                        graphImplementation.connections,
+                        {node: source.node, nib: NibConnection(nibID)},
+                      ),
+                    )
+                  ),
+                )
+              ) {
+              | EvaluationResult(value) => (
+                  [
+                    {...frame, action: Returning(value)},
+                    ...Belt.List.tailExn(stack),
+                  ],
+                  {
+                    ...scope,
+                    sourceValues:
+                      Belt.Map.set(scope.sourceValues, source, value),
+                  },
+                )
+              | EvaluationRequired(nibIDs) => (
+                  Belt.List.concat(
+                    Belt.List.map(nibIDs, nibID =>
+                      {
+                        ...frame,
+                        explicitConnectionSide: {
+                          isSource: false,
+                          connectionSide: {
+                            node: source.node,
+                            nib: NibConnection(nibID),
+                          },
+                        },
+                        action: Evaluating,
+                      }
+                    ),
+                    stack,
+                  ),
+                  scope,
+                )
+              }
+            | _ => raise(Not_found) // todo
+            }
+
+          | _ => raise(Not_found) // todo
+          }
+        | _ => raise(Not_found) // todo
+        };
+      | _ => raise(Not_found) // todo
+      };
+    | GraphConnection => raise(Not_found) // todo
+    };
+  | _ => raise(Not_found) // todo
+  };
+};
+
 let reducer = (action: appAction, state: appState) =>
   switch (action) {
   | ChangeRoute(url) =>
@@ -471,119 +576,37 @@ let reducer = (action: appAction, state: appState) =>
         | None => None
         | Some(execution) =>
           let frame = Belt.List.headExn(execution.stack);
+          let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID);
           Some(
             switch (frame.action) {
             | Evaluating =>
-              let scope =
-                Belt.Map.String.getExn(execution.scopes, frame.scopeID);
-              let definition =
-                Belt.Map.String.getExn(state.definitions, scope.definitionID);
+              let (stack, scope) =
+                evaluate(scope, execution.stack, state.definitions);
 
-              switch (definition.implementation) {
-              | GraphImplementation(graphImplementation) =>
-                let source =
-                  frame.explicitConnectionSide.isSource ?
-                    frame.explicitConnectionSide.connectionSide :
-                    Belt.Map.getExn(
-                      graphImplementation.connections,
-                      frame.explicitConnectionSide.connectionSide,
-                    );
-                switch (source.node) {
-                | NodeConnection(nodeID) =>
-                  let node =
-                    Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
-                  switch (node.kind) {
-                  | DefinedNode({kind, definitionID}) =>
-                    let nodeDefinition =
-                      Belt.Map.String.getExn(state.definitions, definitionID);
-                    switch (kind) {
-                    | ValueNode =>
-                      switch (nodeDefinition.implementation) {
-                      | ConstantImplementation(primitiveValue) => {
-                          ...execution,
-                          stack:
-                            Belt.List.add(
-                              Belt.List.tailExn(execution.stack),
-                              {
-                                ...frame,
-                                action:
-                                  Returning(PrimitiveValue(primitiveValue)),
-                              },
-                            ),
-                        }
-                      | _ => raise(Not_found) // todo
-                      }
-                    | FunctionCallNode =>
-                      switch (nodeDefinition.implementation) {
-                      | ExternalImplementation({name, interface}) =>
-                        switch (source.nib) {
-                        | NibConnection(outputID) =>
-                          switch (
-                            External.evaluateExternal(
-                              name,
-                              outputID,
-                              Belt.Map.String.mapWithKey(
-                                interface.inputTypes, (nibID, _) =>
-                                Belt.Map.get(
-                                  scope.sourceValues,
-                                  Belt.Map.getExn(
-                                    graphImplementation.connections,
-                                    {
-                                      node: source.node,
-                                      nib: NibConnection(nibID),
-                                    },
-                                  ),
-                                )
-                              ),
-                            )
-                          ) {
-                          | EvaluationResult(value) => {
-                              ...execution,
-                              stack:
-                                Belt.List.add(
-                                  Belt.List.tailExn(execution.stack),
-                                  {...frame, action: Returning(value)},
-                                ),
-                            }
-                          | EvaluationRequired(nibIDs) => {
-                              ...execution,
-                              stack:
-                                Belt.List.concat(
-                                  Belt.List.map(nibIDs, nibID =>
-                                    {
-                                      ...frame,
-                                      explicitConnectionSide: {
-                                        isSource: false,
-                                        connectionSide: {
-                                          node: source.node,
-                                          nib: NibConnection(nibID),
-                                        },
-                                      },
-                                      action: Evaluating,
-                                    }
-                                  ),
-                                  execution.stack,
-                                ),
-                            }
-                          }
-                        | _ => raise(Not_found) // todo
-                        }
-
-                      | _ => raise(Not_found) // todo
-                      }
-                    | _ => raise(Not_found) // todo
-                    };
-                  | _ => raise(Not_found) // todo
-                  };
-                | GraphConnection => raise(Not_found) // todo
-                };
-              | _ => raise(Not_found) // todo
+              {
+                ...execution,
+                stack,
+                scopes:
+                  Belt.Map.String.set(execution.scopes, frame.scopeID, scope),
               };
             | Returning(value) =>
               if (Belt.List.length(execution.stack) == 1) {
                 {...execution, result: Some(value)};
               } else {
-                execution
+                let stack = Belt.List.tailExn(execution.stack);
+
+                let (stack, scope) =
+                  evaluate(scope, stack, state.definitions);
+                {
+                  ...execution,
+                  stack,
+                  scopes:
+                    Belt.Map.String.set(
+                      execution.scopes,
+                      frame.scopeID,
+                      scope,
+                    ),
+                };
               }
             },
           );

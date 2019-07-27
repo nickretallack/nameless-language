@@ -5,12 +5,15 @@ var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var Caml_format = require("bs-platform/lib/js/caml_format.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Caml_js_exceptions = require("bs-platform/lib/js/caml_js_exceptions.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
+
+Belt_Debug.setupChromeDebugger(/* () */0);
 
 var component = ReasonReact.statelessComponent("ConstantImplementation");
 
@@ -32,7 +35,7 @@ function convertPrimitiveValueType(primitiveValue, typeName) {
               break;
           
         }
-        return /* IntegerValue */Block.__(0, [tmp]);
+        return /* IntegerValue */Block.variant("IntegerValue", 0, [tmp]);
     case "number" : 
         var tmp$1;
         try {
@@ -46,107 +49,122 @@ function convertPrimitiveValueType(primitiveValue, typeName) {
             throw exn;
           }
         }
-        return /* NumberValue */Block.__(1, [tmp$1]);
+        return /* NumberValue */Block.variant("NumberValue", 1, [tmp$1]);
     case "text" : 
-        return /* TextValue */Block.__(2, [Definition$ReactTemplate.primitiveValueToString(primitiveValue)]);
+        return /* TextValue */Block.variant("TextValue", 2, [Definition$ReactTemplate.primitiveValueToString(primitiveValue)]);
     default:
       throw Caml_builtin_exceptions.not_found;
   }
 }
 
 function make(implementation, emit, _children) {
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (_self) {
-              var changeType = function ($$event) {
-                return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [convertPrimitiveValueType(implementation, Helpers$ReactTemplate.getEventValue($$event))]));
-              };
-              var typeName = Definition$ReactTemplate.primitiveValueToTypeString(implementation);
-              var tmp;
-              switch (implementation.tag | 0) {
-                case 0 : 
-                    tmp = React.createElement("input", {
-                          type: "number",
-                          value: String(implementation[0]),
-                          onChange: (function ($$event) {
-                              var tmp;
-                              try {
-                                tmp = Caml_format.caml_int_of_string(Helpers$ReactTemplate.getEventValue($$event));
-                              }
-                              catch (raw_exn){
-                                var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-                                if (exn[0] === Caml_builtin_exceptions.failure) {
-                                  tmp = 0;
-                                } else {
-                                  throw exn;
+  return /* record */Block.record([
+            "debugName",
+            "reactClassInternal",
+            "handedOffState",
+            "willReceiveProps",
+            "didMount",
+            "didUpdate",
+            "willUnmount",
+            "willUpdate",
+            "shouldUpdate",
+            "render",
+            "initialState",
+            "retainedProps",
+            "reducer",
+            "jsElementWrapped"
+          ], [
+            component[/* debugName */0],
+            component[/* reactClassInternal */1],
+            component[/* handedOffState */2],
+            component[/* willReceiveProps */3],
+            component[/* didMount */4],
+            component[/* didUpdate */5],
+            component[/* willUnmount */6],
+            component[/* willUpdate */7],
+            component[/* shouldUpdate */8],
+            (function (_self) {
+                var changeType = function ($$event) {
+                  return Curry._1(emit, /* ChangeConstantValue */Block.variant("ChangeConstantValue", 3, [convertPrimitiveValueType(implementation, Helpers$ReactTemplate.getEventValue($$event))]));
+                };
+                var typeName = Definition$ReactTemplate.primitiveValueToTypeString(implementation);
+                var tmp;
+                switch (implementation.tag | 0) {
+                  case 0 : 
+                      tmp = React.createElement("input", {
+                            type: "number",
+                            value: String(implementation[0]),
+                            onChange: (function ($$event) {
+                                var tmp;
+                                try {
+                                  tmp = Caml_format.caml_int_of_string(Helpers$ReactTemplate.getEventValue($$event));
                                 }
-                              }
-                              var value = /* IntegerValue */Block.__(0, [tmp]);
-                              return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [value]));
-                            })
-                        });
-                    break;
-                case 1 : 
-                    tmp = React.createElement("input", {
-                          type: "number",
-                          value: Helpers$ReactTemplate.floatToString(implementation[0]),
-                          onChange: (function ($$event) {
-                              var tmp;
-                              try {
-                                tmp = Caml_format.caml_float_of_string(Helpers$ReactTemplate.getEventValue($$event));
-                              }
-                              catch (raw_exn){
-                                var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
-                                if (exn[0] === Caml_builtin_exceptions.failure) {
-                                  tmp = 0.0;
-                                } else {
-                                  throw exn;
+                                catch (raw_exn){
+                                  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+                                  if (exn[0] === Caml_builtin_exceptions.failure) {
+                                    tmp = 0;
+                                  } else {
+                                    throw exn;
+                                  }
                                 }
-                              }
-                              var value = /* NumberValue */Block.__(1, [tmp]);
-                              return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [value]));
-                            })
-                        });
-                    break;
-                case 2 : 
-                    tmp = React.createElement("input", {
-                          type: "text",
-                          value: implementation[0],
-                          onChange: (function ($$event) {
-                              var value = /* TextValue */Block.__(2, [Helpers$ReactTemplate.getEventValue($$event)]);
-                              return Curry._1(emit, /* ChangeConstantValue */Block.__(3, [value]));
-                            })
-                        });
-                    break;
-                
-              }
-              return React.createElement("div", undefined, React.createElement("h1", undefined, "Constant"), React.createElement("div", undefined, "Type:"), React.createElement("select", {
-                              value: typeName,
-                              onChange: changeType
-                            }, Belt_Array.map(Definition$ReactTemplate.primitiveValueTypes, (function (primitiveValueType) {
-                                    return React.createElement("option", {
-                                                key: Definition$ReactTemplate.primitiveValueTypeToString(primitiveValueType),
-                                                value: Definition$ReactTemplate.primitiveValueTypeToString(primitiveValueType)
-                                              }, Definition$ReactTemplate.displayPrimitiveValueType(primitiveValueType));
-                                  }))), React.createElement("div", undefined, "Value:"), tmp);
-            }),
-          /* initialState */component[/* initialState */10],
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+                                var value = /* IntegerValue */Block.variant("IntegerValue", 0, [tmp]);
+                                return Curry._1(emit, /* ChangeConstantValue */Block.variant("ChangeConstantValue", 3, [value]));
+                              })
+                          });
+                      break;
+                  case 1 : 
+                      tmp = React.createElement("input", {
+                            type: "number",
+                            value: Helpers$ReactTemplate.floatToString(implementation[0]),
+                            onChange: (function ($$event) {
+                                var tmp;
+                                try {
+                                  tmp = Caml_format.caml_float_of_string(Helpers$ReactTemplate.getEventValue($$event));
+                                }
+                                catch (raw_exn){
+                                  var exn = Caml_js_exceptions.internalToOCamlException(raw_exn);
+                                  if (exn[0] === Caml_builtin_exceptions.failure) {
+                                    tmp = 0.0;
+                                  } else {
+                                    throw exn;
+                                  }
+                                }
+                                var value = /* NumberValue */Block.variant("NumberValue", 1, [tmp]);
+                                return Curry._1(emit, /* ChangeConstantValue */Block.variant("ChangeConstantValue", 3, [value]));
+                              })
+                          });
+                      break;
+                  case 2 : 
+                      tmp = React.createElement("input", {
+                            type: "text",
+                            value: implementation[0],
+                            onChange: (function ($$event) {
+                                var value = /* TextValue */Block.variant("TextValue", 2, [Helpers$ReactTemplate.getEventValue($$event)]);
+                                return Curry._1(emit, /* ChangeConstantValue */Block.variant("ChangeConstantValue", 3, [value]));
+                              })
+                          });
+                      break;
+                  
+                }
+                return React.createElement("div", undefined, React.createElement("h1", undefined, "Constant"), React.createElement("div", undefined, "Type:"), React.createElement("select", {
+                                value: typeName,
+                                onChange: changeType
+                              }, Belt_Array.map(Definition$ReactTemplate.primitiveValueTypes, (function (primitiveValueType) {
+                                      return React.createElement("option", {
+                                                  key: Definition$ReactTemplate.primitiveValueTypeToString(primitiveValueType),
+                                                  value: Definition$ReactTemplate.primitiveValueTypeToString(primitiveValueType)
+                                                }, Definition$ReactTemplate.displayPrimitiveValueType(primitiveValueType));
+                                    }))), React.createElement("div", undefined, "Value:"), tmp);
+              }),
+            component[/* initialState */10],
+            component[/* retainedProps */11],
+            component[/* reducer */12],
+            component[/* jsElementWrapped */13]
+          ]);
 }
 
 exports.component = component;
 exports.round = round;
 exports.convertPrimitiveValueType = convertPrimitiveValueType;
 exports.make = make;
-/* component Not a pure module */
+/*  Not a pure module */

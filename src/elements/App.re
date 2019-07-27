@@ -87,6 +87,12 @@ let make = (~definitions, _children) => {
        | "" => <DefinitionList definitions={self.state.definitions} />
        | _ =>
          let definitionID = self.state.definitionID;
+
+         // debug
+         switch (self.state.execution) {
+         | None => ()
+         | Some(execution) => Js.log(execution.stack)
+         };
          switch (Belt.Map.String.get(self.state.definitions, definitionID)) {
          | None => ReasonReact.string("Not found")
          | Some(definition) =>

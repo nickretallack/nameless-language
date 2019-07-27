@@ -10,32 +10,35 @@ var Belt_Map = require("bs-platform/lib/js/belt_Map.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var Json_encode = require("@glennsl/bs-json/src/Json_encode.bs.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Caml_exceptions = require("bs-platform/lib/js/caml_exceptions.js");
 var Helpers$ReactTemplate = require("./Helpers.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
+Belt_Debug.setupChromeDebugger(/* () */0);
+
 function encodeConnectionNode(connectionNode) {
-  return Json_encode.object_(connectionNode ? /* :: */[
-                /* tuple */[
-                  "type",
-                  "node"
-                ],
-                /* :: */[
+  return Json_encode.object_(connectionNode ? /* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "nodeID",
-                    connectionNode[0]
+                    "type",
+                    "node"
+                  ],
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "nodeID",
+                        connectionNode[0]
+                      ],
+                      /* [] */0
+                    ])
+                ]) : /* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "graph"
                   ],
                   /* [] */0
-                ]
-              ] : /* :: */[
-                /* tuple */[
-                  "type",
-                  "graph"
-                ],
-                /* [] */0
-              ]);
+                ]));
 }
 
 function connectionNodeToString(connectionNode) {
@@ -48,38 +51,38 @@ function connectionNodeToString(connectionNode) {
 
 function encodeConnectionNib(connectionNib) {
   var tmp;
-  tmp = typeof connectionNib === "number" ? /* :: */[
-      /* tuple */[
-        "type",
-        "value"
-      ],
-      /* [] */0
-    ] : (
-      connectionNib.tag ? /* :: */[
-          /* tuple */[
-            "type",
-            "positional"
-          ],
-          /* :: */[
+  tmp = typeof connectionNib === "number" ? /* :: */Block.simpleVariant("::", [
+        /* tuple */[
+          "type",
+          "value"
+        ],
+        /* [] */0
+      ]) : (
+      connectionNib.tag ? /* :: */Block.simpleVariant("::", [
             /* tuple */[
-              "index",
-              connectionNib[0]
+              "type",
+              "positional"
             ],
-            /* [] */0
-          ]
-        ] : /* :: */[
-          /* tuple */[
-            "type",
-            "nib"
-          ],
-          /* :: */[
+            /* :: */Block.simpleVariant("::", [
+                /* tuple */[
+                  "index",
+                  connectionNib[0]
+                ],
+                /* [] */0
+              ])
+          ]) : /* :: */Block.simpleVariant("::", [
             /* tuple */[
-              "nibID",
-              connectionNib[0]
+              "type",
+              "nib"
             ],
-            /* [] */0
-          ]
-        ]
+            /* :: */Block.simpleVariant("::", [
+                /* tuple */[
+                  "nibID",
+                  connectionNib[0]
+                ],
+                /* [] */0
+              ])
+          ])
     );
   return Json_encode.object_(tmp);
 }
@@ -95,19 +98,19 @@ function connectionNibToString(connectionNib) {
 }
 
 function encodeConnectionSide(connectionSide) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "node",
-                encodeConnectionNode(connectionSide[/* node */0])
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "nib",
-                  encodeConnectionNib(connectionSide[/* nib */1])
+                  "node",
+                  encodeConnectionNode(connectionSide[/* node */0])
                 ],
-                /* [] */0
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "nib",
+                      encodeConnectionNib(connectionSide[/* nib */1])
+                    ],
+                    /* [] */0
+                  ])
+              ]));
 }
 
 function connectionSideToString(connectionSide) {
@@ -116,7 +119,7 @@ function connectionSideToString(connectionSide) {
 
 var cmp = Caml_obj.caml_compare;
 
-var ConnectionComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp]);
+var ConnectionComparator = Belt_Id.MakeComparable(/* module */Block.localModule(["cmp"], [cmp]));
 
 function nibKey(connectionNib) {
   if (typeof connectionNib === "number") {
@@ -138,28 +141,28 @@ function nodeKey(connectionNode) {
 
 function explicitConnectionSideKey(explicitConnectionSide) {
   var match = explicitConnectionSide[/* isSource */1];
-  return Curry._3(Printf.sprintf(/* Format */[
-                  /* String_literal */Block.__(11, [
-                      "nib-",
-                      /* String */Block.__(2, [
-                          /* No_padding */0,
-                          /* Char_literal */Block.__(12, [
-                              /* "-" */45,
-                              /* String */Block.__(2, [
-                                  /* No_padding */0,
-                                  /* Char_literal */Block.__(12, [
-                                      /* "-" */45,
-                                      /* String */Block.__(2, [
-                                          /* No_padding */0,
-                                          /* End_of_format */0
-                                        ])
-                                    ])
-                                ])
-                            ])
-                        ])
-                    ]),
-                  "nib-%s-%s-%s"
-                ]), nodeKey(explicitConnectionSide[/* connectionSide */0][/* node */0]), nibKey(explicitConnectionSide[/* connectionSide */0][/* nib */1]), match ? "source" : "sink");
+  return Curry._3(Printf.sprintf(/* Format */Block.simpleVariant("Format", [
+                    /* String_literal */Block.variant("String_literal", 11, [
+                        "nib-",
+                        /* String */Block.variant("String", 2, [
+                            /* No_padding */0,
+                            /* Char_literal */Block.variant("Char_literal", 12, [
+                                /* "-" */45,
+                                /* String */Block.variant("String", 2, [
+                                    /* No_padding */0,
+                                    /* Char_literal */Block.variant("Char_literal", 12, [
+                                        /* "-" */45,
+                                        /* String */Block.variant("String", 2, [
+                                            /* No_padding */0,
+                                            /* End_of_format */0
+                                          ])
+                                      ])
+                                  ])
+                              ])
+                          ])
+                      ]),
+                    "nib-%s-%s-%s"
+                  ])), nodeKey(explicitConnectionSide[/* connectionSide */0][/* node */0]), nibKey(explicitConnectionSide[/* connectionSide */0][/* nib */1]), match ? "source" : "sink");
 }
 
 function definedNodeKindToString(kind) {
@@ -203,95 +206,95 @@ function definedNodeKindHasValueOutput(kind) {
 }
 
 function encodeDefinedNode(definedNode) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "type",
-                "defined"
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "definitionID",
-                  definedNode[/* definitionID */1]
+                  "type",
+                  "defined"
                 ],
-                /* :: */[
-                  /* tuple */[
-                    "kind",
-                    definedNodeKindToString(definedNode[/* kind */0])
-                  ],
-                  /* [] */0
-                ]
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "definitionID",
+                      definedNode[/* definitionID */1]
+                    ],
+                    /* :: */Block.simpleVariant("::", [
+                        /* tuple */[
+                          "kind",
+                          definedNodeKindToString(definedNode[/* kind */0])
+                        ],
+                        /* [] */0
+                      ])
+                  ])
+              ]));
 }
 
 function encodeNodeKind(nodeKind) {
   if (typeof nodeKind === "number") {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "reference"
-                ],
-                /* [] */0
-              ]);
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "reference"
+                  ],
+                  /* [] */0
+                ]));
   } else if (nodeKind.tag) {
     return encodeDefinedNode(nodeKind[0]);
   } else {
-    return Json_encode.object_(/* :: */[
-                /* tuple */[
-                  "type",
-                  "list"
-                ],
-                /* :: */[
+    return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "length",
-                    nodeKind[0]
+                    "type",
+                    "list"
                   ],
-                  /* [] */0
-                ]
-              ]);
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "length",
+                        nodeKind[0]
+                      ],
+                      /* [] */0
+                    ])
+                ]));
   }
 }
 
 function encodeNodeScope(nodeScope) {
-  return Json_encode.object_(nodeScope ? /* :: */[
-                /* tuple */[
-                  "type",
-                  "node"
-                ],
-                /* :: */[
+  return Json_encode.object_(nodeScope ? /* :: */Block.simpleVariant("::", [
                   /* tuple */[
-                    "nodeID",
-                    nodeScope[0]
+                    "type",
+                    "node"
+                  ],
+                  /* :: */Block.simpleVariant("::", [
+                      /* tuple */[
+                        "nodeID",
+                        nodeScope[0]
+                      ],
+                      /* [] */0
+                    ])
+                ]) : /* :: */Block.simpleVariant("::", [
+                  /* tuple */[
+                    "type",
+                    "graph"
                   ],
                   /* [] */0
-                ]
-              ] : /* :: */[
-                /* tuple */[
-                  "type",
-                  "graph"
-                ],
-                /* [] */0
-              ]);
+                ]));
 }
 
 var cmp$1 = Caml_obj.caml_compare;
 
-var ScopeComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp$1]);
+var ScopeComparator = Belt_Id.MakeComparable(/* module */Block.localModule(["cmp"], [cmp$1]));
 
 function encodeNode(node) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "scope",
-                encodeNodeScope(node[/* scope */0])
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "kind",
-                  encodeNodeKind(node[/* kind */1])
+                  "scope",
+                  encodeNodeScope(node[/* scope */0])
                 ],
-                /* [] */0
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "kind",
+                      encodeNodeKind(node[/* kind */1])
+                    ],
+                    /* [] */0
+                  ])
+              ]));
 }
 
 function isFunctionDefinitionNode(node) {
@@ -351,35 +354,47 @@ function stringToPrimitiveValueType(string) {
 
 var cmp$2 = Caml_obj.caml_compare;
 
-var ValueTypeComparator = Belt_Id.MakeComparable(/* module */[/* cmp */cmp$2]);
+var ValueTypeComparator = Belt_Id.MakeComparable(/* module */Block.localModule(["cmp"], [cmp$2]));
 
 var changeTypedFields = Belt_MapString.set;
 
 function changeInterface($$interface, isInput, nibID, valueType) {
   if (isInput) {
-    return /* record */[
-            /* inputTypes */Belt_MapString.set($$interface[/* inputTypes */0], nibID, valueType),
-            /* outputTypes */$$interface[/* outputTypes */1]
-          ];
+    return /* record */Block.record([
+              "inputTypes",
+              "outputTypes"
+            ], [
+              Belt_MapString.set($$interface[/* inputTypes */0], nibID, valueType),
+              $$interface[/* outputTypes */1]
+            ]);
   } else {
-    return /* record */[
-            /* inputTypes */$$interface[/* inputTypes */0],
-            /* outputTypes */Belt_MapString.set($$interface[/* outputTypes */1], nibID, valueType)
-          ];
+    return /* record */Block.record([
+              "inputTypes",
+              "outputTypes"
+            ], [
+              $$interface[/* inputTypes */0],
+              Belt_MapString.set($$interface[/* outputTypes */1], nibID, valueType)
+            ]);
   }
 }
 
 function editInterfaceNibs($$interface, isInput, mutation) {
   if (isInput) {
-    return /* record */[
-            /* inputTypes */Curry._1(mutation, $$interface[/* inputTypes */0]),
-            /* outputTypes */$$interface[/* outputTypes */1]
-          ];
+    return /* record */Block.record([
+              "inputTypes",
+              "outputTypes"
+            ], [
+              Curry._1(mutation, $$interface[/* inputTypes */0]),
+              $$interface[/* outputTypes */1]
+            ]);
   } else {
-    return /* record */[
-            /* inputTypes */$$interface[/* inputTypes */0],
-            /* outputTypes */Curry._1(mutation, $$interface[/* outputTypes */1])
-          ];
+    return /* record */Block.record([
+              "inputTypes",
+              "outputTypes"
+            ], [
+              $$interface[/* inputTypes */0],
+              Curry._1(mutation, $$interface[/* outputTypes */1])
+            ]);
   }
 }
 
@@ -401,33 +416,33 @@ function encodeMap(map, encode) {
 }
 
 function encodeGraphImplementation(graphImplementation) {
-  return Json_encode.object_(/* :: */[
-              /* tuple */[
-                "nodes",
-                encodeMap(graphImplementation[/* nodes */2], encodeNode)
-              ],
-              /* :: */[
+  return Json_encode.object_(/* :: */Block.simpleVariant("::", [
                 /* tuple */[
-                  "connections",
-                  Json_encode.list((function (param) {
-                          return Json_encode.object_(/* :: */[
-                                      /* tuple */[
-                                        "sink",
-                                        encodeConnectionSide(param[0])
-                                      ],
-                                      /* :: */[
-                                        /* tuple */[
-                                          "source",
-                                          encodeConnectionSide(param[1])
-                                        ],
-                                        /* [] */0
-                                      ]
-                                    ]);
-                        }), Belt_Map.toList(graphImplementation[/* connections */1]))
+                  "nodes",
+                  encodeMap(graphImplementation[/* nodes */2], encodeNode)
                 ],
-                /* [] */0
-              ]
-            ]);
+                /* :: */Block.simpleVariant("::", [
+                    /* tuple */[
+                      "connections",
+                      Json_encode.list((function (param) {
+                              return Json_encode.object_(/* :: */Block.simpleVariant("::", [
+                                            /* tuple */[
+                                              "sink",
+                                              encodeConnectionSide(param[0])
+                                            ],
+                                            /* :: */Block.simpleVariant("::", [
+                                                /* tuple */[
+                                                  "source",
+                                                  encodeConnectionSide(param[1])
+                                                ],
+                                                /* [] */0
+                                              ])
+                                          ]));
+                            }), Belt_Map.toList(graphImplementation[/* connections */1]))
+                    ],
+                    /* [] */0
+                  ])
+              ]));
 }
 
 function primitiveValueToType(primitiveValue) {
@@ -502,39 +517,57 @@ function getTranslated(translatable, language) {
 }
 
 function setTranslated(translatable, language, text) {
-  return /* record */[
-          /* sourceLanguage */translatable[/* sourceLanguage */0],
-          /* translations */Belt_MapString.update(translatable[/* translations */1], language, (function (maybeVettable) {
-                  if (maybeVettable !== undefined) {
-                    var vettable = maybeVettable;
-                    return /* record */[
-                            /* text */text,
-                            /* vetted */vettable[/* vetted */1],
-                            /* authorID */vettable[/* authorID */2]
-                          ];
-                  } else {
-                    return /* record */[
-                            /* text */text,
-                            /* vetted */false,
-                            /* authorID */undefined
-                          ];
-                  }
-                }))
-        ];
+  return /* record */Block.record([
+            "sourceLanguage",
+            "translations"
+          ], [
+            translatable[/* sourceLanguage */0],
+            Belt_MapString.update(translatable[/* translations */1], language, (function (maybeVettable) {
+                    if (maybeVettable !== undefined) {
+                      var vettable = maybeVettable;
+                      return /* record */Block.record([
+                                "text",
+                                "vetted",
+                                "authorID"
+                              ], [
+                                text,
+                                vettable[/* vetted */1],
+                                vettable[/* authorID */2]
+                              ]);
+                    } else {
+                      return /* record */Block.record([
+                                "text",
+                                "vetted",
+                                "authorID"
+                              ], [
+                                text,
+                                false,
+                                undefined
+                              ]);
+                    }
+                  }))
+          ]);
 }
 
 function makeTranslatable(text, language) {
-  return /* record */[
-          /* sourceLanguage */language,
-          /* translations */Belt_MapString.fromArray(/* array */[/* tuple */[
-                  language,
-                  /* record */[
-                    /* text */text,
-                    /* vetted */true,
-                    /* authorID */undefined
-                  ]
-                ]])
-        ];
+  return /* record */Block.record([
+            "sourceLanguage",
+            "translations"
+          ], [
+            language,
+            Belt_MapString.fromArray(/* array */[/* tuple */[
+                    language,
+                    /* record */Block.record([
+                        "text",
+                        "vetted",
+                        "authorID"
+                      ], [
+                        text,
+                        true,
+                        undefined
+                      ])
+                  ]])
+          ]);
 }
 
 var emptyTranslatable = makeTranslatable("", "en");
@@ -559,10 +592,13 @@ function displayKeywordNibs(definition, language, isInputs) {
                 var nibs = isInputs ? documentation[/* inputs */2] : documentation[/* outputs */3];
                 var translatable = Belt_MapString.getExn(nibs, nibID);
                 var vettable = Belt_MapString.getExn(translatable[/* translations */1], language);
-                return /* record */[
-                        /* name */vettable[/* text */0],
-                        /* nib : NibConnection */Block.__(0, [nibID])
-                      ];
+                return /* record */Block.record([
+                          "name",
+                          "nib"
+                        ], [
+                          vettable[/* text */0],
+                          Block.variant("NibConnection", 0, [nibID])
+                        ]);
               }));
 }
 
@@ -579,12 +615,17 @@ function makeDisplayNibs($staropt$star, $staropt$star$1, $staropt$star$2, $staro
   var outputs = $staropt$star$1 !== undefined ? $staropt$star$1 : /* [] */0;
   var internalInputs = $staropt$star$2 !== undefined ? $staropt$star$2 : /* [] */0;
   var internalOutputs = $staropt$star$3 !== undefined ? $staropt$star$3 : /* [] */0;
-  return /* record */[
-          /* inputs */inputs,
-          /* outputs */outputs,
-          /* internalInputs */internalInputs,
-          /* internalOutputs */internalOutputs
-        ];
+  return /* record */Block.record([
+            "inputs",
+            "outputs",
+            "internalInputs",
+            "internalOutputs"
+          ], [
+            inputs,
+            outputs,
+            internalInputs,
+            internalOutputs
+          ]);
 }
 
 function displayDefinedNode(definition, kind, language) {
@@ -592,45 +633,60 @@ function displayDefinedNode(definition, kind, language) {
     case 0 : 
         return makeDisplayNibs(displayKeywordNibs(definition, language, true), displayKeywordNibs(definition, language, false), undefined, undefined, /* () */0);
     case 1 : 
-        return makeDisplayNibs(undefined, /* :: */[
-                    /* record */[
-                      /* name */"",
-                      /* nib : ValueConnection */0
-                    ],
-                    /* [] */0
-                  ], undefined, undefined, /* () */0);
+        return makeDisplayNibs(undefined, /* :: */Block.simpleVariant("::", [
+                      /* record */Block.record([
+                          "name",
+                          "nib"
+                        ], [
+                          "",
+                          0
+                        ]),
+                      /* [] */0
+                    ]), undefined, undefined, /* () */0);
     case 2 : 
-        return makeDisplayNibs(/* :: */[
-                    /* record */[
-                      /* name */"implementation",
-                      /* nib : ValueConnection */0
-                    ],
-                    displayKeywordNibs(definition, language, true)
-                  ], displayKeywordNibs(definition, language, false), undefined, undefined, /* () */0);
+        return makeDisplayNibs(/* :: */Block.simpleVariant("::", [
+                      /* record */Block.record([
+                          "name",
+                          "nib"
+                        ], [
+                          "implementation",
+                          0
+                        ]),
+                      displayKeywordNibs(definition, language, true)
+                    ]), displayKeywordNibs(definition, language, false), undefined, undefined, /* () */0);
     case 3 : 
-        return makeDisplayNibs(undefined, /* :: */[
-                    /* record */[
-                      /* name */"",
-                      /* nib : ValueConnection */0
-                    ],
-                    /* [] */0
-                  ], displayKeywordNibs(definition, language, true), displayKeywordNibs(definition, language, false), /* () */0);
+        return makeDisplayNibs(undefined, /* :: */Block.simpleVariant("::", [
+                      /* record */Block.record([
+                          "name",
+                          "nib"
+                        ], [
+                          "",
+                          0
+                        ]),
+                      /* [] */0
+                    ]), displayKeywordNibs(definition, language, true), displayKeywordNibs(definition, language, false), /* () */0);
     case 4 : 
-        return makeDisplayNibs(displayKeywordNibs(definition, language, true), /* :: */[
-                    /* record */[
-                      /* name */"",
-                      /* nib : ValueConnection */0
-                    ],
-                    /* [] */0
-                  ], undefined, undefined, /* () */0);
+        return makeDisplayNibs(displayKeywordNibs(definition, language, true), /* :: */Block.simpleVariant("::", [
+                      /* record */Block.record([
+                          "name",
+                          "nib"
+                        ], [
+                          "",
+                          0
+                        ]),
+                      /* [] */0
+                    ]), undefined, undefined, /* () */0);
     case 5 : 
-        return makeDisplayNibs(/* :: */[
-                    /* record */[
-                      /* name */"",
-                      /* nib : ValueConnection */0
-                    ],
-                    /* [] */0
-                  ], displayKeywordNibs(definition, language, true), undefined, undefined, /* () */0);
+        return makeDisplayNibs(/* :: */Block.simpleVariant("::", [
+                      /* record */Block.record([
+                          "name",
+                          "nib"
+                        ], [
+                          "",
+                          0
+                        ]),
+                      /* [] */0
+                    ]), displayKeywordNibs(definition, language, true), undefined, undefined, /* () */0);
     
   }
 }
@@ -638,52 +694,70 @@ function displayDefinedNode(definition, kind, language) {
 function displayNode(node, definitions, language) {
   var match = node[/* kind */1];
   if (typeof match === "number") {
-    return makeDisplayNibs(undefined, /* :: */[
-                /* record */[
-                  /* name */"Reference",
-                  /* nib : ValueConnection */0
-                ],
-                /* [] */0
-              ], undefined, undefined, /* () */0);
+    return makeDisplayNibs(undefined, /* :: */Block.simpleVariant("::", [
+                  /* record */Block.record([
+                      "name",
+                      "nib"
+                    ], [
+                      "Reference",
+                      0
+                    ]),
+                  /* [] */0
+                ]), undefined, undefined, /* () */0);
   } else if (match.tag) {
     var match$1 = match[0];
     var definition = Belt_MapString.getExn(definitions, match$1[/* definitionID */1]);
     return displayDefinedNode(definition, match$1[/* kind */0], language);
   } else {
     return makeDisplayNibs(Belt_List.makeBy(match[0], (function (index) {
-                      return /* record */[
-                              /* name */String(index),
-                              /* nib : PositionalConnection */Block.__(1, [index])
-                            ];
-                    })), /* :: */[
-                /* record */[
-                  /* name */"",
-                  /* nib : ValueConnection */0
-                ],
-                /* [] */0
-              ], undefined, undefined, /* () */0);
+                      return /* record */Block.record([
+                                "name",
+                                "nib"
+                              ], [
+                                String(index),
+                                Block.variant("PositionalConnection", 1, [index])
+                              ]);
+                    })), /* :: */Block.simpleVariant("::", [
+                  /* record */Block.record([
+                      "name",
+                      "nib"
+                    ], [
+                      "",
+                      0
+                    ]),
+                  /* [] */0
+                ]), undefined, undefined, /* () */0);
   }
 }
 
 function displayNibsToExplicitConnectionSides(displayNibs, node, isSource) {
   return Belt_List.map(displayNibs, (function (displayNib) {
-                return /* record */[
-                        /* name */displayNib[/* name */0],
-                        /* explicitConnectionSide : record */[
-                          /* connectionSide : record */[
-                            /* node */node,
-                            /* nib */displayNib[/* nib */1]
-                          ],
-                          /* isSource */isSource
-                        ]
-                      ];
+                return /* record */Block.record([
+                          "name",
+                          "explicitConnectionSide"
+                        ], [
+                          displayNib[/* name */0],
+                          Block.record([
+                              "connectionSide",
+                              "isSource"
+                            ], [
+                              Block.record([
+                                  "node",
+                                  "nib"
+                                ], [
+                                  node,
+                                  displayNib[/* nib */1]
+                                ]),
+                              isSource
+                            ])
+                        ]);
               }));
 }
 
 function collectGraphNodeNibs(nodes, definitions) {
   return Belt_List.reduce(Belt_MapString.toList(nodes), /* [] */0, (function (acc, param) {
                 var match = displayNode(param[1], definitions, "en");
-                var connectionNode = /* NodeConnection */[param[0]];
+                var connectionNode = /* NodeConnection */Block.simpleVariant("NodeConnection", [param[0]]);
                 return Belt_List.concatMany(/* array */[
                             acc,
                             displayNibsToExplicitConnectionSides(match[/* inputs */0], connectionNode, false),
@@ -835,23 +909,35 @@ function makeDefinition($staropt$star, $staropt$star$1, $staropt$star$2, $starop
   var description = $staropt$star$1 !== undefined ? $staropt$star$1 : "";
   var inputs = $staropt$star$2 !== undefined ? $staropt$star$2 : /* array */[];
   var outputs = $staropt$star$3 !== undefined ? $staropt$star$3 : /* array */[];
-  return /* record */[
-          /* implementation */implementation,
-          /* documentation : record */[
-            /* name */makeTranslatable(name, "en"),
-            /* description */makeTranslatable(description, "en"),
-            /* inputs */makeNibDocs(inputs),
-            /* outputs */makeNibDocs(outputs)
-          ],
-          /* display : record */[
-            /* inputOrdering */$$Array.to_list($$Array.map((function (param) {
-                        return param[0];
-                      }), inputs)),
-            /* outputOrdering */$$Array.to_list($$Array.map((function (param) {
-                        return param[0];
-                      }), outputs))
-          ]
-        ];
+  return /* record */Block.record([
+            "implementation",
+            "documentation",
+            "display"
+          ], [
+            implementation,
+            Block.record([
+                "name",
+                "description",
+                "inputs",
+                "outputs"
+              ], [
+                makeTranslatable(name, "en"),
+                makeTranslatable(description, "en"),
+                makeNibDocs(inputs),
+                makeNibDocs(outputs)
+              ]),
+            Block.record([
+                "inputOrdering",
+                "outputOrdering"
+              ], [
+                $$Array.to_list($$Array.map((function (param) {
+                            return param[0];
+                          }), inputs)),
+                $$Array.to_list($$Array.map((function (param) {
+                            return param[0];
+                          }), outputs))
+              ])
+          ]);
 }
 
 function makeGraph($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$star$3, $staropt$star$4, $staropt$star$5, _unit) {
@@ -861,24 +947,31 @@ function makeGraph($staropt$star, $staropt$star$1, $staropt$star$2, $staropt$sta
   var outputs = $staropt$star$3 !== undefined ? $staropt$star$3 : /* array */[];
   var nodes = $staropt$star$4 !== undefined ? $staropt$star$4 : /* array */[];
   var connections = $staropt$star$5 !== undefined ? $staropt$star$5 : /* array */[];
-  return makeDefinition(name, description, inputs, outputs, /* GraphImplementation */Block.__(3, [/* record */[
-                  /* interface : record */[
-                    /* inputTypes */Belt_MapString.fromArray(Belt_Array.map(inputs, (function (param) {
-                                return /* tuple */[
-                                        param[0],
-                                        /* AnyType */0
-                                      ];
-                              }))),
-                    /* outputTypes */Belt_MapString.fromArray(Belt_Array.map(outputs, (function (param) {
-                                return /* tuple */[
-                                        param[0],
-                                        /* AnyType */0
-                                      ];
-                              })))
-                  ],
-                  /* connections */Belt_Map.fromArray(connections, ConnectionComparator),
-                  /* nodes */Belt_MapString.fromArray(nodes)
-                ]]), /* () */0);
+  return makeDefinition(name, description, inputs, outputs, /* GraphImplementation */Block.variant("GraphImplementation", 3, [/* record */Block.record([
+                    "interface",
+                    "connections",
+                    "nodes"
+                  ], [
+                    Block.record([
+                        "inputTypes",
+                        "outputTypes"
+                      ], [
+                        Belt_MapString.fromArray(Belt_Array.map(inputs, (function (param) {
+                                    return /* tuple */[
+                                            param[0],
+                                            /* AnyType */0
+                                          ];
+                                  }))),
+                        Belt_MapString.fromArray(Belt_Array.map(outputs, (function (param) {
+                                    return /* tuple */[
+                                            param[0],
+                                            /* AnyType */0
+                                          ];
+                                  })))
+                      ]),
+                    Belt_Map.fromArray(connections, ConnectionComparator),
+                    Belt_MapString.fromArray(nodes)
+                  ])]), /* () */0);
 }
 
 var InvalidConnection = Caml_exceptions.create("Definition-ReactTemplate.InvalidConnection");
@@ -948,4 +1041,4 @@ exports.makeDefinition = makeDefinition;
 exports.makeGraph = makeGraph;
 exports.InvalidConnection = InvalidConnection;
 exports.CycleDetected = CycleDetected;
-/* ConnectionComparator Not a pure module */
+/*  Not a pure module */

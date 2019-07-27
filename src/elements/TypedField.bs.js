@@ -4,66 +4,88 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var TypeSelector$ReactTemplate = require("./TypeSelector.bs.js");
 
+Belt_Debug.setupChromeDebugger(/* () */0);
+
 var component = ReasonReact.statelessComponent("NibInterface");
 
 function make(nibID, definitions, isInput, valueType, name, index, count, emit, _children) {
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */component[/* didMount */4],
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (_self) {
-              var emitNibAction = function (action) {
-                return Curry._1(emit, /* NibAction */Block.__(5, [/* record */[
-                                /* nibID */nibID,
-                                /* isInput */isInput,
-                                /* action */action
-                              ]]));
-              };
-              var changeName = function ($$event) {
-                return emitNibAction(/* ChangeNibName */Block.__(0, [Helpers$ReactTemplate.getEventValue($$event)]));
-              };
-              var changeType = function (valueType) {
-                return emitNibAction(/* ChangeNibType */Block.__(1, [valueType]));
-              };
-              var match = index !== 0;
-              var match$1 = index !== (count - 1 | 0);
-              return React.createElement("tr", undefined, React.createElement("td", undefined, React.createElement("a", {
-                                  onClick: (function (_event) {
-                                      return emitNibAction(/* RemoveNib */0);
-                                    })
-                                }, "x")), React.createElement("td", undefined, match ? React.createElement("a", {
+  return /* record */Block.record([
+            "debugName",
+            "reactClassInternal",
+            "handedOffState",
+            "willReceiveProps",
+            "didMount",
+            "didUpdate",
+            "willUnmount",
+            "willUpdate",
+            "shouldUpdate",
+            "render",
+            "initialState",
+            "retainedProps",
+            "reducer",
+            "jsElementWrapped"
+          ], [
+            component[/* debugName */0],
+            component[/* reactClassInternal */1],
+            component[/* handedOffState */2],
+            component[/* willReceiveProps */3],
+            component[/* didMount */4],
+            component[/* didUpdate */5],
+            component[/* willUnmount */6],
+            component[/* willUpdate */7],
+            component[/* shouldUpdate */8],
+            (function (_self) {
+                var emitNibAction = function (action) {
+                  return Curry._1(emit, /* NibAction */Block.variant("NibAction", 5, [/* record */Block.record([
+                                    "nibID",
+                                    "isInput",
+                                    "action"
+                                  ], [
+                                    nibID,
+                                    isInput,
+                                    action
+                                  ])]));
+                };
+                var changeName = function ($$event) {
+                  return emitNibAction(/* ChangeNibName */Block.variant("ChangeNibName", 0, [Helpers$ReactTemplate.getEventValue($$event)]));
+                };
+                var changeType = function (valueType) {
+                  return emitNibAction(/* ChangeNibType */Block.variant("ChangeNibType", 1, [valueType]));
+                };
+                var match = index !== 0;
+                var match$1 = index !== (count - 1 | 0);
+                return React.createElement("tr", undefined, React.createElement("td", undefined, React.createElement("a", {
                                     onClick: (function (_event) {
-                                        return emitNibAction(/* ChangeNibOrdering */Block.__(2, [index - 1 | 0]));
+                                        return emitNibAction(/* RemoveNib */0);
                                       })
-                                  }, "^") : null), React.createElement("td", undefined, match$1 ? React.createElement("a", {
-                                    onClick: (function (_event) {
-                                        return emitNibAction(/* ChangeNibOrdering */Block.__(2, [index + 1 | 0]));
-                                      })
-                                  }, "v") : null), React.createElement("td", undefined, React.createElement("input", {
-                                  className: "name",
-                                  type: "text",
-                                  value: Definition$ReactTemplate.getTranslated(name, "en"),
-                                  onChange: changeName
-                                })), React.createElement("td", undefined, ReasonReact.element(undefined, undefined, TypeSelector$ReactTemplate.make(valueType, definitions, changeType, /* array */[]))));
-            }),
-          /* initialState */component[/* initialState */10],
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */component[/* reducer */12],
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+                                  }, "x")), React.createElement("td", undefined, match ? React.createElement("a", {
+                                      onClick: (function (_event) {
+                                          return emitNibAction(/* ChangeNibOrdering */Block.variant("ChangeNibOrdering", 2, [index - 1 | 0]));
+                                        })
+                                    }, "^") : null), React.createElement("td", undefined, match$1 ? React.createElement("a", {
+                                      onClick: (function (_event) {
+                                          return emitNibAction(/* ChangeNibOrdering */Block.variant("ChangeNibOrdering", 2, [index + 1 | 0]));
+                                        })
+                                    }, "v") : null), React.createElement("td", undefined, React.createElement("input", {
+                                    className: "name",
+                                    type: "text",
+                                    value: Definition$ReactTemplate.getTranslated(name, "en"),
+                                    onChange: changeName
+                                  })), React.createElement("td", undefined, ReasonReact.element(undefined, undefined, TypeSelector$ReactTemplate.make(valueType, definitions, changeType, /* array */[]))));
+              }),
+            component[/* initialState */10],
+            component[/* retainedProps */11],
+            component[/* reducer */12],
+            component[/* jsElementWrapped */13]
+          ]);
 }
 
 exports.component = component;
 exports.make = make;
-/* component Not a pure module */
+/*  Not a pure module */

@@ -6,6 +6,7 @@ var Curry = require("bs-platform/lib/js/curry.js");
 var React = require("react");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_Array = require("bs-platform/lib/js/belt_Array.js");
+var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Graph$ReactTemplate = require("./Graph.bs.js");
@@ -14,6 +15,8 @@ var AppReducer$ReactTemplate = require("./AppReducer.bs.js");
 var Definition$ReactTemplate = require("../Definition.bs.js");
 var DefinitionList$ReactTemplate = require("./DefinitionList.bs.js");
 var SimpleDefinition$ReactTemplate = require("./SimpleDefinition.bs.js");
+
+Belt_Debug.setupChromeDebugger(/* () */0);
 
 var makers = /* array */[
   /* tuple */[
@@ -28,7 +31,7 @@ var makers = /* array */[
   /* tuple */[
     "Constant",
     (function (param) {
-        return Definition$ReactTemplate.makeDefinition(undefined, undefined, undefined, undefined, /* ConstantImplementation */Block.__(0, [/* TextValue */Block.__(2, [""])]), /* () */0);
+        return Definition$ReactTemplate.makeDefinition(undefined, undefined, undefined, undefined, /* ConstantImplementation */Block.variant("ConstantImplementation", 0, [/* TextValue */Block.variant("TextValue", 2, [""])]), /* () */0);
       })
   ],
   /* tuple */[
@@ -38,13 +41,16 @@ var makers = /* array */[
         return Definition$ReactTemplate.makeDefinition(undefined, undefined, undefined, /* array */[/* tuple */[
                       outputID,
                       ""
-                    ]], /* InterfaceImplementation */Block.__(1, [/* record */[
-                        /* inputTypes */Belt_MapString.empty,
-                        /* outputTypes */Belt_MapString.fromArray(/* array */[/* tuple */[
-                                outputID,
-                                /* PrimitiveValueType */Block.__(0, [/* TextType */2])
-                              ]])
-                      ]]), /* () */0);
+                    ]], /* InterfaceImplementation */Block.variant("InterfaceImplementation", 1, [/* record */Block.record([
+                          "inputTypes",
+                          "outputTypes"
+                        ], [
+                          Belt_MapString.empty,
+                          Belt_MapString.fromArray(/* array */[/* tuple */[
+                                  outputID,
+                                  /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* TextType */2])
+                                ]])
+                        ])]), /* () */0);
       })
   ],
   /* tuple */[
@@ -61,14 +67,14 @@ var makers = /* array */[
                       inputID2,
                       ""
                     ]
-                  ], undefined, /* RecordTypeImplementation */Block.__(4, [Belt_MapString.fromArray(/* array */[
+                  ], undefined, /* RecordTypeImplementation */Block.variant("RecordTypeImplementation", 4, [Belt_MapString.fromArray(/* array */[
                             /* tuple */[
                               inputID1,
-                              /* PrimitiveValueType */Block.__(0, [/* TextType */2])
+                              /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* TextType */2])
                             ],
                             /* tuple */[
                               inputID2,
-                              /* PrimitiveValueType */Block.__(0, [/* TextType */2])
+                              /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* TextType */2])
                             ]
                           ])]), /* () */0);
       })
@@ -78,99 +84,130 @@ var makers = /* array */[
 var component = ReasonReact.reducerComponent("App");
 
 function make(definitions, _children) {
-  return /* record */[
-          /* debugName */component[/* debugName */0],
-          /* reactClassInternal */component[/* reactClassInternal */1],
-          /* handedOffState */component[/* handedOffState */2],
-          /* willReceiveProps */component[/* willReceiveProps */3],
-          /* didMount */(function (self) {
-              var watcherId = ReasonReact.Router[/* watchUrl */1]((function (url) {
-                      return Curry._1(self[/* send */3], /* ChangeRoute */Block.__(2, [url]));
-                    }));
-              return Curry._1(self[/* onUnmount */4], (function (param) {
-                            return ReasonReact.Router[/* unwatchUrl */2](watcherId);
-                          }));
-            }),
-          /* didUpdate */component[/* didUpdate */5],
-          /* willUnmount */component[/* willUnmount */6],
-          /* willUpdate */component[/* willUpdate */7],
-          /* shouldUpdate */component[/* shouldUpdate */8],
-          /* render */(function (self) {
-              var match = self[/* state */1][/* definitionID */2];
-              var tmp;
-              if (match === "") {
-                tmp = ReasonReact.element(undefined, undefined, DefinitionList$ReactTemplate.make(self[/* state */1][/* definitions */1], /* array */[]));
-              } else {
-                var definitionID = self[/* state */1][/* definitionID */2];
-                var match$1 = Belt_MapString.get(self[/* state */1][/* definitions */1], definitionID);
-                if (match$1 !== undefined) {
-                  var definition = match$1;
-                  var implementation = definition[/* implementation */0];
-                  var emit = function (action) {
-                    return Curry._1(self[/* send */3], /* DefinitionAction */Block.__(0, [/* record */[
-                                    /* definitionID */definitionID,
-                                    /* action */action
-                                  ]]));
-                  };
-                  var match$2 = self[/* state */1][/* execution */0];
-                  var stackFrame;
-                  if (match$2 !== undefined) {
-                    var execution = match$2;
-                    var match$3 = Belt_List.headExn(execution[/* stack */1]);
-                    var scope = Belt_MapString.getExn(execution[/* scopes */0], match$3[/* scopeID */0]);
-                    stackFrame = /* record */[
-                      /* scope */scope,
-                      /* explicitConnectionSide */match$3[/* explicitConnectionSide */1],
-                      /* action */match$3[/* action */2]
-                    ];
-                  } else {
-                    stackFrame = undefined;
-                  }
-                  tmp = implementation.tag === 3 ? ReasonReact.element(definitionID, undefined, Graph$ReactTemplate.make(definitionID, self[/* state */1][/* definitions */1], implementation[0], definition, definition[/* display */2], definition[/* documentation */1], emit, self[/* state */1][/* error */3], stackFrame, /* array */[])) : ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definitionID, definition, definitions, self[/* state */1][/* error */3], emit, /* array */[]));
+  return /* record */Block.record([
+            "debugName",
+            "reactClassInternal",
+            "handedOffState",
+            "willReceiveProps",
+            "didMount",
+            "didUpdate",
+            "willUnmount",
+            "willUpdate",
+            "shouldUpdate",
+            "render",
+            "initialState",
+            "retainedProps",
+            "reducer",
+            "jsElementWrapped"
+          ], [
+            component[/* debugName */0],
+            component[/* reactClassInternal */1],
+            component[/* handedOffState */2],
+            component[/* willReceiveProps */3],
+            (function (self) {
+                var watcherId = ReasonReact.Router[/* watchUrl */1]((function (url) {
+                        return Curry._1(self[/* send */3], /* ChangeRoute */Block.variant("ChangeRoute", 2, [url]));
+                      }));
+                return Curry._1(self[/* onUnmount */4], (function (param) {
+                              return ReasonReact.Router[/* unwatchUrl */2](watcherId);
+                            }));
+              }),
+            component[/* didUpdate */5],
+            component[/* willUnmount */6],
+            component[/* willUpdate */7],
+            component[/* shouldUpdate */8],
+            (function (self) {
+                var match = self[/* state */1][/* definitionID */2];
+                var tmp;
+                if (match === "") {
+                  tmp = ReasonReact.element(undefined, undefined, DefinitionList$ReactTemplate.make(self[/* state */1][/* definitions */1], /* array */[]));
                 } else {
-                  tmp = "Not found";
+                  var definitionID = self[/* state */1][/* definitionID */2];
+                  var match$1 = self[/* state */1][/* execution */0];
+                  if (match$1 !== undefined) {
+                    console.log(match$1[/* stack */1]);
+                  }
+                  var match$2 = Belt_MapString.get(self[/* state */1][/* definitions */1], definitionID);
+                  if (match$2 !== undefined) {
+                    var definition = match$2;
+                    var implementation = definition[/* implementation */0];
+                    var emit = function (action) {
+                      return Curry._1(self[/* send */3], /* DefinitionAction */Block.variant("DefinitionAction", 0, [/* record */Block.record([
+                                        "definitionID",
+                                        "action"
+                                      ], [
+                                        definitionID,
+                                        action
+                                      ])]));
+                    };
+                    var match$3 = self[/* state */1][/* execution */0];
+                    var stackFrame;
+                    if (match$3 !== undefined) {
+                      var execution = match$3;
+                      var match$4 = Belt_List.headExn(execution[/* stack */1]);
+                      var scope = Belt_MapString.getExn(execution[/* scopes */0], match$4[/* scopeID */0]);
+                      stackFrame = /* record */Block.record([
+                          "scope",
+                          "explicitConnectionSide",
+                          "action"
+                        ], [
+                          scope,
+                          match$4[/* explicitConnectionSide */1],
+                          match$4[/* action */2]
+                        ]);
+                    } else {
+                      stackFrame = undefined;
+                    }
+                    tmp = implementation.tag === 3 ? ReasonReact.element(definitionID, undefined, Graph$ReactTemplate.make(definitionID, self[/* state */1][/* definitions */1], implementation[0], definition, definition[/* display */2], definition[/* documentation */1], emit, self[/* state */1][/* error */3], stackFrame, /* array */[])) : ReasonReact.element(undefined, undefined, SimpleDefinition$ReactTemplate.make(definitionID, definition, definitions, self[/* state */1][/* error */3], emit, /* array */[]));
+                  } else {
+                    tmp = "Not found";
+                  }
                 }
-              }
-              var match$4 = self[/* state */1][/* execution */0];
-              var tmp$1;
-              if (match$4 !== undefined) {
-                var match$5 = match$4[/* result */2];
-                tmp$1 = React.createElement("div", undefined, React.createElement("button", {
-                          onClick: (function (param) {
-                              return Curry._1(self[/* send */3], /* Step */0);
-                            })
-                        }, "step"), match$5 !== undefined ? "Result: " + Definition$ReactTemplate.displayValue(match$5) : null);
-              } else {
-                tmp$1 = null;
-              }
-              return React.createElement("div", undefined, React.createElement("a", {
-                              href: "#"
-                            }, "Library"), " New:", Belt_Array.mapWithIndex(makers, (function (index, param) {
-                                var maker = param[1];
-                                return React.createElement("a", {
-                                            key: String(index),
-                                            className: "maker",
-                                            onClick: (function (_event) {
-                                                return Curry._1(self[/* send */3], /* CreateDefinition */Block.__(1, [Curry._1(maker, /* () */0)]));
-                                              })
-                                          }, param[0]);
-                              })), tmp, tmp$1);
-            }),
-          /* initialState */(function (param) {
-              return /* record */[
-                      /* execution */undefined,
-                      /* definitions */definitions,
-                      /* definitionID */ReasonReact.Router[/* dangerouslyGetInitialUrl */3](/* () */0)[/* hash */1],
-                      /* error : NoAppError */0
-                    ];
-            }),
-          /* retainedProps */component[/* retainedProps */11],
-          /* reducer */AppReducer$ReactTemplate.reducer,
-          /* jsElementWrapped */component[/* jsElementWrapped */13]
-        ];
+                var match$5 = self[/* state */1][/* execution */0];
+                var tmp$1;
+                if (match$5 !== undefined) {
+                  var match$6 = match$5[/* result */2];
+                  tmp$1 = React.createElement("div", undefined, React.createElement("button", {
+                            onClick: (function (param) {
+                                return Curry._1(self[/* send */3], /* Step */0);
+                              })
+                          }, "step"), match$6 !== undefined ? "Result: " + Definition$ReactTemplate.displayValue(match$6) : null);
+                } else {
+                  tmp$1 = null;
+                }
+                return React.createElement("div", undefined, React.createElement("a", {
+                                href: "#"
+                              }, "Library"), " New:", Belt_Array.mapWithIndex(makers, (function (index, param) {
+                                  var maker = param[1];
+                                  return React.createElement("a", {
+                                              key: String(index),
+                                              className: "maker",
+                                              onClick: (function (_event) {
+                                                  return Curry._1(self[/* send */3], /* CreateDefinition */Block.variant("CreateDefinition", 1, [Curry._1(maker, /* () */0)]));
+                                                })
+                                            }, param[0]);
+                                })), tmp, tmp$1);
+              }),
+            (function (param) {
+                return /* record */Block.record([
+                          "execution",
+                          "definitions",
+                          "definitionID",
+                          "error"
+                        ], [
+                          undefined,
+                          definitions,
+                          ReasonReact.Router[/* dangerouslyGetInitialUrl */3](/* () */0)[/* hash */1],
+                          0
+                        ]);
+              }),
+            component[/* retainedProps */11],
+            AppReducer$ReactTemplate.reducer,
+            component[/* jsElementWrapped */13]
+          ]);
 }
 
 exports.makers = makers;
 exports.component = component;
 exports.make = make;
-/* component Not a pure module */
+/*  Not a pure module */
