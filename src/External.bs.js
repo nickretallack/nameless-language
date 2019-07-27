@@ -68,7 +68,10 @@ function withAllValues(inputs, operation) {
         }));
   var needed = match[1];
   if (Belt_List.length(needed) !== 0) {
-    return /* EvaluationRequired */Block.variant("EvaluationRequired", 1, [needed]);
+    return /* EvaluationRequired */Block.variant("EvaluationRequired", 1, [/* :: */Block.simpleVariant("::", [
+                  Belt_List.headExn(needed),
+                  /* [] */0
+                ])]);
   } else {
     return /* EvaluationResult */Block.variant("EvaluationResult", 0, [Curry._1(operation, match[0])]);
   }

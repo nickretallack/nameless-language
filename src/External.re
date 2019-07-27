@@ -44,7 +44,7 @@ let withAllValues =
       }
     );
   if (Belt.List.length(needed) != 0) {
-    EvaluationRequired(needed);
+    EvaluationRequired([Belt.List.headExn(needed)]);
   } else {
     EvaluationResult(operation(values));
   };
