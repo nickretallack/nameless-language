@@ -221,10 +221,11 @@ function make(definitionID, definitions, implementation, definition, display, do
                         var explicitConnectionSide = param[/* explicitConnectionSide */1];
                         var isSource = explicitConnectionSide[/* isSource */1];
                         var connectionSide = explicitConnectionSide[/* connectionSide */0];
+                        var value = isSource && stackFrame !== undefined ? Belt_Map.get(stackFrame[/* scope */0][/* sourceValues */1], connectionSide) : undefined;
                         var match = self[/* state */1][/* selection */2];
                         var tmp;
                         tmp = typeof match === "number" || match.tag !== 1 ? false : Caml_obj.caml_equal(match[0], explicitConnectionSide);
-                        return ReasonReact.element(Definition$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, Nib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], tmp, /* array */[]));
+                        return ReasonReact.element(Definition$ReactTemplate.explicitConnectionSideKey(explicitConnectionSide), undefined, Nib$ReactTemplate.make(isSource, connectionSide, getNibPosition(connectionSide, !isSource), param[/* name */0], self[/* send */3], tmp, value, /* array */[]));
                       }));
                 var renderedSides = ReasonReact.element(undefined, undefined, DefinitionBox$ReactTemplate.make(Definition$ReactTemplate.getDisplayName(definition, "en"), /* record */Block.record([
                             "x",

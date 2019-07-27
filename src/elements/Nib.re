@@ -16,6 +16,7 @@ let make =
       ~text: string,
       ~emit: graphAction => unit,
       ~isHighlighted: bool,
+      ~value: option(value),
       _children,
     ) => {
   ...component,
@@ -46,6 +47,17 @@ let make =
         y={pixels(position.y)}>
         {ReasonReact.string(text)}
       </text>
+      {switch (value) {
+       | None => ReasonReact.null
+       | Some(value) =>
+         <text
+           textAnchor="end"
+           x={pixels(position.x -. sidePadding)}
+           y={pixels(position.y)}
+           alignmentBaseline="central">
+           {ReasonReact.string(displayValue(value))}
+         </text>
+       }}
       <circle
         ref={ref => self.state := Js.Nullable.toOption(ref)}
         cx={pixels(position.x)}

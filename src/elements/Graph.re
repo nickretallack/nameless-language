@@ -473,6 +473,18 @@ let make =
           Belt.List.toArray(allNibs),
           ({name, explicitConnectionSide}) => {
             let {connectionSide, isSource} = explicitConnectionSide;
+
+            let value =
+              if (isSource) {
+                switch (stackFrame) {
+                | None => None
+                | Some(stackFrame) =>
+                  Belt.Map.get(stackFrame.scope.sourceValues, connectionSide)
+                };
+              } else {
+                None;
+              };
+
             <Nib
               key={explicitConnectionSideKey(explicitConnectionSide)}
               text=name
@@ -487,6 +499,7 @@ let make =
                 | _ => false
                 }
               }
+              value
             />;
           },
         ),

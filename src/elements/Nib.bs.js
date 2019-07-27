@@ -8,6 +8,7 @@ var Belt_Debug = require("bs-platform/lib/js/belt_Debug.js");
 var Caml_option = require("bs-platform/lib/js/caml_option.js");
 var ReasonReact = require("reason-react/src/ReasonReact.js");
 var Helpers$ReactTemplate = require("../Helpers.bs.js");
+var Definition$ReactTemplate = require("../Definition.bs.js");
 
 Belt_Debug.setupChromeDebugger(/* () */0);
 
@@ -15,7 +16,7 @@ var color = "rgb(160,160,160)";
 
 var component = ReasonReact.reducerComponent("Nib");
 
-function make(isSource, connectionSide, position, text, emit, isHighlighted, _children) {
+function make(isSource, connectionSide, position, text, emit, isHighlighted, value, _children) {
   return /* record */Block.record([
             "debugName",
             "reactClassInternal",
@@ -71,7 +72,12 @@ function make(isSource, connectionSide, position, text, emit, isHighlighted, _ch
                                       isSource ? 1.0 : -1.0
                                     )),
                                 y: Helpers$ReactTemplate.pixels(position[/* y */1])
-                              }, text), React.createElement("circle", {
+                              }, text), value !== undefined ? React.createElement("text", {
+                                  alignmentBaseline: "central",
+                                  textAnchor: "end",
+                                  x: Helpers$ReactTemplate.pixels(position[/* x */0] - 10.0),
+                                  y: Helpers$ReactTemplate.pixels(position[/* y */1])
+                                }, Definition$ReactTemplate.displayValue(value)) : null, React.createElement("circle", {
                                 ref: (function (ref) {
                                     self[/* state */1][0] = (ref == null) ? undefined : Caml_option.some(ref);
                                     return /* () */0;
