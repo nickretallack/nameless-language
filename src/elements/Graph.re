@@ -433,7 +433,6 @@ let make =
               switch (stackFrame) {
               | None => NoDebugConnection
               | Some(stackFrame) =>
-                Js.log("YEAH!!!");
                 let stackConnectionSide = stackFrame.explicitConnectionSide;
                 if (!stackConnectionSide.isSource
                     && stackConnectionSide.connectionSide == sink) {

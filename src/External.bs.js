@@ -4,30 +4,35 @@
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
+var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
+var Evaluate$ReactTemplate = require("./Evaluate.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
 
-function evaluateIndex(inputs, index) {
-  var match = Belt_List.getExn(inputs, index);
+function evaluateInput(inputs, inputID) {
+  var match = Belt_MapString.getExn(inputs, inputID);
   if (match !== undefined) {
     return /* EvaluationResult */Block.__(0, [match]);
   } else {
-    return /* EvaluationRequired */Block.__(1, [index]);
+    return /* EvaluationRequired */Block.__(1, [/* :: */[
+                inputID,
+                /* [] */0
+              ]]);
   }
 }
 
-function conditionalBranch(inputs, outputIndex) {
-  if (outputIndex !== 0) {
+function conditionalBranch(inputs, outputID) {
+  if (outputID !== "result") {
     throw Caml_builtin_exceptions.not_found;
   }
-  var match = Belt_List.getExn(inputs, 0);
+  var match = Belt_MapString.getExn(inputs, "if");
   if (match !== undefined) {
     var match$1 = match;
     if (match$1.tag) {
       switch (match$1[0][/* definitionID */0]) {
         case "no" : 
-            return evaluateIndex(inputs, 2);
+            return evaluateInput(inputs, "else");
         case "yes" : 
-            return evaluateIndex(inputs, 1);
+            return evaluateInput(inputs, "then");
         default:
           throw Caml_builtin_exceptions.not_found;
       }
@@ -35,21 +40,67 @@ function conditionalBranch(inputs, outputIndex) {
       throw Caml_builtin_exceptions.not_found;
     }
   } else {
-    return /* EvaluationRequired */Block.__(1, [0]);
+    return /* EvaluationRequired */Block.__(1, [/* :: */[
+                "if",
+                /* [] */0
+              ]]);
   }
 }
 
-function evaluateExternal(name, outputIndex, inputs) {
-  var externalFunction;
-  if (name === "branch") {
-    externalFunction = conditionalBranch;
+function withAllValues(inputs, operation) {
+  var match = Belt_MapString.reduce(inputs, /* tuple */[
+        Belt_MapString.empty,
+        /* [] */0
+      ], (function (param, key, value) {
+          var needed = param[1];
+          var values = param[0];
+          if (value !== undefined) {
+            return /* tuple */[
+                    Belt_MapString.set(values, key, value),
+                    needed
+                  ];
+          } else {
+            return /* tuple */[
+                    values,
+                    Belt_List.add(needed, key)
+                  ];
+          }
+        }));
+  var needed = match[1];
+  if (Belt_List.length(needed) !== 0) {
+    return /* EvaluationRequired */Block.__(1, [needed]);
   } else {
+    return /* EvaluationResult */Block.__(0, [Curry._1(operation, match[0])]);
+  }
+}
+
+function addition(inputs, outputID) {
+  if (outputID !== "result") {
     throw Caml_builtin_exceptions.not_found;
   }
-  return Curry._2(externalFunction, inputs, outputIndex);
+  return withAllValues(inputs, (function (values) {
+                return /* PrimitiveValue */Block.__(0, [/* NumberValue */Block.__(1, [Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")) + Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right"))])]);
+              }));
 }
 
-exports.evaluateIndex = evaluateIndex;
+function evaluateExternal(name, outputID, inputs) {
+  var externalFunction;
+  switch (name) {
+    case "+" : 
+        externalFunction = addition;
+        break;
+    case "branch" : 
+        externalFunction = conditionalBranch;
+        break;
+    default:
+      throw Caml_builtin_exceptions.not_found;
+  }
+  return Curry._2(externalFunction, inputs, outputID);
+}
+
+exports.evaluateInput = evaluateInput;
 exports.conditionalBranch = conditionalBranch;
+exports.withAllValues = withAllValues;
+exports.addition = addition;
 exports.evaluateExternal = evaluateExternal;
-/* No side effect */
+/* Evaluate-ReactTemplate Not a pure module */

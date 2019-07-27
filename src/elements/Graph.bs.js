@@ -168,7 +168,6 @@ function make(definitionID, definitions, implementation, definition, display, do
                       var debugState;
                       if (stackFrame !== undefined) {
                         var stackFrame$1 = stackFrame;
-                        console.log("YEAH!!!");
                         var stackConnectionSide = stackFrame$1[/* explicitConnectionSide */1];
                         if (!stackConnectionSide[/* isSource */1] && Caml_obj.caml_equal(stackConnectionSide[/* connectionSide */0], sink)) {
                           var match = stackFrame$1[/* action */2];

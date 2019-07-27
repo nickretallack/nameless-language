@@ -513,6 +513,64 @@ let reducer = (action: appAction, state: appState) =>
                         }
                       | _ => raise(Not_found) // todo
                       }
+                    | FunctionCallNode =>
+                      switch (nodeDefinition.implementation) {
+                      | ExternalImplementation({name, interface}) =>
+                        switch (source.nib) {
+                        | NibConnection(outputID) =>
+                          switch (
+                            External.evaluateExternal(
+                              name,
+                              outputID,
+                              Belt.Map.String.mapWithKey(
+                                interface.inputTypes, (nibID, _) =>
+                                Belt.Map.get(
+                                  scope.sourceValues,
+                                  Belt.Map.getExn(
+                                    graphImplementation.connections,
+                                    {
+                                      node: source.node,
+                                      nib: NibConnection(nibID),
+                                    },
+                                  ),
+                                )
+                              ),
+                            )
+                          ) {
+                          | EvaluationResult(value) => {
+                              ...execution,
+                              stack:
+                                Belt.List.add(
+                                  Belt.List.tailExn(execution.stack),
+                                  {...frame, action: Returning(value)},
+                                ),
+                            }
+                          | EvaluationRequired(nibIDs) => {
+                              ...execution,
+                              stack:
+                                Belt.List.concat(
+                                  Belt.List.map(nibIDs, nibID =>
+                                    {
+                                      ...frame,
+                                      explicitConnectionSide: {
+                                        isSource: false,
+                                        connectionSide: {
+                                          node: source.node,
+                                          nib: NibConnection(nibID),
+                                        },
+                                      },
+                                      action: Evaluating,
+                                    }
+                                  ),
+                                  execution.stack,
+                                ),
+                            }
+                          }
+                        | _ => raise(Not_found) // todo
+                        }
+
+                      | _ => raise(Not_found) // todo
+                      }
                     | _ => raise(Not_found) // todo
                     };
                   | _ => raise(Not_found) // todo
@@ -525,10 +583,12 @@ let reducer = (action: appAction, state: appState) =>
               if (Belt.List.length(execution.stack) == 1) {
                 {...execution, result: Some(value)};
               } else {
-                execution;
+                execution
               }
             },
           );
         },
     })
   };
+
+// let valuesFromScope = (scope scope, )
