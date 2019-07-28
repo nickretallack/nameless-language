@@ -19,9 +19,10 @@ var AffectedDefinitions$ReactTemplate = require("../edit/AffectedDefinitions.bs.
 
 Belt_Debug.setupChromeDebugger(/* () */0);
 
-function evaluate(scope, stack, definitions) {
+function evaluate(execution, definitions) {
+  var frame = Belt_List.headExn(execution[/* stack */1]);
+  var scope = Belt_MapString.getExn(execution[/* scopes */0], frame[/* scopeID */0]);
   var definition = Belt_MapString.getExn(definitions, scope[/* definitionID */0]);
-  var frame = Belt_List.headExn(stack);
   var match = definition[/* implementation */0];
   if (match.tag === 3) {
     var graphImplementation = match[0];
@@ -42,77 +43,90 @@ function evaluate(scope, stack, definitions) {
             throw Caml_builtin_exceptions.not_found;
           } else {
             var match$5 = nodeDefinition[/* implementation */0];
-            if (match$5.tag === 2) {
-              var match$6 = match$5[0];
-              var match$7 = source[/* nib */1];
-              if (typeof match$7 === "number") {
+            switch (match$5.tag | 0) {
+              case 2 : 
+                  var match$6 = match$5[0];
+                  var match$7 = source[/* nib */1];
+                  if (typeof match$7 === "number") {
+                    throw Caml_builtin_exceptions.not_found;
+                  } else if (match$7.tag) {
+                    throw Caml_builtin_exceptions.not_found;
+                  } else {
+                    var match$8 = External$ReactTemplate.evaluateExternal(match$6[/* name */0], match$7[0], Belt_MapString.mapWithKey(match$6[/* interface */1][/* inputTypes */0], (function (nibID, param) {
+                                return Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], /* record */Block.record([
+                                                  "node",
+                                                  "nib"
+                                                ], [
+                                                  source[/* node */0],
+                                                  Block.variant("NibConnection", 0, [nibID])
+                                                ])));
+                              })));
+                    if (match$8.tag) {
+                      return /* record */Block.record([
+                                "scopes",
+                                "stack",
+                                "result"
+                              ], [
+                                execution[/* scopes */0],
+                                Belt_List.concat(Belt_List.map(match$8[0], (function (nibID) {
+                                            return /* record */Block.record([
+                                                      "scopeID",
+                                                      "explicitConnectionSide",
+                                                      "action"
+                                                    ], [
+                                                      frame[/* scopeID */0],
+                                                      Block.record([
+                                                          "connectionSide",
+                                                          "isSource"
+                                                        ], [
+                                                          Block.record([
+                                                              "node",
+                                                              "nib"
+                                                            ], [
+                                                              source[/* node */0],
+                                                              Block.variant("NibConnection", 0, [nibID])
+                                                            ]),
+                                                          false
+                                                        ]),
+                                                      0
+                                                    ]);
+                                          })), execution[/* stack */1]),
+                                execution[/* result */2]
+                              ]);
+                    } else {
+                      var value = match$8[0];
+                      return /* record */Block.record([
+                                "scopes",
+                                "stack",
+                                "result"
+                              ], [
+                                Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
+                                        "definitionID",
+                                        "sourceValues"
+                                      ], [
+                                        scope[/* definitionID */0],
+                                        Belt_Map.set(scope[/* sourceValues */1], source, value)
+                                      ])),
+                                Block.simpleVariant("::", [
+                                    /* record */Block.record([
+                                        "scopeID",
+                                        "explicitConnectionSide",
+                                        "action"
+                                      ], [
+                                        frame[/* scopeID */0],
+                                        frame[/* explicitConnectionSide */1],
+                                        Block.simpleVariant("Returning", [value])
+                                      ]),
+                                    Belt_List.tailExn(execution[/* stack */1])
+                                  ]),
+                                execution[/* result */2]
+                              ]);
+                    }
+                  }
+              case 3 : 
+                  throw Caml_builtin_exceptions.not_found;
+              default:
                 throw Caml_builtin_exceptions.not_found;
-              } else if (match$7.tag) {
-                throw Caml_builtin_exceptions.not_found;
-              } else {
-                var match$8 = External$ReactTemplate.evaluateExternal(match$6[/* name */0], match$7[0], Belt_MapString.mapWithKey(match$6[/* interface */1][/* inputTypes */0], (function (nibID, param) {
-                            return Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], /* record */Block.record([
-                                              "node",
-                                              "nib"
-                                            ], [
-                                              source[/* node */0],
-                                              Block.variant("NibConnection", 0, [nibID])
-                                            ])));
-                          })));
-                if (match$8.tag) {
-                  return /* tuple */[
-                          Belt_List.concat(Belt_List.map(match$8[0], (function (nibID) {
-                                      return /* record */Block.record([
-                                                "scopeID",
-                                                "explicitConnectionSide",
-                                                "action"
-                                              ], [
-                                                frame[/* scopeID */0],
-                                                Block.record([
-                                                    "connectionSide",
-                                                    "isSource"
-                                                  ], [
-                                                    Block.record([
-                                                        "node",
-                                                        "nib"
-                                                      ], [
-                                                        source[/* node */0],
-                                                        Block.variant("NibConnection", 0, [nibID])
-                                                      ]),
-                                                    false
-                                                  ]),
-                                                0
-                                              ]);
-                                    })), stack),
-                          scope
-                        ];
-                } else {
-                  var value = match$8[0];
-                  return /* tuple */[
-                          /* :: */Block.simpleVariant("::", [
-                              /* record */Block.record([
-                                  "scopeID",
-                                  "explicitConnectionSide",
-                                  "action"
-                                ], [
-                                  frame[/* scopeID */0],
-                                  frame[/* explicitConnectionSide */1],
-                                  Block.simpleVariant("Returning", [value])
-                                ]),
-                              Belt_List.tailExn(stack)
-                            ]),
-                          /* record */Block.record([
-                              "definitionID",
-                              "sourceValues"
-                            ], [
-                              scope[/* definitionID */0],
-                              Belt_Map.set(scope[/* sourceValues */1], source, value)
-                            ])
-                        ];
-                }
-              }
-            } else {
-              throw Caml_builtin_exceptions.not_found;
             }
           }
         } else {
@@ -121,34 +135,65 @@ function evaluate(scope, stack, definitions) {
             throw Caml_builtin_exceptions.not_found;
           } else {
             var value$1 = /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [match$9[0]]);
-            return /* tuple */[
-                    /* :: */Block.simpleVariant("::", [
-                        /* record */Block.record([
-                            "scopeID",
-                            "explicitConnectionSide",
-                            "action"
-                          ], [
-                            frame[/* scopeID */0],
-                            frame[/* explicitConnectionSide */1],
-                            Block.simpleVariant("Returning", [value$1])
-                          ]),
-                        Belt_List.tailExn(stack)
-                      ]),
-                    /* record */Block.record([
-                        "definitionID",
-                        "sourceValues"
-                      ], [
-                        scope[/* definitionID */0],
-                        Belt_Map.set(scope[/* sourceValues */1], source, value$1)
-                      ])
-                  ];
+            return /* record */Block.record([
+                      "scopes",
+                      "stack",
+                      "result"
+                    ], [
+                      Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
+                              "definitionID",
+                              "sourceValues"
+                            ], [
+                              scope[/* definitionID */0],
+                              Belt_Map.set(scope[/* sourceValues */1], source, value$1)
+                            ])),
+                      Block.simpleVariant("::", [
+                          /* record */Block.record([
+                              "scopeID",
+                              "explicitConnectionSide",
+                              "action"
+                            ], [
+                              frame[/* scopeID */0],
+                              frame[/* explicitConnectionSide */1],
+                              Block.simpleVariant("Returning", [value$1])
+                            ]),
+                          Belt_List.tailExn(execution[/* stack */1])
+                        ]),
+                      execution[/* result */2]
+                    ]);
           }
         }
       } else {
         throw Caml_builtin_exceptions.not_found;
       }
     } else {
-      throw Caml_builtin_exceptions.not_found;
+      var value$2 = /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [3.0])]);
+      return /* record */Block.record([
+                "scopes",
+                "stack",
+                "result"
+              ], [
+                Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
+                        "definitionID",
+                        "sourceValues"
+                      ], [
+                        scope[/* definitionID */0],
+                        Belt_Map.set(scope[/* sourceValues */1], source, value$2)
+                      ])),
+                Block.simpleVariant("::", [
+                    /* record */Block.record([
+                        "scopeID",
+                        "explicitConnectionSide",
+                        "action"
+                      ], [
+                        frame[/* scopeID */0],
+                        frame[/* explicitConnectionSide */1],
+                        Block.simpleVariant("Returning", [value$2])
+                      ]),
+                    Belt_List.tailExn(execution[/* stack */1])
+                  ]),
+                execution[/* result */2]
+              ]);
     }
   } else {
     throw Caml_builtin_exceptions.not_found;
@@ -162,7 +207,6 @@ function reducer(action, state) {
     if (match !== undefined) {
       var execution = match;
       var frame = Belt_List.headExn(execution[/* stack */1]);
-      var scope = Belt_MapString.getExn(execution[/* scopes */0], frame[/* scopeID */0]);
       var match$1 = frame[/* action */2];
       var tmp$1;
       if (match$1) {
@@ -178,28 +222,21 @@ function reducer(action, state) {
             ]);
         } else {
           var stack = Belt_List.tailExn(execution[/* stack */1]);
-          var match$2 = evaluate(scope, stack, state[/* definitions */1]);
-          tmp$1 = /* record */Block.record([
+          var execution_000 = /* scopes */execution[/* scopes */0];
+          var execution_002 = /* result */execution[/* result */2];
+          var execution$1 = /* record */Block.record([
               "scopes",
               "stack",
               "result"
             ], [
-              Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], match$2[1]),
-              match$2[0],
-              execution[/* result */2]
+              execution_000,
+              stack,
+              execution_002
             ]);
+          tmp$1 = evaluate(execution$1, state[/* definitions */1]);
         }
       } else {
-        var match$3 = evaluate(scope, execution[/* stack */1], state[/* definitions */1]);
-        tmp$1 = /* record */Block.record([
-            "scopes",
-            "stack",
-            "result"
-          ], [
-            Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], match$3[1]),
-            match$3[0],
-            execution[/* result */2]
-          ]);
+        tmp$1 = evaluate(execution, state[/* definitions */1]);
       }
       tmp = tmp$1;
     } else {
@@ -219,9 +256,9 @@ function reducer(action, state) {
   } else {
     switch (action.tag | 0) {
       case 0 : 
-          var match$4 = action[0];
-          var action$1 = match$4[/* action */1];
-          var definitionID = match$4[/* definitionID */0];
+          var match$2 = action[0];
+          var action$1 = match$2[/* action */1];
+          var definitionID = match$2[/* definitionID */0];
           var definition = Belt_MapString.getExn(state[/* definitions */1], definitionID);
           var updateDefinition = function (definition) {
             return /* Update */Block.variant("Update", 0, [/* record */Block.record([
@@ -240,11 +277,11 @@ function reducer(action, state) {
             switch (action$1) {
               case 0 : 
                   var nibID = Helpers$ReactTemplate.randomID(/* () */0);
-                  var match$5 = definition[/* implementation */0];
+                  var match$3 = definition[/* implementation */0];
                   var tmp$2;
-                  switch (match$5.tag | 0) {
+                  switch (match$3.tag | 0) {
                     case 1 : 
-                        var $$interface = match$5[0];
+                        var $$interface = match$3[0];
                         tmp$2 = /* InterfaceImplementation */Block.variant("InterfaceImplementation", 1, [/* record */Block.record([
                                 "inputTypes",
                                 "outputTypes"
@@ -254,7 +291,7 @@ function reducer(action, state) {
                               ])]);
                         break;
                     case 3 : 
-                        var graphImplementation = match$5[0];
+                        var graphImplementation = match$3[0];
                         var init = graphImplementation[/* interface */0];
                         tmp$2 = /* GraphImplementation */Block.variant("GraphImplementation", 3, [/* record */Block.record([
                                 "interface",
@@ -273,7 +310,7 @@ function reducer(action, state) {
                               ])]);
                         break;
                     case 4 : 
-                        tmp$2 = /* RecordTypeImplementation */Block.variant("RecordTypeImplementation", 4, [Belt_MapString.set(match$5[0], nibID, /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* TextType */2]))]);
+                        tmp$2 = /* RecordTypeImplementation */Block.variant("RecordTypeImplementation", 4, [Belt_MapString.set(match$3[0], nibID, /* PrimitiveValueType */Block.variant("PrimitiveValueType", 0, [/* TextType */2]))]);
                         break;
                     default:
                       tmp$2 = definition[/* implementation */0];
@@ -310,11 +347,11 @@ function reducer(action, state) {
                               ]));
               case 1 : 
                   var nibID$1 = Helpers$ReactTemplate.randomID(/* () */0);
-                  var match$6 = definition[/* implementation */0];
+                  var match$4 = definition[/* implementation */0];
                   var tmp$3;
-                  switch (match$6.tag | 0) {
+                  switch (match$4.tag | 0) {
                     case 1 : 
-                        var $$interface$1 = match$6[0];
+                        var $$interface$1 = match$4[0];
                         tmp$3 = /* InterfaceImplementation */Block.variant("InterfaceImplementation", 1, [/* record */Block.record([
                                 "inputTypes",
                                 "outputTypes"
@@ -324,7 +361,7 @@ function reducer(action, state) {
                               ])]);
                         break;
                     case 3 : 
-                        var graphImplementation$1 = match$6[0];
+                        var graphImplementation$1 = match$4[0];
                         var init$3 = graphImplementation$1[/* interface */0];
                         tmp$3 = /* GraphImplementation */Block.variant("GraphImplementation", 3, [/* record */Block.record([
                                 "interface",
@@ -398,10 +435,10 @@ function reducer(action, state) {
           } else {
             switch (action$1.tag | 0) {
               case 0 : 
-                  var match$7 = action$1[0];
-                  var match$8 = definition[/* implementation */0];
-                  if (match$8.tag === 3) {
-                    var graphImplementation$2 = match$8[0];
+                  var match$5 = action$1[0];
+                  var match$6 = definition[/* implementation */0];
+                  if (match$6.tag === 3) {
+                    var graphImplementation$2 = match$6[0];
                     return updateDefinition(/* record */Block.record([
                                   "implementation",
                                   "documentation",
@@ -413,7 +450,7 @@ function reducer(action, state) {
                                           "nodes"
                                         ], [
                                           graphImplementation$2[/* interface */0],
-                                          Belt_Map.set(graphImplementation$2[/* connections */1], match$7[/* sink */1], match$7[/* source */0]),
+                                          Belt_Map.set(graphImplementation$2[/* connections */1], match$5[/* sink */1], match$5[/* source */0]),
                                           graphImplementation$2[/* nodes */2]
                                         ])]),
                                   definition[/* documentation */1],
@@ -465,8 +502,8 @@ function reducer(action, state) {
                                 definition[/* display */2]
                               ]));
               case 3 : 
-                  var match$9 = definition[/* implementation */0];
-                  if (match$9.tag) {
+                  var match$7 = definition[/* implementation */0];
+                  if (match$7.tag) {
                     throw Caml_builtin_exceptions.not_found;
                   } else {
                     return updateDefinition(/* record */Block.record([
@@ -480,11 +517,11 @@ function reducer(action, state) {
                                 ]));
                   }
               case 4 : 
-                  var match$10 = action$1[0];
-                  var explicitConnectionSide = match$10[/* explicitConnectionSide */1];
+                  var match$8 = action$1[0];
+                  var explicitConnectionSide = match$8[/* explicitConnectionSide */1];
                   var nodeID = Helpers$ReactTemplate.randomID(/* () */0);
                   var nodeConnectionSide_000 = /* node : NodeConnection */Block.simpleVariant("NodeConnection", [nodeID]);
-                  var nodeConnectionSide_001 = /* nib */match$10[/* connectionNib */2];
+                  var nodeConnectionSide_001 = /* nib */match$8[/* connectionNib */2];
                   var nodeConnectionSide = /* record */Block.record([
                       "node",
                       "nib"
@@ -492,17 +529,17 @@ function reducer(action, state) {
                       nodeConnectionSide_000,
                       nodeConnectionSide_001
                     ]);
-                  var match$11 = explicitConnectionSide[/* isSource */1];
-                  var match$12 = match$11 ? /* tuple */[
+                  var match$9 = explicitConnectionSide[/* isSource */1];
+                  var match$10 = match$9 ? /* tuple */[
                       explicitConnectionSide[/* connectionSide */0],
                       nodeConnectionSide
                     ] : /* tuple */[
                       nodeConnectionSide,
                       explicitConnectionSide[/* connectionSide */0]
                     ];
-                  var match$13 = definition[/* implementation */0];
-                  if (match$13.tag === 3) {
-                    var graphImplementation$3 = match$13[0];
+                  var match$11 = definition[/* implementation */0];
+                  if (match$11.tag === 3) {
+                    var graphImplementation$3 = match$11[0];
                     return updateDefinition(/* record */Block.record([
                                   "implementation",
                                   "documentation",
@@ -514,8 +551,8 @@ function reducer(action, state) {
                                           "nodes"
                                         ], [
                                           graphImplementation$3[/* interface */0],
-                                          Belt_Map.set(graphImplementation$3[/* connections */1], match$12[1], match$12[0]),
-                                          Belt_MapString.set(graphImplementation$3[/* nodes */2], nodeID, match$10[/* node */0])
+                                          Belt_Map.set(graphImplementation$3[/* connections */1], match$10[1], match$10[0]),
+                                          Belt_MapString.set(graphImplementation$3[/* nodes */2], nodeID, match$8[/* node */0])
                                         ])]),
                                   definition[/* documentation */1],
                                   definition[/* display */2]
@@ -524,10 +561,10 @@ function reducer(action, state) {
                     return /* NoUpdate */0;
                   }
               case 5 : 
-                  var match$14 = action$1[0];
-                  var action$2 = match$14[/* action */2];
-                  var isInput = match$14[/* isInput */1];
-                  var nibID$2 = match$14[/* nibID */0];
+                  var match$12 = action$1[0];
+                  var action$2 = match$12[/* action */2];
+                  var isInput = match$12[/* isInput */1];
+                  var nibID$2 = match$12[/* nibID */0];
                   if (typeof action$2 === "number") {
                     var uses = AffectedDefinitions$ReactTemplate.findConnectedDefinitions(definitionID, nibID$2, isInput, state[/* definitions */1]);
                     if (Belt_MapString.isEmpty(uses)) {
@@ -659,14 +696,14 @@ function reducer(action, state) {
                                       ]));
                       case 1 : 
                           var valueType = action$2[0];
-                          var match$15 = definition[/* implementation */0];
+                          var match$13 = definition[/* implementation */0];
                           var tmp$6;
-                          switch (match$15.tag | 0) {
+                          switch (match$13.tag | 0) {
                             case 1 : 
-                                tmp$6 = /* InterfaceImplementation */Block.variant("InterfaceImplementation", 1, [Definition$ReactTemplate.changeInterface(match$15[0], isInput, nibID$2, valueType)]);
+                                tmp$6 = /* InterfaceImplementation */Block.variant("InterfaceImplementation", 1, [Definition$ReactTemplate.changeInterface(match$13[0], isInput, nibID$2, valueType)]);
                                 break;
                             case 3 : 
-                                var graphImplementation$5 = match$15[0];
+                                var graphImplementation$5 = match$13[0];
                                 tmp$6 = /* GraphImplementation */Block.variant("GraphImplementation", 3, [/* record */Block.record([
                                         "interface",
                                         "connections",
@@ -680,7 +717,7 @@ function reducer(action, state) {
                             case 4 : 
                                 var tmp$7;
                                 if (isInput) {
-                                  tmp$7 = Definition$ReactTemplate.changeTypedFields(match$15[0], nibID$2, valueType);
+                                  tmp$7 = Definition$ReactTemplate.changeTypedFields(match$13[0], nibID$2, valueType);
                                 } else {
                                   throw Caml_builtin_exceptions.not_found;
                                 }
@@ -733,10 +770,10 @@ function reducer(action, state) {
                     }
                   }
               case 6 : 
-                  var match$16 = definition[/* implementation */0];
+                  var match$14 = definition[/* implementation */0];
                   var tmp$9;
-                  if (match$16.tag === 3) {
-                    var graphImplementation$6 = match$16[0];
+                  if (match$14.tag === 3) {
+                    var graphImplementation$6 = match$14[0];
                     tmp$9 = /* GraphImplementation */Block.variant("GraphImplementation", 3, [/* record */Block.record([
                             "interface",
                             "connections",
@@ -759,10 +796,10 @@ function reducer(action, state) {
                                 definition[/* display */2]
                               ]));
               case 7 : 
-                  var match$17 = definition[/* implementation */0];
+                  var match$15 = definition[/* implementation */0];
                   var tmp$10;
-                  if (match$17.tag === 3) {
-                    var graphImplementation$7 = match$17[0];
+                  if (match$15.tag === 3) {
+                    var graphImplementation$7 = match$15[0];
                     var nodeIDs = ExpandDeletion$ReactTemplate.getAffectedNodes(action$1[0], graphImplementation$7[/* nodes */2]);
                     tmp$10 = /* GraphImplementation */Block.variant("GraphImplementation", 3, [/* record */Block.record([
                             "interface",
@@ -788,12 +825,12 @@ function reducer(action, state) {
                                 definition[/* display */2]
                               ]));
               case 8 : 
-                  var match$18 = action$1[0];
-                  var nodeScope = match$18[/* nodeScope */1];
-                  var nodeID$1 = match$18[/* nodeID */0];
-                  var match$19 = definition[/* implementation */0];
-                  if (match$19.tag === 3) {
-                    var graphImplementation$8 = match$19[0];
+                  var match$16 = action$1[0];
+                  var nodeScope = match$16[/* nodeScope */1];
+                  var nodeID$1 = match$16[/* nodeID */0];
+                  var match$17 = definition[/* implementation */0];
+                  if (match$17.tag === 3) {
+                    var graphImplementation$8 = match$17[0];
                     var tmp$11;
                     if (nodeScope) {
                       var scopeNodeID = nodeScope[0];

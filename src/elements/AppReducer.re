@@ -11,12 +11,10 @@ type appState = {
   error: appError,
 };
 
-let evaluate =
-    (scope: scope, stack: list(stackFrame), definitions: definitions)
-    : (list(stackFrame), scope) => {
+let evaluate = (execution: execution, definitions: definitions): execution => {
+  let frame = Belt.List.headExn(execution.stack);
+  let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID);
   let definition = Belt.Map.String.getExn(definitions, scope.definitionID);
-  let frame = Belt.List.headExn(stack);
-
   switch (definition.implementation) {
   | GraphImplementation(graphImplementation) =>
     let source =
@@ -38,16 +36,24 @@ let evaluate =
           switch (nodeDefinition.implementation) {
           | ConstantImplementation(primitiveValue) =>
             let value = PrimitiveValue(primitiveValue);
-            (
-              [
+            {
+              ...execution,
+              stack: [
                 {...frame, action: Returning(value)},
-                ...Belt.List.tailExn(stack),
+                ...Belt.List.tailExn(execution.stack),
               ],
-              {
-                ...scope,
-                sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-              },
-            );
+              scopes:
+                Belt.Map.String.set(
+                  execution.scopes,
+                  frame.scopeID,
+                  {
+                    ...scope,
+                    sourceValues:
+                      Belt.Map.set(scope.sourceValues, source, value),
+                  },
+                ),
+            };
+
           | _ => raise(Not_found) // todo
           }
         | FunctionCallNode =>
@@ -70,47 +76,72 @@ let evaluate =
                   ),
                 )
               ) {
-              | EvaluationResult(value) => (
-                  [
+              | EvaluationResult(value) => {
+                  ...execution,
+                  stack: [
                     {...frame, action: Returning(value)},
-                    ...Belt.List.tailExn(stack),
+                    ...Belt.List.tailExn(execution.stack),
                   ],
-                  {
-                    ...scope,
-                    sourceValues:
-                      Belt.Map.set(scope.sourceValues, source, value),
-                  },
-                )
-              | EvaluationRequired(nibIDs) => (
-                  Belt.List.concat(
-                    Belt.List.map(nibIDs, nibID =>
+                  scopes:
+                    Belt.Map.String.set(
+                      execution.scopes,
+                      frame.scopeID,
                       {
-                        ...frame,
-                        explicitConnectionSide: {
-                          isSource: false,
-                          connectionSide: {
-                            node: source.node,
-                            nib: NibConnection(nibID),
-                          },
-                        },
-                        action: Evaluating,
-                      }
+                        ...scope,
+                        sourceValues:
+                          Belt.Map.set(scope.sourceValues, source, value),
+                      },
                     ),
-                    stack,
-                  ),
-                  scope,
-                )
+                }
+              | EvaluationRequired(nibIDs) => {
+                  ...execution,
+                  stack:
+                    Belt.List.concat(
+                      Belt.List.map(nibIDs, nibID =>
+                        {
+                          ...frame,
+                          explicitConnectionSide: {
+                            isSource: false,
+                            connectionSide: {
+                              node: source.node,
+                              nib: NibConnection(nibID),
+                            },
+                          },
+                          action: Evaluating,
+                        }
+                      ),
+                      execution.stack,
+                    ),
+                }
               }
-            | _ => raise(Not_found) // todo
+            | _ => raise(Not_found)
             }
-
+          | GraphImplementation(_) => raise(Not_found) // todo
           | _ => raise(Not_found) // todo
           }
         | _ => raise(Not_found) // todo
         };
       | _ => raise(Not_found) // todo
       };
-    | GraphConnection => raise(Not_found) // todo
+    | GraphConnection =>
+      // todo: a real implementation
+      let value = PrimitiveValue(NumberValue(3.0));
+      {
+        ...execution,
+        stack: [
+          {...frame, action: Returning(value)},
+          ...Belt.List.tailExn(execution.stack),
+        ],
+        scopes:
+          Belt.Map.String.set(
+            execution.scopes,
+            frame.scopeID,
+            {
+              ...scope,
+              sourceValues: Belt.Map.set(scope.sourceValues, source, value),
+            },
+          ),
+      };
     };
   | _ => raise(Not_found) // todo
   };
@@ -576,42 +607,19 @@ let reducer = (action: appAction, state: appState) =>
         | None => None
         | Some(execution) =>
           let frame = Belt.List.headExn(execution.stack);
-          let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID);
           Some(
             switch (frame.action) {
-            | Evaluating =>
-              let (stack, scope) =
-                evaluate(scope, execution.stack, state.definitions);
-
-              {
-                ...execution,
-                stack,
-                scopes:
-                  Belt.Map.String.set(execution.scopes, frame.scopeID, scope),
-              };
+            | Evaluating => evaluate(execution, state.definitions)
             | Returning(value) =>
               if (Belt.List.length(execution.stack) == 1) {
                 {...execution, result: Some(value)};
               } else {
                 let stack = Belt.List.tailExn(execution.stack);
-
-                let (stack, scope) =
-                  evaluate(scope, stack, state.definitions);
-                {
-                  ...execution,
-                  stack,
-                  scopes:
-                    Belt.Map.String.set(
-                      execution.scopes,
-                      frame.scopeID,
-                      scope,
-                    ),
-                };
+                let execution = {...execution, stack};
+                evaluate(execution, state.definitions);
               }
             },
           );
         },
     })
   };
-
-// let valuesFromScope = (scope scope, )

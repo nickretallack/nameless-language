@@ -50,17 +50,47 @@ let withAllValues =
   };
 };
 
-let addition = (inputs: Belt.Map.String.t(option(value)), outputID: string) => {
+let numericOperator =
+    (
+      operation: (float, float) => float,
+      inputs: Belt.Map.String.t(option(value)),
+      outputID: string,
+    )
+    : externalEvaluationResult => {
   if (outputID != "result") {
     raise(Not_found);
   };
   withAllValues(inputs, values =>
     PrimitiveValue(
       NumberValue(
-        Evaluate.getNumber(Belt.Map.String.getExn(values, "left"))
-        +. Evaluate.getNumber(Belt.Map.String.getExn(values, "right")),
+        operation(
+          Evaluate.getNumber(Belt.Map.String.getExn(values, "left")),
+          Evaluate.getNumber(Belt.Map.String.getExn(values, "right")),
+        ),
       ),
     )
+  );
+};
+
+let numericComparison =
+    (
+      comparison: (float, float) => bool,
+      inputs: Belt.Map.String.t(option(value)),
+      outputID: string,
+    ) => {
+  if (outputID != "result") {
+    raise(Not_found);
+  };
+  withAllValues(inputs, values =>
+    DefinedValue({
+      definitionID:
+        comparison(
+          Evaluate.getNumber(Belt.Map.String.getExn(values, "left")),
+          Evaluate.getNumber(Belt.Map.String.getExn(values, "right")),
+        ) ?
+          "yes" : "no",
+      values: [],
+    })
   );
 };
 
@@ -74,7 +104,15 @@ let evaluateExternal =
   let externalFunction =
     switch (name) {
     | "branch" => conditionalBranch
-    | "+" => addition
+    | "+" => numericOperator((+.))
+    | "-" => numericOperator((-.))
+    | "*" => numericOperator(( *. ))
+    | "/" => numericOperator((/.))
+    | "<" => numericComparison((<))
+    | ">" => numericComparison((>))
+    | "<=" => numericComparison((<=))
+    | ">=" => numericComparison((>=))
+    | "==" => numericComparison((==))
     | _ => raise(Not_found)
     };
   externalFunction(inputs, outputID);

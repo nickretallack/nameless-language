@@ -3,6 +3,7 @@
 
 var Block = require("bs-platform/lib/js/block.js");
 var Curry = require("bs-platform/lib/js/curry.js");
+var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
 var Evaluate$ReactTemplate = require("./Evaluate.bs.js");
@@ -77,20 +78,86 @@ function withAllValues(inputs, operation) {
   }
 }
 
-function addition(inputs, outputID) {
+function numericOperator(operation, inputs, outputID) {
   if (outputID !== "result") {
     throw Caml_builtin_exceptions.not_found;
   }
   return withAllValues(inputs, (function (values) {
-                return /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")) + Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right"))])]);
+                return /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [Curry._2(operation, Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")), Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right")))])]);
+              }));
+}
+
+function numericComparison(comparison, inputs, outputID) {
+  if (outputID !== "result") {
+    throw Caml_builtin_exceptions.not_found;
+  }
+  return withAllValues(inputs, (function (values) {
+                var match = Curry._2(comparison, Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")), Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right")));
+                return /* DefinedValue */Block.variant("DefinedValue", 1, [/* record */Block.record([
+                              "definitionID",
+                              "values"
+                            ], [
+                              match ? "yes" : "no",
+                              0
+                            ])]);
               }));
 }
 
 function evaluateExternal(name, outputID, inputs) {
   var externalFunction;
   switch (name) {
+    case "*" : 
+        externalFunction = (function (param, param$1) {
+            return numericOperator((function (prim, prim$1) {
+                          return prim * prim$1;
+                        }), param, param$1);
+          });
+        break;
     case "+" : 
-        externalFunction = addition;
+        externalFunction = (function (param, param$1) {
+            return numericOperator((function (prim, prim$1) {
+                          return prim + prim$1;
+                        }), param, param$1);
+          });
+        break;
+    case "-" : 
+        externalFunction = (function (param, param$1) {
+            return numericOperator((function (prim, prim$1) {
+                          return prim - prim$1;
+                        }), param, param$1);
+          });
+        break;
+    case "/" : 
+        externalFunction = (function (param, param$1) {
+            return numericOperator((function (prim, prim$1) {
+                          return prim / prim$1;
+                        }), param, param$1);
+          });
+        break;
+    case "<" : 
+        externalFunction = (function (param, param$1) {
+            return numericComparison(Caml_obj.caml_lessthan, param, param$1);
+          });
+        break;
+    case "<=" : 
+        externalFunction = (function (param, param$1) {
+            return numericComparison(Caml_obj.caml_lessequal, param, param$1);
+          });
+        break;
+    case "==" : 
+        externalFunction = (function (param, param$1) {
+            return numericComparison(Caml_obj.caml_equal, param, param$1);
+          });
+        break;
+    case ">" : 
+        externalFunction = (function (param, param$1) {
+            return numericComparison(Caml_obj.caml_greaterthan, param, param$1);
+          });
+        break;
+    case ">=" : 
+        externalFunction = (function (param, param$1) {
+            return numericComparison(Caml_obj.caml_greaterequal, param, param$1);
+          });
         break;
     case "branch" : 
         externalFunction = conditionalBranch;
@@ -104,6 +171,7 @@ function evaluateExternal(name, outputID, inputs) {
 exports.evaluateInput = evaluateInput;
 exports.conditionalBranch = conditionalBranch;
 exports.withAllValues = withAllValues;
-exports.addition = addition;
+exports.numericOperator = numericOperator;
+exports.numericComparison = numericComparison;
 exports.evaluateExternal = evaluateExternal;
 /* Evaluate-ReactTemplate Not a pure module */
