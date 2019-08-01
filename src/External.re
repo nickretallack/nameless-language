@@ -64,8 +64,8 @@ let numericOperator =
     PrimitiveValue(
       NumberValue(
         operation(
-          Evaluate.getNumber(Belt.Map.String.getExn(values, "left")),
-          Evaluate.getNumber(Belt.Map.String.getExn(values, "right")),
+          getNumber(Belt.Map.String.getExn(values, "left")),
+          getNumber(Belt.Map.String.getExn(values, "right")),
         ),
       ),
     )
@@ -85,11 +85,11 @@ let numericComparison =
     DefinedValue({
       definitionID:
         comparison(
-          Evaluate.getNumber(Belt.Map.String.getExn(values, "left")),
-          Evaluate.getNumber(Belt.Map.String.getExn(values, "right")),
+          getNumber(Belt.Map.String.getExn(values, "left")),
+          getNumber(Belt.Map.String.getExn(values, "right")),
         ) ?
           "yes" : "no",
-      values: [],
+      values: Belt.Map.String.empty,
     })
   );
 };

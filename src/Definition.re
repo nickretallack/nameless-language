@@ -413,19 +413,55 @@ let displayPrimitiveValue = (primitiveValue: primitiveValue) =>
 let primitiveValueToTypeString = x =>
   x |> primitiveValueToType |> primitiveValueTypeToString;
 
+type scopeID = string;
+
 type definedValue = {
   definitionID,
-  values: list(unit => value),
+  values: Belt.Map.String.t(value),
+}
+and evaluationAction =
+  | Evaluating
+  | Returning(value)
+and stackFrame = {
+  scopeID,
+  explicitConnectionSide,
+  action: evaluationAction,
 }
 and value =
   | PrimitiveValue(primitiveValue)
-  | DefinedValue(definedValue);
+  | DefinedValue(definedValue)
+  | LazyValue(stackFrame);
+
+let getNumber = (value: value): float =>
+  switch (value) {
+  | PrimitiveValue(NumberValue(number)) => number
+  | _ => raise(Not_found)
+  };
+
+type scope = {
+  definitionID,
+  sourceValues:
+    Belt.Map.t(connectionSide, value, ConnectionComparator.identity),
+};
 
 let displayValue = (value: value) =>
   switch (value) {
   | PrimitiveValue(primitiveValue) => displayPrimitiveValue(primitiveValue)
   | DefinedValue(_) => "TODO: defined value"
+  | LazyValue(_) => "(not computed yet)"
   };
+
+type execution = {
+  scopes: Belt.Map.String.t(scope),
+  stack: list(stackFrame),
+  result: option(value),
+};
+
+type materializedStackFrame = {
+  scope,
+  explicitConnectionSide,
+  action: evaluationAction,
+};
 
 /* Implementation */
 

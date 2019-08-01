@@ -484,11 +484,34 @@ function primitiveValueToTypeString(x) {
   return primitiveValueTypeToString(primitiveValueToType(x));
 }
 
+function getNumber(value) {
+  switch (value.tag | 0) {
+    case 0 : 
+        var match = value[0];
+        switch (match.tag | 0) {
+          case 1 : 
+              return match[0];
+          case 0 : 
+          case 2 : 
+              throw Caml_builtin_exceptions.not_found;
+          
+        }
+    case 1 : 
+    case 2 : 
+        throw Caml_builtin_exceptions.not_found;
+    
+  }
+}
+
 function displayValue(value) {
-  if (value.tag) {
-    return "TODO: defined value";
-  } else {
-    return displayPrimitiveValue(value[0]);
+  switch (value.tag | 0) {
+    case 0 : 
+        return displayPrimitiveValue(value[0]);
+    case 1 : 
+        return "TODO: defined value";
+    case 2 : 
+        return "(not computed yet)";
+    
   }
 }
 
@@ -1013,6 +1036,7 @@ exports.primitiveValueToType = primitiveValueToType;
 exports.primitiveValueToString = primitiveValueToString;
 exports.displayPrimitiveValue = displayPrimitiveValue;
 exports.primitiveValueToTypeString = primitiveValueToTypeString;
+exports.getNumber = getNumber;
 exports.displayValue = displayValue;
 exports.implementationName = implementationName;
 exports.getTranslated = getTranslated;

@@ -6,8 +6,8 @@ var Curry = require("bs-platform/lib/js/curry.js");
 var Caml_obj = require("bs-platform/lib/js/caml_obj.js");
 var Belt_List = require("bs-platform/lib/js/belt_List.js");
 var Belt_MapString = require("bs-platform/lib/js/belt_MapString.js");
-var Evaluate$ReactTemplate = require("./Evaluate.bs.js");
 var Caml_builtin_exceptions = require("bs-platform/lib/js/caml_builtin_exceptions.js");
+var Definition$ReactTemplate = require("./Definition.bs.js");
 
 function evaluateInput(inputs, inputID) {
   var match = Belt_MapString.getExn(inputs, inputID);
@@ -28,17 +28,20 @@ function conditionalBranch(inputs, outputID) {
   var match = Belt_MapString.getExn(inputs, "if");
   if (match !== undefined) {
     var match$1 = match;
-    if (match$1.tag) {
-      switch (match$1[0][/* definitionID */0]) {
-        case "no" : 
-            return evaluateInput(inputs, "else");
-        case "yes" : 
-            return evaluateInput(inputs, "then");
-        default:
+    switch (match$1.tag | 0) {
+      case 1 : 
+          switch (match$1[0][/* definitionID */0]) {
+            case "no" : 
+                return evaluateInput(inputs, "else");
+            case "yes" : 
+                return evaluateInput(inputs, "then");
+            default:
+              throw Caml_builtin_exceptions.not_found;
+          }
+      case 0 : 
+      case 2 : 
           throw Caml_builtin_exceptions.not_found;
-      }
-    } else {
-      throw Caml_builtin_exceptions.not_found;
+      
     }
   } else {
     return /* EvaluationRequired */Block.variant("EvaluationRequired", 1, [/* :: */Block.simpleVariant("::", [
@@ -83,7 +86,7 @@ function numericOperator(operation, inputs, outputID) {
     throw Caml_builtin_exceptions.not_found;
   }
   return withAllValues(inputs, (function (values) {
-                return /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [Curry._2(operation, Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")), Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right")))])]);
+                return /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [Curry._2(operation, Definition$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")), Definition$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right")))])]);
               }));
 }
 
@@ -92,13 +95,13 @@ function numericComparison(comparison, inputs, outputID) {
     throw Caml_builtin_exceptions.not_found;
   }
   return withAllValues(inputs, (function (values) {
-                var match = Curry._2(comparison, Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")), Evaluate$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right")));
+                var match = Curry._2(comparison, Definition$ReactTemplate.getNumber(Belt_MapString.getExn(values, "left")), Definition$ReactTemplate.getNumber(Belt_MapString.getExn(values, "right")));
                 return /* DefinedValue */Block.variant("DefinedValue", 1, [/* record */Block.record([
                               "definitionID",
                               "values"
                             ], [
                               match ? "yes" : "no",
-                              0
+                              Belt_MapString.empty
                             ])]);
               }));
 }
@@ -174,4 +177,4 @@ exports.withAllValues = withAllValues;
 exports.numericOperator = numericOperator;
 exports.numericComparison = numericComparison;
 exports.evaluateExternal = evaluateExternal;
-/* Evaluate-ReactTemplate Not a pure module */
+/* Definition-ReactTemplate Not a pure module */

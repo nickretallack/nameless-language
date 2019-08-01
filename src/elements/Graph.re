@@ -3,7 +3,6 @@ open AppActions;
 open! GraphActions;
 open! Definition;
 open Helpers;
-open! Evaluate;
 open Connection;
 
 let connectionColors = [|

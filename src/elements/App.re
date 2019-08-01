@@ -2,7 +2,6 @@
 open Definition;
 open! AppActions;
 open Helpers;
-open! Evaluate;
 open! AppReducer;
 
 let makers = [|

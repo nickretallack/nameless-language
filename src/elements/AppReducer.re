@@ -2,7 +2,6 @@
 open Definition;
 open! AppActions;
 open Helpers;
-open! Evaluate;
 
 type appState = {
   execution: option(execution),
@@ -118,6 +117,47 @@ let evaluate = (execution: execution, definitions: definitions): execution => {
             }
           | GraphImplementation(_) => raise(Not_found) // todo
           | _ => raise(Not_found) // todo
+          }
+        | ConstructorNode =>
+          switch (nodeDefinition.implementation) {
+          | RecordTypeImplementation(typedFields) =>
+            let value =
+              DefinedValue({
+                definitionID,
+                values:
+                  Belt.Map.String.mapWithKey(typedFields, (nibID, _) =>
+                    LazyValue({
+                      ...frame,
+                      action: Evaluating,
+                      explicitConnectionSide: {
+                        isSource: false,
+                        connectionSide: {
+                          node: NodeConnection(nodeID),
+                          nib: NibConnection(nibID),
+                        },
+                      },
+                    })
+                  ),
+              });
+            {
+              ...execution,
+              scopes:
+                Belt.Map.String.set(
+                  execution.scopes,
+                  frame.scopeID,
+                  {
+                    ...scope,
+                    sourceValues:
+                      Belt.Map.set(scope.sourceValues, source, value),
+                  },
+                ),
+            };
+          | _ => raise(Not_found)
+          }
+        | AccessorNode =>
+          switch (nodeDefinition.implementation) {
+          | RecordTypeImplementation(_) => raise(Not_found)
+          | _ => raise(Not_found)
           }
         | _ => raise(Not_found) // todo
         };
