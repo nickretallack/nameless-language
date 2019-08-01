@@ -139,8 +139,13 @@ let evaluate = (execution: execution, definitions: definitions): execution => {
                     })
                   ),
               });
+            Js.log(source);
             {
               ...execution,
+              stack: [
+                {...frame, action: Returning(value)},
+                ...Belt.List.tailExn(execution.stack),
+              ],
               scopes:
                 Belt.Map.String.set(
                   execution.scopes,
@@ -156,7 +161,75 @@ let evaluate = (execution: execution, definitions: definitions): execution => {
           }
         | AccessorNode =>
           switch (nodeDefinition.implementation) {
-          | RecordTypeImplementation(_) => raise(Not_found)
+          | RecordTypeImplementation(_) =>
+            switch (
+              Belt.Map.get(
+                scope.sourceValues,
+                Belt.Map.getExn(
+                  graphImplementation.connections,
+                  {node: source.node, nib: ValueConnection},
+                ),
+              )
+            ) {
+            | Some(value) =>
+              switch (source.nib) {
+              | NibConnection(nibID) =>
+                switch (value) {
+                | DefinedValue(definedValue) =>
+                  switch (Belt.Map.String.getExn(definedValue.values, nibID)) {
+                  | LazyValue(fieldStackFrame) =>
+                    switch (
+                      Belt.Map.get(
+                        scope.sourceValues,
+                        Belt.Map.getExn(
+                          graphImplementation.connections,
+                          fieldStackFrame.explicitConnectionSide.
+                            connectionSide,
+                        ),
+                      )
+                    ) {
+                    | None =>
+                      Js.log("None value");
+                      {
+                        ...execution,
+                        stack: [fieldStackFrame, ...execution.stack],
+                        scopes: execution.scopes,
+                      };
+                    | Some(value) => {
+                        ...execution,
+                        stack: [
+                          {...frame, action: Returning(value)},
+                          ...Belt.List.tailExn(execution.stack),
+                        ],
+                        scopes: execution.scopes,
+                      }
+                    }
+                  | other => raise(Not_found) // todo
+                  }
+                | _ => raise(Not_found)
+                }
+              | _ => raise(Not_found)
+              }
+
+            | None => {
+                ...execution,
+                stack: [
+                  {
+                    ...frame,
+                    action: Evaluating,
+                    explicitConnectionSide: {
+                      isSource: false,
+                      connectionSide: {
+                        node: source.node,
+                        nib: ValueConnection,
+                      },
+                    },
+                  },
+                  ...execution.stack,
+                ],
+                scopes: execution.scopes,
+              }
+            }
           | _ => raise(Not_found)
           }
         | _ => raise(Not_found) // todo
