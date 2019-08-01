@@ -28,331 +28,14 @@ function evaluate(execution, definitions) {
     var graphImplementation = match[0];
     var match$1 = frame[/* explicitConnectionSide */1][/* isSource */1];
     var source = match$1 ? frame[/* explicitConnectionSide */1][/* connectionSide */0] : Belt_Map.getExn(graphImplementation[/* connections */1], frame[/* explicitConnectionSide */1][/* connectionSide */0]);
-    var match$2 = source[/* node */0];
-    if (match$2) {
-      var nodeID = match$2[0];
-      var node = Belt_MapString.getExn(graphImplementation[/* nodes */2], nodeID);
-      var match$3 = node[/* kind */1];
-      if (typeof match$3 === "number") {
-        throw Caml_builtin_exceptions.not_found;
-      } else if (match$3.tag) {
-        var match$4 = match$3[0];
-        var definitionID = match$4[/* definitionID */1];
-        var nodeDefinition = Belt_MapString.getExn(definitions, definitionID);
-        switch (match$4[/* kind */0]) {
-          case 0 : 
-              var match$5 = nodeDefinition[/* implementation */0];
-              switch (match$5.tag | 0) {
-                case 2 : 
-                    var match$6 = match$5[0];
-                    var match$7 = source[/* nib */1];
-                    if (typeof match$7 === "number") {
-                      throw Caml_builtin_exceptions.not_found;
-                    } else if (match$7.tag) {
-                      throw Caml_builtin_exceptions.not_found;
-                    } else {
-                      var match$8 = External$ReactTemplate.evaluateExternal(match$6[/* name */0], match$7[0], Belt_MapString.mapWithKey(match$6[/* interface */1][/* inputTypes */0], (function (nibID, param) {
-                                  return Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], /* record */Block.record([
-                                                    "node",
-                                                    "nib"
-                                                  ], [
-                                                    source[/* node */0],
-                                                    Block.variant("NibConnection", 0, [nibID])
-                                                  ])));
-                                })));
-                      if (match$8.tag) {
-                        return /* record */Block.record([
-                                  "scopes",
-                                  "stack",
-                                  "result"
-                                ], [
-                                  execution[/* scopes */0],
-                                  Belt_List.concat(Belt_List.map(match$8[0], (function (nibID) {
-                                              return /* record */Block.record([
-                                                        "scopeID",
-                                                        "explicitConnectionSide",
-                                                        "action"
-                                                      ], [
-                                                        frame[/* scopeID */0],
-                                                        Block.record([
-                                                            "connectionSide",
-                                                            "isSource"
-                                                          ], [
-                                                            Block.record([
-                                                                "node",
-                                                                "nib"
-                                                              ], [
-                                                                source[/* node */0],
-                                                                Block.variant("NibConnection", 0, [nibID])
-                                                              ]),
-                                                            false
-                                                          ]),
-                                                        0
-                                                      ]);
-                                            })), execution[/* stack */1]),
-                                  execution[/* result */2]
-                                ]);
-                      } else {
-                        var value = match$8[0];
-                        return /* record */Block.record([
-                                  "scopes",
-                                  "stack",
-                                  "result"
-                                ], [
-                                  Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
-                                          "definitionID",
-                                          "sourceValues"
-                                        ], [
-                                          scope[/* definitionID */0],
-                                          Belt_Map.set(scope[/* sourceValues */1], source, value)
-                                        ])),
-                                  Block.simpleVariant("::", [
-                                      /* record */Block.record([
-                                          "scopeID",
-                                          "explicitConnectionSide",
-                                          "action"
-                                        ], [
-                                          frame[/* scopeID */0],
-                                          frame[/* explicitConnectionSide */1],
-                                          Block.simpleVariant("Returning", [value])
-                                        ]),
-                                      Belt_List.tailExn(execution[/* stack */1])
-                                    ]),
-                                  execution[/* result */2]
-                                ]);
-                      }
-                    }
-                case 3 : 
-                    throw Caml_builtin_exceptions.not_found;
-                default:
-                  throw Caml_builtin_exceptions.not_found;
-              }
-          case 1 : 
-              var match$9 = nodeDefinition[/* implementation */0];
-              if (match$9.tag) {
-                throw Caml_builtin_exceptions.not_found;
-              } else {
-                var value$1 = /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [match$9[0]]);
-                return /* record */Block.record([
-                          "scopes",
-                          "stack",
-                          "result"
-                        ], [
-                          Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
-                                  "definitionID",
-                                  "sourceValues"
-                                ], [
-                                  scope[/* definitionID */0],
-                                  Belt_Map.set(scope[/* sourceValues */1], source, value$1)
-                                ])),
-                          Block.simpleVariant("::", [
-                              /* record */Block.record([
-                                  "scopeID",
-                                  "explicitConnectionSide",
-                                  "action"
-                                ], [
-                                  frame[/* scopeID */0],
-                                  frame[/* explicitConnectionSide */1],
-                                  Block.simpleVariant("Returning", [value$1])
-                                ]),
-                              Belt_List.tailExn(execution[/* stack */1])
-                            ]),
-                          execution[/* result */2]
-                        ]);
-              }
-          case 2 : 
-          case 3 : 
-              throw Caml_builtin_exceptions.not_found;
-          case 4 : 
-              var match$10 = nodeDefinition[/* implementation */0];
-              if (match$10.tag === 4) {
-                var value$2 = /* DefinedValue */Block.variant("DefinedValue", 1, [/* record */Block.record([
-                        "definitionID",
-                        "values"
-                      ], [
-                        definitionID,
-                        Belt_MapString.mapWithKey(match$10[0], (function (nibID, param) {
-                                return /* LazyValue */Block.variant("LazyValue", 2, [/* record */Block.record([
-                                              "scopeID",
-                                              "explicitConnectionSide",
-                                              "action"
-                                            ], [
-                                              frame[/* scopeID */0],
-                                              Block.record([
-                                                  "connectionSide",
-                                                  "isSource"
-                                                ], [
-                                                  Block.record([
-                                                      "node",
-                                                      "nib"
-                                                    ], [
-                                                      Block.simpleVariant("NodeConnection", [nodeID]),
-                                                      Block.variant("NibConnection", 0, [nibID])
-                                                    ]),
-                                                  false
-                                                ]),
-                                              0
-                                            ])]);
-                              }))
-                      ])]);
-                console.log(source);
-                return /* record */Block.record([
-                          "scopes",
-                          "stack",
-                          "result"
-                        ], [
-                          Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
-                                  "definitionID",
-                                  "sourceValues"
-                                ], [
-                                  scope[/* definitionID */0],
-                                  Belt_Map.set(scope[/* sourceValues */1], source, value$2)
-                                ])),
-                          Block.simpleVariant("::", [
-                              /* record */Block.record([
-                                  "scopeID",
-                                  "explicitConnectionSide",
-                                  "action"
-                                ], [
-                                  frame[/* scopeID */0],
-                                  frame[/* explicitConnectionSide */1],
-                                  Block.simpleVariant("Returning", [value$2])
-                                ]),
-                              Belt_List.tailExn(execution[/* stack */1])
-                            ]),
-                          execution[/* result */2]
-                        ]);
-              } else {
-                throw Caml_builtin_exceptions.not_found;
-              }
-          case 5 : 
-              var match$11 = nodeDefinition[/* implementation */0];
-              if (match$11.tag === 4) {
-                var match$12 = Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], /* record */Block.record([
-                            "node",
-                            "nib"
-                          ], [
-                            source[/* node */0],
-                            0
-                          ])));
-                if (match$12 !== undefined) {
-                  var value$3 = match$12;
-                  var match$13 = source[/* nib */1];
-                  if (typeof match$13 === "number") {
-                    throw Caml_builtin_exceptions.not_found;
-                  } else if (match$13.tag) {
-                    throw Caml_builtin_exceptions.not_found;
-                  } else {
-                    switch (value$3.tag | 0) {
-                      case 1 : 
-                          var other = Belt_MapString.getExn(value$3[0][/* values */1], match$13[0]);
-                          switch (other.tag | 0) {
-                            case 0 : 
-                            case 1 : 
-                                throw Caml_builtin_exceptions.not_found;
-                            case 2 : 
-                                var fieldStackFrame = other[0];
-                                var match$14 = Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], fieldStackFrame[/* explicitConnectionSide */1][/* connectionSide */0]));
-                                if (match$14 !== undefined) {
-                                  return /* record */Block.record([
-                                            "scopes",
-                                            "stack",
-                                            "result"
-                                          ], [
-                                            execution[/* scopes */0],
-                                            Block.simpleVariant("::", [
-                                                /* record */Block.record([
-                                                    "scopeID",
-                                                    "explicitConnectionSide",
-                                                    "action"
-                                                  ], [
-                                                    frame[/* scopeID */0],
-                                                    frame[/* explicitConnectionSide */1],
-                                                    Block.simpleVariant("Returning", [match$14])
-                                                  ]),
-                                                Belt_List.tailExn(execution[/* stack */1])
-                                              ]),
-                                            execution[/* result */2]
-                                          ]);
-                                } else {
-                                  console.log("None value");
-                                  return /* record */Block.record([
-                                            "scopes",
-                                            "stack",
-                                            "result"
-                                          ], [
-                                            execution[/* scopes */0],
-                                            Block.simpleVariant("::", [
-                                                fieldStackFrame,
-                                                execution[/* stack */1]
-                                              ]),
-                                            execution[/* result */2]
-                                          ]);
-                                }
-                            
-                          }
-                      case 0 : 
-                      case 2 : 
-                          throw Caml_builtin_exceptions.not_found;
-                      
-                    }
-                  }
-                } else {
-                  return /* record */Block.record([
-                            "scopes",
-                            "stack",
-                            "result"
-                          ], [
-                            execution[/* scopes */0],
-                            Block.simpleVariant("::", [
-                                /* record */Block.record([
-                                    "scopeID",
-                                    "explicitConnectionSide",
-                                    "action"
-                                  ], [
-                                    frame[/* scopeID */0],
-                                    Block.record([
-                                        "connectionSide",
-                                        "isSource"
-                                      ], [
-                                        Block.record([
-                                            "node",
-                                            "nib"
-                                          ], [
-                                            source[/* node */0],
-                                            0
-                                          ]),
-                                        false
-                                      ]),
-                                    0
-                                  ]),
-                                execution[/* stack */1]
-                              ]),
-                            execution[/* result */2]
-                          ]);
-                }
-              } else {
-                throw Caml_builtin_exceptions.not_found;
-              }
-          
-        }
-      } else {
-        throw Caml_builtin_exceptions.not_found;
-      }
-    } else {
-      var value$4 = /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [3.0])]);
+    var match$2 = Belt_Map.get(scope[/* sourceValues */1], source);
+    if (match$2 !== undefined) {
       return /* record */Block.record([
                 "scopes",
                 "stack",
                 "result"
               ], [
-                Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
-                        "definitionID",
-                        "sourceValues"
-                      ], [
-                        scope[/* definitionID */0],
-                        Belt_Map.set(scope[/* sourceValues */1], source, value$4)
-                      ])),
+                execution[/* scopes */0],
                 Block.simpleVariant("::", [
                     /* record */Block.record([
                         "scopeID",
@@ -361,12 +44,353 @@ function evaluate(execution, definitions) {
                       ], [
                         frame[/* scopeID */0],
                         frame[/* explicitConnectionSide */1],
-                        Block.simpleVariant("Returning", [value$4])
+                        Block.simpleVariant("Returning", [match$2])
                       ]),
                     Belt_List.tailExn(execution[/* stack */1])
                   ]),
                 execution[/* result */2]
               ]);
+    } else {
+      var match$3 = source[/* node */0];
+      if (match$3) {
+        var nodeID = match$3[0];
+        var node = Belt_MapString.getExn(graphImplementation[/* nodes */2], nodeID);
+        var match$4 = node[/* kind */1];
+        if (typeof match$4 === "number") {
+          throw Caml_builtin_exceptions.not_found;
+        } else if (match$4.tag) {
+          var match$5 = match$4[0];
+          var definitionID = match$5[/* definitionID */1];
+          var nodeDefinition = Belt_MapString.getExn(definitions, definitionID);
+          switch (match$5[/* kind */0]) {
+            case 0 : 
+                var match$6 = nodeDefinition[/* implementation */0];
+                switch (match$6.tag | 0) {
+                  case 2 : 
+                      var match$7 = match$6[0];
+                      var match$8 = source[/* nib */1];
+                      if (typeof match$8 === "number") {
+                        throw Caml_builtin_exceptions.not_found;
+                      } else if (match$8.tag) {
+                        throw Caml_builtin_exceptions.not_found;
+                      } else {
+                        var match$9 = External$ReactTemplate.evaluateExternal(match$7[/* name */0], match$8[0], Belt_MapString.mapWithKey(match$7[/* interface */1][/* inputTypes */0], (function (nibID, param) {
+                                    return Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], /* record */Block.record([
+                                                      "node",
+                                                      "nib"
+                                                    ], [
+                                                      source[/* node */0],
+                                                      Block.variant("NibConnection", 0, [nibID])
+                                                    ])));
+                                  })));
+                        if (match$9.tag) {
+                          return /* record */Block.record([
+                                    "scopes",
+                                    "stack",
+                                    "result"
+                                  ], [
+                                    execution[/* scopes */0],
+                                    Belt_List.concat(Belt_List.map(match$9[0], (function (nibID) {
+                                                return /* record */Block.record([
+                                                          "scopeID",
+                                                          "explicitConnectionSide",
+                                                          "action"
+                                                        ], [
+                                                          frame[/* scopeID */0],
+                                                          Block.record([
+                                                              "connectionSide",
+                                                              "isSource"
+                                                            ], [
+                                                              Block.record([
+                                                                  "node",
+                                                                  "nib"
+                                                                ], [
+                                                                  source[/* node */0],
+                                                                  Block.variant("NibConnection", 0, [nibID])
+                                                                ]),
+                                                              false
+                                                            ]),
+                                                          0
+                                                        ]);
+                                              })), execution[/* stack */1]),
+                                    execution[/* result */2]
+                                  ]);
+                        } else {
+                          var value = match$9[0];
+                          return /* record */Block.record([
+                                    "scopes",
+                                    "stack",
+                                    "result"
+                                  ], [
+                                    Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
+                                            "definitionID",
+                                            "sourceValues"
+                                          ], [
+                                            scope[/* definitionID */0],
+                                            Belt_Map.set(scope[/* sourceValues */1], source, value)
+                                          ])),
+                                    Block.simpleVariant("::", [
+                                        /* record */Block.record([
+                                            "scopeID",
+                                            "explicitConnectionSide",
+                                            "action"
+                                          ], [
+                                            frame[/* scopeID */0],
+                                            frame[/* explicitConnectionSide */1],
+                                            Block.simpleVariant("Returning", [value])
+                                          ]),
+                                        Belt_List.tailExn(execution[/* stack */1])
+                                      ]),
+                                    execution[/* result */2]
+                                  ]);
+                        }
+                      }
+                  case 3 : 
+                      throw Caml_builtin_exceptions.not_found;
+                  default:
+                    throw Caml_builtin_exceptions.not_found;
+                }
+            case 1 : 
+                var match$10 = nodeDefinition[/* implementation */0];
+                if (match$10.tag) {
+                  throw Caml_builtin_exceptions.not_found;
+                } else {
+                  var value$1 = /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [match$10[0]]);
+                  return /* record */Block.record([
+                            "scopes",
+                            "stack",
+                            "result"
+                          ], [
+                            Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
+                                    "definitionID",
+                                    "sourceValues"
+                                  ], [
+                                    scope[/* definitionID */0],
+                                    Belt_Map.set(scope[/* sourceValues */1], source, value$1)
+                                  ])),
+                            Block.simpleVariant("::", [
+                                /* record */Block.record([
+                                    "scopeID",
+                                    "explicitConnectionSide",
+                                    "action"
+                                  ], [
+                                    frame[/* scopeID */0],
+                                    frame[/* explicitConnectionSide */1],
+                                    Block.simpleVariant("Returning", [value$1])
+                                  ]),
+                                Belt_List.tailExn(execution[/* stack */1])
+                              ]),
+                            execution[/* result */2]
+                          ]);
+                }
+            case 2 : 
+            case 3 : 
+                throw Caml_builtin_exceptions.not_found;
+            case 4 : 
+                var match$11 = nodeDefinition[/* implementation */0];
+                if (match$11.tag === 4) {
+                  var value$2 = /* DefinedValue */Block.variant("DefinedValue", 1, [/* record */Block.record([
+                          "definitionID",
+                          "values"
+                        ], [
+                          definitionID,
+                          Belt_MapString.mapWithKey(match$11[0], (function (nibID, param) {
+                                  return /* LazyValue */Block.variant("LazyValue", 2, [/* record */Block.record([
+                                                "scopeID",
+                                                "explicitConnectionSide",
+                                                "action"
+                                              ], [
+                                                frame[/* scopeID */0],
+                                                Block.record([
+                                                    "connectionSide",
+                                                    "isSource"
+                                                  ], [
+                                                    Block.record([
+                                                        "node",
+                                                        "nib"
+                                                      ], [
+                                                        Block.simpleVariant("NodeConnection", [nodeID]),
+                                                        Block.variant("NibConnection", 0, [nibID])
+                                                      ]),
+                                                    false
+                                                  ]),
+                                                0
+                                              ])]);
+                                }))
+                        ])]);
+                  console.log(source);
+                  return /* record */Block.record([
+                            "scopes",
+                            "stack",
+                            "result"
+                          ], [
+                            Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
+                                    "definitionID",
+                                    "sourceValues"
+                                  ], [
+                                    scope[/* definitionID */0],
+                                    Belt_Map.set(scope[/* sourceValues */1], source, value$2)
+                                  ])),
+                            Block.simpleVariant("::", [
+                                /* record */Block.record([
+                                    "scopeID",
+                                    "explicitConnectionSide",
+                                    "action"
+                                  ], [
+                                    frame[/* scopeID */0],
+                                    frame[/* explicitConnectionSide */1],
+                                    Block.simpleVariant("Returning", [value$2])
+                                  ]),
+                                Belt_List.tailExn(execution[/* stack */1])
+                              ]),
+                            execution[/* result */2]
+                          ]);
+                } else {
+                  throw Caml_builtin_exceptions.not_found;
+                }
+            case 5 : 
+                var match$12 = nodeDefinition[/* implementation */0];
+                if (match$12.tag === 4) {
+                  var match$13 = Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], /* record */Block.record([
+                              "node",
+                              "nib"
+                            ], [
+                              source[/* node */0],
+                              0
+                            ])));
+                  if (match$13 !== undefined) {
+                    var value$3 = match$13;
+                    var match$14 = source[/* nib */1];
+                    if (typeof match$14 === "number") {
+                      throw Caml_builtin_exceptions.not_found;
+                    } else if (match$14.tag) {
+                      throw Caml_builtin_exceptions.not_found;
+                    } else {
+                      switch (value$3.tag | 0) {
+                        case 1 : 
+                            var other = Belt_MapString.getExn(value$3[0][/* values */1], match$14[0]);
+                            switch (other.tag | 0) {
+                              case 0 : 
+                              case 1 : 
+                                  throw Caml_builtin_exceptions.not_found;
+                              case 2 : 
+                                  var fieldStackFrame = other[0];
+                                  var match$15 = Belt_Map.get(scope[/* sourceValues */1], Belt_Map.getExn(graphImplementation[/* connections */1], fieldStackFrame[/* explicitConnectionSide */1][/* connectionSide */0]));
+                                  if (match$15 !== undefined) {
+                                    return /* record */Block.record([
+                                              "scopes",
+                                              "stack",
+                                              "result"
+                                            ], [
+                                              execution[/* scopes */0],
+                                              Block.simpleVariant("::", [
+                                                  /* record */Block.record([
+                                                      "scopeID",
+                                                      "explicitConnectionSide",
+                                                      "action"
+                                                    ], [
+                                                      frame[/* scopeID */0],
+                                                      frame[/* explicitConnectionSide */1],
+                                                      Block.simpleVariant("Returning", [match$15])
+                                                    ]),
+                                                  Belt_List.tailExn(execution[/* stack */1])
+                                                ]),
+                                              execution[/* result */2]
+                                            ]);
+                                  } else {
+                                    console.log("None value");
+                                    return /* record */Block.record([
+                                              "scopes",
+                                              "stack",
+                                              "result"
+                                            ], [
+                                              execution[/* scopes */0],
+                                              Block.simpleVariant("::", [
+                                                  fieldStackFrame,
+                                                  execution[/* stack */1]
+                                                ]),
+                                              execution[/* result */2]
+                                            ]);
+                                  }
+                              
+                            }
+                        case 0 : 
+                        case 2 : 
+                            throw Caml_builtin_exceptions.not_found;
+                        
+                      }
+                    }
+                  } else {
+                    return /* record */Block.record([
+                              "scopes",
+                              "stack",
+                              "result"
+                            ], [
+                              execution[/* scopes */0],
+                              Block.simpleVariant("::", [
+                                  /* record */Block.record([
+                                      "scopeID",
+                                      "explicitConnectionSide",
+                                      "action"
+                                    ], [
+                                      frame[/* scopeID */0],
+                                      Block.record([
+                                          "connectionSide",
+                                          "isSource"
+                                        ], [
+                                          Block.record([
+                                              "node",
+                                              "nib"
+                                            ], [
+                                              source[/* node */0],
+                                              0
+                                            ]),
+                                          false
+                                        ]),
+                                      0
+                                    ]),
+                                  execution[/* stack */1]
+                                ]),
+                              execution[/* result */2]
+                            ]);
+                  }
+                } else {
+                  throw Caml_builtin_exceptions.not_found;
+                }
+            
+          }
+        } else {
+          throw Caml_builtin_exceptions.not_found;
+        }
+      } else {
+        var value$4 = /* PrimitiveValue */Block.variant("PrimitiveValue", 0, [/* NumberValue */Block.variant("NumberValue", 1, [3.0])]);
+        return /* record */Block.record([
+                  "scopes",
+                  "stack",
+                  "result"
+                ], [
+                  Belt_MapString.set(execution[/* scopes */0], frame[/* scopeID */0], /* record */Block.record([
+                          "definitionID",
+                          "sourceValues"
+                        ], [
+                          scope[/* definitionID */0],
+                          Belt_Map.set(scope[/* sourceValues */1], source, value$4)
+                        ])),
+                  Block.simpleVariant("::", [
+                      /* record */Block.record([
+                          "scopeID",
+                          "explicitConnectionSide",
+                          "action"
+                        ], [
+                          frame[/* scopeID */0],
+                          frame[/* explicitConnectionSide */1],
+                          Block.simpleVariant("Returning", [value$4])
+                        ]),
+                      Belt_List.tailExn(execution[/* stack */1])
+                    ]),
+                  execution[/* result */2]
+                ]);
+      }
     }
   } else {
     throw Caml_builtin_exceptions.not_found;

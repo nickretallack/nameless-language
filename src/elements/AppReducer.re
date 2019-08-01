@@ -23,239 +23,254 @@ let evaluate = (execution: execution, definitions: definitions): execution => {
           graphImplementation.connections,
           frame.explicitConnectionSide.connectionSide,
         );
-    switch (source.node) {
-    | NodeConnection(nodeID) =>
-      let node = Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
-      switch (node.kind) {
-      | DefinedNode({kind, definitionID}) =>
-        let nodeDefinition =
-          Belt.Map.String.getExn(definitions, definitionID);
-        switch (kind) {
-        | ValueNode =>
-          switch (nodeDefinition.implementation) {
-          | ConstantImplementation(primitiveValue) =>
-            let value = PrimitiveValue(primitiveValue);
-            {
-              ...execution,
-              stack: [
-                {...frame, action: Returning(value)},
-                ...Belt.List.tailExn(execution.stack),
-              ],
-              scopes:
-                Belt.Map.String.set(
-                  execution.scopes,
-                  frame.scopeID,
-                  {
-                    ...scope,
-                    sourceValues:
-                      Belt.Map.set(scope.sourceValues, source, value),
-                  },
-                ),
-            };
-
-          | _ => raise(Not_found) // todo
-          }
-        | FunctionCallNode =>
-          switch (nodeDefinition.implementation) {
-          | ExternalImplementation({name, interface}) =>
-            switch (source.nib) {
-            | NibConnection(outputID) =>
-              switch (
-                External.evaluateExternal(
-                  name,
-                  outputID,
-                  Belt.Map.String.mapWithKey(interface.inputTypes, (nibID, _) =>
-                    Belt.Map.get(
-                      scope.sourceValues,
-                      Belt.Map.getExn(
-                        graphImplementation.connections,
-                        {node: source.node, nib: NibConnection(nibID)},
-                      ),
-                    )
-                  ),
-                )
-              ) {
-              | EvaluationResult(value) => {
-                  ...execution,
-                  stack: [
-                    {...frame, action: Returning(value)},
-                    ...Belt.List.tailExn(execution.stack),
-                  ],
-                  scopes:
-                    Belt.Map.String.set(
-                      execution.scopes,
-                      frame.scopeID,
-                      {
-                        ...scope,
-                        sourceValues:
-                          Belt.Map.set(scope.sourceValues, source, value),
-                      },
-                    ),
-                }
-              | EvaluationRequired(nibIDs) => {
-                  ...execution,
-                  stack:
-                    Belt.List.concat(
-                      Belt.List.map(nibIDs, nibID =>
-                        {
-                          ...frame,
-                          explicitConnectionSide: {
-                            isSource: false,
-                            connectionSide: {
-                              node: source.node,
-                              nib: NibConnection(nibID),
-                            },
-                          },
-                          action: Evaluating,
-                        }
-                      ),
-                      execution.stack,
-                    ),
-                }
-              }
-            | _ => raise(Not_found)
-            }
-          | GraphImplementation(_) => raise(Not_found) // todo
-          | _ => raise(Not_found) // todo
-          }
-        | ConstructorNode =>
-          switch (nodeDefinition.implementation) {
-          | RecordTypeImplementation(typedFields) =>
-            let value =
-              DefinedValue({
-                definitionID,
-                values:
-                  Belt.Map.String.mapWithKey(typedFields, (nibID, _) =>
-                    LazyValue({
-                      ...frame,
-                      action: Evaluating,
-                      explicitConnectionSide: {
-                        isSource: false,
-                        connectionSide: {
-                          node: NodeConnection(nodeID),
-                          nib: NibConnection(nibID),
-                        },
-                      },
-                    })
-                  ),
-              });
-            Js.log(source);
-            {
-              ...execution,
-              stack: [
-                {...frame, action: Returning(value)},
-                ...Belt.List.tailExn(execution.stack),
-              ],
-              scopes:
-                Belt.Map.String.set(
-                  execution.scopes,
-                  frame.scopeID,
-                  {
-                    ...scope,
-                    sourceValues:
-                      Belt.Map.set(scope.sourceValues, source, value),
-                  },
-                ),
-            };
-          | _ => raise(Not_found)
-          }
-        | AccessorNode =>
-          switch (nodeDefinition.implementation) {
-          | RecordTypeImplementation(_) =>
-            switch (
-              Belt.Map.get(
-                scope.sourceValues,
-                Belt.Map.getExn(
-                  graphImplementation.connections,
-                  {node: source.node, nib: ValueConnection},
-                ),
-              )
-            ) {
-            | Some(value) =>
-              switch (source.nib) {
-              | NibConnection(nibID) =>
-                switch (value) {
-                | DefinedValue(definedValue) =>
-                  switch (Belt.Map.String.getExn(definedValue.values, nibID)) {
-                  | LazyValue(fieldStackFrame) =>
-                    switch (
-                      Belt.Map.get(
-                        scope.sourceValues,
-                        Belt.Map.getExn(
-                          graphImplementation.connections,
-                          fieldStackFrame.explicitConnectionSide.
-                            connectionSide,
-                        ),
-                      )
-                    ) {
-                    | None =>
-                      Js.log("None value");
-                      {
-                        ...execution,
-                        stack: [fieldStackFrame, ...execution.stack],
-                        scopes: execution.scopes,
-                      };
-                    | Some(value) => {
-                        ...execution,
-                        stack: [
-                          {...frame, action: Returning(value)},
-                          ...Belt.List.tailExn(execution.stack),
-                        ],
-                        scopes: execution.scopes,
-                      }
-                    }
-                  | other => raise(Not_found) // todo
-                  }
-                | _ => raise(Not_found)
-                }
-              | _ => raise(Not_found)
-              }
-
-            | None => {
-                ...execution,
-                stack: [
-                  {
-                    ...frame,
-                    action: Evaluating,
-                    explicitConnectionSide: {
-                      isSource: false,
-                      connectionSide: {
-                        node: source.node,
-                        nib: ValueConnection,
-                      },
-                    },
-                  },
-                  ...execution.stack,
-                ],
-                scopes: execution.scopes,
-              }
-            }
-          | _ => raise(Not_found)
-          }
-        | _ => raise(Not_found) // todo
-        };
-      | _ => raise(Not_found) // todo
-      };
-    | GraphConnection =>
-      // todo: a real implementation
-      let value = PrimitiveValue(NumberValue(3.0));
-      {
+    // check the cache to see if it's already evaluated
+    switch (Belt.Map.get(scope.sourceValues, source)) {
+    | Some(value) => {
         ...execution,
         stack: [
           {...frame, action: Returning(value)},
           ...Belt.List.tailExn(execution.stack),
         ],
-        scopes:
-          Belt.Map.String.set(
-            execution.scopes,
-            frame.scopeID,
-            {
-              ...scope,
-              sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-            },
-          ),
-      };
+      }
+    | None =>
+      switch (source.node) {
+      | NodeConnection(nodeID) =>
+        let node = Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
+        switch (node.kind) {
+        | DefinedNode({kind, definitionID}) =>
+          let nodeDefinition =
+            Belt.Map.String.getExn(definitions, definitionID);
+          switch (kind) {
+          | ValueNode =>
+            switch (nodeDefinition.implementation) {
+            | ConstantImplementation(primitiveValue) =>
+              let value = PrimitiveValue(primitiveValue);
+              {
+                ...execution,
+                stack: [
+                  {...frame, action: Returning(value)},
+                  ...Belt.List.tailExn(execution.stack),
+                ],
+                scopes:
+                  Belt.Map.String.set(
+                    execution.scopes,
+                    frame.scopeID,
+                    {
+                      ...scope,
+                      sourceValues:
+                        Belt.Map.set(scope.sourceValues, source, value),
+                    },
+                  ),
+              };
+
+            | _ => raise(Not_found) // todo
+            }
+          | FunctionCallNode =>
+            switch (nodeDefinition.implementation) {
+            | ExternalImplementation({name, interface}) =>
+              switch (source.nib) {
+              | NibConnection(outputID) =>
+                switch (
+                  External.evaluateExternal(
+                    name,
+                    outputID,
+                    Belt.Map.String.mapWithKey(
+                      interface.inputTypes, (nibID, _) =>
+                      Belt.Map.get(
+                        scope.sourceValues,
+                        Belt.Map.getExn(
+                          graphImplementation.connections,
+                          {node: source.node, nib: NibConnection(nibID)},
+                        ),
+                      )
+                    ),
+                  )
+                ) {
+                | EvaluationResult(value) => {
+                    ...execution,
+                    stack: [
+                      {...frame, action: Returning(value)},
+                      ...Belt.List.tailExn(execution.stack),
+                    ],
+                    scopes:
+                      Belt.Map.String.set(
+                        execution.scopes,
+                        frame.scopeID,
+                        {
+                          ...scope,
+                          sourceValues:
+                            Belt.Map.set(scope.sourceValues, source, value),
+                        },
+                      ),
+                  }
+                | EvaluationRequired(nibIDs) => {
+                    ...execution,
+                    stack:
+                      Belt.List.concat(
+                        Belt.List.map(nibIDs, nibID =>
+                          {
+                            ...frame,
+                            explicitConnectionSide: {
+                              isSource: false,
+                              connectionSide: {
+                                node: source.node,
+                                nib: NibConnection(nibID),
+                              },
+                            },
+                            action: Evaluating,
+                          }
+                        ),
+                        execution.stack,
+                      ),
+                  }
+                }
+              | _ => raise(Not_found)
+              }
+            | GraphImplementation(_) => raise(Not_found) // todo
+            | _ => raise(Not_found) // todo
+            }
+          | ConstructorNode =>
+            switch (nodeDefinition.implementation) {
+            | RecordTypeImplementation(typedFields) =>
+              let value =
+                DefinedValue({
+                  definitionID,
+                  values:
+                    Belt.Map.String.mapWithKey(typedFields, (nibID, _) =>
+                      LazyValue({
+                        ...frame,
+                        action: Evaluating,
+                        explicitConnectionSide: {
+                          isSource: false,
+                          connectionSide: {
+                            node: NodeConnection(nodeID),
+                            nib: NibConnection(nibID),
+                          },
+                        },
+                      })
+                    ),
+                });
+              Js.log(source);
+              {
+                ...execution,
+                stack: [
+                  {...frame, action: Returning(value)},
+                  ...Belt.List.tailExn(execution.stack),
+                ],
+                scopes:
+                  Belt.Map.String.set(
+                    execution.scopes,
+                    frame.scopeID,
+                    {
+                      ...scope,
+                      sourceValues:
+                        Belt.Map.set(scope.sourceValues, source, value),
+                    },
+                  ),
+              };
+            | _ => raise(Not_found)
+            }
+          | AccessorNode =>
+            switch (nodeDefinition.implementation) {
+            | RecordTypeImplementation(_) =>
+              switch (
+                Belt.Map.get(
+                  scope.sourceValues,
+                  Belt.Map.getExn(
+                    graphImplementation.connections,
+                    {node: source.node, nib: ValueConnection},
+                  ),
+                )
+              ) {
+              | Some(value) =>
+                switch (source.nib) {
+                | NibConnection(nibID) =>
+                  switch (value) {
+                  | DefinedValue(definedValue) =>
+                    switch (
+                      Belt.Map.String.getExn(definedValue.values, nibID)
+                    ) {
+                    | LazyValue(fieldStackFrame) =>
+                      switch (
+                        Belt.Map.get(
+                          scope.sourceValues,
+                          Belt.Map.getExn(
+                            graphImplementation.connections,
+                            fieldStackFrame.explicitConnectionSide.
+                              connectionSide,
+                          ),
+                        )
+                      ) {
+                      | None =>
+                        Js.log("None value");
+                        {
+                          ...execution,
+                          stack: [fieldStackFrame, ...execution.stack],
+                          scopes: execution.scopes,
+                        };
+                      | Some(value) => {
+                          ...execution,
+                          stack: [
+                            {...frame, action: Returning(value)},
+                            ...Belt.List.tailExn(execution.stack),
+                          ],
+                          scopes: execution.scopes,
+                        }
+                      }
+                    | other => raise(Not_found) // todo
+                    }
+                  | _ => raise(Not_found)
+                  }
+                | _ => raise(Not_found)
+                }
+
+              | None => {
+                  ...execution,
+                  stack: [
+                    {
+                      ...frame,
+                      action: Evaluating,
+                      explicitConnectionSide: {
+                        isSource: false,
+                        connectionSide: {
+                          node: source.node,
+                          nib: ValueConnection,
+                        },
+                      },
+                    },
+                    ...execution.stack,
+                  ],
+                  scopes: execution.scopes,
+                }
+              }
+            | _ => raise(Not_found)
+            }
+          | _ => raise(Not_found) // todo
+          };
+        | _ => raise(Not_found) // todo
+        };
+      | GraphConnection =>
+        // todo: a real implementation
+        let value = PrimitiveValue(NumberValue(3.0));
+        {
+          ...execution,
+          stack: [
+            {...frame, action: Returning(value)},
+            ...Belt.List.tailExn(execution.stack),
+          ],
+          scopes:
+            Belt.Map.String.set(
+              execution.scopes,
+              frame.scopeID,
+              {
+                ...scope,
+                sourceValues: Belt.Map.set(scope.sourceValues, source, value),
+              },
+            ),
+        };
+      }
     };
+
   | _ => raise(Not_found) // todo
   };
 };
