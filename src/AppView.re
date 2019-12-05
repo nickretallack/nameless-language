@@ -1,11 +1,8 @@
 [@react.component]
 let make = () => {
+  let connectionNode = ConnectionNode.GraphConnection;
   <div>
-    {React.string("hello")}
-    {React.string(
-       Json.stringify(
-         EncodeConnectionNode.f(ConnectionNode.GraphConnection),
-       ),
-     )}
+    {React.string(ConnectionNodeToString.f(connectionNode))}
+    {React.string(Json.stringify(ConnectionNodeToJSON.f(connectionNode)))}
   </div>;
 };
