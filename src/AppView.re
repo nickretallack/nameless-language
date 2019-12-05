@@ -1,8 +1,9 @@
 [@react.component]
 let make = () => {
-  let connectionNode = ConnectionNode.GraphConnection;
+  let connectionSide =
+    ConnectionSide.{node: GraphConnection, nib: ValueConnection};
   <div>
-    {React.string(ConnectionNodeToString.f(connectionNode))}
-    {React.string(Json.stringify(ConnectionNodeToJSON.f(connectionNode)))}
+    {React.string(ConnectionSideToString.f(connectionSide))}
+    {React.string(Json.stringify(ConnectionSideToJson.f(connectionSide)))}
   </div>;
 };

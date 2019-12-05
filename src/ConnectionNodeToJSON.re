@@ -1,4 +1,4 @@
-let f = (connectionNode: ConnectionNode.t) =>
+let f = (connectionNode: ConnectionNode.t): Js.Json.t =>
   Json.Encode.(
     object_(
       switch (connectionNode) {
