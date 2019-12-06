@@ -1,4 +1,4 @@
-let t =
+let f =
     (displayNibs: list(DisplayNib.t), node: ConnectionNode.t, isSource: bool)
     : list(DisplayNibExplicit.t) =>
   Belt.List.map(displayNibs, (displayNib: DisplayNib.t) =>
