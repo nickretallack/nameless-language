@@ -8,7 +8,6 @@ let make =
       ~isHighlighted: bool,
       ~value: option(Value.t),
     ) => {
-  let ref = React.useRef(Js.Nullable.null);
   let sidePadding = 10.0;
   let color = "rgb(160,160,160)";
   let emit = (_: GraphAction.t) => ();
@@ -35,7 +34,23 @@ let make =
        </text>
      }}
     <circle
-      ref={ReactDOMRe.Ref.domRef(ref)}
+      ref={ReactDOMRe.Ref.callbackDomRef(nullableElement =>
+        switch (Js.Nullable.toOption(nullableElement)) {
+        | None => ()
+        | Some(element) =>
+          Webapi.Dom.Element.addEventListener(
+            "finish-drawing",
+            event =>
+              emit(
+                PointerAction({
+                  pointerID: Touch(EventGetDetail.f(event)##identifier),
+                  action: FinishDrawing({connectionSide, isSource}),
+                }),
+              ),
+            element,
+          )
+        }
+      )}
       cx={FloatToPixels.f(position.x)}
       cy={FloatToPixels.f(position.y)}
       r="6"
