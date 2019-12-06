@@ -18,16 +18,23 @@ let f =
         interface: {
           input:
             Belt.Map.String.fromArray(
-              Belt.Array.map(inputs, ((id, _name)) => (id, AnyType)),
+              Belt.Array.map(inputs, ((id, _name)) =>
+                (id, ValueType.AnyType)
+              ),
             ),
           output:
             Belt.Map.String.fromArray(
-              Belt.Array.map(outputs, ((id, _name)) => (id, AnyType)),
+              Belt.Array.map(outputs, ((id, _name)) =>
+                (id, ValueType.AnyType)
+              ),
             ),
         },
         nodes: Belt.Map.String.fromArray(nodes),
         connections:
-          Belt.Map.fromArray(connections, ~id=(module ConnectionComparator)),
+          Belt.Map.fromArray(
+            connections,
+            ~id=(module ConnectionSideComparable.C),
+          ),
       }),
     (),
   );
