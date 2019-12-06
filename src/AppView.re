@@ -12,14 +12,16 @@ let make = () => {
     {React.string(ExplicitConnectionSideKey.f(explicitConnectionSide))}
     {React.string(Json.stringify(DefinedNodeToJson.f(definedNode)))}
     <svg>
-      <NibView
-        isSource=true
-        connectionSide
-        position=Point.{x: 50.0, y: 50.0}
-        text="Hello"
-        isHighlighted=false
-        value=None
-      />
-    </svg>
+
+        <NibView
+          isSource=true
+          connectionSide
+          position=Point.{x: 50.0, y: 50.0}
+          text="Hello"
+          isHighlighted=false
+          value=None
+        />
+      </svg>
+      // <NodeView />
   </div>;
 };

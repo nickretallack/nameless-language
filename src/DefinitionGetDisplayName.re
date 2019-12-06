@@ -1,4 +1,4 @@
-let t = (definition: Definition.t, language: LanguageName.t) => {
+let f = (definition: Definition.t, language: LanguageName.t) => {
   let text = TranslatableGetText.f(definition.documentation.name, language);
   if (text != "") {
     text;
