@@ -1,0 +1,192 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.graph {
+	position: relative;
+	border: 1px solid lightgray;
+}
+
+.evaluate {
+	display: block;
+	color: blue;
+	cursor: pointer;
+}
+
+.node {
+	position: absolute;
+	/* width: 80px; */
+	background: rgba(0, 0, 0, 0.1);
+	top: 0;
+	left: 0;
+}
+
+.node .name {
+	text-align: center;
+	height: 20px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+:root {
+	--nib-size: 14px;
+	--row-size: 20px;
+	--nega-half-nib: calc(var(--nib-size) / -2);
+	--nega-half-row: calc(var(--row-size) / -2);
+}
+
+.nib {
+	width: var(--nib-size);
+	height: var(--nib-size);
+	border-radius: 50%;
+	display: inline-block;
+	border: 1px solid gray;
+	vertical-align: middle;
+	margin: calc((var(--row-size) - var(--nib-size)) / 2);
+	z-index: 10;
+}
+
+.nib.sink {
+	background: white;
+}
+
+.nib.source {
+	background: gray;
+}
+
+.nib.selected {
+	border-color: red;
+}
+
+.node .input,
+.node .output {
+	height: 20px;
+	white-space: nowrap;
+}
+
+.nib-name {
+	width: calc(115px + var(--nega-half-nib));
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
+.node.definition-node {
+	width: auto;
+}
+
+.node.definition-node .external {
+	flex: 0 0 0;
+}
+
+.input,
+.output.internal {
+	text-align: right;
+}
+
+.output,
+.input.internal {
+	text-align: left;
+}
+
+.nib.sink {
+	margin-right: var(--nega-half-nib);
+}
+
+.nib.source {
+	margin-left: var(--nega-half-nib);
+}
+
+.graph-input,
+.graph-output {
+	position: absolute;
+	margin-top: var(--nega-half-row);
+}
+
+.graph-input {
+	margin-right: var(--nega-half-nib);
+}
+.graph-output {
+	margin-left: var(--nega-half-nib);
+}
+
+.type-selector-menu {
+	display: flex;
+}
+.type-selector-menu > div {
+	margin-right: 10px;
+}
+
+.type-selector-menu a {
+	display: block;
+}
+
+.type-selector-menu a.selected {
+	background: lightgray;
+}
+
+.type-selector-choices {
+	margin-left: 5px;
+}
+
+a {
+	color: blue;
+}
+
+.maker {
+	margin-left: 1ex;
+}
+
+.definition-node {
+	display: flex;
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.inputs,
+.outputs {
+	z-index: 1;
+	width: 120px;
+	background: rgba(0, 0, 0, 0.1);
+	position: absolute;
+	top: 0;
+	bottom: 0;
+}
+.definition-node .external {
+	z-index: 2;
+}
+
+.inputs {
+	right: 0;
+}
+.outputs {
+	left: 0;
+}
+
+.input input,
+.output input {
+	width: 110px;
+	text-align: inherit;
+}
+
+h1,
+h2,
+h3 {
+	font: inherit;
+	margin: 0;
+}
+
+.interface {
+	display: flex;
+}
+
+.interface > div + div {
+	margin-left: 20px;
+}
