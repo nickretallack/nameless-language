@@ -1,6 +1,6 @@
 let f =
     (nodes: NodeMap.t, definitions: DefinitionMap.t)
-    : list(DisplayNibExplicit.t) =>
+    : list(ExplicitDisplayNib.t) =>
   Belt.List.reduce(
     Belt.Map.String.toList(nodes),
     [],

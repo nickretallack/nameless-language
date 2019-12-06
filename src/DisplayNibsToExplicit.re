@@ -1,8 +1,8 @@
 let f =
     (displayNibs: list(DisplayNib.t), node: ConnectionNode.t, isSource: bool)
-    : list(DisplayNibExplicit.t) =>
+    : list(ExplicitDisplayNib.t) =>
   Belt.List.map(displayNibs, (displayNib: DisplayNib.t) =>
-    DisplayNibExplicit.{
+    ExplicitDisplayNib.{
       name: displayNib.name,
       explicitConnectionSide: {
         connectionSide: {

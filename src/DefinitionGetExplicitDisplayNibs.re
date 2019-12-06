@@ -1,6 +1,6 @@
 let f =
     (definition: Definition.t, definitions: DefinitionMap.t)
-    : list(DisplayNibExplicit.t) => {
+    : list(ExplicitDisplayNib.t) => {
   switch (definition.implementation) {
   | GraphImplementation(graphImplementation) =>
     Belt.List.concatMany([|
