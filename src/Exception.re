@@ -1,0 +1,2 @@
+exception InvalidConnection;
+exception CycleDetected;
