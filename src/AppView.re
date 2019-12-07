@@ -2,9 +2,6 @@
 let make = () => {
   let connectionSide =
     ConnectionSide.{node: GraphConnection, nib: ValueConnection};
-  let explicitConnectionSide =
-    ExplicitConnectionSide.{connectionSide, isSource: false};
-  let definedNode = DefinedNode.{kind: FunctionCallNode, definitionID: "123"};
 
   let definitions = DefinitionExamples.v;
   let example = DefinitionExamples.example;
