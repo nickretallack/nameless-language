@@ -13,7 +13,6 @@ let make =
       ~onTouchStart=?,
       ~onMouseUp=?,
       ~onTouchEnd=?,
-      _children,
     ) => {
   let makeNode = (name: string, onDoubleClick) =>
     <NibsBoxView
