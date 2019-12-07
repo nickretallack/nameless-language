@@ -1,4 +1,5 @@
 type t =
+  | CreateDefinition(Definition.t)
   | CreateConnection(Connection.t)
   | ChangeName(string)
   | ChangeDescription(string)
@@ -10,5 +11,5 @@ type t =
   | RemoveConnection(ConnectionSide.t)
   | RemoveNodes(Belt.Set.String.t)
   | ChangeNodeScope(ChangeNodeScope.t)
-  | Fork
+  | Fork(DefinitionID.t)
   | EvaluateNib(ExplicitConnectionSide.t);

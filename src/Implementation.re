@@ -3,6 +3,6 @@ type t =
   | InterfaceImplementation(Interface.t)
   | ExternalImplementation(ExternalImplementation.t)
   | GraphImplementation(GraphImplementation.t)
-  | RecordTypeImplementation(Record.t)
+  | RecordTypeImplementation(RecordType.t)
   | LabeledTypeImplementation(option(ValueType.t))
   | UnionTypeImplementation(TypeSet.t);

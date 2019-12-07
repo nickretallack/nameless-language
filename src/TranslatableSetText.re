@@ -1,4 +1,4 @@
-let t = (translatable: Translatable.t, language: LanguageName.t, text: string) => {
+let f = (translatable: Translatable.t, language: LanguageName.t, text: string) => {
   ...translatable,
   translations:
     Belt.Map.String.update(

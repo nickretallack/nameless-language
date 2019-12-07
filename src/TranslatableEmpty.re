@@ -1,1 +1,1 @@
-let f = TranslatableMake.f("", "en");
+let v = TranslatableMake.f("", "en");

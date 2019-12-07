@@ -1,4 +1,4 @@
 type t = {
-  input: Record.t,
-  output: Record.t,
+  input: RecordType.t,
+  output: RecordType.t,
 };

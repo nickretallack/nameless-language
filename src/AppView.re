@@ -1,35 +1,97 @@
 [@react.component]
-let make = () => {
-  let connectionSide =
-    ConnectionSide.{node: GraphConnection, nib: ValueConnection};
-
-  let definitions = DefinitionExamples.v;
-  let example = DefinitionExamples.example;
-
-  let node =
-    switch (example.implementation) {
-    | GraphImplementation(graphImplementation) =>
-      Belt.Map.String.getExn(graphImplementation.nodes, "node1")
-    | _ => raise(Not_found)
-    };
+let make = (~definitions) => {
+  let (state, dispatch) =
+    React.useReducer(
+      AppReducer.f,
+      {definitions, error: NoAppError, execution: None},
+    );
+  let url = ReasonReactRouter.useUrl();
+  let definitionID = url.hash;
   <div>
-    <svg>
-      <NibView
-        isSource=true
-        connectionSide
-        position=Point.{x: 50.0, y: 50.0}
-        text="Hello"
-        isHighlighted=false
-        value=None
-      />
-      <NodeView
-        node
-        definitions
-        position=Point.{x: 10.0, y: 10.0}
-        size=Point.{x: 100.0, y: 100.0}
-        nodeWidth=300.0
-        textHeight=20.0
-      />
-    </svg>
+    <a href="#"> {ReasonReact.string("Library")} </a>
+    {ReasonReact.string(" New:")}
+    {ReasonReact.array(
+       Belt.Array.mapWithIndex(DefinitionMakers.v, (index, (name, maker)) =>
+         <a
+           className="maker"
+           key={string_of_int(index)}
+           onClick={_event => {
+             let newDefinitionID = RandomIDMake.f();
+             dispatch(
+               AppAction.DefinitionAction({
+                 definitionID: newDefinitionID,
+                 action: CreateDefinition(maker()),
+               }),
+             );
+             ReasonReactRouter.push("#" ++ newDefinitionID);
+           }}>
+           {ReasonReact.string(name)}
+         </a>
+       ),
+     )}
+    {switch (definitionID) {
+     | "" => <DefinitionListView definitions={state.definitions} />
+     | _ =>
+       // debug
+       switch (state.execution) {
+       | None => ()
+       | Some(execution) => Js.log(execution.stack)
+       };
+       switch (Belt.Map.String.get(state.definitions, definitionID)) {
+       | None => ReasonReact.string("Not found")
+       | Some(definition) =>
+         let Definition.{implementation, display, documentation} = definition;
+         let emit = (action: DefinitionAction.t) =>
+           dispatch(DefinitionAction({definitionID, action}));
+         let stackFrame =
+           switch (state.execution) {
+           | Some(execution) =>
+             let Value.{scopeID, explicitConnectionSide, action} =
+               Belt.List.headExn(execution.stack);
+             let scope = Belt.Map.String.getExn(execution.scopes, scopeID);
+             Some(
+               MaterializedStackFrame.{scope, explicitConnectionSide, action},
+             );
+           | None => None
+           };
+         switch (implementation) {
+         | GraphImplementation(implementation) =>
+           <GraphView
+             key=definitionID
+             definitionID
+             definitions={state.definitions}
+             definition
+             implementation
+             display
+             documentation
+             emit
+             error={state.error}
+             stackFrame
+           />
+         | _ =>
+           <SimpleDefinitionView
+             definitionID
+             definition
+             definitions
+             emit
+             error={state.error}
+           />
+         };
+       };
+     }}
+    {switch (state.execution) {
+     | None => ReasonReact.null
+     | Some(execution) =>
+       <div>
+         <button onClick={_ => dispatch(Step)}>
+           {ReasonReact.string("step")}
+         </button>
+         {switch (execution.result) {
+          | None => ReasonReact.null
+          | Some(value) =>
+            ReasonReact.string("Result: " ++ ValueDisplay.f(value))
+          }}
+       </div>
+     }}
   </div>;
 };
