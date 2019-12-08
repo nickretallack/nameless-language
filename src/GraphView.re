@@ -431,12 +431,12 @@ let make =
            onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
            {ReasonReact.string("Debug")}
          </button>
-         //  <NodeMenuView
-         //    emit
-         //    definitions
-         //    nodes={implementation.nodes}
-         //    nib=explicitConnectionSide
-         //  />
+         <NodeMenuView
+           emit
+           definitions
+           nodes={implementation.nodes}
+           nib=explicitConnectionSide
+         />
        </>
      | SelectedConnection(connectionSide) =>
        <>
