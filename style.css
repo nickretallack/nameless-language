@@ -8,6 +8,10 @@ body {
 	box-sizing: border-box;
 }
 
+th {
+	text-align: left;
+}
+
 .graph {
 	position: relative;
 	border: 1px solid lightgray;
