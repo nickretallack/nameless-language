@@ -1,245 +1,277 @@
-let f = (state: AppState.t, action: AppAction.t): AppState.t =>
+let f =
+    (action: AppAction.t, state: AppState.t)
+    : ReactUpdate.update(AppAction.t, AppState.t) =>
   switch (action) {
-  | DefinitionAction({definitionID, action}) =>
-    switch (action) {
-    | CreateDefinition(definition) => {
+  | CreateDefinition(definition) =>
+    let newDefinitionID = RandomIDMake.f();
+    ReactUpdate.UpdateWithSideEffects(
+      {
         ...state,
         definitions:
-          Belt.Map.String.set(state.definitions, definitionID, definition),
-      }
-    | _ =>
-      let definition =
-        Belt.Map.String.getExn(state.definitions, definitionID);
+          Belt.Map.String.set(state.definitions, newDefinitionID, definition),
+      },
+      _ => {
+        ReasonReact.Router.push("#" ++ newDefinitionID);
+        None;
+      },
+    );
+  | DefinitionAction({definitionID, action}) =>
+    let definition = Belt.Map.String.getExn(state.definitions, definitionID);
 
-      let updateDefinition = definition => {
+    let updateDefinition = definition =>
+      ReactUpdate.Update({
         ...state,
         definitions:
           Belt.Map.String.set(state.definitions, definitionID, definition),
         error: NoAppError,
-      };
+      });
 
-      switch (action) {
-      | CreateDefinition(_) => state
-      | CreateConnection({source, sink}) =>
-        switch (definition.implementation) {
-        | GraphImplementation(graphImplementation) =>
-          updateDefinition({
-            ...definition,
-            implementation:
-              GraphImplementation({
-                ...graphImplementation,
-                connections:
-                  Belt.Map.set(graphImplementation.connections, sink, source),
-              }),
-          })
-        | _ => state
-        }
-
-      | AddNode({node, explicitConnectionSide, connectionNib}) =>
-        let nodeID = RandomIDMake.f();
-        let nodeConnectionSide =
-          ConnectionSide.{node: NodeConnection(nodeID), nib: connectionNib};
-        let (source, sink) =
-          explicitConnectionSide.isSource
-            ? (explicitConnectionSide.connectionSide, nodeConnectionSide)
-            : (nodeConnectionSide, explicitConnectionSide.connectionSide);
-        switch (definition.implementation) {
-        | GraphImplementation(graphImplementation) =>
-          updateDefinition({
-            ...definition,
-            implementation:
-              GraphImplementation({
-                ...graphImplementation,
-                nodes:
-                  Belt.Map.String.set(
-                    graphImplementation.nodes,
-                    nodeID,
-                    node,
-                  ),
-                connections:
-                  Belt.Map.set(graphImplementation.connections, sink, source),
-              }),
-          })
-        | _ => state
-        };
-      | ChangeConstantValue(implementation) =>
-        switch (definition.implementation) {
-        | ConstantImplementation(_) =>
-          updateDefinition({
-            ...definition,
-            implementation: ConstantImplementation(implementation),
-          })
-        | _ => raise(Not_found)
-        }
-      | ChangeName(text) =>
+    switch (action) {
+    | CreateConnection({source, sink}) =>
+      switch (definition.implementation) {
+      | GraphImplementation(graphImplementation) =>
         updateDefinition({
           ...definition,
-          documentation: {
-            ...definition.documentation,
-            name:
-              TranslatableSetText.f(
-                definition.documentation.name,
-                "en",
-                text,
-              ),
-          },
-        })
-      | ChangeDescription(text) =>
-        updateDefinition({
-          ...definition,
-          documentation: {
-            ...definition.documentation,
-            name:
-              TranslatableSetText.f(
-                definition.documentation.description,
-                "en",
-                text,
-              ),
-          },
-        })
-      | AddInput =>
-        let nibID = RandomIDMake.f();
-        updateDefinition({
-          documentation: {
-            ...definition.documentation,
-            inputs:
-              Belt.Map.String.set(
-                definition.documentation.inputs,
-                nibID,
-                TranslatableEmpty.v,
-              ),
-          },
-          display: {
-            ...definition.display,
-            inputOrdering:
-              List.append(definition.display.inputOrdering, [nibID]),
-          },
           implementation:
-            switch (definition.implementation) {
-            | InterfaceImplementation(interface) =>
-              InterfaceImplementation({
-                ...interface,
-                input:
-                  Belt.Map.String.set(
-                    interface.input,
-                    nibID,
-                    PrimitiveValueType(TextType),
-                  ),
-              })
-            | GraphImplementation(graphImplementation) =>
-              GraphImplementation({
-                ...graphImplementation,
-                interface: {
-                  ...graphImplementation.interface,
-                  input:
-                    Belt.Map.String.set(
-                      graphImplementation.interface.input,
-                      nibID,
-                      AnyType,
-                    ),
-                },
-              })
-            | RecordTypeImplementation(typedFields) =>
-              RecordTypeImplementation(
+            GraphImplementation({
+              ...graphImplementation,
+              connections:
+                Belt.Map.set(graphImplementation.connections, sink, source),
+            }),
+        })
+      | _ => ReactUpdate.NoUpdate
+      }
+
+    | AddNode({node, explicitConnectionSide, connectionNib}) =>
+      let nodeID = RandomIDMake.f();
+      let nodeConnectionSide =
+        ConnectionSide.{node: NodeConnection(nodeID), nib: connectionNib};
+      let (source, sink) =
+        explicitConnectionSide.isSource
+          ? (explicitConnectionSide.connectionSide, nodeConnectionSide)
+          : (nodeConnectionSide, explicitConnectionSide.connectionSide);
+      switch (definition.implementation) {
+      | GraphImplementation(graphImplementation) =>
+        updateDefinition({
+          ...definition,
+          implementation:
+            GraphImplementation({
+              ...graphImplementation,
+              nodes:
+                Belt.Map.String.set(graphImplementation.nodes, nodeID, node),
+              connections:
+                Belt.Map.set(graphImplementation.connections, sink, source),
+            }),
+        })
+      | _ => ReactUpdate.NoUpdate
+      };
+    | ChangeConstantValue(implementation) =>
+      switch (definition.implementation) {
+      | ConstantImplementation(_) =>
+        updateDefinition({
+          ...definition,
+          implementation: ConstantImplementation(implementation),
+        })
+      | _ => raise(Not_found)
+      }
+    | ChangeName(text) =>
+      updateDefinition({
+        ...definition,
+        documentation: {
+          ...definition.documentation,
+          name:
+            TranslatableSetText.f(definition.documentation.name, "en", text),
+        },
+      })
+    | ChangeDescription(text) =>
+      updateDefinition({
+        ...definition,
+        documentation: {
+          ...definition.documentation,
+          name:
+            TranslatableSetText.f(
+              definition.documentation.description,
+              "en",
+              text,
+            ),
+        },
+      })
+    | AddInput =>
+      let nibID = RandomIDMake.f();
+      updateDefinition({
+        documentation: {
+          ...definition.documentation,
+          inputs:
+            Belt.Map.String.set(
+              definition.documentation.inputs,
+              nibID,
+              TranslatableEmpty.v,
+            ),
+        },
+        display: {
+          ...definition.display,
+          inputOrdering:
+            List.append(definition.display.inputOrdering, [nibID]),
+        },
+        implementation:
+          switch (definition.implementation) {
+          | InterfaceImplementation(interface) =>
+            InterfaceImplementation({
+              ...interface,
+              input:
                 Belt.Map.String.set(
-                  typedFields,
+                  interface.input,
                   nibID,
                   PrimitiveValueType(TextType),
                 ),
-              )
-            | _ => definition.implementation
-            },
-        });
-      | AddOutput =>
-        let nibID = RandomIDMake.f();
-        updateDefinition({
-          documentation: {
-            ...definition.documentation,
-            outputs:
+            })
+          | GraphImplementation(graphImplementation) =>
+            GraphImplementation({
+              ...graphImplementation,
+              interface: {
+                ...graphImplementation.interface,
+                input:
+                  Belt.Map.String.set(
+                    graphImplementation.interface.input,
+                    nibID,
+                    AnyType,
+                  ),
+              },
+            })
+          | RecordTypeImplementation(typedFields) =>
+            RecordTypeImplementation(
               Belt.Map.String.set(
-                definition.documentation.outputs,
+                typedFields,
                 nibID,
-                TranslatableEmpty.v,
+                PrimitiveValueType(TextType),
               ),
+            )
+          | _ => definition.implementation
           },
-          display: {
-            ...definition.display,
-            outputOrdering:
-              List.append(definition.display.outputOrdering, [nibID]),
+      });
+    | AddOutput =>
+      let nibID = RandomIDMake.f();
+      updateDefinition({
+        documentation: {
+          ...definition.documentation,
+          outputs:
+            Belt.Map.String.set(
+              definition.documentation.outputs,
+              nibID,
+              TranslatableEmpty.v,
+            ),
+        },
+        display: {
+          ...definition.display,
+          outputOrdering:
+            List.append(definition.display.outputOrdering, [nibID]),
+        },
+        implementation:
+          switch (definition.implementation) {
+          | InterfaceImplementation(interface) =>
+            InterfaceImplementation({
+              ...interface,
+              output:
+                Belt.Map.String.set(
+                  interface.output,
+                  nibID,
+                  PrimitiveValueType(NumberType),
+                ),
+            })
+          | GraphImplementation(graphImplementation) =>
+            GraphImplementation({
+              ...graphImplementation,
+              interface: {
+                ...graphImplementation.interface,
+                output:
+                  Belt.Map.String.set(
+                    graphImplementation.interface.output,
+                    nibID,
+                    AnyType,
+                  ),
+              },
+            })
+          | _ => definition.implementation
           },
+      });
+    | NibAction({nibID, isInput, action}) =>
+      switch (action) {
+      | ChangeNibName(text) =>
+        let nibs =
+          isInput
+            ? definition.documentation.inputs
+            : definition.documentation.outputs;
+        let nib = Belt.Map.String.getExn(nibs, nibID);
+        let newNib = TranslatableSetText.f(nib, "en", text);
+        let newNibs = Belt.Map.String.set(nibs, nibID, newNib);
+        let documentation =
+          isInput
+            ? {...definition.documentation, inputs: newNibs}
+            : {...definition.documentation, outputs: newNibs};
+        updateDefinition({...definition, documentation});
+      | ChangeNibType(valueType) =>
+        updateDefinition({
+          ...definition,
           implementation:
             switch (definition.implementation) {
             | InterfaceImplementation(interface) =>
-              InterfaceImplementation({
-                ...interface,
-                output:
-                  Belt.Map.String.set(
-                    interface.output,
-                    nibID,
-                    PrimitiveValueType(NumberType),
-                  ),
-              })
+              InterfaceImplementation(
+                InterfaceChange.f(interface, isInput, nibID, valueType),
+              )
+            | RecordTypeImplementation(typedFields) =>
+              RecordTypeImplementation(
+                isInput
+                  ? RecordChange.f(typedFields, nibID, valueType)
+                  : raise(Not_found),
+              )
             | GraphImplementation(graphImplementation) =>
               GraphImplementation({
                 ...graphImplementation,
-                interface: {
-                  ...graphImplementation.interface,
-                  output:
-                    Belt.Map.String.set(
-                      graphImplementation.interface.output,
-                      nibID,
-                      AnyType,
-                    ),
-                },
+                interface:
+                  InterfaceChange.f(
+                    graphImplementation.interface,
+                    isInput,
+                    nibID,
+                    valueType,
+                  ),
               })
-            | _ => definition.implementation
+            | _ => raise(Not_found)
             },
-        });
-      | NibAction({nibID, isInput, action}) =>
-        switch (action) {
-        | ChangeNibName(text) =>
-          let nibs =
+        })
+      | ChangeNibOrdering(index) =>
+        updateDefinition({
+          ...definition,
+          display:
             isInput
-              ? definition.documentation.inputs
-              : definition.documentation.outputs;
-          let nib = Belt.Map.String.getExn(nibs, nibID);
-          let newNib = TranslatableSetText.f(nib, "en", text);
-          let newNibs = Belt.Map.String.set(nibs, nibID, newNib);
-          let documentation =
-            isInput
-              ? {...definition.documentation, inputs: newNibs}
-              : {...definition.documentation, outputs: newNibs};
-          updateDefinition({...definition, documentation});
-        | ChangeNibType(valueType) =>
-          updateDefinition({
-            ...definition,
-            implementation:
-              switch (definition.implementation) {
-              | InterfaceImplementation(interface) =>
-                InterfaceImplementation(
-                  InterfaceChange.f(interface, isInput, nibID, valueType),
-                )
-              | RecordTypeImplementation(typedFields) =>
-                RecordTypeImplementation(
-                  isInput
-                    ? RecordChange.f(typedFields, nibID, valueType)
-                    : raise(Not_found),
-                )
-              | GraphImplementation(graphImplementation) =>
-                GraphImplementation({
-                  ...graphImplementation,
-                  interface:
-                    InterfaceChange.f(
-                      graphImplementation.interface,
-                      isInput,
-                      nibID,
-                      valueType,
-                    ),
-                })
-              | _ => raise(Not_found)
+              ? {
+                ...definition.display,
+                inputOrdering:
+                  ListMoveItemToIndex.f(
+                    definition.display.inputOrdering,
+                    nibID,
+                    index,
+                  ),
+              }
+              : {
+                ...definition.display,
+                outputOrdering:
+                  ListMoveItemToIndex.f(
+                    definition.display.outputOrdering,
+                    nibID,
+                    index,
+                  ),
               },
-          })
-        | ChangeNibOrdering(index) =>
+        })
+      | RemoveNib =>
+        let uses =
+          FindConnectedDefinitions.f(
+            definitionID,
+            nibID,
+            isInput,
+            state.definitions,
+          );
+        if (Belt.Map.String.isEmpty(uses)) {
+          /* TODO: remove nib from translations?  Unify "interface" usage? */
           updateDefinition({
             ...definition,
             display:
@@ -247,144 +279,114 @@ let f = (state: AppState.t, action: AppAction.t): AppState.t =>
                 ? {
                   ...definition.display,
                   inputOrdering:
-                    ListMoveItemToIndex.f(
-                      definition.display.inputOrdering,
-                      nibID,
-                      index,
+                    Belt.List.keep(definition.display.inputOrdering, item =>
+                      item != nibID
                     ),
                 }
                 : {
                   ...definition.display,
                   outputOrdering:
-                    ListMoveItemToIndex.f(
-                      definition.display.outputOrdering,
+                    Belt.List.keep(definition.display.outputOrdering, item =>
+                      item != nibID
+                    ),
+                },
+            implementation:
+              switch (definition.implementation) {
+              | GraphImplementation(graphImplementation) =>
+                GraphImplementation({
+                  ...graphImplementation,
+                  connections:
+                    Belt.Map.keep(
+                      graphImplementation.connections, (sink, source) =>
+                      !(
+                        switch (isInput ? source : sink) {
+                        | {
+                            node: GraphConnection,
+                            nib: NibConnection(connectionNibID),
+                          } =>
+                          connectionNibID == nibID
+                        | _ => false
+                        }
+                      )
+                    ),
+                  interface:
+                    InterfaceRemoveNib.f(
+                      graphImplementation.interface,
                       nibID,
-                      index,
+                      isInput,
                     ),
-                },
-          })
-        | RemoveNib =>
-          let uses =
-            FindConnectedDefinitions.f(
-              definitionID,
-              nibID,
-              isInput,
-              state.definitions,
-            );
-          if (Belt.Map.String.isEmpty(uses)) {
-            /* TODO: remove nib from translations?  Unify "interface" usage? */
-            updateDefinition({
-              ...definition,
-              display:
-                isInput
-                  ? {
-                    ...definition.display,
-                    inputOrdering:
-                      Belt.List.keep(definition.display.inputOrdering, item =>
-                        item != nibID
-                      ),
-                  }
-                  : {
-                    ...definition.display,
-                    outputOrdering:
-                      Belt.List.keep(definition.display.outputOrdering, item =>
-                        item != nibID
-                      ),
-                  },
-              implementation:
-                switch (definition.implementation) {
-                | GraphImplementation(graphImplementation) =>
-                  GraphImplementation({
-                    ...graphImplementation,
-                    connections:
-                      Belt.Map.keep(
-                        graphImplementation.connections, (sink, source) =>
-                        !(
-                          switch (isInput ? source : sink) {
-                          | {
-                              node: GraphConnection,
-                              nib: NibConnection(connectionNibID),
-                            } =>
-                            connectionNibID == nibID
-                          | _ => false
-                          }
-                        )
-                      ),
-                    interface:
-                      InterfaceRemoveNib.f(
-                        graphImplementation.interface,
-                        nibID,
-                        isInput,
-                      ),
-                  })
-                | InterfaceImplementation(interface) =>
-                  InterfaceImplementation(
-                    InterfaceRemoveNib.f(interface, nibID, isInput),
-                  )
-                | RecordTypeImplementation(typedFields) =>
-                  RecordTypeImplementation(
-                    Belt.Map.String.keep(typedFields, (fieldNibID, _) =>
-                      fieldNibID != nibID
-                    ),
-                  )
-                | other => other
-                },
-            });
-          } else {
-            {...state, error: NibIsConnected(uses)};
-          };
-        }
-      | RemoveConnection(connectionSide) =>
-        updateDefinition({
-          ...definition,
-          implementation:
-            switch (definition.implementation) {
-            | GraphImplementation(graphImplementation) =>
-              GraphImplementation({
-                ...graphImplementation,
-                connections:
-                  Belt.Map.remove(
-                    graphImplementation.connections,
-                    connectionSide,
+                })
+              | InterfaceImplementation(interface) =>
+                InterfaceImplementation(
+                  InterfaceRemoveNib.f(interface, nibID, isInput),
+                )
+              | RecordTypeImplementation(typedFields) =>
+                RecordTypeImplementation(
+                  Belt.Map.String.keep(typedFields, (fieldNibID, _) =>
+                    fieldNibID != nibID
                   ),
-              })
-            | _ => raise(Not_found)
+                )
+              | other => other
+              },
+          });
+        } else {
+          ReactUpdate.Update(
+            {
+              {...state, error: NibIsConnected(uses)};
             },
-        })
-      | RemoveNodes(nodeIDs) =>
-        updateDefinition({
-          ...definition,
-          implementation:
-            switch (definition.implementation) {
-            | GraphImplementation(graphImplementation) =>
-              let nodeIDs =
-                DeletionGetAffectedNodes.f(
-                  nodeIDs,
+          );
+        };
+      }
+    | RemoveConnection(connectionSide) =>
+      updateDefinition({
+        ...definition,
+        implementation:
+          switch (definition.implementation) {
+          | GraphImplementation(graphImplementation) =>
+            GraphImplementation({
+              ...graphImplementation,
+              connections:
+                Belt.Map.remove(
+                  graphImplementation.connections,
+                  connectionSide,
+                ),
+            })
+          | _ => raise(Not_found)
+          },
+      })
+    | RemoveNodes(nodeIDs) =>
+      updateDefinition({
+        ...definition,
+        implementation:
+          switch (definition.implementation) {
+          | GraphImplementation(graphImplementation) =>
+            let nodeIDs =
+              DeletionGetAffectedNodes.f(nodeIDs, graphImplementation.nodes);
+            GraphImplementation({
+              ...graphImplementation,
+              nodes:
+                Belt.Map.String.removeMany(
                   graphImplementation.nodes,
-                );
-              GraphImplementation({
-                ...graphImplementation,
-                nodes:
-                  Belt.Map.String.removeMany(
-                    graphImplementation.nodes,
-                    Belt.Set.String.toArray(nodeIDs),
-                  ),
-                connections:
-                  Belt.Map.keep(
-                    graphImplementation.connections, (sink, source) =>
-                    !(
-                      DeletionConnectionSideInvolvesNodeIDs.f(sink, nodeIDs)
-                      || DeletionConnectionSideInvolvesNodeIDs.f(
-                           source,
-                           nodeIDs,
-                         )
-                    )
-                  ),
-              });
-            | _ => raise(Not_found)
-            },
-        })
-      | Fork(newDefinitionID) => {
+                  Belt.Set.String.toArray(nodeIDs),
+                ),
+              connections:
+                Belt.Map.keep(graphImplementation.connections, (sink, source) =>
+                  !(
+                    DeletionConnectionSideInvolvesNodeIDs.f(sink, nodeIDs)
+                    || DeletionConnectionSideInvolvesNodeIDs.f(
+                         source,
+                         nodeIDs,
+                       )
+                  )
+                ),
+            });
+          | _ => raise(Not_found)
+          },
+      })
+    | Fork =>
+      let newDefinitionID = RandomIDMake.f();
+      ReactUpdate.UpdateWithSideEffects(
+        {
           ...state,
           definitions:
             Belt.Map.String.set(
@@ -392,69 +394,77 @@ let f = (state: AppState.t, action: AppAction.t): AppState.t =>
               newDefinitionID,
               definition,
             ),
-        }
-      | ChangeNodeScope({nodeID, nodeScope}) =>
-        switch (definition.implementation) {
-        | GraphImplementation(graphImplementation) =>
-          if (switch (nodeScope) {
-              | GraphScope => true
-              | NodeScope(scopeNodeID) =>
-                NodeIsFunctionDefinition.f(
-                  Belt.Map.String.getExn(
-                    graphImplementation.nodes,
-                    scopeNodeID,
-                  ),
-                )
-                && nodeID != scopeNodeID
-              }) {
-            let node =
-              Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
-            let newNode = {...node, scope: nodeScope};
-            let nodes =
-              Belt.Map.String.set(graphImplementation.nodes, nodeID, newNode);
-            if (ConnectionMapCheckScopes.f(
-                  graphImplementation.connections,
-                  nodes,
-                )) {
-              updateDefinition({
-                ...definition,
-                implementation:
-                  GraphImplementation({...graphImplementation, nodes}),
-              });
-            } else {
-              {...state, error: ConnectionCrossesScopeError};
-            };
+        },
+        _ => {
+          ReasonReact.Router.push("#" ++ newDefinitionID);
+          None;
+        },
+      );
+    | ChangeNodeScope({nodeID, nodeScope}) =>
+      switch (definition.implementation) {
+      | GraphImplementation(graphImplementation) =>
+        if (switch (nodeScope) {
+            | GraphScope => true
+            | NodeScope(scopeNodeID) =>
+              NodeIsFunctionDefinition.f(
+                Belt.Map.String.getExn(
+                  graphImplementation.nodes,
+                  scopeNodeID,
+                ),
+              )
+              && nodeID != scopeNodeID
+            }) {
+          let node =
+            Belt.Map.String.getExn(graphImplementation.nodes, nodeID);
+          let newNode = {...node, scope: nodeScope};
+          let nodes =
+            Belt.Map.String.set(graphImplementation.nodes, nodeID, newNode);
+          if (ConnectionMapCheckScopes.f(
+                graphImplementation.connections,
+                nodes,
+              )) {
+            updateDefinition({
+              ...definition,
+              implementation:
+                GraphImplementation({...graphImplementation, nodes}),
+            });
           } else {
-            state;
-          }
-        | _ => state
+            ReactUpdate.Update(
+              {
+                {...state, error: ConnectionCrossesScopeError};
+              },
+            );
+          };
+        } else {
+          ReactUpdate.NoUpdate;
         }
-      | EvaluateNib(explicitConnectionSide) =>
-        let scopeID = RandomIDMake.f();
-        {
-          ...state,
-          execution:
-            Some({
-              result: None,
-              scopes:
-                Belt.Map.String.fromArray([|
-                  (
-                    scopeID,
-                    Scope.{
-                      definitionID,
-                      sourceValues:
-                        Belt.Map.make(
-                          ~id=(module ConnectionSideComparable.C),
-                        ),
-                    },
-                  ),
-                |]),
-              stack: [{scopeID, explicitConnectionSide, action: Evaluating}],
-            }),
-        };
-      };
-    }
-  | Step => {
+      | _ => ReactUpdate.NoUpdate
+      }
+    | EvaluateNib(explicitConnectionSide) =>
+      let scopeID = RandomIDMake.f();
+      ReactUpdate.Update({
+        ...state,
+        execution:
+          Some({
+            result: None,
+            scopes:
+              Belt.Map.String.fromArray([|
+                (
+                  scopeID,
+                  Scope.{
+                    definitionID,
+                    sourceValues:
+                      Belt.Map.make(~id=(module ConnectionSideComparable.C)),
+                  },
+                ),
+              |]),
+            stack: [{scopeID, explicitConnectionSide, action: Evaluating}],
+          }),
+      });
+    };
+
+  | Step =>
+    ReactUpdate.Update({
       ...state,
       execution:
         switch (state.execution) {
@@ -475,5 +485,5 @@ let f = (state: AppState.t, action: AppAction.t): AppState.t =>
             },
           );
         },
-    }
+    })
   };

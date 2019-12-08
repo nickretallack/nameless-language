@@ -1,9 +1,9 @@
 [@react.component]
 let make = (~definitions) => {
   let (state, dispatch) =
-    React.useReducer(
+    ReactUpdate.useReducer(
+      AppState.{definitions, error: NoAppError, execution: None},
       AppReducer.f,
-      {definitions, error: NoAppError, execution: None},
     );
   let url = ReasonReactRouter.useUrl();
   let definitionID = url.hash;
@@ -17,12 +17,7 @@ let make = (~definitions) => {
            key={string_of_int(index)}
            onClick={_event => {
              let newDefinitionID = RandomIDMake.f();
-             dispatch(
-               AppAction.DefinitionAction({
-                 definitionID: newDefinitionID,
-                 action: CreateDefinition(maker()),
-               }),
-             );
+             dispatch(AppAction.CreateDefinition(maker()));
              ReasonReactRouter.push("#" ++ newDefinitionID);
            }}>
            {ReasonReact.string(name)}

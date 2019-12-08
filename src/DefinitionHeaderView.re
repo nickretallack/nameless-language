@@ -20,12 +20,7 @@ let make =
         onChange=changeName
       />
     </div>
-    <button
-      onClick={_event => {
-        let newDefinitionID = RandomIDMake.f();
-        emit(Fork(newDefinitionID));
-        ReasonReactRouter.push("#" ++ newDefinitionID);
-      }}>
+    <button onClick={_event => emit(Fork)}>
       {ReasonReact.string("Fork")}
     </button>
     <select
