@@ -16,10 +16,11 @@ let make =
   let changeName = event =>
     emitNibAction(NibAction.ChangeNibName(EventGetValue.f(event)));
 
-  let changeType = (valueType: ValueType.t) =>
+  let changeType = (valueType: ValueType.t): unit => {
+    Js.log2("CHANGE TYPE", valueType);
     emitNibAction(NibAction.ChangeNibType(valueType));
-
-  let changeOrdering = (index: int) =>
+  };
+  let changeOrdering = (index: int): unit =>
     emitNibAction(NibAction.ChangeNibOrdering(index));
 
   <tr>

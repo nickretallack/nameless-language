@@ -2,21 +2,17 @@
 let make =
     (~valueType: ValueType.t, ~definitions: DefinitionMap.t, ~changeType) => {
   let (state, dispatch) =
-    React.useReducer(
-      TypeSelectorReducer.f,
-      {opened: false, category: TypeToCategory.f(valueType, definitions)},
+    ReactUpdate.useReducer(
+      TypeSelectorState.{
+        opened: false,
+        category: TypeToCategory.f(valueType, definitions),
+      },
+      TypeSelectorReducer.f(changeType),
     );
 
   let renderCategory = (name: string, category: TypeSelectorCategory.t) =>
     <a
-      onClick={_event => {
-        dispatch(SelectCategory(category));
-        switch (category) {
-        | TextCategory => changeType(ValueType.PrimitiveValueType(TextType))
-        | NumberCategory => changeType(PrimitiveValueType(NumberType))
-        | _ => ()
-        };
-      }}
+      onClick={_event => dispatch(SelectCategory(category))}
       className={state.category == category ? "selected" : ""}>
       {ReasonReact.string(name)}
     </a>;
