@@ -7,10 +7,10 @@ let make =
       ~text: string,
       ~isHighlighted: bool,
       ~value: option(Value.t),
+      ~emit: GraphAction.t => unit,
     ) => {
   let sidePadding = 10.0;
   let color = "rgb(160,160,160)";
-  let emit = (_: GraphAction.t) => ();
 
   <>
     <text

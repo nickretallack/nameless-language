@@ -1,4 +1,3 @@
-// let preventDefault = event => EventRe.preventDefault(event);
 [@react.component]
 let make =
     (
@@ -13,13 +12,13 @@ let make =
       ~stackFrame: option(MaterializedStackFrame.t),
     ) => {
   let (state, dispatch) =
-    React.useReducer(
-      GraphReducer.f,
-      {
+    ReactUpdate.useReducer(
+      GraphState.{
         pointers: Belt.Map.make(~id=(module PointerComparable.C)),
         error: None,
         selection: NoSelection,
       },
+      GraphReducer.f(emit, implementation),
     );
 
   /* Prevent iOS from scrolling all over the place */
@@ -254,7 +253,7 @@ let make =
             isSource
             connectionSide
             position={getNibPosition(connectionSide, !isSource)}
-            // emit={self.send}
+            emit=dispatch
             isHighlighted={
               switch (state.selection) {
               | SelectedNib(highlightedExplicitConnectionSide) =>
@@ -317,13 +316,14 @@ let make =
             }
             onMouseUp={event =>
               switch (Belt.Map.get(state.pointers, Mouse)) {
-              | Some(DraggingNode(draggingNodeID)) =>
+              | Some(DraggingNode(_)) =>
                 ReactEvent.Mouse.stopPropagation(event);
-                let nodeScope = NodeScope.NodeScope(nodeID);
                 dispatch(
-                  PointerAction({pointerID: Mouse, action: ReleasePointer}),
+                  PointerAction({
+                    pointerID: Mouse,
+                    action: FinishDragging(NodeScope(nodeID)),
+                  }),
                 );
-                emit(ChangeNodeScope({nodeID: draggingNodeID, nodeScope}));
               | _ => ()
               }
             }
@@ -451,14 +451,7 @@ let make =
          </button>
        </>
      | SelectedNodes(_) =>
-       <button
-         onClick={_event => {
-           dispatch(RemoveSelectedNodes);
-           switch (state.selection) {
-           | SelectedNodes(nodeIDs) => emit(RemoveNodes(nodeIDs))
-           | _ => ()
-           };
-         }}>
+       <button onClick={_event => dispatch(RemoveSelectedNodes)}>
          {ReasonReact.string("Remove Node(s)")}
        </button>
      | NoSelection => ReasonReact.null

@@ -3,4 +3,5 @@ type t =
   | StartDragging(NodeID.t)
   | MovePointer(Point.t)
   | ReleasePointer
-  | FinishDrawing(ExplicitConnectionSide.t);
+  | FinishDrawing(ExplicitConnectionSide.t)
+  | FinishDragging(NodeScope.t);
