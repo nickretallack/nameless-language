@@ -4,7 +4,7 @@ type definedValue = {
 }
 and lazyValue = {
   scopeID: ScopeID.t,
-  explicitConnectionSide: ExplicitConnectionSide.t,
+  connectionSide: ConnectionSide.t,
 }
 and t =
   | PrimitiveValue(PrimitiveValue.t)

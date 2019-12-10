@@ -126,12 +126,9 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                     Belt.Map.String.mapWithKey(typedFields, (nibID, _) =>
                       Value.LazyValue({
                         scopeID: frame.scopeID,
-                        explicitConnectionSide: {
-                          isSource: false,
-                          connectionSide: {
-                            node: NodeConnection(nodeID),
-                            nib: NibConnection(nibID),
-                          },
+                        connectionSide: {
+                          node: NodeConnection(nodeID),
+                          nib: NibConnection(nibID),
                         },
                       })
                     ),
@@ -182,8 +179,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                           scope.sourceValues,
                           Belt.Map.getExn(
                             graphImplementation.connections,
-                            lazyValue.explicitConnectionSide.
-                              connectionSide,
+                            lazyValue.connectionSide,
                           ),
                         )
                       ) {
@@ -191,11 +187,17 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                         Js.log("None value");
                         {
                           ...execution,
-                          stack: [StackFrame.{
-														scopeID: lazyValue.scopeID,
-														explicitConnectionSide: lazyValue.explicitConnectionSide,
-														action: EvaluationAction.Evaluating,
-													}, ...execution.stack],
+                          stack: [
+                            StackFrame.{
+                              scopeID: lazyValue.scopeID,
+                              explicitConnectionSide: {
+                                isSource: false,
+                                connectionSide: lazyValue.connectionSide,
+                              },
+                              action: EvaluationAction.Evaluating,
+                            },
+                            ...execution.stack,
+                          ],
                           scopes: execution.scopes,
                         };
                       | Some(value) => {
