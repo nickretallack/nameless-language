@@ -2,15 +2,11 @@ type definedValue = {
   definitionID: DefinitionID.t,
   values: Belt.Map.String.t(t),
 }
-and evaluationAction =
-  | Evaluating
-  | Returning(t)
-and stackFrame = {
+and lazyValue = {
   scopeID: ScopeID.t,
   explicitConnectionSide: ExplicitConnectionSide.t,
-  action: evaluationAction,
 }
 and t =
   | PrimitiveValue(PrimitiveValue.t)
   | DefinedValue(definedValue)
-  | LazyValue(stackFrame);
+  | LazyValue(lazyValue);

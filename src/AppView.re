@@ -41,7 +41,7 @@ let make = (~definitions) => {
          let stackFrame =
            switch (state.execution) {
            | Some(execution) =>
-             let Value.{scopeID, explicitConnectionSide, action} =
+             let StackFrame.{scopeID, explicitConnectionSide, action} =
                Belt.List.headExn(execution.stack);
              let scope = Belt.Map.String.getExn(execution.scopes, scopeID);
              Some(

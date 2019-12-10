@@ -1,5 +1,5 @@
 type t = {
   scopes: Belt.Map.String.t(Scope.t),
-  stack: list(Value.stackFrame),
+  stack: list(StackFrame.t),
   result: option(Value.t),
 };

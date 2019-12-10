@@ -125,8 +125,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                   values:
                     Belt.Map.String.mapWithKey(typedFields, (nibID, _) =>
                       Value.LazyValue({
-                        ...frame,
-                        action: Evaluating,
+                        scopeID: frame.scopeID,
                         explicitConnectionSide: {
                           isSource: false,
                           connectionSide: {
@@ -177,13 +176,13 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                     switch (
                       Belt.Map.String.getExn(definedValue.values, nibID)
                     ) {
-                    | LazyValue(fieldStackFrame) =>
+                    | LazyValue(lazyValue) =>
                       switch (
                         Belt.Map.get(
                           scope.sourceValues,
                           Belt.Map.getExn(
                             graphImplementation.connections,
-                            fieldStackFrame.explicitConnectionSide.
+                            lazyValue.explicitConnectionSide.
                               connectionSide,
                           ),
                         )
@@ -192,7 +191,11 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                         Js.log("None value");
                         {
                           ...execution,
-                          stack: [fieldStackFrame, ...execution.stack],
+                          stack: [StackFrame.{
+														scopeID: lazyValue.scopeID,
+														explicitConnectionSide: lazyValue.explicitConnectionSide,
+														action: EvaluationAction.Evaluating,
+													}, ...execution.stack],
                           scopes: execution.scopes,
                         };
                       | Some(value) => {
