@@ -478,9 +478,10 @@ let f =
               if (Belt.List.length(execution.stack) == 1) {
                 {...execution, result: Some(value)};
               } else {
-                let stack = Belt.List.tailExn(execution.stack);
-                let execution = {...execution, stack};
-                ExecutionReducer.f(execution, state.definitions);
+                ExecutionReducer.f(
+                  {...execution, stack: Belt.List.tailExn(execution.stack)},
+                  state.definitions,
+                );
               }
             },
           );
