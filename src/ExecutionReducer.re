@@ -32,88 +32,77 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
           | ValueNode =>
             switch (nodeDefinition.implementation) {
             | ConstantImplementation(primitiveValue) =>
-              let value = Value.PrimitiveValue(primitiveValue);
-              {
-                ...execution,
-                stack: [
-                  {...frame, action: Returning(value)},
-                  ...Belt.List.tailExn(execution.stack),
-                ],
-                scopes:
-                  Belt.Map.String.set(
-                    execution.scopes,
-                    frame.scopeID,
-                    {
-                      ...scope,
-                      sourceValues:
-                        Belt.Map.set(scope.sourceValues, source, value),
-                    },
-                  ),
-              };
-
-            | _ => raise(Not_found) // todo
+              EvaluateConstantReducer.f(
+                primitiveValue,
+                execution,
+                frame,
+                scope,
+                source,
+              )
+            | _ => raise(Not_found)
             }
           | FunctionCallNode =>
             switch (nodeDefinition.implementation) {
-            | ExternalImplementation({name, interface}) =>
+            | ExternalImplementation(externalImplementation) =>
               switch (source.nib) {
               | NibConnection(outputID) =>
-                switch (
-                  EvaluateExternalFunction.f(
-                    name,
-                    outputID,
-                    Belt.Map.String.mapWithKey(interface.input, (nibID, _) =>
-                      Belt.Map.get(
-                        scope.sourceValues,
-                        Belt.Map.getExn(
-                          graphImplementation.connections,
-                          {node: source.node, nib: NibConnection(nibID)},
-                        ),
-                      )
-                    ),
-                  )
-                ) {
-                | EvaluationResult(value) => {
-                    ...execution,
-                    stack: [
-                      {...frame, action: Returning(value)},
-                      ...Belt.List.tailExn(execution.stack),
-                    ],
-                    scopes:
-                      Belt.Map.String.set(
-                        execution.scopes,
-                        frame.scopeID,
-                        {
-                          ...scope,
-                          sourceValues:
-                            Belt.Map.set(scope.sourceValues, source, value),
-                        },
-                      ),
-                  }
-                | EvaluationRequired(nibIDs) => {
-                    ...execution,
-                    stack:
-                      Belt.List.concat(
-                        Belt.List.map(nibIDs, nibID =>
-                          {
-                            ...frame,
-                            explicitConnectionSide: {
-                              isSource: false,
-                              connectionSide: {
-                                node: source.node,
-                                nib: NibConnection(nibID),
-                              },
-                            },
-                            action: Evaluating,
-                          }
-                        ),
-                        execution.stack,
-                      ),
-                  }
-                }
+                EvaluateExternalReducer.f(
+                  execution,
+                  scope,
+                  frame,
+                  source,
+                  graphImplementation.connections,
+                  externalImplementation,
+                  outputID,
+                )
               | _ => raise(Not_found)
               }
-            | GraphImplementation(_) => raise(Not_found) // todo
+            | GraphImplementation(_graphImplementation) =>
+              let (nodeScopeID, scopes) =
+                switch (Belt.Map.String.get(scope.nodeScopeIDs, nodeID)) {
+                | Some(nodeScopeID) => (nodeScopeID, execution.scopes)
+                | None =>
+                  let nodeScopeID = RandomIDMake.f();
+                  (
+                    nodeScopeID,
+                    Belt.Map.String.set(
+                      Belt.Map.String.set(
+                        execution.scopes,
+                        nodeScopeID,
+                        ScopeMake.f(definitionID),
+                      ),
+                      frame.scopeID,
+                      {
+                        ...scope,
+                        nodeScopeIDs:
+                          Belt.Map.String.set(
+                            scope.nodeScopeIDs,
+                            nodeID,
+                            nodeScopeID,
+                          ),
+                      },
+                    ),
+                  );
+                };
+
+              {
+                ...execution,
+                scopes,
+                stack: [
+                  {
+                    action: Evaluating,
+                    scopeID: nodeScopeID,
+                    explicitConnectionSide: {
+                      isSource: false,
+                      connectionSide: {
+                        node: GraphConnection,
+                        nib: source.nib,
+                      },
+                    },
+                  },
+                  ...execution.stack,
+                ],
+              };
             | _ => raise(Not_found) // todo
             }
           | ConstructorNode =>
