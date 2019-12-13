@@ -57,7 +57,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                 )
               | _ => raise(Not_found)
               }
-            | GraphImplementation(_graphImplementation) =>
+            | GraphImplementation(_) =>
               let (nodeScopeID, scopes) =
                 switch (Belt.Map.String.get(scope.nodeScopeIDs, nodeID)) {
                 | Some(nodeScopeID) => (nodeScopeID, execution.scopes)
@@ -69,7 +69,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                       Belt.Map.String.set(
                         execution.scopes,
                         nodeScopeID,
-                        ScopeMake.f(definitionID),
+                        ScopeMake.f(definitionID, Some(frame.scopeID)),
                       ),
                       frame.scopeID,
                       {

@@ -449,7 +449,7 @@ let f =
             result: None,
             scopes:
               Belt.Map.String.fromArray([|
-                (scopeID, ScopeMake.f(definitionID)),
+                (scopeID, ScopeMake.f(definitionID, None)),
               |]),
             stack: [{scopeID, explicitConnectionSide, action: Evaluating}],
           }),

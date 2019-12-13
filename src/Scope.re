@@ -6,5 +6,6 @@ type t = {
       Value.t,
       ConnectionSideComparable.C.identity,
     ),
-  nodeScopeIDs: Belt.Map.String.t(string),
+  nodeScopeIDs: Belt.Map.String.t(ScopeID.t),
+  parentScopeID: option(ScopeID.t),
 };
