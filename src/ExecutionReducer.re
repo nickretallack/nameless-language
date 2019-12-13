@@ -125,7 +125,6 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                       })
                     ),
                 });
-              Js.log(source);
               {
                 ...execution,
                 stack: [
@@ -249,7 +248,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                 },
                 action: Evaluating,
               },
-							...Belt.List.tailExn(execution.stack),
+              ...execution.stack,
             ],
           }
         | None =>
