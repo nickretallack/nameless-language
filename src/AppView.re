@@ -30,7 +30,16 @@ let make = (~definitions) => {
        // debug
        switch (state.execution) {
        | None => ()
-       | Some(execution) => Js.log(execution.stack)
+       | Some(execution) =>
+         Js.log(
+           Belt.List.toArray(
+             Belt.List.reverse(
+               Belt.List.map(execution.stack, frame =>
+                 ExplicitConnectionSideKey.f(frame.explicitConnectionSide)
+               ),
+             ),
+           ),
+         )
        };
        switch (Belt.Map.String.get(state.definitions, definitionID)) {
        | None => ReasonReact.string("Not found")

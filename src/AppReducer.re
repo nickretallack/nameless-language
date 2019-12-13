@@ -475,11 +475,24 @@ let f =
                 let frames = Belt.List.tailExn(execution.stack);
                 let nextFrame = Belt.List.headExn(frames);
                 if (frame.scopeID != nextFrame.scopeID) {
-                  Js.log("going up");
+                  let scope =
+                    Belt.Map.String.getExn(
+                      execution.scopes,
+                      nextFrame.scopeID,
+                    );
+                  let definition =
+                    Belt.Map.String.getExn(
+                      state.definitions,
+                      scope.definitionID,
+                    );
                   let connectionSide =
-                    ConnectionSide.{
-                      node: GraphConnection,
-                      nib: frame.explicitConnectionSide.connectionSide.nib,
+                    switch (definition.implementation) {
+                    | GraphImplementation(graphImplementation) =>
+                      ExplicitConnecttionSideGetSource.f(
+                        nextFrame.explicitConnectionSide,
+                        graphImplementation.connections,
+                      )
+                    | _ => raise(Not_found)
                     };
                   {
                     ...execution,

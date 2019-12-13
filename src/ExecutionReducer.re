@@ -5,12 +5,10 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
   switch (definition.implementation) {
   | GraphImplementation(graphImplementation) =>
     let source =
-      frame.explicitConnectionSide.isSource
-        ? frame.explicitConnectionSide.connectionSide
-        : Belt.Map.getExn(
-            graphImplementation.connections,
-            frame.explicitConnectionSide.connectionSide,
-          );
+      ExplicitConnecttionSideGetSource.f(
+        frame.explicitConnectionSide,
+        graphImplementation.connections,
+      );
     // check the cache to see if it's already evaluated
     switch (Belt.Map.get(scope.sourceValues, source)) {
     | Some(value) => {

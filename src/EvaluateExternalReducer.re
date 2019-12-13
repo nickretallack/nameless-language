@@ -40,7 +40,8 @@ let f =
           },
         ),
     }
-  | EvaluationRequired(nibIDs) => {
+  | EvaluationRequired(nibIDs) =>
+    {
       ...execution,
       stack:
         Belt.List.concat(
@@ -59,5 +60,5 @@ let f =
           ),
           execution.stack,
         ),
-    }
+    };
   };
