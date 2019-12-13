@@ -1,3 +1,4 @@
+[%%debugger.chrome];
 let f =
     (action: AppAction.t, state: AppState.t)
     : ReactUpdate.update(AppAction.t, AppState.t) =>
@@ -464,6 +465,15 @@ let f =
         | None => None
         | Some(execution) =>
           let frame = Belt.List.headExn(execution.stack);
+
+          switch (
+            Belt.Map.String.getExn(execution.scopes, frame.scopeID).
+              parentScope
+          ) {
+          | Some(_) => Js.log("Has a parent scope")
+          | None => Js.log("no parent scope")
+          };
+
           Some(
             switch (frame.action) {
             | Evaluating => ExecutionReducer.f(execution, state.definitions)
@@ -471,10 +481,103 @@ let f =
               if (Belt.List.length(execution.stack) == 1) {
                 {...execution, result: Some(value)};
               } else {
-                ExecutionReducer.f(
-                  {...execution, stack: Belt.List.tailExn(execution.stack)},
-                  state.definitions,
-                );
+                Js.log("big enough stack");
+                let defaultBehavior = () =>
+                  ExecutionReducer.f(
+                    {
+                      ...execution,
+                      stack: Belt.List.tailExn(execution.stack),
+                    },
+                    state.definitions,
+                  );
+                switch (frame.explicitConnectionSide.connectionSide.node) {
+                | GraphConnection => defaultBehavior()
+                | NodeConnection(nodeID) =>
+                  Js.log2("it's a node", nodeID);
+                  let scope =
+                    Belt.Map.String.getExn(execution.scopes, frame.scopeID);
+                  let definition =
+                    Belt.Map.String.getExn(
+                      state.definitions,
+                      scope.definitionID,
+                    );
+                  switch (definition.implementation) {
+                  | GraphImplementation(graphImplementation) =>
+                    Js.log("we're in a graph");
+                    let node =
+                      Belt.Map.String.getExn(
+                        graphImplementation.nodes,
+                        nodeID,
+                      );
+                    switch (node.kind) {
+                    | DefinedNode({kind, definitionID}) =>
+                      Js.log("it's a defined node");
+                      let nodeDefinition =
+                        Belt.Map.String.getExn(
+                          state.definitions,
+                          definitionID,
+                        );
+                      switch (kind) {
+                      | FunctionCallNode =>
+                        Js.log("it's a function call node");
+                        switch (nodeDefinition.implementation) {
+                        | GraphImplementation(_) =>
+                          Js.log("it has a graph implementation");
+                          let scope =
+                            Belt.Map.String.getExn(
+                              execution.scopes,
+                              frame.scopeID,
+                            );
+                          let nodeScopeID =
+                            Belt.Map.String.getExn(
+                              scope.nodeScopeIDs,
+                              nodeID,
+                            );
+                          let connectionSide =
+                            ConnectionSide.{
+                              node: GraphConnection,
+                              nib:
+                                frame.explicitConnectionSide.connectionSide.
+                                  nib,
+                            };
+                          {
+                            ...execution,
+                            stack: [
+                              {
+                                scopeID: nodeScopeID,
+                                explicitConnectionSide: {
+                                  isSource: true,
+                                  connectionSide,
+                                },
+                                action: Returning(value),
+                              },
+                              ...Belt.List.tailExn(execution.stack),
+                            ],
+                            scopes:
+                              MapStringUpdate.f(
+                                execution.scopes,
+                                nodeScopeID,
+                                (scope: Scope.t) =>
+                                {
+                                  ...scope,
+                                  sourceValues:
+                                    Belt.Map.set(
+                                      scope.sourceValues,
+                                      connectionSide,
+                                      value,
+                                    ),
+                                }
+                              ),
+                          };
+                        | _ => defaultBehavior()
+                        };
+                      | _ => defaultBehavior()
+                      };
+                    | _ => defaultBehavior()
+                    };
+                  | _ => defaultBehavior()
+                  };
+                };
               }
             },
           );

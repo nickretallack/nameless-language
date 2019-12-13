@@ -1,7 +1,8 @@
 let f =
-    (definitionID: DefinitionID.t, parentScopeID: option(ScopeID.t)): Scope.t => {
+    (definitionID: DefinitionID.t, parentScope: option(ParentScope.t))
+    : Scope.t => {
   definitionID,
-  parentScopeID,
+  parentScope,
   sourceValues: Belt.Map.make(~id=(module ConnectionSideComparable.C)),
   nodeScopeIDs: Belt.Map.String.empty,
 };

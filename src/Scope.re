@@ -7,5 +7,5 @@ type t = {
       ConnectionSideComparable.C.identity,
     ),
   nodeScopeIDs: Belt.Map.String.t(ScopeID.t),
-  parentScopeID: option(ScopeID.t),
+  parentScope: option(ParentScope.t),
 };
