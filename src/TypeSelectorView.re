@@ -1,6 +1,11 @@
 [@react.component]
 let make =
-    (~valueType: ValueType.t, ~definitions: DefinitionMap.t, ~changeType) => {
+    (
+      ~valueType: ValueType.t,
+      ~definitions: DefinitionMap.t,
+      ~languageName: LanguageName.t,
+      ~changeType,
+    ) => {
   let (state, dispatch) =
     ReactUpdate.useReducer(
       TypeSelectorState.{
@@ -39,7 +44,7 @@ let make =
              }
              onClick={_event => changeType(DefinedValueType(definitionID))}>
              {ReasonReact.string(
-                DefinitionGetDisplayName.f(definition, "en"),
+                DefinitionGetDisplayName.f(definition, languageName),
               )}
            </a>
          ),
@@ -49,7 +54,7 @@ let make =
   <div className="type-selector">
     <a onClick={_event => dispatch(Toggle)}>
       {ReasonReact.string(
-         ValueTypeGetDisplayName.f(valueType, definitions, "en"),
+         ValueTypeGetDisplayName.f(valueType, definitions, languageName),
        )}
     </a>
     {state.opened

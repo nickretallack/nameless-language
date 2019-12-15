@@ -18,7 +18,11 @@ let f =
         GraphConnection,
         true,
       ),
-      NodeMapGetExplicitDisplayNibs.f(graphImplementation.nodes, definitions),
+      NodeMapGetExplicitDisplayNibs.f(
+        graphImplementation.nodes,
+        definitions,
+        languageName,
+      ),
     |])
   | _ => raise(Not_found)
   };

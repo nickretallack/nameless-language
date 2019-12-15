@@ -2,17 +2,17 @@ let rec definedValueDisplay =
         (
           definedValue: Value.definedValueRecord,
           definitions: DefinitionMap.t,
-          language: LanguageName.t,
+          languageName: LanguageName.t,
         )
         : string => {
   let definition =
     Belt.Map.String.getExn(definitions, definedValue.definitionID);
-  TranslatableGetText.f(definition.documentation.name, language)
+  TranslatableGetText.f(definition.documentation.name, languageName)
   ++ (
     switch (definedValue.value) {
     | LabeledValue(None) => ""
     | LabeledValue(Some(value)) =>
-      " (" ++ f(value, definitions, language) ++ ")"
+      " (" ++ f(value, definitions, languageName) ++ ")"
     | FunctionPointerValue => " pointer"
     | RecordValue(values) =>
       "{"
@@ -25,10 +25,10 @@ let rec definedValueDisplay =
                    definition.documentation.inputs,
                    nibID,
                  ),
-                 "en",
+                 languageName,
                )
                ++ ": "
-               ++ f(value, definitions, language)
+               ++ f(value, definitions, languageName)
              ),
            ),
          )

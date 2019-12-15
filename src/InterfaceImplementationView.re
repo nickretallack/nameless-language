@@ -5,6 +5,7 @@ let make =
       ~implementation: Interface.t,
       ~documentation: Documentation.t,
       ~display: DefinitionDisplay.t,
+      ~languageName: LanguageName.t,
       ~emit,
     ) => {
   <div>
@@ -15,6 +16,7 @@ let make =
       documentation
       display
       emit
+      languageName
     />
   </div>;
 };

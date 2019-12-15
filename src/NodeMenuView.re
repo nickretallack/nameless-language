@@ -48,6 +48,7 @@ let make =
       ~nodes: NodeMap.t,
       ~nib: ExplicitConnectionSide.t,
       ~emit: DefinitionAction.t => unit,
+      ~languageName: LanguageName.t,
     ) => {
   let (state, send) =
     ReactUpdate.useReducer(
@@ -155,7 +156,7 @@ let make =
              }
              onClick={_event => send(SelectDefinition(definitionID))}>
              {ReasonReact.string(
-                DefinitionGetDisplayName.f(definition, "en"),
+                DefinitionGetDisplayName.f(definition, languageName),
               )}
            </a>
          ),
@@ -306,7 +307,7 @@ let make =
                     kind: DefinedNode({kind: definedNodeKind, definitionID}),
                   },
                   definitions,
-                  "en",
+                  languageName,
                 );
               <div>
                 <h3>

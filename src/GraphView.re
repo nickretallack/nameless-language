@@ -272,7 +272,7 @@ let make =
     );
   let renderedSides =
     <DefinitionBoxView
-      name={DefinitionGetDisplayName.f(definition, "en")}
+      name={DefinitionGetDisplayName.f(definition, languageName)}
       position={x: 0.0, y: 0.0}
       size=graphSizePixels
       nodeWidth
@@ -291,6 +291,7 @@ let make =
             key=nodeID
             node
             definitions
+            languageName
             position={getNodePosition(nodeID)}
             size={getNodeSize(nodeID)}
             nodeWidth
@@ -439,6 +440,7 @@ let make =
          <NodeMenuView
            emit
            definitions
+           languageName
            nodes={implementation.nodes}
            nib=explicitConnectionSide
          />
@@ -468,6 +470,7 @@ let make =
       documentation
       display
       emit
+      languageName
     />
   </div>;
 };

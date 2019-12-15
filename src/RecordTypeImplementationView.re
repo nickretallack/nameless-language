@@ -5,6 +5,7 @@ let make =
       ~implementation: RecordType.t,
       ~documentation: Documentation.t,
       ~display: DefinitionDisplay.t,
+      ~languageName: LanguageName.t,
       ~emit,
     ) => {
   <div>
@@ -16,6 +17,7 @@ let make =
       isInput=true
       ordering={display.inputOrdering}
       definitions
+      languageName
       emit
     />
     <a onClick={_event => emit(AddInput)}>

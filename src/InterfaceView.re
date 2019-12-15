@@ -5,6 +5,7 @@ let make =
       ~interface: Interface.t,
       ~documentation: Documentation.t,
       ~display: DefinitionDisplay.t,
+      ~languageName: LanguageName.t,
       ~emit,
     ) => {
   <div className="interface">
@@ -17,6 +18,7 @@ let make =
         ordering={display.outputOrdering}
         definitions
         emit
+        languageName
       />
       <a onClick={_event => emit(AddOutput)}>
         {ReasonReact.string("Add Output")}
@@ -31,6 +33,7 @@ let make =
         ordering={display.inputOrdering}
         definitions
         emit
+        languageName
       />
       <a onClick={_event => emit(AddInput)}>
         {ReasonReact.string("Add Input")}

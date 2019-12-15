@@ -3,6 +3,7 @@ let make =
     (
       ~nibID: NibID.t,
       ~definitions: DefinitionMap.t,
+      ~languageName: LanguageName.t,
       ~isInput: bool,
       ~valueType: ValueType.t,
       ~name: Translatable.t,
@@ -47,10 +48,12 @@ let make =
       <input
         type_="text"
         className="name"
-        value={TranslatableGetText.f(name, "en")}
+        value={TranslatableGetText.f(name, languageName)}
         onChange=changeName
       />
     </td>
-    <td> <TypeSelectorView valueType definitions changeType /> </td>
+    <td>
+      <TypeSelectorView valueType definitions languageName changeType />
+    </td>
   </tr>;
 };

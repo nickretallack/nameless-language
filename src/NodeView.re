@@ -3,6 +3,7 @@ let make =
     (
       ~node: Node.t,
       ~definitions: DefinitionMap.t,
+      ~languageName: LanguageName.t,
       ~position: Point.t,
       ~size: Point.t,
       ~nodeWidth: float,
@@ -35,7 +36,7 @@ let make =
   | ListNode(_) => makeNode("List", None)
   | DefinedNode({definitionID}) =>
     let definition = Belt.Map.String.getExn(definitions, definitionID);
-    let name = DefinitionGetDisplayName.f(definition, "en");
+    let name = DefinitionGetDisplayName.f(definition, languageName);
     let onDoubleClick = _event =>
       ReasonReact.Router.push("#" ++ definitionID);
 

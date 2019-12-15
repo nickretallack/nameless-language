@@ -30,6 +30,7 @@ let make =
          implementation
          documentation
          display
+         languageName
          emit
        />
      | InterfaceImplementation(implementation) =>
@@ -38,6 +39,7 @@ let make =
          implementation
          documentation
          display
+         languageName
          emit
        />
      | _ => ReasonReact.string("TODO")

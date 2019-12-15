@@ -2,6 +2,7 @@
 let make =
     (
       ~definitions: DefinitionMap.t,
+      ~languageName: LanguageName.t,
       ~typedFields: RecordType.t,
       ~nibDocumentations: Belt.Map.String.t(Translatable.t),
       ~isInput: bool,
@@ -20,6 +21,7 @@ let make =
                index
                count={Belt.List.length(ordering)}
                definitions
+               languageName
                emit
                isInput
                nibID
