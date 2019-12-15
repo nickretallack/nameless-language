@@ -7,6 +7,7 @@ let make =
       ~definition: Definition.t,
       ~display: DefinitionDisplay.t,
       ~documentation: Documentation.t,
+      ~languageName: LanguageName.t,
       ~emit: DefinitionAction.t => unit,
       ~error: AppError.t,
       ~stackFrame: option(MaterializedStackFrame.t),
@@ -187,7 +188,8 @@ let make =
         nibIndex,
       );
     };
-  let allNibs = DefinitionGetExplicitDisplayNibs.f(definition, definitions);
+  let allNibs =
+    DefinitionGetExplicitDisplayNibs.f(definition, definitions, languageName);
   let renderedConnections =
     ReasonReact.array(
       Belt.Array.map(
@@ -252,6 +254,7 @@ let make =
             text=name
             isSource
             connectionSide
+            languageName
             position={getNibPosition(connectionSide, !isSource)}
             emit=dispatch
             isHighlighted={
@@ -416,6 +419,7 @@ let make =
       definitionID
       definitions
       documentation
+      languageName
       emit
       error
       placeholder="(nameless function)"

@@ -7,6 +7,7 @@ let make =
       ~text: string,
       ~isHighlighted: bool,
       ~definitions: DefinitionMap.t,
+      ~languageName: LanguageName.t,
       ~value: option(Value.t),
       ~emit: GraphAction.t => unit,
     ) => {
@@ -31,7 +32,9 @@ let make =
          x={FloatToPixels.f(position.x -. sidePadding)}
          y={FloatToPixels.f(position.y)}
          alignmentBaseline="central">
-         {ReasonReact.string(ValueDisplay.f(value, definitions))}
+         {ReasonReact.string(
+            ValueDisplay.f(value, definitions, languageName),
+          )}
        </text>
      }}
     <circle

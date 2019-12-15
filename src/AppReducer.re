@@ -81,7 +81,11 @@ let f =
         documentation: {
           ...definition.documentation,
           name:
-            TranslatableSetText.f(definition.documentation.name, "en", text),
+            TranslatableSetText.f(
+              definition.documentation.name,
+              state.languageName,
+              text,
+            ),
         },
       })
     | ChangeDescription(text) =>
@@ -92,7 +96,7 @@ let f =
           name:
             TranslatableSetText.f(
               definition.documentation.description,
-              "en",
+              state.languageName,
               text,
             ),
         },
@@ -203,7 +207,7 @@ let f =
             ? definition.documentation.inputs
             : definition.documentation.outputs;
         let nib = Belt.Map.String.getExn(nibs, nibID);
-        let newNib = TranslatableSetText.f(nib, "en", text);
+        let newNib = TranslatableSetText.f(nib, state.languageName, text);
         let newNibs = Belt.Map.String.set(nibs, nibID, newNib);
         let documentation =
           isInput

@@ -4,6 +4,7 @@ let make =
       ~definitionID: DefinitionID.t,
       ~definitions: DefinitionMap.t,
       ~documentation: Documentation.t,
+      ~languageName: LanguageName.t,
       ~placeholder: string,
       ~emit: DefinitionAction.t => unit,
       ~error: AppError.t,
@@ -16,7 +17,7 @@ let make =
         type_="text"
         className="name"
         placeholder
-        value={TranslatableGetText.f(documentation.name, "en")}
+        value={TranslatableGetText.f(documentation.name, languageName)}
         onChange=changeName
       />
     </div>
@@ -32,7 +33,7 @@ let make =
          ((definitionID, definition)) =>
            <option key=definitionID value=definitionID>
              {ReasonReact.string(
-                DefinitionGetDisplayName.f(definition, "en"),
+                DefinitionGetDisplayName.f(definition, languageName),
               )}
            </option>,
          uses,
@@ -49,7 +50,7 @@ let make =
                 <li>
                   <a key=definitionID href={"#" ++ definitionID}>
                     {ReasonReact.string(
-                       DefinitionGetDisplayName.f(definition, "en"),
+                       DefinitionGetDisplayName.f(definition, languageName),
                      )}
                   </a>
                 </li>,

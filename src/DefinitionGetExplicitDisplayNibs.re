@@ -1,16 +1,20 @@
 let f =
-    (definition: Definition.t, definitions: DefinitionMap.t)
+    (
+      definition: Definition.t,
+      definitions: DefinitionMap.t,
+      languageName: LanguageName.t,
+    )
     : list(ExplicitDisplayNib.t) => {
   switch (definition.implementation) {
   | GraphImplementation(graphImplementation) =>
     Belt.List.concatMany([|
       DisplayNibsToExplicit.f(
-        DefinitionGetKeywordDisplayNibOutputs.f(definition, "en"),
+        DefinitionGetKeywordDisplayNibOutputs.f(definition, languageName),
         GraphConnection,
         false,
       ),
       DisplayNibsToExplicit.f(
-        DefinitionGetKeywordDisplayNibInputs.f(definition, "en"),
+        DefinitionGetKeywordDisplayNibInputs.f(definition, languageName),
         GraphConnection,
         true,
       ),

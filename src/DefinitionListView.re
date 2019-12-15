@@ -1,5 +1,5 @@
 [@react.component]
-let make = (~definitions: DefinitionMap.t) => {
+let make = (~definitions: DefinitionMap.t, ~languageName: LanguageName.t) => {
   <table>
     <thead>
       <tr>
@@ -26,7 +26,7 @@ let make = (~definitions: DefinitionMap.t) => {
            </td>
            <td>
              <a href={"#" ++ definitionID}>
-               {DefinitionGetDisplayName.f(definition, "en")
+               {DefinitionGetDisplayName.f(definition, languageName)
                 ->ReasonReact.string}
              </a>
            </td>

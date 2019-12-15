@@ -4,6 +4,7 @@ let make =
       ~definitionID,
       ~definition: Definition.t,
       ~definitions: DefinitionMap.t,
+      ~languageName: LanguageName.t,
       ~error: AppError.t,
       ~emit,
     ) => {
@@ -13,6 +14,7 @@ let make =
       definitionID
       definitions
       documentation
+      languageName
       emit
       error
       placeholder={

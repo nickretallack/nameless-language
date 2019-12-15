@@ -1,12 +1,18 @@
 [@react.component]
-let make = (~definitions) => {
+let make = (~initialDefinitions) => {
   let (state, dispatch) =
     ReactUpdate.useReducer(
-      AppState.{definitions, error: NoAppError, execution: None},
+      AppState.{
+        definitions: initialDefinitions,
+        error: NoAppError,
+        execution: None,
+        languageName: "en",
+      },
       AppReducer.f,
     );
   let url = ReasonReactRouter.useUrl();
   let definitionID = url.hash;
+  let AppState.{languageName, definitions, error, execution} = state;
   <div>
     <a href="#"> {ReasonReact.string("Library")} </a>
     {ReasonReact.string(" New:")}
@@ -25,10 +31,10 @@ let make = (~definitions) => {
        ),
      )}
     {switch (definitionID) {
-     | "" => <DefinitionListView definitions={state.definitions} />
+     | "" => <DefinitionListView definitions languageName />
      | _ =>
        // debug
-       switch (state.execution) {
+       switch (execution) {
        | None => ()
        | Some(execution) =>
          Js.log(
@@ -41,14 +47,14 @@ let make = (~definitions) => {
            ),
          )
        };
-       switch (Belt.Map.String.get(state.definitions, definitionID)) {
+       switch (Belt.Map.String.get(definitions, definitionID)) {
        | None => ReasonReact.string("Not found")
        | Some(definition) =>
          let Definition.{implementation, display, documentation} = definition;
          let emit = (action: DefinitionAction.t) =>
            dispatch(DefinitionAction({definitionID, action}));
          let stackFrame =
-           switch (state.execution) {
+           switch (execution) {
            | Some(execution) =>
              let StackFrame.{scopeID, explicitConnectionSide, action} =
                Belt.List.headExn(execution.stack);
@@ -63,27 +69,29 @@ let make = (~definitions) => {
            <GraphView
              key=definitionID
              definitionID
-             definitions={state.definitions}
+             definitions
              definition
              implementation
              display
              documentation
              emit
-             error={state.error}
+             error
              stackFrame
+             languageName
            />
          | _ =>
            <SimpleDefinitionView
              definitionID
              definition
              definitions
+             languageName
              emit
-             error={state.error}
+             error
            />
          };
        };
      }}
-    {switch (state.execution) {
+    {switch (execution) {
      | None => ReasonReact.null
      | Some(execution) =>
        <div>
@@ -93,7 +101,9 @@ let make = (~definitions) => {
          {switch (execution.result) {
           | None => ReasonReact.null
           | Some(value) =>
-            ReasonReact.string("Result: " ++ ValueDisplay.f(value, definitions))
+            ReasonReact.string(
+              "Result: " ++ ValueDisplay.f(value, definitions, languageName),
+            )
           }}
        </div>
      }}

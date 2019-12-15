@@ -1,13 +1,18 @@
 let rec definedValueDisplay =
-        (definedValue: Value.definedValueRecord, definitions: DefinitionMap.t)
+        (
+          definedValue: Value.definedValueRecord,
+          definitions: DefinitionMap.t,
+          language: LanguageName.t,
+        )
         : string => {
   let definition =
     Belt.Map.String.getExn(definitions, definedValue.definitionID);
-  TranslatableGetText.f(definition.documentation.name, "en")
+  TranslatableGetText.f(definition.documentation.name, language)
   ++ (
     switch (definedValue.value) {
     | LabeledValue(None) => ""
-    | LabeledValue(Some(value)) => " (" ++ f(value, definitions) ++ ")"
+    | LabeledValue(Some(value)) =>
+      " (" ++ f(value, definitions, language) ++ ")"
     | FunctionPointerValue => " pointer"
     | RecordValue(values) =>
       "{"
@@ -23,7 +28,7 @@ let rec definedValueDisplay =
                  "en",
                )
                ++ ": "
-               ++ f(value, definitions)
+               ++ f(value, definitions, language)
              ),
            ),
          )
@@ -31,10 +36,12 @@ let rec definedValueDisplay =
     }
   );
 }
-and f = (value: Value.t, definitions: DefinitionMap.t): string =>
+and f =
+    (value: Value.t, definitions: DefinitionMap.t, language: LanguageName.t)
+    : string =>
   switch (value) {
   | PrimitiveValue(primitiveValue) => PrimitiveValueDisplay.f(primitiveValue)
   | DefinedValue(definedValue) =>
-    definedValueDisplay(definedValue, definitions)
+    definedValueDisplay(definedValue, definitions, language)
   | LazyValue(_) => "(not computed yet)"
   };
