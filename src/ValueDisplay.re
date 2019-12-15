@@ -9,7 +9,25 @@ let rec definedValueDisplay =
     | LabeledValue(None) => ""
     | LabeledValue(Some(value)) => " (" ++ f(value, definitions) ++ ")"
     | FunctionPointerValue => " pointer"
-    | _ => "TODO"
+    | RecordValue(values) =>
+      "{"
+      ++ Js.Array.joinWith(
+           ", \n",
+           Belt.List.toArray(
+             Belt.List.map(Belt.Map.String.toList(values), ((nibID, value)) =>
+               TranslatableGetText.f(
+                 Belt.Map.String.getExn(
+                   definition.documentation.inputs,
+                   nibID,
+                 ),
+                 "en",
+               )
+               ++ ": "
+               ++ f(value, definitions)
+             ),
+           ),
+         )
+      ++ "}"
     }
   );
 }
