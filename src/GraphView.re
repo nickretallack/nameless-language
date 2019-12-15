@@ -261,6 +261,7 @@ let make =
               | _ => false
               }
             }
+            definitions
             value
           />;
         },

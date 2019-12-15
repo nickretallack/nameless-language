@@ -93,7 +93,7 @@ let make = (~definitions) => {
          {switch (execution.result) {
           | None => ReasonReact.null
           | Some(value) =>
-            ReasonReact.string("Result: " ++ ValueDisplay.f(value))
+            ReasonReact.string("Result: " ++ ValueDisplay.f(value, definitions))
           }}
        </div>
      }}

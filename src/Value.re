@@ -1,6 +1,10 @@
-type definedValue = {
+type definedValue =
+  | RecordValue(Belt.Map.String.t(t))
+  | LabeledValue(option(t))
+  | FunctionPointerValue
+and definedValueRecord = {
   definitionID: DefinitionID.t,
-  values: Belt.Map.String.t(t),
+  value: definedValue,
 }
 and lazyValue = {
   scopeID: ScopeID.t,
@@ -8,5 +12,5 @@ and lazyValue = {
 }
 and t =
   | PrimitiveValue(PrimitiveValue.t)
-  | DefinedValue(definedValue)
+  | DefinedValue(definedValueRecord)
   | LazyValue(lazyValue);
