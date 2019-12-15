@@ -2,6 +2,7 @@
 
 let example =
   GraphMake.f(
+    "en",
     ~name="Example Definition",
     ~description="An example function",
     ~inputs=[|("in1", "In 1"), ("in2", "In 2")|],
@@ -52,6 +53,7 @@ let example =
 
 let simple =
   GraphMake.f(
+    "en",
     ~name="Simple Definition",
     ~description="A simple function",
     ~inputs=[|("in1", "In 1"), ("in2", "In 2")|],
@@ -98,12 +100,14 @@ let simple =
 
 let one =
   DefinitionMake.f(
+    "en",
     ~implementation=ConstantImplementation(NumberValue(1.0)),
     (),
   );
 
 let point =
   DefinitionMake.f(
+    "en",
     ~name="2D Point",
     ~description="X and Y coordinates",
     ~inputs=[|("x", "X"), ("y", "Y")|],
@@ -119,6 +123,7 @@ let point =
 
 let plus =
   DefinitionMake.f(
+    "en",
     ~name="+",
     ~description="Add two numbers, resulting in a number.",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
@@ -143,6 +148,7 @@ let plus =
 
 let minus =
   DefinitionMake.f(
+    "en",
     ~name="-",
     ~description="Subtract two numbers, resulting in a number.",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
@@ -167,6 +173,7 @@ let minus =
 
 let times =
   DefinitionMake.f(
+    "en",
     ~name="*",
     ~description="Multiply two numbers, resulting in a number.",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
@@ -191,6 +198,7 @@ let times =
 
 let divide =
   DefinitionMake.f(
+    "en",
     ~name="/",
     ~description="Subtract two numbers, resulting in a number.",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
@@ -215,6 +223,7 @@ let divide =
 
 let pointExample =
   GraphMake.f(
+    "en",
     ~name="Point Example",
     ~description="",
     ~inputs=[||],
@@ -276,6 +285,7 @@ let pointExample =
 
 let referenceExample =
   GraphMake.f(
+    "en",
     ~name="Reference example",
     ~description="",
     ~inputs=[||],
@@ -292,6 +302,7 @@ let referenceExample =
 
 let exampleInterface =
   DefinitionMake.f(
+    "en",
     ~name="Example Interface",
     ~inputs=[|("in-left", "Left"), ("in-right", "Right")|],
     ~outputs=[|("out-left", "Left"), ("out-right", "Right")|],
@@ -313,6 +324,7 @@ let exampleInterface =
 
 let interfaceExample =
   GraphMake.f(
+    "en",
     ~name="Interface Example",
     ~outputs=[|("result", "Result")|],
     ~nodes=[|
@@ -397,6 +409,7 @@ let interfaceExample =
 
 let nestedInlineExample =
   GraphMake.f(
+    "en",
     ~name="Nested Inline Functions Example",
     ~outputs=[|("result", "Result")|],
     ~nodes=[|
@@ -459,6 +472,7 @@ let nestedInlineExample =
 
 let yesLabel =
   DefinitionMake.f(
+    "en",
     ~name="Yes",
     ~implementation=LabeledTypeImplementation(None),
     (),
@@ -466,6 +480,7 @@ let yesLabel =
 
 let noLabel =
   DefinitionMake.f(
+    "en",
     ~name="No",
     ~implementation=LabeledTypeImplementation(None),
     (),
@@ -473,6 +488,7 @@ let noLabel =
 
 let booleanUnion =
   DefinitionMake.f(
+    "en",
     ~name="Boolean",
     ~implementation=
       UnionTypeImplementation(
@@ -489,6 +505,7 @@ let booleanUnion =
 
 let branch =
   DefinitionMake.f(
+    "en",
     ~name="Branch",
     ~description="Conditionally evaluate.",
     ~inputs=[|("if", "If"), ("then", "Then"), ("else", "Otherwise")|],
@@ -512,6 +529,7 @@ let branch =
 
 let equals =
   DefinitionMake.f(
+    "en",
     ~name="=",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
     ~outputs=[|("result", "Result")|],
@@ -535,6 +553,7 @@ let equals =
 
 let lessThan =
   DefinitionMake.f(
+    "en",
     ~name="<",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
     ~outputs=[|("result", "Result")|],
@@ -558,6 +577,7 @@ let lessThan =
 
 let greaterThan =
   DefinitionMake.f(
+    "en",
     ~name=">",
     ~inputs=[|("left", "Left"), ("right", "Right")|],
     ~outputs=[|("result", "Result")|],
@@ -581,6 +601,7 @@ let greaterThan =
 
 let factorial =
   GraphMake.f(
+    "en",
     ~name="Factorial",
     ~outputs=[|("result", "Result")|],
     ~inputs=[|("input", "Input")|],
@@ -681,6 +702,7 @@ let factorial =
 
 let factorial2 =
   GraphMake.f(
+    "en",
     ~name="Factorial",
     ~outputs=[|("result", "Result")|],
     ~inputs=[|("input", "Input")|],

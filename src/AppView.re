@@ -23,7 +23,7 @@ let make = (~initialDefinitions) => {
            key={string_of_int(index)}
            onClick={_event => {
              let newDefinitionID = RandomIDMake.f();
-             dispatch(AppAction.CreateDefinition(maker()));
+             dispatch(AppAction.CreateDefinition(maker(languageName)));
              ReasonReactRouter.push("#" ++ newDefinitionID);
            }}>
            {ReasonReact.string(name)}

@@ -1,5 +1,6 @@
 let f =
     (
+      languageName: LanguageName.t,
       ~name="",
       ~description="",
       ~inputs=[||],
@@ -9,8 +10,8 @@ let f =
     ) =>
   Definition.{
     documentation: {
-      name: TranslatableMake.f(name, "en"),
-      description: TranslatableMake.f(description, "en"),
+      name: TranslatableMake.f(name, languageName),
+      description: TranslatableMake.f(description, languageName),
       inputs: RecordDocumentationMake.f(inputs),
       outputs: RecordDocumentationMake.f(outputs),
     },

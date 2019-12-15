@@ -1,5 +1,6 @@
 let f =
     (
+      languageName: LanguageName.t,
       ~name="",
       ~description="",
       ~inputs=[||],
@@ -9,6 +10,7 @@ let f =
       _unit,
     ) =>
   DefinitionMake.f(
+    languageName: LanguageName.t,
     ~name,
     ~description,
     ~inputs,

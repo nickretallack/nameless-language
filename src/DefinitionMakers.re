@@ -1,18 +1,24 @@
 let v = [|
-  ("Function", () => GraphMake.f(~outputs=[|(RandomIDMake.f(), "")|], ())),
+  (
+    "Function",
+    (languageName: LanguageName.t) =>
+      GraphMake.f(languageName, ~outputs=[|(RandomIDMake.f(), "")|], ()),
+  ),
   (
     "Constant",
-    () =>
+    (languageName: LanguageName.t) =>
       DefinitionMake.f(
+        languageName,
         ~implementation=ConstantImplementation(TextValue("")),
         (),
       ),
   ),
   (
     "Interface",
-    () => {
+    (languageName: LanguageName.t) => {
       let outputID = RandomIDMake.f();
       DefinitionMake.f(
+        languageName,
         ~outputs=[|(outputID, "")|],
         ~implementation=
           InterfaceImplementation({
@@ -28,10 +34,11 @@ let v = [|
   ),
   (
     "Record",
-    () => {
+    (languageName: LanguageName.t) => {
       let inputID1 = RandomIDMake.f();
       let inputID2 = RandomIDMake.f();
       DefinitionMake.f(
+        languageName,
         ~inputs=[|(inputID1, ""), (inputID2, "")|],
         ~implementation=
           RecordTypeImplementation(
