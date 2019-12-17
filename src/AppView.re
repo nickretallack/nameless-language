@@ -10,6 +10,16 @@ let make = (~initialDefinitions) => {
       },
       AppReducer.f,
     );
+
+  React.useEffect(() => {
+    Dom.Storage.setItem(
+      "namelessAppState",
+      Json.stringify(AppStateToPersistenceJson.f(state)),
+      Dom.Storage.localStorage,
+    );
+    None;
+  });
+
   let url = ReasonReactRouter.useUrl();
   let definitionID = url.hash;
   let AppState.{languageName, definitions, error, execution} = state;
