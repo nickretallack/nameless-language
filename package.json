@@ -1,30 +1,30 @@
 {
-  "name": "nameless-reason-new",
-  "version": "0.1.0",
-  "scripts": {
-    "build": "bsb -make-world",
-    "start": "bsb -make-world -w -ws _ ",
-    "clean": "bsb -clean-world",
-    "server": "moduleserve ./ --port 8000",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "BuckleScript",
-    "ReasonReact",
-    "reason-react"
-  ],
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "@glennsl/bs-json": "^5.0.1",
-    "bs-webapi": "^0.15.6",
-    "react": "^16.8.1",
-    "react-dom": "^16.8.1",
-    "reason-react": ">=0.7.0",
-    "reason-react-update": "^1.0.0"
-  },
-  "devDependencies": {
-    "bs-platform": "^6.2.1",
-    "moduleserve": "^0.8.4"
-  }
+	"name": "nameless",
+	"version": "0.1.0",
+	"scripts": {
+		"build": "bsb -make-world",
+		"start": "bsb -make-world -w -ws _ ",
+		"clean": "bsb -clean-world",
+		"server": "moduleserve ./ --port 8000",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"BuckleScript",
+		"ReasonReact",
+		"reason-react"
+	],
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"@glennsl/bs-json": "^5.0.1",
+		"bs-webapi": "^0.15.6",
+		"react": "^16.8.1",
+		"react-dom": "^16.8.1",
+		"reason-react": ">=0.7.0",
+		"reason-react-update": "^1.0.0"
+	},
+	"devDependencies": {
+		"bs-platform": "^6.2.1",
+		"moduleserve": "^0.8.4"
+	}
 }
