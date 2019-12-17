@@ -1,21 +1,15 @@
 [@react.component]
-let make = (~initialDefinitions) => {
+let make = () => {
   let (state, dispatch) =
-    ReactUpdate.useReducer(
-      AppState.{
-        definitions: initialDefinitions,
-        error: NoAppError,
-        execution: None,
-        languageName: "en",
-      },
-      AppReducer.f,
-    );
+    ReactUpdate.useReducer(AppGetInitialState.f(), AppReducer.f);
 
   React.useEffect(() => {
-    Dom.Storage.setItem(
-      "namelessAppState",
-      Json.stringify(AppStateToPersistenceJson.f(state)),
-      Dom.Storage.localStorage,
+    Dom.Storage.(
+      setItem(
+        AppStateName.v,
+        Json.stringify(AppStateToPersistenceJson.f(state)),
+        localStorage,
+      )
     );
     None;
   });
