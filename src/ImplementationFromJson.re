@@ -4,8 +4,13 @@ let f = (json: Js.Json.t): Implementation.t =>
       switch (field("type", string, json)) {
       | "constant" =>
         ConstantImplementation(
-          json |> field("value", PrimitiveValueFromJson.f),
+          field("value", PrimitiveValueFromJson.f, json),
         )
+      | "interface" =>
+        InterfaceImplementation({
+          input: field("input", TypedFieldsFromJson.f, json),
+          output: field("output", TypedFieldsFromJson.f, json),
+        })
       }
     )
   );
