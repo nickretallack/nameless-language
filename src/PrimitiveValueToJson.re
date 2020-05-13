@@ -1,4 +1,4 @@
-let f = (primitiveValue: PrimitiveValue.t) =>
+let f = (primitiveValue: PrimitiveValue.t): Js.Json.t =>
   Json.(
     Encode.object_(
       switch (primitiveValue) {
