@@ -6,10 +6,11 @@ let f = (json: Js.Json.t): Implementation.t =>
         ConstantImplementation(
           field("value", PrimitiveValueFromJson.f, json),
         )
-      | "interface" =>
-        InterfaceImplementation({
-          input: field("input", TypedFieldsFromJson.f, json),
-          output: field("output", TypedFieldsFromJson.f, json),
+      | "interface" => InterfaceImplementation(InterfaceFromJson.f(json))
+      | "external" =>
+        ExternalImplementation({
+          name: field("name", string, json),
+          interface: field("interface", InterfaceFromJson.f, json),
         })
       }
     )
