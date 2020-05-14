@@ -12,6 +12,7 @@ let f = (json: Js.Json.t): Implementation.t =>
           name: field("name", string, json),
           interface: field("interface", InterfaceFromJson.f, json),
         })
+      | "graph" => GraphImplementation(GraphImplementationFromJson.f(json))
       }
     )
   );
