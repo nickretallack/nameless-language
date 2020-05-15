@@ -3,16 +3,21 @@ let make = () => {
   let (state, dispatch) =
     ReactUpdate.useReducer(AppGetInitialState.f(), AppReducer.f);
 
-  // React.useEffect(() => {
-  //   Dom.Storage.(
-  //     setItem(
-  //       AppStateName.v,
-  //       Json.stringify(AppStateToPersistenceJson.f(state)),
-  //       localStorage,
-  //     )
-  //   );
-  //   None;
-  // });
+  React.useEffect(() => {
+    Dom.Storage.(
+      setItem(
+        AppStateName.v,
+        Json.stringify(AppStateToPersistenceJson.f(state)),
+        localStorage,
+      )
+    );
+    None;
+  });
+
+  // let initial = AppGetInitialState.f();
+  // let json = AppStateToPersistenceJson.f(initial);
+  // Js.log(json);
+  // Js.log(AppStateFromPersistenceJson.f(json) == initial);
 
   let url = ReasonReactRouter.useUrl();
   let definitionID = url.hash;

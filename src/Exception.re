@@ -1,3 +1,3 @@
 exception InvalidConnection;
 exception CycleDetected;
-exception JsonDecodeInvalidTypeName;
+exception JsonDecodeInvalidTypeName(string, string);

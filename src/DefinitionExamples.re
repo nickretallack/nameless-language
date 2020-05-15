@@ -492,13 +492,10 @@ let booleanUnion =
     ~name="Boolean",
     ~implementation=
       UnionTypeImplementation(
-        Belt.Set.fromArray(
-          [|
-            ValueType.DefinedValueType("yes"),
-            ValueType.DefinedValueType("no"),
-          |],
-          ~id=(module ValueTypeComparable.C),
-        ),
+        TypeSet.fromArray([|
+          ValueType.DefinedValueType("yes"),
+          ValueType.DefinedValueType("no"),
+        |]),
       ),
     (),
   );

@@ -5,8 +5,9 @@ let f = (kind: string): DefinedNodeKind.t =>
     | "function call" => FunctionCallNode
     | "function pointer call" => FunctionPointerCallNode
     | "function definition" => FunctionDefinitionNode
-    | "constructior" => ConstructorNode
+    | "constructor" => ConstructorNode
     | "accessor" => AccessorNode
-    | _ => raise(Exception.JsonDecodeInvalidTypeName)
+    | type_ =>
+      raise(Exception.JsonDecodeInvalidTypeName(type_, "DefinedNodeKind"))
     }
   );

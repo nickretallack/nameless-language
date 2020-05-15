@@ -5,7 +5,8 @@ let f = (json: Js.Json.t): NodeKind.t =>
       | "reference" => ReferenceNode
       | "list" => ListNode(field("length", int, json))
       | "defined" => DefinedNode(DefinedNodeFromJson.f(json))
-      | _ => raise(Exception.JsonDecodeInvalidTypeName)
+      | type_ =>
+        raise(Exception.JsonDecodeInvalidTypeName(type_, "NodeKind"))
       }
     )
   );

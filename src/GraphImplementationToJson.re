@@ -14,5 +14,6 @@ let f = (graphImplementation: GraphImplementation.t): Js.Json.t =>
           Belt.Map.toList(graphImplementation.connections),
         ),
       ),
+      ("interface", InterfaceToJson.f(graphImplementation.interface)),
     ])
   );

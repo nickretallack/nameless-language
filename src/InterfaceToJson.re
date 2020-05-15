@@ -2,7 +2,7 @@ let f = (interface: Interface.t): Js.Json.t =>
   Json.Encode.(
     object_([
       ("type", string("interface")),
-      ("inputs", TypedFieldsToJson.f(interface.input)),
-      ("outputs", TypedFieldsToJson.f(interface.output)),
+      ("input", TypedFieldsToJson.f(interface.input)),
+      ("output", TypedFieldsToJson.f(interface.output)),
     ])
   );

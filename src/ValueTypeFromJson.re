@@ -8,6 +8,8 @@ let f = (json: Js.Json.t): ValueType.t =>
         )
       | "defined" => DefinedValueType(field("definitionID", string, json))
       | "any" => AnyType
+      | type_ =>
+        raise(Exception.JsonDecodeInvalidTypeName(type_, "ValueType"))
       }
     )
   );
