@@ -4,7 +4,7 @@ let f = (translatable: Translatable.t): Js.Json.t =>
       ("sourceLanguage", string(translatable.sourceLanguage)),
       (
         "translations",
-        MapToJson.f(translatable.translations, VettableToJson.f),
+        StringMapToJson.f(translatable.translations, VettableToJson.f),
       ),
     ])
   );

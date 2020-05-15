@@ -2,7 +2,7 @@ let f = (graphImplementation: GraphImplementation.t): Js.Json.t =>
   Json.Encode.(
     object_([
       ("type", string("graph")),
-      ("nodes", MapToJson.f(graphImplementation.nodes, NodeToJson.f)),
+      ("nodes", StringMapToJson.f(graphImplementation.nodes, NodeToJson.f)),
       (
         "connections",
         list(
