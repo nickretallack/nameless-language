@@ -51,4 +51,14 @@ let v = [|
       );
     },
   ),
+  (
+    "Label",
+    (languageName: LanguageName.t) => {
+      DefinitionMake.f(
+        languageName,
+        ~implementation=LabeledTypeImplementation(None),
+        (),
+      );
+    },
+  ),
 |];
