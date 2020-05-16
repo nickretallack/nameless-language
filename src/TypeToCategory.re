@@ -13,6 +13,8 @@ let f =
     switch (definition.implementation) {
     | InterfaceImplementation(_) => FunctionCategory
     | RecordTypeImplementation(_) => RecordCategory
+    | LabeledTypeImplementation(_) => LabelCategory
+    | UnionTypeImplementation(_) => UnionCategory
     | _ => raise(Not_found)
     };
   | AnyType => AnyCategory

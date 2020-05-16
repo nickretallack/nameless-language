@@ -66,12 +66,18 @@ let make =
              {renderCategory("Number", NumberCategory)}
              {renderCategory("Record", RecordCategory)}
              {renderCategory("Function", FunctionCategory)}
+             {renderCategory("Label", LabelCategory)}
+             {renderCategory("Union", UnionCategory)}
            </div>
            {switch (state.category) {
             | RecordCategory =>
               definedTypeSelector("Record", DefinitionIsRecordType.f)
             | FunctionCategory =>
               definedTypeSelector("Function", DefinitionIsInterface.f)
+            | LabelCategory =>
+              definedTypeSelector("Label", DefinitionIsLabel.f)
+            | UnionCategory =>
+              definedTypeSelector("Union", DefinitionIsUnion.f)
             | _ => ReasonReact.null
             }}
          </div>

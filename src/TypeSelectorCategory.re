@@ -3,4 +3,6 @@ type t =
   | TextCategory
   | RecordCategory
   | FunctionCategory
+  | LabelCategory
+  | UnionCategory
   | AnyCategory;
