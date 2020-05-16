@@ -4,7 +4,7 @@ let make =
       ~valueType: ValueType.t,
       ~definitions: DefinitionMap.t,
       ~languageName: LanguageName.t,
-      ~changeType,
+      ~changeType: ValueType.t => unit,
     ) => {
   let (state, dispatch) =
     ReactUpdate.useReducer(

@@ -42,6 +42,13 @@ let make =
          languageName
          emit
        />
+     | LabeledTypeImplementation(wrappedType) =>
+       <LabeledTypeImplementationView
+         definitions
+         wrappedType
+         languageName
+         emit
+       />
      | _ => ReasonReact.string("TODO")
      }}
   </div>;

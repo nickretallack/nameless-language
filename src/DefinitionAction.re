@@ -3,6 +3,7 @@ type t =
   | ChangeName(string)
   | ChangeDescription(string)
   | ChangeConstantValue(PrimitiveValue.t)
+  | ChangeLabeledType(option(ValueType.t))
   | AddNode(AddNode.t)
   | AddInput
   | AddOutput

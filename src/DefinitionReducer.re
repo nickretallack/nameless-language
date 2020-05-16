@@ -59,6 +59,15 @@ let f =
       })
     | _ => raise(Not_found)
     }
+  | ChangeLabeledType(wrappedType) =>
+    switch (definition.implementation) {
+    | LabeledTypeImplementation(_) =>
+      updateDefinition({
+        ...definition,
+        implementation: LabeledTypeImplementation(wrappedType),
+      })
+    | _ => raise(Not_found)
+    }
   | ChangeName(text) =>
     updateDefinition({
       ...definition,
