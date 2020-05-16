@@ -14,11 +14,6 @@ let make = () => {
     None;
   });
 
-  // let initial = AppGetInitialState.f();
-  // let json = AppStateToPersistenceJson.f(initial);
-  // Js.log(json);
-  // Js.log(AppStateFromPersistenceJson.f(json) == initial);
-
   let url = ReasonReactRouter.useUrl();
   let definitionID = url.hash;
   let AppState.{languageName, definitions, error, execution} = state;
