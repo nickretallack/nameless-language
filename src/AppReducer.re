@@ -1,4 +1,3 @@
-[%%debugger.chrome];
 let f =
     (action: AppAction.t, state: AppState.t)
     : ReactUpdate.update(AppAction.t, AppState.t) =>
