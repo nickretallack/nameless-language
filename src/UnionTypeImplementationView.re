@@ -25,7 +25,7 @@ let make =
       <tbody>
         {ReasonReact.array(
            Belt.Array.map(Belt.Set.toArray(typeSet), valueType =>
-             <tr>
+             <tr key={Json.stringify(ValueTypeToJson.f(valueType))}>
                <td>
                  <a
                    onClick={_event =>
