@@ -66,10 +66,7 @@ let v = [|
     (languageName: LanguageName.t) => {
       DefinitionMake.f(
         languageName,
-        ~implementation=
-          UnionTypeImplementation(
-            TypeSet.fromArray([|ValueType.AnyType, ValueType.AnyType|]),
-          ),
+        ~implementation=UnionTypeImplementation(TypeSet.fromArray([||])),
         (),
       );
     },
