@@ -4,6 +4,8 @@ type t =
   | ChangeDescription(string)
   | ChangeConstantValue(PrimitiveValue.t)
   | ChangeLabeledType(option(ValueType.t))
+  | AddUnionType(ValueType.t)
+  | RemoveUnionType(ValueType.t)
   | AddNode(AddNode.t)
   | AddInput
   | AddOutput

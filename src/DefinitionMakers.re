@@ -61,4 +61,17 @@ let v = [|
       );
     },
   ),
+  (
+    "Union",
+    (languageName: LanguageName.t) => {
+      DefinitionMake.f(
+        languageName,
+        ~implementation=
+          UnionTypeImplementation(
+            TypeSet.fromArray([|ValueType.AnyType, ValueType.AnyType|]),
+          ),
+        (),
+      );
+    },
+  ),
 |];

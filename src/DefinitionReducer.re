@@ -68,6 +68,26 @@ let f =
       })
     | _ => raise(Not_found)
     }
+  | AddUnionType(valueType) =>
+    switch (definition.implementation) {
+    | UnionTypeImplementation(typeSet) =>
+      updateDefinition({
+        ...definition,
+        implementation:
+          UnionTypeImplementation(Belt.Set.add(typeSet, valueType)),
+      })
+    | _ => raise(Not_found)
+    }
+  | RemoveUnionType(valueType) =>
+    switch (definition.implementation) {
+    | UnionTypeImplementation(typeSet) =>
+      updateDefinition({
+        ...definition,
+        implementation:
+          UnionTypeImplementation(Belt.Set.remove(typeSet, valueType)),
+      })
+    | _ => raise(Not_found)
+    }
   | ChangeName(text) =>
     updateDefinition({
       ...definition,

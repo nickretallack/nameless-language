@@ -49,7 +49,8 @@ let make =
          languageName
          emit
        />
-     | _ => ReasonReact.string("TODO")
+     | UnionTypeImplementation(typeSet) =>
+       <UnionTypeImplementationView definitions typeSet languageName emit />
      }}
   </div>;
 };
