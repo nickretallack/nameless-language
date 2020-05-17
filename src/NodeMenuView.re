@@ -322,7 +322,7 @@ let make =
                          </a>
                        </>
                      : ReasonReact.null}
-                  {!nib.isSource
+                  {Belt.Option.isSome(wrappedType)
                      ? <a
                          onClick={_event =>
                            emit(

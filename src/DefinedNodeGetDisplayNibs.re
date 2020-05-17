@@ -34,14 +34,20 @@ let f =
     )
   | ConstructorNode =>
     NodeDisplayNibsMake.f(
-      ~inputs=DefinitionGetKeywordDisplayNibInputs.f(definition, language),
+      ~inputs=
+        DefinitionIsWrappedType.f(definition)
+          ? [{nib: ValueConnection, name: "wrapped"}]
+          : DefinitionGetKeywordDisplayNibInputs.f(definition, language),
       ~outputs=[{nib: ValueConnection, name: ""}],
       (),
     )
   | AccessorNode =>
     NodeDisplayNibsMake.f(
       ~inputs=[{nib: ValueConnection, name: ""}],
-      ~outputs=DefinitionGetKeywordDisplayNibInputs.f(definition, language),
+      ~outputs=
+        DefinitionIsWrappedType.f(definition)
+          ? [{nib: ValueConnection, name: "wrapped"}]
+          : DefinitionGetKeywordDisplayNibInputs.f(definition, language),
       (),
     )
   };
