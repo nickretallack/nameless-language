@@ -42,15 +42,18 @@ let make =
          languageName
          emit
        />
-     | LabeledTypeImplementation(wrappedType) =>
+     | LabeledTypeImplementation(valueType) =>
        <LabeledTypeImplementationView
          definitions
-         wrappedType
+         valueType
          languageName
          emit
        />
      | UnionTypeImplementation(typeSet) =>
        <UnionTypeImplementationView definitions typeSet languageName emit />
+     | SymbolImplementation => ReasonReact.null
+     | ExternalImplementation(_)
+     | GraphImplementation(_) => ReasonReact.null
      }}
   </div>;
 };

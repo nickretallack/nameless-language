@@ -1,6 +1,7 @@
 type definedValue =
   | RecordValue(Belt.Map.String.t(t))
-  | LabeledValue(option(t))
+  | SymbolValue
+  | LabeledValue(t)
   | FunctionPointerValue
 and definedValueRecord = {
   definitionID: DefinitionID.t,

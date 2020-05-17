@@ -7,4 +7,5 @@ let f = (implementation: Implementation.t): ImplementationType.t =>
   | RecordTypeImplementation(_) => ImplementationType.RecordTypeImplementationType
   | LabeledTypeImplementation(_) => ImplementationType.LabeledTypeImplementationType
   | UnionTypeImplementation(_) => ImplementationType.UnionTypeImplementationType
+  | SymbolImplementation => ImplementationType.SymbolTypeImplementationType
   };

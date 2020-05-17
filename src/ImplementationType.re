@@ -5,7 +5,8 @@ type t =
   | RecordTypeImplementationType
   | InterfaceImplementationType
   | UnionTypeImplementationType
-  | ConstantImplementationType;
+  | ConstantImplementationType
+  | SymbolTypeImplementationType;
 
 let list = [
   GraphImplementationType,
@@ -15,4 +16,5 @@ let list = [
   InterfaceImplementationType,
   UnionTypeImplementationType,
   ConstantImplementationType,
+  SymbolTypeImplementationType,
 ];

@@ -34,5 +34,9 @@ let f =
       )
     | LabeledTypeImplementation(valueType) =>
       LabelTypeToPublishingJson.f(id, valueType, dependencies)
+    | SymbolImplementation =>
+      Json.Encode.(
+        object_([("type", string("symbol")), ("id", string(id))])
+      )
     },
   );

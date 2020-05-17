@@ -15,7 +15,7 @@ let f =
           ValueToFloat.f(Belt.Map.String.getExn(values, "right")),
         )
           ? "yes" : "no",
-      value: Value.LabeledValue(None),
+      value: Value.SymbolValue,
     })
   );
 };

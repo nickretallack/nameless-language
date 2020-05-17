@@ -37,8 +37,7 @@ let canConnectToNib = (definition: Definition.t, isSource: bool) =>
   || (
     switch (definition.implementation) {
     | ConstantImplementation(_) => false
-    | LabeledTypeImplementation(wrappedType) =>
-      Belt.Option.isSome(wrappedType)
+    | LabeledTypeImplementation(_) => true
     | _ => true
     }
   );
@@ -296,72 +295,65 @@ let make =
                       </a>
                       {nodeTypeLink(AccessorNode, "accessor")}
                     </>
-
-              | LabeledTypeImplementation(wrappedType) =>
-                Belt.Option.isNone(wrappedType)
-                  ? <>
-                      <a
-                        onClick={_event =>
-                          emit(
-                            AddNode({
-                              node: {
-                                scope: getScope(nib, nodes),
-                                kind:
-                                  DefinedNode({
-                                    kind: ValueNode,
-                                    definitionID,
-                                  }),
-                              },
-                              explicitConnectionSide: nib,
-                              connectionNib: ValueConnection,
-                            }),
-                          )
-                        }>
-                        {ReasonReact.string("value")}
-                      </a>
-                    </>
-                  : <>
-                      {!nib.isSource
-                         ? <a
-                             onClick={_event =>
-                               emit(
-                                 AddNode({
-                                   node: {
-                                     scope: getScope(nib, nodes),
-                                     kind:
-                                       DefinedNode({
-                                         kind: ConstructorNode,
-                                         definitionID,
-                                       }),
-                                   },
-                                   explicitConnectionSide: nib,
-                                   connectionNib: ValueConnection,
-                                 }),
-                               )
-                             }>
-                             {ReasonReact.string("constructor")}
-                           </a>
-                         : ReasonReact.null}
-                      <a
-                        onClick={_event =>
-                          emit(
-                            AddNode({
-                              node: {
-                                scope: getScope(nib, nodes),
-                                kind:
-                                  DefinedNode({
-                                    kind: AccessorNode,
-                                    definitionID,
-                                  }),
-                              },
-                              explicitConnectionSide: nib,
-                              connectionNib: ValueConnection,
-                            }),
-                          )
-                        }>
-                        {ReasonReact.string("accessor")}
-                      </a>
-                    </>
+              | SymbolImplementation =>
+                <>
+                  <a
+                    onClick={_event =>
+                      emit(
+                        AddNode({
+                          node: {
+                            scope: getScope(nib, nodes),
+                            kind:
+                              DefinedNode({kind: ValueNode, definitionID}),
+                          },
+                          explicitConnectionSide: nib,
+                          connectionNib: ValueConnection,
+                        }),
+                      )
+                    }>
+                    {ReasonReact.string("value")}
+                  </a>
+                </>
+              | LabeledTypeImplementation(_) =>
+                <>
+                  {!nib.isSource
+                     ? <a
+                         onClick={_event =>
+                           emit(
+                             AddNode({
+                               node: {
+                                 scope: getScope(nib, nodes),
+                                 kind:
+                                   DefinedNode({
+                                     kind: ConstructorNode,
+                                     definitionID,
+                                   }),
+                               },
+                               explicitConnectionSide: nib,
+                               connectionNib: ValueConnection,
+                             }),
+                           )
+                         }>
+                         {ReasonReact.string("constructor")}
+                       </a>
+                     : ReasonReact.null}
+                  <a
+                    onClick={_event =>
+                      emit(
+                        AddNode({
+                          node: {
+                            scope: getScope(nib, nodes),
+                            kind:
+                              DefinedNode({kind: AccessorNode, definitionID}),
+                          },
+                          explicitConnectionSide: nib,
+                          connectionNib: ValueConnection,
+                        }),
+                      )
+                    }>
+                    {ReasonReact.string("accessor")}
+                  </a>
+                </>
               | UnionTypeImplementation(_) =>
                 ReasonReact.string("Can't create nodes for union types")
               | _ => <> {ReasonReact.string("TODO")} </>

@@ -21,15 +21,16 @@ let f = (implementation: Implementation.t): Js.Json.t =>
         ("type", string("recordType")),
         ("fields", TypedFieldsToJson.f(recordType)),
       ])
-    | LabeledTypeImplementation(maybeValueType) =>
+    | LabeledTypeImplementation(valueType) =>
       object_([
         ("type", string("label")),
-        ("wrapped", nullable(ValueTypeToJson.f, maybeValueType)),
+        ("wrapped", ValueTypeToJson.f(valueType)),
       ])
     | UnionTypeImplementation(typeSet) =>
       object_([
         ("type", string("union")),
         ("types", array(ValueTypeToJson.f, Belt.Set.toArray(typeSet))),
       ])
+    | SymbolImplementation => object_([("type", string("symbol"))])
     }
   );

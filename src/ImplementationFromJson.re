@@ -17,9 +17,10 @@ let f = (json: Js.Json.t): Implementation.t =>
         RecordTypeImplementation(
           field("fields", TypedFieldsFromJson.f, json),
         )
+      | "symbol" => SymbolImplementation
       | "label" =>
         LabeledTypeImplementation(
-          field("wrapped", optional(ValueTypeFromJson.f), json),
+          field("wrapped", ValueTypeFromJson.f, json),
         )
       | "union" =>
         UnionTypeImplementation(

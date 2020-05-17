@@ -10,8 +10,8 @@ let rec definedValueDisplay =
   TranslatableGetText.f(definition.documentation.name, languageName)
   ++ (
     switch (definedValue.value) {
-    | LabeledValue(None) => ""
-    | LabeledValue(Some(value)) =>
+    | SymbolValue => ""
+    | LabeledValue(value) =>
       " (" ++ f(value, definitions, languageName) ++ ")"
     | FunctionPointerValue => " pointer"
     | RecordValue(values) =>

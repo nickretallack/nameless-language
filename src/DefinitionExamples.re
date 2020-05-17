@@ -474,7 +474,7 @@ let yesLabel =
   DefinitionMake.f(
     "en",
     ~name="Yes",
-    ~implementation=LabeledTypeImplementation(None),
+    ~implementation=SymbolImplementation,
     (),
   );
 
@@ -482,7 +482,7 @@ let noLabel =
   DefinitionMake.f(
     "en",
     ~name="No",
-    ~implementation=LabeledTypeImplementation(None),
+    ~implementation=SymbolImplementation,
     (),
   );
 
@@ -504,7 +504,7 @@ let somethingLabel =
   DefinitionMake.f(
     "en",
     ~name="Something",
-    ~implementation=LabeledTypeImplementation(Some(AnyType)),
+    ~implementation=LabeledTypeImplementation(AnyType),
     (),
   );
 

@@ -5,4 +5,5 @@ type t =
   | FunctionCategory
   | LabelCategory
   | UnionCategory
-  | AnyCategory;
+  | AnyCategory
+  | SymbolCategory;

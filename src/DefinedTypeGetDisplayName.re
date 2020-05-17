@@ -5,6 +5,7 @@ let f = (definition: Definition.t, language: LanguageName.t): string =>
     switch (definition.implementation) {
     | RecordTypeImplementation(_) => "Record"
     | InterfaceImplementation(_) => "Function"
+    | SymbolImplementation => "Symbol"
     | LabeledTypeImplementation(_) => "Label"
     | UnionTypeImplementation(_) => "Union"
     | _ => raise(Not_found)

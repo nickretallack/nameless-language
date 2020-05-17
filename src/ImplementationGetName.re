@@ -5,6 +5,7 @@ let f = (implementation: Implementation.t): string =>
   | ExternalImplementation(_) => "external"
   | GraphImplementation(_) => "function"
   | RecordTypeImplementation(_) => "record type"
+  | SymbolImplementation => "symbol"
   | LabeledTypeImplementation(_) => "labeled type"
   | UnionTypeImplementation(_) => "union type"
   };

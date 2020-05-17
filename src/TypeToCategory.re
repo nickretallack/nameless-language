@@ -14,6 +14,7 @@ let f =
     | InterfaceImplementation(_) => FunctionCategory
     | RecordTypeImplementation(_) => RecordCategory
     | LabeledTypeImplementation(_) => LabelCategory
+    | SymbolImplementation => SymbolCategory
     | UnionTypeImplementation(_) => UnionCategory
     | _ => raise(Not_found)
     };

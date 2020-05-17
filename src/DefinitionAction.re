@@ -3,7 +3,7 @@ type t =
   | ChangeName(string)
   | ChangeDescription(string)
   | ChangeConstantValue(PrimitiveValue.t)
-  | ChangeLabeledType(option(ValueType.t))
+  | ChangeLabeledType(ValueType.t)
   | AddUnionType(ValueType.t)
   | RemoveUnionType(ValueType.t)
   | AddNode(AddNode.t)

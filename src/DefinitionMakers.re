@@ -56,7 +56,17 @@ let v = [|
     (languageName: LanguageName.t) => {
       DefinitionMake.f(
         languageName,
-        ~implementation=LabeledTypeImplementation(None),
+        ~implementation=LabeledTypeImplementation(AnyType),
+        (),
+      );
+    },
+  ),
+  (
+    "Symbol",
+    (languageName: LanguageName.t) => {
+      DefinitionMake.f(
+        languageName,
+        ~implementation=SymbolImplementation,
         (),
       );
     },

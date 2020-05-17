@@ -4,5 +4,6 @@ type t =
   | ExternalImplementation(ExternalImplementation.t)
   | GraphImplementation(GraphImplementation.t)
   | RecordTypeImplementation(RecordType.t)
-  | LabeledTypeImplementation(option(ValueType.t))
+  | SymbolImplementation
+  | LabeledTypeImplementation(ValueType.t)
   | UnionTypeImplementation(TypeSet.t);
