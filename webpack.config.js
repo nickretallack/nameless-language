@@ -4,7 +4,7 @@ module.exports = {
 	entry: './src/Index.bs.js',
 	mode: 'production',
 	output: {
-		path: path.join(__dirname, 'bundleOutput'),
+		path: path.join(__dirname, 'docs'),
 		filename: 'index.js',
 	},
 }
