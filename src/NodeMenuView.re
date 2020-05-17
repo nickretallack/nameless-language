@@ -298,52 +298,70 @@ let make =
                     </>
 
               | LabeledTypeImplementation(wrappedType) =>
-                <>
-                  {!nib.isSource || Belt.Option.isSome(wrappedType)
-                     ? <>
-                         <a
-                           onClick={_event =>
-                             emit(
-                               AddNode({
-                                 node: {
-                                   scope: getScope(nib, nodes),
-                                   kind:
-                                     DefinedNode({
-                                       kind: ConstructorNode,
-                                       definitionID,
-                                     }),
-                                 },
-                                 explicitConnectionSide: nib,
-                                 connectionNib: ValueConnection,
-                               }),
-                             )
-                           }>
-                           {ReasonReact.string("constructor")}
-                         </a>
-                       </>
-                     : ReasonReact.null}
-                  {Belt.Option.isSome(wrappedType)
-                     ? <a
-                         onClick={_event =>
-                           emit(
-                             AddNode({
-                               node: {
-                                 scope: getScope(nib, nodes),
-                                 kind:
-                                   DefinedNode({
-                                     kind: AccessorNode,
-                                     definitionID,
-                                   }),
-                               },
-                               explicitConnectionSide: nib,
-                               connectionNib: ValueConnection,
-                             }),
-                           )
-                         }>
-                         {ReasonReact.string("accessor")}
-                       </a>
-                     : ReasonReact.null}
-                </>
+                Belt.Option.isNone(wrappedType)
+                  ? <>
+                      <a
+                        onClick={_event =>
+                          emit(
+                            AddNode({
+                              node: {
+                                scope: getScope(nib, nodes),
+                                kind:
+                                  DefinedNode({
+                                    kind: ValueNode,
+                                    definitionID,
+                                  }),
+                              },
+                              explicitConnectionSide: nib,
+                              connectionNib: ValueConnection,
+                            }),
+                          )
+                        }>
+                        {ReasonReact.string("value")}
+                      </a>
+                    </>
+                  : <>
+                      {!nib.isSource
+                         ? <a
+                             onClick={_event =>
+                               emit(
+                                 AddNode({
+                                   node: {
+                                     scope: getScope(nib, nodes),
+                                     kind:
+                                       DefinedNode({
+                                         kind: ConstructorNode,
+                                         definitionID,
+                                       }),
+                                   },
+                                   explicitConnectionSide: nib,
+                                   connectionNib: ValueConnection,
+                                 }),
+                               )
+                             }>
+                             {ReasonReact.string("constructor")}
+                           </a>
+                         : ReasonReact.null}
+                      <a
+                        onClick={_event =>
+                          emit(
+                            AddNode({
+                              node: {
+                                scope: getScope(nib, nodes),
+                                kind:
+                                  DefinedNode({
+                                    kind: AccessorNode,
+                                    definitionID,
+                                  }),
+                              },
+                              explicitConnectionSide: nib,
+                              connectionNib: ValueConnection,
+                            }),
+                          )
+                        }>
+                        {ReasonReact.string("accessor")}
+                      </a>
+                    </>
               | UnionTypeImplementation(_) =>
                 ReasonReact.string("Can't create nodes for union types")
               | _ => <> {ReasonReact.string("TODO")} </>
