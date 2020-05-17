@@ -34,9 +34,11 @@ let maybeNameless = (string: string) =>
 let canConnectToNib = (definition: Definition.t, isSource: bool) =>
   !isSource
   || Belt.List.length(definition.display.inputOrdering) != 0
-  && (
+  || (
     switch (definition.implementation) {
     | ConstantImplementation(_) => false
+    | LabeledTypeImplementation(wrappedType) =>
+      Belt.Option.isSome(wrappedType)
     | _ => true
     }
   );
@@ -294,6 +296,56 @@ let make =
                       </a>
                       {nodeTypeLink(AccessorNode, "accessor")}
                     </>
+
+              | LabeledTypeImplementation(wrappedType) =>
+                <>
+                  {!nib.isSource || Belt.Option.isSome(wrappedType)
+                     ? <>
+                         <a
+                           onClick={_event =>
+                             emit(
+                               AddNode({
+                                 node: {
+                                   scope: getScope(nib, nodes),
+                                   kind:
+                                     DefinedNode({
+                                       kind: ConstructorNode,
+                                       definitionID,
+                                     }),
+                                 },
+                                 explicitConnectionSide: nib,
+                                 connectionNib: ValueConnection,
+                               }),
+                             )
+                           }>
+                           {ReasonReact.string("constructor")}
+                         </a>
+                       </>
+                     : ReasonReact.null}
+                  {!nib.isSource
+                     ? <a
+                         onClick={_event =>
+                           emit(
+                             AddNode({
+                               node: {
+                                 scope: getScope(nib, nodes),
+                                 kind:
+                                   DefinedNode({
+                                     kind: AccessorNode,
+                                     definitionID,
+                                   }),
+                               },
+                               explicitConnectionSide: nib,
+                               connectionNib: ValueConnection,
+                             }),
+                           )
+                         }>
+                         {ReasonReact.string("accessor")}
+                       </a>
+                     : ReasonReact.null}
+                </>
+              | UnionTypeImplementation(_) =>
+                ReasonReact.string("Can't create nodes for union types")
               | _ => <> {ReasonReact.string("TODO")} </>
               }}
            </div>

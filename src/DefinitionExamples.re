@@ -500,6 +500,14 @@ let booleanUnion =
     (),
   );
 
+let somethingLabel =
+  DefinitionMake.f(
+    "en",
+    ~name="Something",
+    ~implementation=LabeledTypeImplementation(Some(AnyType)),
+    (),
+  );
+
 let branch =
   DefinitionMake.f(
     "en",
@@ -593,6 +601,24 @@ let greaterThan =
             |]),
         },
       }),
+    (),
+  );
+
+let somethingExample =
+  GraphMake.f(
+    "en",
+    ~name="Something example",
+    ~outputs=[|("output", "Output")|],
+    ~nodes=[|
+      (
+        "something",
+        {
+          kind:
+            DefinedNode({kind: ConstructorNode, definitionID: "something"}),
+          scope: GraphScope,
+        },
+      ),
+    |],
     (),
   );
 
@@ -818,6 +844,9 @@ let v =
     ("yes", yesLabel),
     ("no", noLabel),
     ("boolean", booleanUnion),
+    // wrapper label
+    ("something", somethingLabel),
+    ("somethingExample", somethingExample),
     // Externals
     ("plus", plus),
     ("minus", minus),
