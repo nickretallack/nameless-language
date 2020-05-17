@@ -3,5 +3,6 @@ let f = (string: string): PrimitiveValueType.t =>
   | "integer" => IntegerType
   | "number" => NumberType
   | "text" => TextType
-  | _ => raise(Not_found)
+  | _ =>
+    raise(Exception.UnknownTypeName("PrimitiveValueTypeFromString", string))
   };

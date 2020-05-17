@@ -1,5 +1,5 @@
 let f = (value: Value.t): float =>
   switch (value) {
   | PrimitiveValue(NumberValue(number)) => number
-  | _ => raise(Not_found)
+  | _ => raise(Exception.ShouldntHappen("ValueToFloat of non-number"))
   };

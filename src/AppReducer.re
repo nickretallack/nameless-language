@@ -53,7 +53,10 @@ let f =
                         nextFrame.explicitConnectionSide,
                         graphImplementation.connections,
                       )
-                    | _ => raise(Not_found)
+                    | _ =>
+                      raise(
+                        Exception.ShouldntHappen("Connection in non-graph"),
+                      )
                     };
                   {
                     ...execution,

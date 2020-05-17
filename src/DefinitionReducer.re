@@ -57,7 +57,12 @@ let f =
         ...definition,
         implementation: ConstantImplementation(implementation),
       })
-    | _ => raise(Not_found)
+    | _ =>
+      raise(
+        Exception.ShouldntHappen(
+          "ChangeConstantValue targeting non-constant",
+        ),
+      )
     }
   | ChangeLabeledType(wrappedType) =>
     switch (definition.implementation) {
@@ -66,7 +71,10 @@ let f =
         ...definition,
         implementation: LabeledTypeImplementation(wrappedType),
       })
-    | _ => raise(Not_found)
+    | _ =>
+      raise(
+        Exception.ShouldntHappen("ChangeLabeledTtype targeting non-label"),
+      )
     }
   | AddUnionType(valueType) =>
     switch (definition.implementation) {
@@ -76,7 +84,8 @@ let f =
         implementation:
           UnionTypeImplementation(Belt.Set.add(typeSet, valueType)),
       })
-    | _ => raise(Not_found)
+    | _ =>
+      raise(Exception.ShouldntHappen("AddUnionType targeting non-union"))
     }
   | RemoveUnionType(valueType) =>
     switch (definition.implementation) {
@@ -86,7 +95,8 @@ let f =
         implementation:
           UnionTypeImplementation(Belt.Set.remove(typeSet, valueType)),
       })
-    | _ => raise(Not_found)
+    | _ =>
+      raise(Exception.ShouldntHappen("RemoveUnionType targeting non-union"))
     }
   | ChangeName(text) =>
     updateDefinition({
@@ -228,7 +238,10 @@ let f =
                 connectionSide,
               ),
           })
-        | _ => raise(Not_found)
+        | _ =>
+          raise(
+            Exception.ShouldntHappen("RemoveConnection targeting non-graph"),
+          )
         },
     })
   | RemoveNodes(nodeIDs) =>
@@ -254,7 +267,8 @@ let f =
                 )
               ),
           });
-        | _ => raise(Not_found)
+        | _ =>
+          raise(Exception.ShouldntHappen("RemoveNodes targeting non-union"))
         },
     })
   | Fork =>

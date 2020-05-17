@@ -8,6 +8,6 @@ let f = (definition: Definition.t, language: LanguageName.t): string =>
     | SymbolImplementation => "Symbol"
     | LabeledTypeImplementation(_) => "Label"
     | UnionTypeImplementation(_) => "Union"
-    | _ => raise(Not_found)
+    | _ => raise(Exception.ShouldntHappen("DefinedTypeGetDisplayName called on unknown type"))
     }
   );

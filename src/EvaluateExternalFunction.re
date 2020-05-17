@@ -17,7 +17,7 @@ let f =
     | "<=" => EvaluateNumericComparison.f((<=))
     | ">=" => EvaluateNumericComparison.f((>=))
     | "==" => EvaluateNumericComparison.f((==))
-    | _ => raise(Not_found)
+    | _ => raise(Exception.UnknownExternal(name))
     };
   externalFunction(inputs, outputID);
 };

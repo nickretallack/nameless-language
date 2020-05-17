@@ -24,6 +24,11 @@ let f =
         languageName,
       ),
     |])
-  | _ => raise(Not_found)
+  | _ =>
+    raise(
+      Exception.ShouldntHappen(
+        "DefinitionGetExplicitDisplayNibs on non-graph",
+      ),
+    )
   };
 };

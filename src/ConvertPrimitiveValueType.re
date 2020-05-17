@@ -3,7 +3,7 @@ let f = (primitiveValue: PrimitiveValue.t, typeName: string): PrimitiveValue.t =
   | "text" => TextValue(PrimitiveValueToString.f(primitiveValue))
   | "number" =>
     NumberValue(
-      try (float_of_string(PrimitiveValueToString.f(primitiveValue))) {
+      try(float_of_string(PrimitiveValueToString.f(primitiveValue))) {
       | Failure(_) => 0.0
       },
     )
@@ -14,5 +14,11 @@ let f = (primitiveValue: PrimitiveValue.t, typeName: string): PrimitiveValue.t =
       | _ => int_of_string(PrimitiveValueToString.f(primitiveValue))
       },
     )
-  | _ => raise(Not_found)
+  | _ =>
+    raise(
+      Exception.JsonDecodeInvalidTypeName(
+        typeName,
+        "ConvertPrimitiveValueType",
+      ),
+    )
   };

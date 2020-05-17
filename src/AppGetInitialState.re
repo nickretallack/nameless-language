@@ -11,7 +11,7 @@ let f = (): AppState.t =>
     | Some(jsonString) =>
       switch (Json.parse(jsonString)) {
       | Some(json) => AppStateFromPersistenceJson.f(json)
-      | None => raise(Not_found)
+      | None => raise(Exception.JsonDecodeFailed)
       }
     }
   );

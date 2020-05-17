@@ -15,7 +15,7 @@ let f =
       switch (sink.nib) {
       | NibConnection(nibID) =>
         ListFindIndexExn.f(display.outputOrdering, nibID)
-      | _ => raise(Not_found)
+      | _ => raise(Exception.TODO("RankConnection non-nib connection"))
       };
 
     (- sinkColumnIndex, sinkIndexInColumn, sinkIndex);

@@ -37,7 +37,33 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                 scope,
                 source,
               )
-            | _ => raise(Not_found)
+            | SymbolImplementation =>
+              let value =
+                Value.DefinedValue({definitionID, value: SymbolValue});
+              {
+                ...execution,
+                stack: [
+                  {...frame, action: Returning(value)},
+                  ...Belt.List.tailExn(execution.stack),
+                ],
+                scopes:
+                  Belt.Map.String.set(
+                    execution.scopes,
+                    frame.scopeID,
+                    {
+                      ...scope,
+                      sourceValues:
+                        Belt.Map.set(scope.sourceValues, source, value),
+                    },
+                  ),
+              };
+
+            | _ =>
+              raise(
+                Exception.TODO(
+                  "Evaluating a ValueNode that's not a symbol or constant",
+                ),
+              )
             }
           | FunctionCallNode =>
             switch (nodeDefinition.implementation) {
@@ -53,7 +79,12 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                   externalImplementation,
                   outputID,
                 )
-              | _ => raise(Not_found)
+              | _ =>
+                raise(
+                  Exception.ShouldntHappen(
+                    "Evaluating a non-keyword nib on an external function",
+                  ),
+                )
               }
             | GraphImplementation(_) =>
               let (nodeScopeID, scopes) =
@@ -104,7 +135,12 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                   ...execution.stack,
                 ],
               };
-            | _ => raise(Not_found) // todo
+            | _ =>
+              raise(
+                Exception.TODO(
+                  "Evaluating a function that's not a graph or external",
+                ),
+              )
             }
           | ConstructorNode =>
             switch (nodeDefinition.implementation) {
@@ -142,7 +178,44 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                     },
                   ),
               };
-            | _ => raise(Not_found)
+            | LabeledTypeImplementation(_) =>
+              let value =
+                Value.DefinedValue({
+                  definitionID,
+                  value:
+                    LabeledValue(
+                      LazyValue({
+                        scopeID: frame.scopeID,
+                        connectionSide: {
+                          node: NodeConnection(nodeID),
+                          nib: ValueConnection,
+                        },
+                      }),
+                    ),
+                });
+              {
+                ...execution,
+                stack: [
+                  {...frame, action: Returning(value)},
+                  ...Belt.List.tailExn(execution.stack),
+                ],
+                scopes:
+                  Belt.Map.String.set(
+                    execution.scopes,
+                    frame.scopeID,
+                    {
+                      ...scope,
+                      sourceValues:
+                        Belt.Map.set(scope.sourceValues, source, value),
+                    },
+                  ),
+              };
+            | _ =>
+              raise(
+                Exception.ShouldntHappen(
+                  "Evaluating a constructor that's not a record or label",
+                ),
+              )
             }
           | AccessorNode =>
             switch (nodeDefinition.implementation) {
@@ -228,11 +301,95 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                   scopes: execution.scopes,
                 }
               }
-            | _ => raise(Not_found)
+            | LabeledTypeImplementation(_) =>
+              switch (
+                Belt.Map.get(
+                  scope.sourceValues,
+                  Belt.Map.getExn(
+                    graphImplementation.connections,
+                    {node: source.node, nib: ValueConnection},
+                  ),
+                )
+              ) {
+              | Some(value) =>
+                switch (value) {
+                | DefinedValue(definedValue) =>
+                  switch (definedValue.value) {
+                  | LabeledValue(wrappedValue) =>
+                    switch (wrappedValue) {
+                    | LazyValue(lazyValue) =>
+                      switch (
+                        Belt.Map.get(
+                          scope.sourceValues,
+                          Belt.Map.getExn(
+                            graphImplementation.connections,
+                            lazyValue.connectionSide,
+                          ),
+                        )
+                      ) {
+                      | None =>
+                        Js.log("None value");
+                        {
+                          ...execution,
+                          stack: [
+                            StackFrame.{
+                              scopeID: lazyValue.scopeID,
+                              explicitConnectionSide: {
+                                isSource: false,
+                                connectionSide: lazyValue.connectionSide,
+                              },
+                              action: EvaluationAction.Evaluating,
+                            },
+                            ...execution.stack,
+                          ],
+                          scopes: execution.scopes,
+                        };
+                      | Some(value) => {
+                          ...execution,
+                          stack: [
+                            {...frame, action: Returning(value)},
+                            ...Belt.List.tailExn(execution.stack),
+                          ],
+                          scopes: execution.scopes,
+                        }
+                      }
+                    | _ => raise(Not_found) // todo
+                    }
+                  | _ => raise(Not_found)
+                  }
+                | _ => raise(Not_found)
+                }
+
+              | None => {
+                  ...execution,
+                  stack: [
+                    {
+                      ...frame,
+                      action: Evaluating,
+                      explicitConnectionSide: {
+                        isSource: false,
+                        connectionSide: {
+                          node: source.node,
+                          nib: ValueConnection,
+                        },
+                      },
+                    },
+                    ...execution.stack,
+                  ],
+                  scopes: execution.scopes,
+                }
+              }
+            | _ =>
+              raise(
+                Exception.ShouldntHappen(
+                  "Evaluating an accessor that's not a record or label",
+                ),
+              )
             }
-          | _ => raise(Not_found) // todo
+          | _ =>
+            raise(Exception.TODO("Evaluating a new kind of defined node"))
           };
-        | _ => raise(Not_found) // todo
+        | _ => raise(Exception.TODO("Evaluating a new kind of node"))
         };
       | GraphConnection =>
         switch (scope.parentScope) {
@@ -277,6 +434,6 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
       }
     };
 
-  | _ => raise(Not_found) // todo
+  | _ => raise(Exception.TODO("Evaluating a non-graph"))
   };
 };

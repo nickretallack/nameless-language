@@ -16,7 +16,7 @@ let f =
     | LabeledTypeImplementation(_) => LabelCategory
     | SymbolImplementation => SymbolCategory
     | UnionTypeImplementation(_) => UnionCategory
-    | _ => raise(Not_found)
+    | _ => raise(Exception.TODO("TypeToCategory: unknown cateory"))
     };
   | AnyType => AnyCategory
   };
