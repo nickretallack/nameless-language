@@ -8,7 +8,7 @@ let make = (~autoSave: bool, ~emit) => {
         checked=autoSave
         onChange={_ => emit(AppAction.SetAutoSave(!autoSave))}
       />
-      {ReasonReact.string("AutoSave")}
+      {ReasonReact.string("Auto Save")}
     </label>
     {ReasonReact.string(" ")}
     <button onClick={_ => emit(AppAction.ResetData)}>
