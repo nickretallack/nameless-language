@@ -3,16 +3,18 @@ let make = () => {
   let (state, dispatch) =
     ReactUpdate.useReducer(AppGetInitialState.f(), AppReducer.f);
 
-  // React.useEffect(() => {
-  //   Dom.Storage.(
-  //     setItem(
-  //       AppStateName.v,
-  //       Json.stringify(AppStateToPersistenceJson.f(state)),
-  //       localStorage,
-  //     )
-  //   );
-  //   None;
-  // });
+  React.useEffect(() => {
+    if (state.autoSave) {
+      Dom.Storage.(
+        setItem(
+          AppStateName.v,
+          Json.stringify(AppStateToPersistenceJson.f(state)),
+          localStorage,
+        )
+      );
+    };
+    None;
+  });
 
   let url = ReasonReactRouter.useUrl();
   let definitionID = url.hash;
@@ -34,6 +36,7 @@ let make = () => {
          </a>
        ),
      )}
+    <AutoSaveCheckboxView autoSave={state.autoSave} emit=dispatch />
     {switch (definitionID) {
      | "" => <DefinitionListView definitions languageName />
      | _ =>

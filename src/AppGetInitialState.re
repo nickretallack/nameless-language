@@ -7,6 +7,7 @@ let f = (): AppState.t =>
         error: NoAppError,
         execution: None,
         languageName: "en",
+        autoSave: false,
       }
     | Some(jsonString) =>
       switch (Json.parse(jsonString)) {

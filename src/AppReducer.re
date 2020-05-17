@@ -2,6 +2,15 @@ let f =
     (action: AppAction.t, state: AppState.t)
     : ReactUpdate.update(AppAction.t, AppState.t) =>
   switch (action) {
+  | SetAutoSave(value) => ReactUpdate.Update({...state, autoSave: value})
+  | ResetData =>
+    ReactUpdate.UpdateWithSideEffects(
+      {...state, autoSave: false, definitions: DefinitionExamples.v},
+      _ => {
+        Dom.Storage.(clear(localStorage));
+        None;
+      },
+    )
   | CreateDefinition(definition) =>
     let newDefinitionID = RandomIDMake.f();
     ReactUpdate.UpdateWithSideEffects(

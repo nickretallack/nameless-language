@@ -3,4 +3,5 @@ type t = {
   definitions: DefinitionMap.t,
   error: AppError.t,
   languageName: LanguageName.t,
+  autoSave: bool,
 };
