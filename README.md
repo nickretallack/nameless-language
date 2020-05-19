@@ -1,6 +1,6 @@
 # Nameless Language
 
-This is a development environment and interpreter for a visual programming language I came up with. [You can read read more about it here.](https://medium.com/@nickretallack/creating-nameless-an-accessible-visual-programming-language-1a8984c5478a).
+This is a development environment and interpreter for a visual programming language I came up with. [You can read more about it here.](https://medium.com/@nickretallack/creating-nameless-an-accessible-visual-programming-language-1a8984c5478a).
 
 ## Develop
 
