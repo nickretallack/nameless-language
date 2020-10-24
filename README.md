@@ -5,6 +5,7 @@ This is a development environment and interpreter for a visual programming langu
 ## Develop
 
 ```sh
+cd nameless-language
 npm install
 npm run server
 # in a new tab
