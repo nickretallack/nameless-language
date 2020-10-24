@@ -38,6 +38,19 @@ let make =
        </text>
      }}
     <circle
+      cx={FloatToPixels.f(position.x)}
+      cy={FloatToPixels.f(position.y)}
+      r="6"
+      stroke={isHighlighted ? "red" : color}
+      strokeWidth="2"
+      fill={isSource ? color : "white"}
+    />
+    <rect
+      width="20"
+      height="20"
+      fill="transparent"
+      x={FloatToPixels.f(position.x -. 10.0)}
+      y={FloatToPixels.f(position.y -. 10.0)}
       ref={ReactDOMRe.Ref.callbackDomRef(nullableElement =>
         switch (Js.Nullable.toOption(nullableElement)) {
         | None => ()
@@ -52,15 +65,18 @@ let make =
                 }),
               ),
             element,
-          )
+          );
+          // Prevent scrolling while we're drawing.  Must be non-passive.
+          Webapi.Dom.Element.addEventListenerWithOptions(
+            "touchstart",
+            Webapi.Dom.Event.preventDefault,
+            {"passive": false, "capture": false, "once": false},
+            element,
+          );
         }
       )}
-      cx={FloatToPixels.f(position.x)}
-      cy={FloatToPixels.f(position.y)}
-      r="6"
-      stroke={isHighlighted ? "red" : color}
-      strokeWidth="2"
-      fill={isSource ? color : "white"}
+      onLostPointerCapture={_ => Js.log("LOST")}
+      onGotPointerCapture={_ => Js.log("GOT")}
       onPointerDown={event => {
         let pointerID = ReactEvent.Pointer.pointerId(event);
         let _ =
@@ -80,6 +96,7 @@ let make =
         );
       }}
       onPointerUp={event => {
+        // Fire an event on the nib we're connecting to.
         let _ =
           Webapi.Dom.Element.dispatchEvent(
             Webapi.Dom.CustomEvent.makeWithOptions(
@@ -106,6 +123,7 @@ let make =
       }}
       onPointerMove={event => {
         ReactEvent.Pointer.preventDefault(event);
+        ReactEvent.Pointer.stopPropagation(event);
         emit(
           PointerAction({
             pointerID: ReactEvent.Pointer.pointerId(event),

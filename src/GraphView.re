@@ -22,24 +22,6 @@ let make =
       GraphReducer.f(emit, implementation),
     );
 
-  /* Prevent iOS from scrolling all over the place */
-  React.useEffect(() => {
-    Webapi.Dom.EventTarget.addEventListenerWithOptions(
-      "touchmove",
-      Webapi.Dom.Event.preventDefault,
-      {"passive": false, "capture": true, "once": false},
-      DocumentElement.v,
-    );
-    Some(
-      () =>
-        Webapi.Dom.EventTarget.removeEventListener(
-          "touchmove",
-          Webapi.Dom.Event.preventDefault,
-          DocumentElement.v,
-        ),
-    );
-  });
-
   let sourceToIndex =
     Belt.Map.reduce(
       implementation.connections,

@@ -4,6 +4,10 @@ body {
 	padding: 0;
 }
 
+body {
+	position: fixed;
+}
+
 * {
 	box-sizing: border-box;
 }
