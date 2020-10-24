@@ -347,7 +347,7 @@ let make =
           }) =>
           let adjustedPoint = Point.{x: point.x, y: point.y -. 18.0};
           <ConnectionView
-            // key={PointerIDToString.f(pointerID)}
+            key={PointerIDToString.f(pointerID)}
             sourcePosition={
               startIsSource
                 ? getNibPosition(connectionSide, false) : adjustedPoint
