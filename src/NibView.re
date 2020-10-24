@@ -47,7 +47,7 @@ let make =
             event =>
               emit(
                 PointerAction({
-                  pointerID: Touch(EventGetDetail.f(event)##identifier),
+                  pointerID: EventGetDetail.f(event)##identifier,
                   action: FinishDrawing({connectionSide, isSource}),
                 }),
               ),
@@ -61,69 +61,61 @@ let make =
       stroke={isHighlighted ? "red" : color}
       strokeWidth="2"
       fill={isSource ? color : "white"}
-      onMouseDown={event =>
+      onPointerDown={event => {
+        let pointerID = ReactEvent.Pointer.pointerId(event);
+        let _ =
+          ReactEvent.Pointer.target(event)##setPointerCapture(pointerID);
         emit(
           PointerAction({
-            pointerID: Mouse,
+            pointerID,
             action:
               StartDrawing({
                 explicitConnectionSide: {
                   connectionSide,
                   isSource,
                 },
-                point: PointFromMouseEvent.f(event),
+                point: PointFromPointerEvent.f(event),
               }),
           }),
-        )
-      }
-      onTouchStart={event =>
-        EventIterateTouches.f(event, touch =>
-          emit(
-            PointerAction({
-              pointerID: Touch(touch##identifier),
-              action:
-                StartDrawing({
-                  explicitConnectionSide: {
-                    connectionSide,
-                    isSource,
-                  },
-                  point: {
-                    x: touch##clientX,
-                    y: touch##clientY,
-                  },
-                }),
-            }),
-          )
-        )
-      }
-      onMouseUp={_ =>
-        emit(
-          PointerAction({
-            pointerID: Mouse,
-            action: FinishDrawing({connectionSide, isSource}),
-          }),
-        )
-      }
-      onTouchEnd={event =>
-        EventIterateTouches.f(event, touch =>
+        );
+      }}
+      onPointerUp={event => {
+        Js.log("POINTER UP");
+
+        let _ =
           Webapi.Dom.Element.dispatchEvent(
             Webapi.Dom.CustomEvent.makeWithOptions(
               "finish-drawing",
               {
                 "detail": {
-                  "identifier": touch##identifier,
+                  "identifier": ReactEvent.Pointer.pointerId(event),
                 },
               },
             ),
             Webapi.Dom.Document.elementFromPoint(
-              touch##clientX,
-              touch##clientY,
+              ReactEvent.Pointer.clientX(event),
+              ReactEvent.Pointer.clientY(event),
               Webapi.Dom.document,
             ),
-          )
-          |> ignore
-        )
-      }
+          );
+        ();
+        emit(
+          PointerAction({
+            pointerID: ReactEvent.Pointer.pointerId(event),
+            action: ReleasePointer,
+          }),
+        );
+      }}
+      onPointerMove={event => {
+        Js.log(connectionSide.node);
+        ReactEvent.Pointer.preventDefault(event);
+        emit(
+          PointerAction({
+            pointerID: ReactEvent.Pointer.pointerId(event),
+            action: MovePointer(PointFromPointerEvent.f(event)),
+          }),
+        );
+      }}
     />
   </>;
 };

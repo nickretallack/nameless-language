@@ -1,3 +1,1 @@
-type t =
-  | Mouse
-  | Touch(int);
+type t = Dom.eventPointerId;

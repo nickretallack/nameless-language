@@ -9,12 +9,10 @@ let make =
       ~selected: bool=false,
       ~onDoubleClick=?,
       ~onClick=?,
-      ~onMouseDown=?,
-      ~onTouchStart=?,
-      ~onMouseUp=?,
-      ~onTouchEnd=?,
+      ~onPointerDown=?,
+      ~onPointerUp=?,
     ) => {
-  <g ?onClick ?onDoubleClick ?onMouseDown ?onMouseUp ?onTouchStart ?onTouchEnd>
+  <g ?onClick ?onDoubleClick ?onPointerDown ?onPointerUp>
     <rect
       x={FloatToPixels.f(position.x)}
       y={FloatToPixels.f(position.y)}

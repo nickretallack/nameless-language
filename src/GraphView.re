@@ -311,27 +311,28 @@ let make =
                 }),
               )
             }
-            onMouseDown={_ =>
+            onPointerDown={event =>
               dispatch(
                 PointerAction({
-                  pointerID: Mouse,
+                  pointerID: ReactEvent.Pointer.pointerId(event),
                   action: StartDragging(nodeID),
                 }),
               )
             }
-            onMouseUp={event =>
-              switch (Belt.Map.get(state.pointers, Mouse)) {
+            onPointerUp={event => {
+              let pointerID = ReactEvent.Pointer.pointerId(event);
+              switch (Belt.Map.get(state.pointers, pointerID)) {
               | Some(DraggingNode(_)) =>
-                ReactEvent.Mouse.stopPropagation(event);
+                ReactEvent.Pointer.stopPropagation(event);
                 dispatch(
                   PointerAction({
-                    pointerID: Mouse,
+                    pointerID,
                     action: FinishDragging(NodeScope(nodeID)),
                   }),
                 );
               | _ => ()
-              }
-            }
+              };
+            }}
           />
         ),
       ),
@@ -346,7 +347,7 @@ let make =
           }) =>
           let adjustedPoint = Point.{x: point.x, y: point.y -. 18.0};
           <ConnectionView
-            key={PointerIDToString.f(pointerID)}
+            // key={PointerIDToString.f(pointerID)}
             sourcePosition={
               startIsSource
                 ? getNibPosition(connectionSide, false) : adjustedPoint
@@ -367,49 +368,7 @@ let make =
   <div>
     <svg
       width={FloatToPixels.f(graphSizePixels.x)}
-      height={FloatToPixels.f(graphSizePixels.y)}
-      onMouseMove={event => {
-        ReactEvent.Mouse.preventDefault(event);
-        dispatch(
-          PointerAction({
-            pointerID: Mouse,
-            action: MovePointer(PointFromMouseEvent.f(event)),
-          }),
-        );
-      }}
-      onTouchMove={event =>
-        EventIterateTouches.f(event, touch =>
-          dispatch(
-            PointerAction({
-              pointerID: Touch(touch##identifier),
-              action:
-                MovePointer({
-                  x:
-                    touch##clientX
-                    -.
-                    ReactEvent.Touch.currentTarget(event)##offsetLeft,
-                  y:
-                    touch##clientY
-                    -.
-                    ReactEvent.Touch.currentTarget(event)##offsetTop,
-                }),
-            }),
-          )
-        )
-      }
-      onMouseUp={_ =>
-        dispatch(PointerAction({pointerID: Mouse, action: ReleasePointer}))
-      }
-      onTouchEnd={event =>
-        EventIterateTouches.f(event, touch =>
-          dispatch(
-            PointerAction({
-              pointerID: Touch(touch##identifier),
-              action: ReleasePointer,
-            }),
-          )
-        )
-      }>
+      height={FloatToPixels.f(graphSizePixels.y)}>
       renderedSides
       renderedNodes
       renderedConnections

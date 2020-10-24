@@ -10,10 +10,8 @@ let make =
       ~textHeight: float,
       ~selected: bool=false,
       ~onClick=?,
-      ~onMouseDown=?,
-      ~onTouchStart=?,
-      ~onMouseUp=?,
-      ~onTouchEnd=?,
+      ~onPointerDown=?,
+      ~onPointerUp=?,
     ) => {
   let makeNode = (name: string, onDoubleClick) =>
     <NibsBoxView
@@ -25,10 +23,8 @@ let make =
       selected
       ?onDoubleClick
       ?onClick
-      ?onMouseDown
-      ?onMouseUp
-      ?onTouchStart
-      ?onTouchEnd
+      ?onPointerDown
+      ?onPointerUp
     />;
 
   switch (node.kind) {
@@ -50,10 +46,8 @@ let make =
         selected
         onDoubleClick
         ?onClick
-        ?onMouseDown
-        ?onTouchStart
-        ?onMouseUp
-        ?onTouchEnd
+        ?onPointerDown
+        ?onPointerUp
       />;
     } else {
       makeNode(name, Some(onDoubleClick));
