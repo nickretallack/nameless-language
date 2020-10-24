@@ -90,7 +90,6 @@ let f =
         )
       | _ => ReactUpdate.NoUpdate
       }
-
     | FinishDrawing({connectionSide: endNib, isSource: endIsSource}) =>
       switch (Belt.Map.get(state.pointers, pointerID)) {
       | Some(

@@ -80,8 +80,6 @@ let make =
         );
       }}
       onPointerUp={event => {
-        Js.log("POINTER UP");
-
         let _ =
           Webapi.Dom.Element.dispatchEvent(
             Webapi.Dom.CustomEvent.makeWithOptions(
@@ -107,7 +105,6 @@ let make =
         );
       }}
       onPointerMove={event => {
-        Js.log(connectionSide.node);
         ReactEvent.Pointer.preventDefault(event);
         emit(
           PointerAction({
