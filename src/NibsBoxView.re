@@ -12,7 +12,12 @@ let make =
       ~onPointerDown=?,
       ~onPointerUp=?,
     ) => {
-  <g ?onClick ?onDoubleClick ?onPointerDown ?onPointerUp>
+  <g
+    ?onClick
+    ?onDoubleClick
+    ?onPointerDown
+    ?onPointerUp
+    ref=RefDisableScrollingWhileDragging.f>
     <rect
       x={FloatToPixels.f(position.x)}
       y={FloatToPixels.f(position.y)}

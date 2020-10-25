@@ -66,17 +66,9 @@ let make =
               ),
             element,
           );
-          // Prevent scrolling while we're drawing.  Must be non-passive.
-          Webapi.Dom.Element.addEventListenerWithOptions(
-            "touchstart",
-            Webapi.Dom.Event.preventDefault,
-            {"passive": false, "capture": false, "once": false},
-            element,
-          );
+          DisableScrollingWhileDragging.f(element);
         }
       )}
-      onLostPointerCapture={_ => Js.log("LOST")}
-      onGotPointerCapture={_ => Js.log("GOT")}
       onPointerDown={event => {
         let pointerID = ReactEvent.Pointer.pointerId(event);
         let _ =
