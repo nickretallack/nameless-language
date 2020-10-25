@@ -13,7 +13,38 @@ let make =
     ) => {
   let sidePadding = 10.0;
   let color = "rgb(160,160,160)";
+  let clickableArea = React.useRef(Js.Nullable.null);
+  React.useEffect(() => {
+    switch (Js.Nullable.toOption(clickableArea.current)) {
+    | None => None
+    | Some(element) =>
+      let finishDrawingHandler = event =>
+        emit(
+          PointerAction({
+            pointerID: EventGetDetail.f(event)##identifier,
+            action: FinishDrawing({connectionSide, isSource}),
+          }),
+        );
 
+      DisableScrollingWhileDragging.f(element);
+      Webapi.Dom.Element.addEventListener(
+        "finish-drawing",
+        finishDrawingHandler,
+        element,
+      );
+
+      Some(
+        () => {
+          DisableScrollingWhileDragging.undo(element);
+          Webapi.Dom.Element.removeEventListener(
+            "finish-drawing",
+            finishDrawingHandler,
+            element,
+          );
+        },
+      );
+    }
+  });
   <>
     <text
       textAnchor={isSource ? "start" : "end"}
@@ -51,24 +82,7 @@ let make =
       fill="transparent"
       x={FloatToPixels.f(position.x -. 10.0)}
       y={FloatToPixels.f(position.y -. 10.0)}
-      ref={ReactDOMRe.Ref.callbackDomRef(nullableElement =>
-        switch (Js.Nullable.toOption(nullableElement)) {
-        | None => ()
-        | Some(element) =>
-          DisableScrollingWhileDragging.f(element);
-          Webapi.Dom.Element.addEventListener(
-            "finish-drawing",
-            event =>
-              emit(
-                PointerAction({
-                  pointerID: EventGetDetail.f(event)##identifier,
-                  action: FinishDrawing({connectionSide, isSource}),
-                }),
-              ),
-            element,
-          );
-        }
-      )}
+      ref={ReactDOM.Ref.domRef(clickableArea)}
       onPointerDown={event => {
         let pointerID = ReactEvent.Pointer.pointerId(event);
         let _ =

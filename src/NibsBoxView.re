@@ -12,12 +12,17 @@ let make =
       ~onPointerDown=?,
       ~onPointerUp=?,
     ) => {
+  let box = React.useRef(Js.Nullable.null);
+  React.useEffect(() => {
+    RefDisableScrollingWhileDragging.f(box);
+    Some(() => {RefDisableScrollingWhileDragging.undo(box)});
+  });
   <g
+    ref={ReactDOM.Ref.domRef(box)}
     ?onClick
     ?onDoubleClick
     ?onPointerDown
-    ?onPointerUp
-    ref=RefDisableScrollingWhileDragging.f>
+    ?onPointerUp>
     <rect
       x={FloatToPixels.f(position.x)}
       y={FloatToPixels.f(position.y)}

@@ -17,10 +17,7 @@ let make =
   let body = React.useRef(Js.Nullable.null);
   let title = React.useRef(Js.Nullable.null);
   React.useEffect(() => {
-    switch (Js.Nullable.toOption(title.current)) {
-    | None => ()
-    | Some(element) => DisableScrollingWhileDragging.f(element)
-    };
+    RefDisableScrollingWhileDragging.f(title);
 
     let finishDraggingHandler = event => {
       emit(
@@ -43,11 +40,7 @@ let make =
 
     Some(
       () => {
-        switch (Js.Nullable.toOption(title.current)) {
-        | None => ()
-        | Some(element) => DisableScrollingWhileDragging.undo(element)
-        };
-
+        RefDisableScrollingWhileDragging.undo(title);
         switch (Js.Nullable.toOption(body.current)) {
         | None => ()
         | Some(element) =>
@@ -63,13 +56,13 @@ let make =
 
   <g ?onDoubleClick ?onClick ?onPointerDown ?onPointerUp>
     <rect
+      ref={ReactDOM.Ref.domRef(body)}
       x={FloatToPixels.f(position.x +. nodeWidth)}
       y={FloatToPixels.f(position.y +. textHeight)}
       width={FloatToPixels.f(size.x -. nodeWidth *. 2.0)}
       height={FloatToPixels.f(size.y -. textHeight)}
       fill={selected ? "blue" : "black"}
       fillOpacity="0.05"
-      ref={ReactDOM.Ref.domRef(body)}
     />
     <NibsBoxView
       position={x: position.x, y: position.y +. textHeight}

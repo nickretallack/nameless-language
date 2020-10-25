@@ -1,7 +1,11 @@
-let f =
-  ReactDOMRe.Ref.callbackDomRef(nullableElement =>
-    switch (Js.Nullable.toOption(nullableElement)) {
-    | None => ()
-    | Some(element) => DisableScrollingWhileDragging.f(element)
-    }
-  );
+let f = (elementRef: React.ref(Js.Nullable.t(Webapi.Dom.Element.t))) =>
+  switch (Js.Nullable.toOption(elementRef.current)) {
+  | None => ()
+  | Some(element) => DisableScrollingWhileDragging.f(element)
+  };
+
+let undo = (elementRef: React.ref(Js.Nullable.t(Webapi.Dom.Element.t))) =>
+  switch (Js.Nullable.toOption(elementRef.current)) {
+  | None => ()
+  | Some(element) => DisableScrollingWhileDragging.undo(element)
+  };
