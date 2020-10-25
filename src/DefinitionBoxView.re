@@ -14,6 +14,53 @@ let make =
       ~onPointerDown=?,
       ~onPointerUp=?,
     ) => {
+  let body = React.useRef(Js.Nullable.null);
+  let title = React.useRef(Js.Nullable.null);
+  React.useEffect(() => {
+    switch (Js.Nullable.toOption(title.current)) {
+    | None => ()
+    | Some(element) => DisableScrollingWhileDragging.f(element)
+    };
+
+    let finishDraggingHandler = event => {
+      emit(
+        GraphAction.PointerAction({
+          pointerID: EventGetDetail.f(event)##identifier,
+          action: FinishDragging(nodeScope),
+        }),
+      );
+    };
+
+    switch (Js.Nullable.toOption(body.current)) {
+    | None => ()
+    | Some(element) =>
+      Webapi.Dom.Element.addEventListener(
+        "finish-dragging",
+        finishDraggingHandler,
+        element,
+      )
+    };
+
+    Some(
+      () => {
+        switch (Js.Nullable.toOption(title.current)) {
+        | None => ()
+        | Some(element) => DisableScrollingWhileDragging.undo(element)
+        };
+
+        switch (Js.Nullable.toOption(body.current)) {
+        | None => ()
+        | Some(element) =>
+          Webapi.Dom.Element.removeEventListener(
+            "finish-dragging",
+            finishDraggingHandler,
+            element,
+          )
+        };
+      },
+    );
+  });
+
   <g ?onDoubleClick ?onClick ?onPointerDown ?onPointerUp>
     <rect
       x={FloatToPixels.f(position.x +. nodeWidth)}
@@ -22,24 +69,7 @@ let make =
       height={FloatToPixels.f(size.y -. textHeight)}
       fill={selected ? "blue" : "black"}
       fillOpacity="0.05"
-      ref={ReactDOMRe.Ref.callbackDomRef(nullableElement =>
-        switch (Js.Nullable.toOption(nullableElement)) {
-        | None => ()
-        | Some(element) =>
-          Webapi.Dom.Element.addEventListener(
-            "finish-dragging",
-            event => {
-              emit(
-                GraphAction.PointerAction({
-                  pointerID: EventGetDetail.f(event)##identifier,
-                  action: FinishDragging(nodeScope),
-                }),
-              )
-            },
-            element,
-          )
-        }
-      )}
+      ref={ReactDOM.Ref.domRef(body)}
     />
     <NibsBoxView
       position={x: position.x, y: position.y +. textHeight}
@@ -58,7 +88,7 @@ let make =
       textHeight
       selected
     />
-    <g ref=RefDisableScrollingWhileDragging.f>
+    <g ref={ReactDOM.Ref.domRef(title)}>
       <rect
         x={FloatToPixels.f(position.x)}
         y={FloatToPixels.f(position.y)}
