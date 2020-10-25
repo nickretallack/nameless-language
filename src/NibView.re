@@ -89,29 +89,9 @@ let make =
       }}
       onPointerUp={event => {
         // Fire an event on the nib we're connecting to.
-        let _ =
-          Webapi.Dom.Element.dispatchEvent(
-            Webapi.Dom.CustomEvent.makeWithOptions(
-              "finish-drawing",
-              {
-                "detail": {
-                  "identifier": ReactEvent.Pointer.pointerId(event),
-                },
-              },
-            ),
-            Webapi.Dom.Document.elementFromPoint(
-              ReactEvent.Pointer.clientX(event),
-              ReactEvent.Pointer.clientY(event),
-              Webapi.Dom.document,
-            ),
-          );
-        ();
-        emit(
-          PointerAction({
-            pointerID: ReactEvent.Pointer.pointerId(event),
-            action: ReleasePointer,
-          }),
-        );
+        FireEventOnDropTarget.f(event, "finish-drawing");
+        let pointerID = ReactEvent.Pointer.pointerId(event);
+        emit(PointerAction({pointerID, action: ReleasePointer}));
       }}
       onPointerMove={event => {
         ReactEvent.Pointer.preventDefault(event);
