@@ -55,6 +55,7 @@ let make =
         switch (Js.Nullable.toOption(nullableElement)) {
         | None => ()
         | Some(element) =>
+          DisableScrollingWhileDragging.f(element);
           Webapi.Dom.Element.addEventListener(
             "finish-drawing",
             event =>
@@ -66,7 +67,6 @@ let make =
               ),
             element,
           );
-          DisableScrollingWhileDragging.f(element);
         }
       )}
       onPointerDown={event => {

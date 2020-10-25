@@ -6,6 +6,8 @@ let make =
       ~size: Point.t,
       ~nodeWidth: float,
       ~textHeight: float,
+      ~nodeScope: NodeScope.t,
+      ~emit,
       ~selected: bool=false,
       ~onClick=?,
       ~onDoubleClick=?,
@@ -20,6 +22,24 @@ let make =
       height={FloatToPixels.f(size.y -. textHeight)}
       fill={selected ? "blue" : "black"}
       fillOpacity="0.05"
+      ref={ReactDOMRe.Ref.callbackDomRef(nullableElement =>
+        switch (Js.Nullable.toOption(nullableElement)) {
+        | None => ()
+        | Some(element) =>
+          Webapi.Dom.Element.addEventListener(
+            "finish-dragging",
+            event => {
+              emit(
+                GraphAction.PointerAction({
+                  pointerID: EventGetDetail.f(event)##identifier,
+                  action: FinishDragging(nodeScope),
+                }),
+              )
+            },
+            element,
+          )
+        }
+      )}
     />
     <NibsBoxView
       position={x: position.x, y: position.y +. textHeight}

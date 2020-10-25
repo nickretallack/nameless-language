@@ -259,6 +259,8 @@ let make =
       size=graphSizePixels
       nodeWidth
       textHeight
+      nodeScope=NodeScope.GraphScope
+      emit=dispatch
     />;
   let renderedNodes =
     ReasonReact.array(
@@ -272,12 +274,14 @@ let make =
           <NodeView
             key=nodeID
             node
+            nodeID
             definitions
             languageName
             position={getNodePosition(nodeID)}
             size={getNodeSize(nodeID)}
             nodeWidth
             textHeight
+            emit=dispatch
             selected={
               switch (state.selection) {
               | SelectedNodes(nodeIDs) =>
@@ -293,27 +297,18 @@ let make =
                 }),
               )
             }
-            onPointerDown={event =>
-              dispatch(
-                PointerAction({
-                  pointerID: ReactEvent.Pointer.pointerId(event),
-                  action: StartDragging(nodeID),
-                }),
-              )
-            }
-            onPointerUp={event => {
+            onPointerDown={event => {
               let pointerID = ReactEvent.Pointer.pointerId(event);
-              switch (Belt.Map.get(state.pointers, pointerID)) {
-              | Some(DraggingNode(_)) =>
-                ReactEvent.Pointer.stopPropagation(event);
-                dispatch(
-                  PointerAction({
-                    pointerID,
-                    action: FinishDragging(NodeScope(nodeID)),
-                  }),
+              let _ =
+                ReactEvent.Pointer.target(event)##setPointerCapture(
+                  pointerID,
                 );
-              | _ => ()
-              };
+              dispatch(
+                PointerAction({pointerID, action: StartDragging(nodeID)}),
+              );
+            }}
+            onPointerUp={event => {
+              FireEventOnDropTarget.f(event, "finish-dragging")
             }}
           />
         ),

@@ -2,6 +2,7 @@
 let make =
     (
       ~node: Node.t,
+      ~nodeID: NodeID.t,
       ~definitions: DefinitionMap.t,
       ~languageName: LanguageName.t,
       ~position: Point.t,
@@ -9,6 +10,7 @@ let make =
       ~nodeWidth: float,
       ~textHeight: float,
       ~selected: bool=false,
+      ~emit,
       ~onClick=?,
       ~onPointerDown=?,
       ~onPointerUp=?,
@@ -45,6 +47,8 @@ let make =
         textHeight
         selected
         onDoubleClick
+        nodeScope={NodeScope(nodeID)}
+        emit
         ?onClick
         ?onPointerDown
         ?onPointerUp
