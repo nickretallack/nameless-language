@@ -6,6 +6,7 @@
 		"url": "http://github.com/nickretallack/nameless-language"
 	},
 	"scripts": {
+		"webpack": "webpack",
 		"build": "bsb -make-world",
 		"start": "bsb -make-world -w -ws _ ",
 		"clean": "bsb -clean-world",

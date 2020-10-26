@@ -19,5 +19,5 @@ Visit `http://localhost:8000/` in your browser. Change any `.re` file in `src` t
 Just run webpack. It will generate files used by `docs/index.html` which is served by GiHhub Pages.
 
 ```sh
-./node_modules/.bin/webpack
+npm run webpack
 ```
