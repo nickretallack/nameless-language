@@ -104,8 +104,12 @@ let make =
       onPointerUp={event => {
         // Fire an event on the nib we're connecting to.
         FireEventOnDropTarget.f(event, "finish-drawing");
-        let pointerID = ReactEvent.Pointer.pointerId(event);
-        emit(PointerAction({pointerID, action: ReleasePointer}));
+        emit(
+          PointerAction({
+            pointerID: ReactEvent.Pointer.pointerId(event),
+            action: ReleasePointer,
+          }),
+        );
       }}
       onPointerMove={event => {
         ReactEvent.Pointer.preventDefault(event);
@@ -116,6 +120,14 @@ let make =
             action: MovePointer(PointFromPointerEvent.f(event)),
           }),
         );
+      }}
+      onLostPointerCapture={event => {
+        emit(
+          PointerAction({
+            pointerID: ReactEvent.Pointer.pointerId(event),
+            action: ReleasePointer,
+          }),
+        )
       }}
     />
   </>;
