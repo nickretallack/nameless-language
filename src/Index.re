@@ -1,3 +1,5 @@
 // Entry point
-Random.init(int_of_float(Js.Date.now()));
-ReactDOMRe.renderToElementWithId(<AppView />, "app");
+switch (ReactDOM.querySelector("#app")) {
+| Some(root) => ReactDOM.render(<AppView/>, root)
+| None => ()
+}
