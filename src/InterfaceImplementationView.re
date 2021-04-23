@@ -9,7 +9,7 @@ let make =
       ~emit,
     ) => {
   <div>
-    <h1> {ReasonReact.string("Interface")} </h1>
+    <h1> {React.string("Interface")} </h1>
     <InterfaceView
       interface=implementation
       definitions

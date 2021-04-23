@@ -8,11 +8,11 @@ let make = (~autoSave: bool, ~emit) => {
         checked=autoSave
         onChange={_ => emit(AppAction.SetAutoSave(!autoSave))}
       />
-      {ReasonReact.string("Auto Save")}
+      {React.string("Auto Save")}
     </label>
-    {ReasonReact.string(" ")}
+    {React.string(" ")}
     <button onClick={_ => emit(AppAction.ResetData)}>
-      {ReasonReact.string("Reset Data")}
+      {React.string("Reset Data")}
     </button>
   </>;
 };

@@ -280,7 +280,7 @@ let f =
           Belt.Map.String.set(state.definitions, newDefinitionID, definition),
       },
       _ => {
-        ReasonReact.Router.push("#" ++ newDefinitionID);
+        RescriptReactRouter.push("#" ++ newDefinitionID);
         None;
       },
     );

@@ -95,7 +95,7 @@ let make =
         alignmentBaseline="central"
         x={FloatToPixels.f(position.x +. size.x /. 2.0)}
         y={FloatToPixels.f(position.y +. textHeight /. 2.0)}>
-        {ReasonReact.string(name)}
+        {React.string(name)}
       </text>
     </g>
   </g>;

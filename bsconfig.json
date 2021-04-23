@@ -7,6 +7,9 @@
 		"dir": "src",
 		"subdirs": true
 	},
+  "warnings": {
+    "error" : "+101"
+  },
 	"bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
 	"package-specs": [
 		{
@@ -17,10 +20,9 @@
 	"suffix": ".bs.js",
 	"namespace": true,
 	"bs-dependencies": [
-		"reason-react",
+		"@rescript/react",
 		"@glennsl/bs-json",
 		"bs-webapi",
-		"reason-react-update"
-	],
-	"refmt": 3
+		"rescript-react-update"
+	]
 }

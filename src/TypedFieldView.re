@@ -27,22 +27,22 @@ let make =
   <tr>
     <td>
       <a onClick={_event => emitNibAction(NibAction.RemoveNib)}>
-        {ReasonReact.string("x")}
+        {React.string("x")}
       </a>
     </td>
     <td>
       {index != 0
          ? <a onClick={_event => changeOrdering(index - 1)}>
-             {ReasonReact.string("^")}
+             {React.string("^")}
            </a>
-         : ReasonReact.null}
+         : React.null}
     </td>
     <td>
       {index != count - 1
          ? <a onClick={_event => changeOrdering(index + 1)}>
-             {ReasonReact.string("v")}
+             {React.string("v")}
            </a>
-         : ReasonReact.null}
+         : React.null}
     </td>
     <td>
       <input

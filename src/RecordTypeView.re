@@ -11,7 +11,7 @@ let make =
     ) => {
   <table>
     <tbody>
-      {ReasonReact.array(
+      {React.array(
          Belt.List.toArray(
            Belt.List.mapWithIndex(ordering, (index, nibID) =>
              <TypedFieldView

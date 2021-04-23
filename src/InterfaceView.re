@@ -10,7 +10,7 @@ let make =
     ) => {
   <div className="interface">
     <div>
-      <h2> {ReasonReact.string("Outputs:")} </h2>
+      <h2> {React.string("Outputs:")} </h2>
       <RecordTypeView
         typedFields={interface.output}
         nibDocumentations={documentation.outputs}
@@ -21,11 +21,11 @@ let make =
         languageName
       />
       <a onClick={_event => emit(AddOutput)}>
-        {ReasonReact.string("Add Output")}
+        {React.string("Add Output")}
       </a>
     </div>
     <div>
-      <h2> {ReasonReact.string("Inputs:")} </h2>
+      <h2> {React.string("Inputs:")} </h2>
       <RecordTypeView
         typedFields={interface.input}
         nibDocumentations={documentation.inputs}
@@ -36,7 +36,7 @@ let make =
         languageName
       />
       <a onClick={_event => emit(AddInput)}>
-        {ReasonReact.string("Add Input")}
+        {React.string("Add Input")}
       </a>
     </div>
   </div>;

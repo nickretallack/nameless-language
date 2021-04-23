@@ -9,8 +9,8 @@ let make =
       ~emit,
     ) => {
   <div>
-    <h1> {ReasonReact.string("Record")} </h1>
-    <h2> {ReasonReact.string("Fields:")} </h2>
+    <h1> {React.string("Record")} </h1>
+    <h2> {React.string("Fields:")} </h2>
     <RecordTypeView
       typedFields=implementation
       nibDocumentations={documentation.inputs}
@@ -21,7 +21,7 @@ let make =
       emit
     />
     <a onClick={_event => emit(AddInput)}>
-      {ReasonReact.string("Add Field")}
+      {React.string("Add Field")}
     </a>
   </div>;
 };

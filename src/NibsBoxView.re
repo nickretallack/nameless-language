@@ -32,14 +32,14 @@ let make =
       fillOpacity="0.1"
     />
     {switch (name) {
-     | None => ReasonReact.null
+     | None => React.null
      | Some(text) =>
        <text
          textAnchor="middle"
          alignmentBaseline="central"
          x={FloatToPixels.f(position.x +. nodeWidth /. 2.0)}
          y={FloatToPixels.f(position.y +. textHeight /. 2.0)}>
-         {ReasonReact.string(text)}
+         {React.string(text)}
        </text>
      }}
   </g>;

@@ -7,9 +7,11 @@ This is a development environment and interpreter for a visual programming langu
 ```sh
 cd nameless-language
 npm install
-npm run server
-# in a new tab
-npm start
+
+# run each in their own terminal tab:
+npx start
+npx webpack -w
+cd docs && python -m SimpleHTTPServer
 ```
 
 Visit `http://localhost:8000/` in your browser. Change any `.re` file in `src` to see the page auto-reload.

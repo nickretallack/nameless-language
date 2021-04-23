@@ -12,22 +12,22 @@ let make = (~implementation: PrimitiveValue.t, ~emit) => {
   let typeName = PrimitiveValueToTypeString.f(implementation);
 
   <div>
-    <h1> {ReasonReact.string("Constant")} </h1>
-    <div> {ReasonReact.string("Type:")} </div>
+    <h1> {React.string("Constant")} </h1>
+    <div> {React.string("Type:")} </div>
     <select value=typeName onChange=changeType>
-      {ReasonReact.array(
+      {React.array(
          Belt.Array.map(PrimitiveValueType.list, primitiveValueType =>
            <option
              value={PrimitiveValueTypeToString.f(primitiveValueType)}
              key={PrimitiveValueTypeToString.f(primitiveValueType)}>
-             {ReasonReact.string(
+             {React.string(
                 PrimitiveValueTypeGetDisplayName.f(primitiveValueType),
               )}
            </option>
          ),
        )}
     </select>
-    <div> {ReasonReact.string("Value:")} </div>
+    <div> {React.string("Value:")} </div>
     {switch (implementation) {
      | TextValue(value) =>
        <input

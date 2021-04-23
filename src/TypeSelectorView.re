@@ -19,14 +19,14 @@ let make =
     <a
       onClick={_event => dispatch(SelectCategory(category))}
       className={state.category == category ? "selected" : ""}>
-      {ReasonReact.string(name)}
+      {React.string(name)}
     </a>;
 
   let definedTypeSelector =
       (name: string, filterFunction: Definition.t => bool) =>
     <div className="type-selector-choices">
-      <h3> {ReasonReact.string(name ++ " Types")} </h3>
-      {ReasonReact.array(
+      <h3> {React.string(name ++ " Types")} </h3>
+      {React.array(
          Belt.Array.map(
            Belt.Map.String.toArray(
              Belt.Map.String.keep(
@@ -43,7 +43,7 @@ let make =
                  ? "selected" : ""
              }
              onClick={_event => changeType(DefinedValueType(definitionID))}>
-             {ReasonReact.string(
+             {React.string(
                 DefinitionGetDisplayName.f(definition, languageName),
               )}
            </a>
@@ -53,14 +53,14 @@ let make =
 
   <div className="type-selector">
     <a onClick={_event => dispatch(Toggle)}>
-      {ReasonReact.string(
+      {React.string(
          ValueTypeGetDisplayName.f(valueType, definitions, languageName),
        )}
     </a>
     {state.opened
        ? <div className="type-selector-menu">
            <div className="type-selector-categories">
-             <h3> {ReasonReact.string("Category")} </h3>
+             <h3> {React.string("Category")} </h3>
              {renderCategory("Any", AnyCategory)}
              {renderCategory("Text", TextCategory)}
              {renderCategory("Number", NumberCategory)}
@@ -78,9 +78,9 @@ let make =
               definedTypeSelector("Label", DefinitionIsLabel.f)
             | UnionCategory =>
               definedTypeSelector("Union", DefinitionIsUnion.f)
-            | _ => ReasonReact.null
+            | _ => React.null
             }}
          </div>
-       : ReasonReact.null}
+       : React.null}
   </div>;
 };

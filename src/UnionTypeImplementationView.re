@@ -10,7 +10,7 @@ let make =
     React.useState(() => ValueType.AnyType);
 
   <div>
-    <h1> {ReasonReact.string("Union")} </h1>
+    <h1> {React.string("Union")} </h1>
     <TypeSelectorView
       valueType=selectedType
       definitions
@@ -19,11 +19,11 @@ let make =
     />
     <button
       onClick={_event => emit(DefinitionAction.AddUnionType(selectedType))}>
-      {ReasonReact.string("Add Type")}
+      {React.string("Add Type")}
     </button>
     <table>
       <tbody>
-        {ReasonReact.array(
+        {React.array(
            Belt.Array.map(Belt.Set.toArray(typeSet), valueType =>
              <tr key={Json.stringify(ValueTypeToJson.f(valueType))}>
                <td>
@@ -31,11 +31,11 @@ let make =
                    onClick={_event =>
                      emit(DefinitionAction.RemoveUnionType(valueType))
                    }>
-                   {ReasonReact.string("x")}
+                   {React.string("x")}
                  </a>
                </td>
                <td>
-                 {ReasonReact.string(
+                 {React.string(
                     ValueTypeGetDisplayName.f(
                       valueType,
                       definitions,

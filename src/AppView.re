@@ -16,29 +16,15 @@ let make = () => {
     None;
   });
 
-  let url = ReasonReactRouter.useUrl();
+  let url = RescriptReactRouter.useUrl();
   let definitionID = url.hash;
   let AppState.{languageName, definitions, error, execution} = state;
   <div>
-    <a href="#"> {ReasonReact.string("Library")} </a>
-    {ReasonReact.string(" New:")}
-    {ReasonReact.array(
-       Belt.Array.mapWithIndex(DefinitionMakers.v, (index, (name, maker)) =>
-         <a
-           className="maker"
-           key={string_of_int(index)}
-           onClick={_event => {
-             let newDefinitionID = RandomIDMake.f();
-             dispatch(AppAction.CreateDefinition(maker(languageName)));
-             ReasonReactRouter.push("#" ++ newDefinitionID);
-           }}>
-           {ReasonReact.string(name)}
-         </a>
-       ),
-     )}
-    <AutoSaveCheckboxView autoSave={state.autoSave} emit=dispatch />
+		<NavView autoSave={state.autoSave} emit=dispatch />
+		<div id="content">
     {switch (definitionID) {
      | "" => <DefinitionListView definitions languageName />
+		 | "+definition" => <DefinitionAddView languageName emit=dispatch />
      | _ =>
        // debug
        switch (execution) {
@@ -55,7 +41,7 @@ let make = () => {
          )
        };
        switch (Belt.Map.String.get(definitions, definitionID)) {
-       | None => ReasonReact.string("Not found")
+       | None => React.string("Not found")
        | Some(definition) =>
          let Definition.{implementation, display, documentation} = definition;
          let emit = (action: DefinitionAction.t) =>
@@ -99,20 +85,21 @@ let make = () => {
        };
      }}
     {switch (execution) {
-     | None => ReasonReact.null
+     | None => React.null
      | Some(execution) =>
        <div>
          <button onClick={_ => dispatch(Step)}>
-           {ReasonReact.string("step")}
+           {React.string("step")}
          </button>
          {switch (execution.result) {
-          | None => ReasonReact.null
+          | None => React.null
           | Some(value) =>
-            ReasonReact.string(
+            React.string(
               "Result: " ++ ValueDisplay.f(value, definitions, languageName),
             )
           }}
        </div>
      }}
+		 </div>
   </div>;
 };

@@ -36,7 +36,7 @@ let make =
     let definition = Belt.Map.String.getExn(definitions, definitionID);
     let name = DefinitionGetDisplayName.f(definition, languageName);
     let onDoubleClick = _event =>
-      ReasonReact.Router.push("#" ++ definitionID);
+      RescriptReactRouter.push("#" ++ definitionID);
 
     if (NodeIsFunctionDefinition.f(node)) {
       <DefinitionBoxView

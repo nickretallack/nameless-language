@@ -53,17 +53,17 @@ let make =
         position.x +. sidePadding *. (isSource ? 1.0 : (-1.0)),
       )}
       y={FloatToPixels.f(position.y)}>
-      {ReasonReact.string(text)}
+      {React.string(text)}
     </text>
     {switch (value) {
-     | None => ReasonReact.null
+     | None => React.null
      | Some(value) =>
        <text
          textAnchor="end"
          x={FloatToPixels.f(position.x -. sidePadding)}
          y={FloatToPixels.f(position.y)}
          alignmentBaseline="central">
-         {ReasonReact.string(
+         {React.string(
             ValueDisplay.f(value, definitions, languageName),
           )}
        </text>

@@ -134,12 +134,12 @@ let make =
     <a
       onClick={_event => send(SelectCategory(category))}
       className={state.category == Some(category) ? "selected" : ""}>
-      {ReasonReact.string(name)}
+      {React.string(name)}
     </a>;
   let nodeSelector = (filterFunction: Definition.t => bool) =>
     <div className="type-selector-choices">
-      <h3> {ReasonReact.string("Definitions")} </h3>
-      {ReasonReact.array(
+      <h3> {React.string("Definitions")} </h3>
+      {React.array(
          Belt.Array.map(
            Belt.Map.String.toArray(
              Belt.Map.String.keep(
@@ -156,7 +156,7 @@ let make =
                state.definitionID == Some(definitionID) ? "selected" : ""
              }
              onClick={_event => send(SelectDefinition(definitionID))}>
-             {ReasonReact.string(
+             {React.string(
                 DefinitionGetDisplayName.f(definition, languageName),
               )}
            </a>
@@ -167,16 +167,16 @@ let make =
     <a
       className={state.definedNodeKind == Some(kind) ? "selected" : ""}
       onClick={_event => send(SetDefinedNodeKind(kind))}>
-      {ReasonReact.string(name)}
+      {React.string(name)}
     </a>;
   <>
-    <h2> {ReasonReact.string("Create a node")} </h2>
+    <h2> {React.string("Create a node")} </h2>
     <div className="type-selector-menu">
       <div className="type-selector-categories">
-        <h3> {ReasonReact.string("Category")} </h3>
+        <h3> {React.string("Category")} </h3>
         {renderCategory("Defined", AllCategory)}
         {nib.isSource
-           ? ReasonReact.null
+           ? React.null
            : <>
                <a
                  onClick={_event =>
@@ -191,12 +191,12 @@ let make =
                      }),
                    )
                  }>
-                 {ReasonReact.string("Reference")}
+                 {React.string("Reference")}
                </a>
              </>}
       </div>
       {switch (state.category) {
-       | None => ReasonReact.null
+       | None => React.null
        | Some(category) =>
          switch (category) {
          | NumberCategory => nodeSelector(isNumberConstant)
@@ -204,21 +204,21 @@ let make =
          }
        }}
       {switch (state.definitionID) {
-       | None => ReasonReact.null
+       | None => React.null
        | Some(definitionID) =>
          let definition = Belt.Map.String.getExn(definitions, definitionID);
          <>
            <div>
-             <h3> {ReasonReact.string("Usage")} </h3>
+             <h3> {React.string("Usage")} </h3>
              {switch (definition.implementation) {
               | GraphImplementation(_)
               | ExternalImplementation(_) =>
                 <>
                   {nodeTypeLink(FunctionCallNode, "call")}
                   {nib.isSource
-                     ? ReasonReact.null
+                     ? React.null
                      : <a onClick={_event => send(AddValue)}>
-                         {ReasonReact.string("value")}
+                         {React.string("value")}
                        </a>}
                 </>
               | InterfaceImplementation(_) =>
@@ -228,7 +228,7 @@ let make =
                      "function pointer call",
                    )}
                   {nib.isSource
-                     ? ReasonReact.null
+                     ? React.null
                      : <a
                          onClick={_event =>
                            emit(
@@ -246,7 +246,7 @@ let make =
                              }),
                            )
                          }>
-                         {ReasonReact.string("inline function")}
+                         {React.string("inline function")}
                        </a>}
                 </>
               | RecordTypeImplementation(_) =>
@@ -270,7 +270,7 @@ let make =
                             }),
                           )
                         }>
-                        {ReasonReact.string("accessor")}
+                        {React.string("accessor")}
                       </a>
                     </>
                   : <>
@@ -291,7 +291,7 @@ let make =
                             }),
                           )
                         }>
-                        {ReasonReact.string("constructor")}
+                        {React.string("constructor")}
                       </a>
                       {nodeTypeLink(AccessorNode, "accessor")}
                     </>
@@ -311,7 +311,7 @@ let make =
                         }),
                       )
                     }>
-                    {ReasonReact.string("value")}
+                    {React.string("value")}
                   </a>
                 </>
               | LabeledTypeImplementation(_) =>
@@ -334,9 +334,9 @@ let make =
                              }),
                            )
                          }>
-                         {ReasonReact.string("constructor")}
+                         {React.string("constructor")}
                        </a>
-                     : ReasonReact.null}
+                     : React.null}
                   <a
                     onClick={_event =>
                       emit(
@@ -351,16 +351,16 @@ let make =
                         }),
                       )
                     }>
-                    {ReasonReact.string("accessor")}
+                    {React.string("accessor")}
                   </a>
                 </>
               | UnionTypeImplementation(_) =>
-                ReasonReact.string("Can't create nodes for union types")
-              | _ => <> {ReasonReact.string("TODO")} </>
+                React.string("Can't create nodes for union types")
+              | _ => <> {React.string("TODO")} </>
               }}
            </div>
            {switch (state.definedNodeKind) {
-            | None => ReasonReact.null
+            | None => React.null
             | Some(definedNodeKind) =>
               let display =
                 NodeGetDisplayNibs.f(
@@ -373,9 +373,9 @@ let make =
                 );
               <div>
                 <h3>
-                  {ReasonReact.string(nib.isSource ? "Input" : "Output")}
+                  {React.string(nib.isSource ? "Input" : "Output")}
                 </h3>
-                {ReasonReact.array(
+                {React.array(
                    Belt.List.toArray(
                      Belt.List.map(
                        nib.isSource ? display.inputs : display.outputs,
@@ -398,7 +398,7 @@ let make =
                              }),
                            )
                          }>
-                         {ReasonReact.string(maybeNameless(displayNib.name))}
+                         {React.string(maybeNameless(displayNib.name))}
                        </a>
                      ),
                    ),

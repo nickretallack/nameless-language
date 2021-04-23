@@ -22,17 +22,17 @@ let make =
       />
     </div>
     <button onClick={_event => emit(Fork)}>
-      {ReasonReact.string("Fork")}
+      {React.string("Fork")}
     </button>
     <select
       onChange={event =>
-        ReasonReact.Router.push("#" ++ ReactEvent.Form.target(event)##value)
+        RescriptReactRouter.push("#" ++ ReactEvent.Form.target(event)##value)
       }>
-      <option> {ReasonReact.string("Uses...")} </option>
+      <option> {React.string("Uses...")} </option>
       {RenderStringMap.f(
          ((definitionID, definition)) =>
            <option key=definitionID value=definitionID>
-             {ReasonReact.string(
+             {React.string(
                 DefinitionGetDisplayName.f(definition, languageName),
               )}
            </option>,
@@ -40,16 +40,16 @@ let make =
        )}
     </select>
     {switch (error) {
-     | NoAppError => ReasonReact.null
+     | NoAppError => React.null
      | NibIsConnected(definitions) =>
        <div>
-         {ReasonReact.string("This nib is connected in: ")}
+         {React.string("This nib is connected in: ")}
          <ul>
            {RenderStringMap.f(
               ((definitionID, definition)) =>
                 <li>
                   <a key=definitionID href={"#" ++ definitionID}>
-                    {ReasonReact.string(
+                    {React.string(
                        DefinitionGetDisplayName.f(definition, languageName),
                      )}
                   </a>
@@ -60,7 +60,7 @@ let make =
        </div>
      | ConnectionCrossesScopeError =>
        <div>
-         {ReasonReact.string(
+         {React.string(
             "When crossing scopes, you can only connect a source in a parent scope to a sink in a child scope.  You may have to remove some connections in order to change the scope of this node.",
           )}
        </div>

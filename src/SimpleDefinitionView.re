@@ -51,9 +51,9 @@ let make =
        />
      | UnionTypeImplementation(typeSet) =>
        <UnionTypeImplementationView definitions typeSet languageName emit />
-     | SymbolImplementation => ReasonReact.null
+     | SymbolImplementation => React.null
      | ExternalImplementation(_)
-     | GraphImplementation(_) => ReasonReact.null
+     | GraphImplementation(_) => React.null
      }}
   </div>;
 };

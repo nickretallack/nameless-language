@@ -10,11 +10,11 @@ let make =
     emit(DefinitionAction.ChangeLabeledType(valueType));
 
   <div>
-    <h1> {ReasonReact.string("Label")} </h1>
+    <h1> {React.string("Label")} </h1>
     <table>
       <tbody>
         <tr>
-          <td> {ReasonReact.string("Type: ")} </td>
+          <td> {React.string("Type: ")} </td>
           <td>
             <TypeSelectorView valueType definitions languageName changeType />
           </td>

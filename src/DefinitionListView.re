@@ -3,9 +3,9 @@ let make = (~definitions: DefinitionMap.t, ~languageName: LanguageName.t) => {
   <table>
     <thead>
       <tr>
-        <th> "Kind"->ReasonReact.string </th>
-        <th> "Name"->ReasonReact.string </th>
-        <th> "Type"->ReasonReact.string </th>
+        <th> "Kind"->React.string </th>
+        <th> "Name"->React.string </th>
+        <th> "Type"->React.string </th>
       </tr>
     </thead>
     <tbody>
@@ -22,12 +22,12 @@ let make = (~definitions: DefinitionMap.t, ~languageName: LanguageName.t) => {
          <tr key=definitionID>
            <td>
              {ImplementationGetName.f(definition.implementation)
-              ->ReasonReact.string}
+              ->React.string}
            </td>
            <td>
              <a href={"#" ++ definitionID}>
                {DefinitionGetDisplayName.f(definition, languageName)
-                ->ReasonReact.string}
+                ->React.string}
              </a>
            </td>
          </tr>

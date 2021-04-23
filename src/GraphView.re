@@ -173,7 +173,7 @@ let make =
   let allNibs =
     DefinitionGetExplicitDisplayNibs.f(definition, definitions, languageName);
   let renderedConnections =
-    ReasonReact.array(
+    React.array(
       Belt.Array.map(
         Belt.Map.toArray(implementation.connections),
         ((sink, source)) => {
@@ -216,7 +216,7 @@ let make =
       ),
     );
   let renderedNibs =
-    ReasonReact.array(
+    React.array(
       Belt.Array.map(
         Belt.List.toArray(allNibs),
         ({name, explicitConnectionSide}) => {
@@ -263,7 +263,7 @@ let make =
       emit=dispatch
     />;
   let renderedNodes =
-    ReasonReact.array(
+    React.array(
       Belt.List.toArray(
         Belt.List.map(
           ListSortBy.f(
@@ -338,7 +338,7 @@ let make =
             xPadding
             sourceIndex=0
           />;
-        | _ => ReasonReact.null
+        | _ => React.null
         },
       state.pointers,
     );
@@ -363,15 +363,15 @@ let make =
     />
     {switch (state.error) {
      | Some(error) =>
-       <div className="error-message"> {ReasonReact.string(error)} </div>
-     | None => ReasonReact.null
+       <div className="error-message"> {React.string(error)} </div>
+     | None => React.null
      }}
     {switch (state.selection) {
      | SelectedNib(explicitConnectionSide) =>
        <>
          <button
            onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
-           {ReasonReact.string("Debug")}
+           {React.string("Debug")}
          </button>
          <NodeMenuView
            emit
@@ -387,19 +387,19 @@ let make =
            onClick={_event =>
              emit(EvaluateNib({connectionSide, isSource: false}))
            }>
-           {ReasonReact.string("Debug")}
+           {React.string("Debug")}
          </button>
          <button onClick={_event => emit(RemoveConnection(connectionSide))}>
-           {ReasonReact.string("Remove connection")}
+           {React.string("Remove connection")}
          </button>
        </>
      | SelectedNodes(_) =>
        <button onClick={_event => dispatch(RemoveSelectedNodes)}>
-         {ReasonReact.string("Remove Node(s)")}
+         {React.string("Remove Node(s)")}
        </button>
-     | NoSelection => ReasonReact.null
+     | NoSelection => React.null
      }}
-    <h2> {ReasonReact.string("Interface")} </h2>
+    <h2> {React.string("Interface")} </h2>
     <InterfaceView
       definitions
       interface={implementation.interface}
