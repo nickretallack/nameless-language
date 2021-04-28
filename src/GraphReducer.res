@@ -73,21 +73,41 @@ let f = (
           ),
         })
       | Some(ScrollZoom(originalPoint)) =>
-        // // get all of them and make a box
-        // let points: list<Point.t> = Belt.Map.reduce(state.pointers, list{}, (
-        //   result,
-        //   _pointerID,
-        //   value,
-        // ) =>
-        //   switch value {
-        //   | ScrollZoom(point) => List.rev_append(result, list{point})
-        //   | _ => result
-        //   }
-        // )
+        // get all of them and make a box
+        let otherPoints: list<Point.t> = Belt.Map.reduce(state.pointers, list{}, (
+          result,
+          thePointerID,
+          value,
+        ) =>
+          switch value {
+          | ScrollZoom(point) => 
+						if thePointerID != pointerID {
+							List.rev_append(result, list{point})
+						} else {
+							result
+						}
+          | _ => result
+          }
+        )
+				
+				let (scroll, distanceRatio) = if Js.List.isEmpty(otherPoints) {
+					(PointAdd.f(PointSubtract.f(point, originalPoint), state.scroll), 1.0)
+				} else {
+					let originalAverage = PointAverage.f(Js.List.revAppend(otherPoints, list{originalPoint}))
+					let newAverage = PointAverage.f(Js.List.revAppend(otherPoints, list{point}))
+					let otherAverage = PointAverage.f(otherPoints)
+					let originalDistance = PointDistance.f(originalPoint, otherAverage)
+					let newDistance = PointDistance.f(point, otherAverage)
+					let distanceRatio = newDistance /. originalDistance
+					let motion = PointSubtract.f(newAverage, originalAverage)
+					let newScroll = PointAdd.f(motion, state.scroll)
+					(newScroll, distanceRatio)
+				}
 
         ReactUpdate.Update({
           ...state,
-          scroll: PointAdd.f(PointSubtract.f(point, originalPoint), state.scroll),
+          scroll,
+					zoom: state.zoom *. distanceRatio,
           pointers: Belt.Map.set(state.pointers, pointerID, ScrollZoom(point)),
         })
       | _ => ReactUpdate.NoUpdate
