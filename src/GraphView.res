@@ -10,6 +10,7 @@ let make = (
   ~emit: DefinitionAction.t => unit,
   ~error: AppError.t,
   ~stackFrame: option<MaterializedStackFrame.t>,
+	~urlHashRest: array<string>,
 ) => {
   let svg = React.useRef(Js.Nullable.null)
   let (state, dispatch) = ReactUpdate.useReducer(
@@ -296,50 +297,59 @@ let make = (
     state.pointers,
   )
   <div id="graph-view">
-    // <div id="graph-info">
-    //   <DefinitionHeaderView
-    //     definitionID
-    //     definitions
-    //     documentation
-    //     languageName
-    //     emit
-    //     error
-    //     placeholder="(nameless function)"
-    //   />
-    //   {switch state.error {
-    //   | Some(error) => <div className="error-message"> {React.string(error)} </div>
-    //   | None => React.null
-    //   }}
-    //   {switch state.selection {
-    //   | SelectedNib(explicitConnectionSide) => <>
-    //       <button onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
-    //         {React.string("Debug")}
-    //       </button>
-    //       <NodeMenuView
-    //         emit definitions languageName nodes=implementation.nodes nib=explicitConnectionSide
-    //       />
-    //     </>
-    //   | SelectedConnection(connectionSide) => <>
-    //       <button
-    //         onClick={_event =>
-    //           emit(EvaluateNib({connectionSide: connectionSide, isSource: false}))}>
-    //         {React.string("Debug")}
-    //       </button>
-    //       <button onClick={_event => emit(RemoveConnection(connectionSide))}>
-    //         {React.string("Remove connection")}
-    //       </button>
-    //     </>
-    //   | SelectedNodes(_) =>
-    //     <button onClick={_event => dispatch(RemoveSelectedNodes)}>
-    //       {React.string("Remove Node(s)")}
-    //     </button>
-    //   | NoSelection => React.null
-    //   }}
-    //   <h2> {React.string("Interface")} </h2>
-    //   <InterfaceView
-    //     definitions interface=implementation.interface documentation display emit languageName
-    //   />
-    // </div>
+		<nav id="graph-nav" className="nav-buttons">
+			<a href=`#${definitionID}/documentation` className={urlHashRest==["documentation"] ? "active" : ""}>{React.string("Documentation")}</a>
+			<a href=`#${definitionID}` className={urlHashRest==[] ? "active" : ""}>{React.string("Implementation")}</a>
+		</nav>
+		{switch(urlHashRest) {
+			| ["documentation"] =>
+
+    <div id="documentation">
+      <DefinitionHeaderView
+        definitionID
+        definitions
+        documentation
+        languageName
+        emit
+        error
+        placeholder="(nameless function)"
+      />
+      {switch state.error {
+      | Some(error) => <div className="error-message"> {React.string(error)} </div>
+      | None => React.null
+      }}
+      {switch state.selection {
+      | SelectedNib(explicitConnectionSide) => <>
+          <button onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
+            {React.string("Debug")}
+          </button>
+          <NodeMenuView
+            emit definitions languageName nodes=implementation.nodes nib=explicitConnectionSide
+          />
+        </>
+      | SelectedConnection(connectionSide) => <>
+          <button
+            onClick={_event =>
+              emit(EvaluateNib({connectionSide: connectionSide, isSource: false}))}>
+            {React.string("Debug")}
+          </button>
+          <button onClick={_event => emit(RemoveConnection(connectionSide))}>
+            {React.string("Remove connection")}
+          </button>
+        </>
+      | SelectedNodes(_) =>
+        <button onClick={_event => dispatch(RemoveSelectedNodes)}>
+          {React.string("Remove Node(s)")}
+        </button>
+      | NoSelection => React.null
+      }}
+      <h2> {React.string("Interface")} </h2>
+      <InterfaceView
+        definitions interface=implementation.interface documentation display emit languageName
+      />
+    </div>
+		| _ => React.null
+		}}
     <div className="graph-canvas"
 		        onPointerDown={event => {
           let pointerID = ReactEvent.Pointer.pointerId(event)

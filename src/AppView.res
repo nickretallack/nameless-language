@@ -11,15 +11,17 @@ let make = () => {
   })
 
   let url = RescriptReactRouter.useUrl()
-  let definitionID = url.hash
+  let urlHash = Js.String.split("/", url.hash)
   let {AppState.languageName: languageName, definitions, error, execution} = state
   <>
-    <NavView autoSave=state.autoSave emit=dispatch />
+    <NavView url=urlHash autoSave=state.autoSave emit=dispatch />
     <div id="content">
-      {switch definitionID {
-      | "" => <DefinitionListView definitions languageName />
-      | "+definition" => <DefinitionAddView languageName emit=dispatch />
+      {switch urlHash {
+      | [""] => <DefinitionListView definitions languageName />
+      | ["+definition"] => <DefinitionAddView languageName emit=dispatch />
       | _ =>
+				let definitionID = urlHash[0]
+				let urlHashRest = Js.Array2.slice(~start=1, ~end_=Js.Array.length(urlHash), urlHash)
         // debug
         switch execution {
         | None => ()
@@ -66,6 +68,7 @@ let make = () => {
               error
               stackFrame
               languageName
+							urlHashRest
             />
           | _ =>
             <SimpleDefinitionView definitionID definition definitions languageName emit error />

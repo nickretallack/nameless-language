@@ -1,7 +1,6 @@
 @react.component
 let make = (~languageName: LanguageName.t, ~emit) => {
   <div>
-    <h1> {React.string("New Definition")} </h1>
     {React.array(
       Belt.Array.mapWithIndex(DefinitionMakers.v, (index, (name, maker)) =>
         <a

@@ -1,9 +1,9 @@
 @react.component
-let make = (~autoSave: bool, ~emit) => {
+let make = (~url:array<string>, ~autoSave: bool, ~emit) => {
   <nav className="left-right" id="nav">
-    <div id="nav-buttons">
-      <a href="#"> {React.string("Library")} </a>
-      <a href="#+definition"> {React.string("+Definition")} </a>
+    <div className="nav-buttons">
+      <a href="#" className={url==[""] ? "active" : ""}> {React.string("Library")} </a>
+      <a href="#+definition" className={url==["+definition"] ? "active" : ""}> {React.string("+Definition")} </a>
     </div>
     <div> <AutoSaveCheckboxView autoSave={autoSave} emit /> </div>
   </nav>
