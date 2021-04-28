@@ -71,6 +71,7 @@ let make = (
       y={FloatToPixels.f(position.y -. 10.0)}
       ref={ReactDOM.Ref.domRef(clickableArea)}
       onPointerDown={event => {
+        ReactEvent.Pointer.stopPropagation(event)
         let pointerID = ReactEvent.Pointer.pointerId(event)
         let _ = ReactEvent.Pointer.target(event)["setPointerCapture"](pointerID)
         emit(
@@ -88,6 +89,7 @@ let make = (
       }}
       onPointerUp={event => {
         // Fire an event on the nib we're connecting to.
+        ReactEvent.Pointer.stopPropagation(event)
         FireEventOnDropTarget.f(event, "finish-drawing")
         emit(
           PointerAction({

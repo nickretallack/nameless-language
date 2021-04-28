@@ -11,6 +11,7 @@ let make = (
   ~error: AppError.t,
   ~stackFrame: option<MaterializedStackFrame.t>,
 ) => {
+  let svg = React.useRef(Js.Nullable.null)
   let (state, dispatch) = ReactUpdate.useReducer(
     {
       open GraphState
@@ -18,6 +19,8 @@ let make = (
         pointers: Belt.Map.make(~id=module(PointerComparable.C)),
         error: None,
         selection: NoSelection,
+        scroll: {x: 0.0, y: 0.0},
+        zoom: 1.0,
       }
     },
     GraphReducer.f(emit, implementation),
@@ -253,6 +256,7 @@ let make = (
                 }),
               )}
             onPointerDown={event => {
+			        ReactEvent.Pointer.stopPropagation(event)
               let pointerID = ReactEvent.Pointer.pointerId(event)
               let _ = ReactEvent.Pointer.target(event)["setPointerCapture"](pointerID)
               dispatch(PointerAction({pointerID: pointerID, action: StartDragging(nodeID)}))
@@ -269,10 +273,16 @@ let make = (
           point,
           explicitConnectionSide: {connectionSide, isSource: startIsSource},
         }) =>
-        let adjustedPoint = {
-          open Point
-          {x: point.x, y: point.y -. 18.0}
+        let svgPosition = switch svg.current->Js.Nullable.toOption {
+        | Some(domSvg) =>
+					open BoundingClientRect
+          let rect = getBoundingClientRect(domSvg)
+          open! Point
+          {x: rect.left, y: rect.top}
+        | None => {x: 0.0, y: 0.0}
         }
+				Js.log(svgPosition)
+        let adjustedPoint = PointSubtract.f(point, svgPosition)
         <ConnectionView
           key={PointerIDToString.f(pointerID)}
           sourcePosition={startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint}
@@ -286,50 +296,99 @@ let make = (
       },
     state.pointers,
   )
-  <div>
-    <svg width={FloatToPixels.f(graphSizePixels.x)} height={FloatToPixels.f(graphSizePixels.y)}>
-      renderedSides renderedNodes renderedConnections renderedDrawingConnections renderedNibs
-    </svg>
-    <DefinitionHeaderView
-      definitionID
-      definitions
-      documentation
-      languageName
-      emit
-      error
-      placeholder="(nameless function)"
-    />
-    {switch state.error {
-    | Some(error) => <div className="error-message"> {React.string(error)} </div>
-    | None => React.null
-    }}
-    {switch state.selection {
-    | SelectedNib(explicitConnectionSide) => <>
-        <button onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
-          {React.string("Debug")}
+  <div id="graph-view">
+    <div id="graph-info">
+      <DefinitionHeaderView
+        definitionID
+        definitions
+        documentation
+        languageName
+        emit
+        error
+        placeholder="(nameless function)"
+      />
+      {switch state.error {
+      | Some(error) => <div className="error-message"> {React.string(error)} </div>
+      | None => React.null
+      }}
+      {switch state.selection {
+      | SelectedNib(explicitConnectionSide) => <>
+          <button onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
+            {React.string("Debug")}
+          </button>
+          <NodeMenuView
+            emit definitions languageName nodes=implementation.nodes nib=explicitConnectionSide
+          />
+        </>
+      | SelectedConnection(connectionSide) => <>
+          <button
+            onClick={_event =>
+              emit(EvaluateNib({connectionSide: connectionSide, isSource: false}))}>
+            {React.string("Debug")}
+          </button>
+          <button onClick={_event => emit(RemoveConnection(connectionSide))}>
+            {React.string("Remove connection")}
+          </button>
+        </>
+      | SelectedNodes(_) =>
+        <button onClick={_event => dispatch(RemoveSelectedNodes)}>
+          {React.string("Remove Node(s)")}
         </button>
-        <NodeMenuView
-          emit definitions languageName nodes=implementation.nodes nib=explicitConnectionSide
-        />
-      </>
-    | SelectedConnection(connectionSide) => <>
-        <button
-          onClick={_event => emit(EvaluateNib({connectionSide: connectionSide, isSource: false}))}>
-          {React.string("Debug")}
-        </button>
-        <button onClick={_event => emit(RemoveConnection(connectionSide))}>
-          {React.string("Remove connection")}
-        </button>
-      </>
-    | SelectedNodes(_) =>
-      <button onClick={_event => dispatch(RemoveSelectedNodes)}>
-        {React.string("Remove Node(s)")}
-      </button>
-    | NoSelection => React.null
-    }}
-    <h2> {React.string("Interface")} </h2>
-    <InterfaceView
-      definitions interface=implementation.interface documentation display emit languageName
-    />
+      | NoSelection => React.null
+      }}
+      <h2> {React.string("Interface")} </h2>
+      <InterfaceView
+        definitions interface=implementation.interface documentation display emit languageName
+      />
+    </div>
+    <div className="graph-canvas" >
+      <svg
+				ref={ReactDOM.Ref.domRef(svg)}
+        style={ReactDOM.Style.make(
+          ~position="absolute",
+          ~left=FloatToPixels.f(state.scroll.x),
+          ~top=FloatToPixels.f(state.scroll.y),
+          (),
+        )}
+        width={FloatToPixels.f(graphSizePixels.x)}
+        height={FloatToPixels.f(graphSizePixels.y)}
+        onPointerDown={event => {
+          let pointerID = ReactEvent.Pointer.pointerId(event)
+          let _ = ReactEvent.Pointer.target(event)["setPointerCapture"](pointerID)
+          dispatch(
+            PointerAction({
+              pointerID: pointerID,
+              action: StartScrolling(PointFromPointerEvent.f(event)),
+            }),
+          )
+        }}
+        onPointerUp={event => {
+          dispatch(
+            PointerAction({
+              pointerID: ReactEvent.Pointer.pointerId(event),
+              action: ReleasePointer,
+            }),
+          )
+        }}
+        onPointerMove={event => {
+          ReactEvent.Pointer.preventDefault(event)
+          ReactEvent.Pointer.stopPropagation(event)
+          dispatch(
+            PointerAction({
+              pointerID: ReactEvent.Pointer.pointerId(event),
+              action: MovePointer(PointFromPointerEvent.f(event)),
+            }),
+          )
+        }}
+        onLostPointerCapture={event =>
+          dispatch(
+            PointerAction({
+              pointerID: ReactEvent.Pointer.pointerId(event),
+              action: ReleasePointer,
+            }),
+          )}>
+        renderedSides renderedNodes renderedConnections renderedDrawingConnections renderedNibs
+      </svg>
+    </div>
   </div>
 }

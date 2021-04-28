@@ -56,6 +56,11 @@ let f = (
         ...state,
         pointers: Belt.Map.set(state.pointers, pointerID, DraggingNode(nodeID)),
       })
+    | StartScrolling(position) =>
+      ReactUpdate.Update({
+        ...state,
+        pointers: Belt.Map.set(state.pointers, pointerID, ScrollZoom(position)),
+      })
     | MovePointer(point) =>
       switch Belt.Map.get(state.pointers, pointerID) {
       | Some(DrawingConnection(drawingConnection)) =>
@@ -66,6 +71,24 @@ let f = (
             pointerID,
             DrawingConnection({...drawingConnection, point: point}),
           ),
+        })
+      | Some(ScrollZoom(originalPoint)) =>
+        // // get all of them and make a box
+        // let points: list<Point.t> = Belt.Map.reduce(state.pointers, list{}, (
+        //   result,
+        //   _pointerID,
+        //   value,
+        // ) =>
+        //   switch value {
+        //   | ScrollZoom(point) => List.rev_append(result, list{point})
+        //   | _ => result
+        //   }
+        // )
+
+        ReactUpdate.Update({
+          ...state,
+          scroll: PointAdd.f(PointSubtract.f(point, originalPoint), state.scroll),
+          pointers: Belt.Map.set(state.pointers, pointerID, ScrollZoom(point)),
         })
       | _ => ReactUpdate.NoUpdate
       }
@@ -143,7 +166,8 @@ let f = (
 
     | ReleasePointer =>
       switch Belt.Map.get(state.pointers, pointerID) {
-      | Some(DrawingConnection(_)) =>
+      | Some(DrawingConnection(_))
+      | Some(ScrollZoom(_)) =>
         ReactUpdate.Update({
           ...state,
           pointers: Belt.Map.remove(state.pointers, pointerID),

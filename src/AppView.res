@@ -13,7 +13,7 @@ let make = () => {
   let url = RescriptReactRouter.useUrl()
   let definitionID = url.hash
   let {AppState.languageName: languageName, definitions, error, execution} = state
-  <div>
+  <>
     <NavView autoSave=state.autoSave emit=dispatch />
     <div id="content">
       {switch definitionID {
@@ -85,5 +85,5 @@ let make = () => {
         </div>
       }}
     </div>
-  </div>
+  </>
 }

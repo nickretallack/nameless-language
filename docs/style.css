@@ -2,6 +2,13 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 * {
@@ -21,17 +28,40 @@ th {
   text-align: right;
 }
 
-nav {
+#nav {
+  flex: 0 0 auto;
   white-space: nowrap;
+  background-color: cyan;
+  width: 100%;
+  overflow-x: auto;
+}
+
+#nav > * + * {
+  margin-left: 1ex;
 }
 
 #nav-buttons a + a {
   margin-left: 1ex;
 }
 
-.graph {
+#content {
+  flex: 1;
+  overflow: auto;
+}
+
+#graph-view {
+  display: flex;
+  flex-direction: row;
+}
+
+.graph-canvas {
   position: relative;
-  border: 1px solid lightgray;
+  flex: 1;
+}
+
+#graph-info {
+  flex-basis: auto;
+  flex-basis: 250px;
 }
 
 .evaluate {
@@ -167,20 +197,6 @@ a {
   display: block;
 }
 
-nav {
-  background-color: cyan;
-  width: 100%;
-  overflow-x: auto;
-}
-
-#content {
-  overflow: auto;
-}
-
-nav > * + * {
-  margin-left: 1ex;
-}
-
 .definition-node {
   display: flex;
   background: rgba(0, 0, 0, 0.1);
@@ -221,8 +237,9 @@ h3 {
 
 .interface {
   display: flex;
+  flex-wrap: wrap;
 }
 
-.interface > div + div {
-  margin-left: 20px;
+.interface > div {
+  margin-right: 20px;
 }

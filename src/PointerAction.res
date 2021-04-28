@@ -5,3 +5,4 @@ type t =
   | ReleasePointer
   | FinishDrawing(ExplicitConnectionSide.t)
   | FinishDragging(NodeScope.t)
+  | StartScrolling(Point.t)
