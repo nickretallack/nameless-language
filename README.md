@@ -9,7 +9,7 @@ cd nameless-language
 npm install
 
 # run each in their own terminal tab:
-npx start
+npm start
 npx webpack -w
 cd docs && python -m SimpleHTTPServer
 ```
