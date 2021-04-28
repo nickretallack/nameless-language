@@ -45,13 +45,13 @@ let make = (
           </button>
         </>
       | SelectedConnection(connectionSide) => <>
+          <button onClick={_event => emit(RemoveConnection(connectionSide))}>
+            {React.string("Remove connection")}
+          </button>
           <button
             onClick={_event =>
               emit(EvaluateNib({connectionSide: connectionSide, isSource: false}))}>
             {React.string("Debug")}
-          </button>
-          <button onClick={_event => emit(RemoveConnection(connectionSide))}>
-            {React.string("Remove connection")}
           </button>
         </>
       | SelectedNodes(_) =>

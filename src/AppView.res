@@ -14,15 +14,21 @@ let make = () => {
   let urlHash = Js.String.split("/", url.hash)
   let {AppState.languageName: languageName, definitions, error, execution} = state
   <>
-    <NavView url=urlHash autoSave=state.autoSave emit=dispatch />
+    <NavView
+      url=urlHash
+      autoSave=state.autoSave
+      execution=state.execution
+      definitions
+      languageName
+      emit=dispatch
+    />
     <div id="content">
       {switch urlHash {
       | [""] => <DefinitionListView definitions languageName />
       | ["+definition"] => <DefinitionAddView languageName emit=dispatch />
       | _ =>
-				let definitionID = urlHash[0]
-				let urlHashRest = Js.Array2.slice(~start=1, ~end_=Js.Array.length(urlHash), urlHash)
-        // debug
+        let definitionID = urlHash[0]
+        let urlHashRest = Js.Array2.slice(~start=1, ~end_=Js.Array.length(urlHash), urlHash)
         switch execution {
         | None => ()
         | Some(execution) =>
@@ -68,24 +74,12 @@ let make = () => {
               error
               stackFrame
               languageName
-							urlHashRest
+              urlHashRest
             />
           | _ =>
             <SimpleDefinitionView definitionID definition definitions languageName emit error />
           }
         }
-      }}
-      {switch execution {
-      | None => React.null
-      | Some(execution) =>
-        <div>
-          <button onClick={_ => dispatch(Step)}> {React.string("step")} </button>
-          {switch execution.result {
-          | None => React.null
-          | Some(value) =>
-            React.string("Result: " ++ ValueDisplay.f(value, definitions, languageName))
-          }}
-        </div>
       }}
     </div>
   </>
