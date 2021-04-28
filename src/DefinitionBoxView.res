@@ -18,13 +18,15 @@ let make = (
   React.useEffect(() => {
     RefDisableScrollingWhileDragging.f(title)
 
-    let finishDraggingHandler = event =>
+    let finishDraggingHandler = event => {
+      Webapi.Dom.Event.stopPropagation(event)
       emit(
         GraphAction.PointerAction({
           pointerID: EventGetDetail.f(event)["identifier"],
           action: FinishDragging(nodeScope),
         }),
       )
+    }
 
     switch Js.Nullable.toOption(body.current) {
     | None => ()

@@ -80,34 +80,34 @@ let f = (
           value,
         ) =>
           switch value {
-          | ScrollZoom(point) => 
-						if thePointerID != pointerID {
-							List.rev_append(result, list{point})
-						} else {
-							result
-						}
+          | ScrollZoom(point) =>
+            if thePointerID != pointerID {
+              List.rev_append(result, list{point})
+            } else {
+              result
+            }
           | _ => result
           }
         )
-				
-				let (scroll, distanceRatio) = if Js.List.isEmpty(otherPoints) {
-					(PointAdd.f(PointSubtract.f(point, originalPoint), state.scroll), 1.0)
-				} else {
-					let originalAverage = PointAverage.f(Js.List.revAppend(otherPoints, list{originalPoint}))
-					let newAverage = PointAverage.f(Js.List.revAppend(otherPoints, list{point}))
-					let otherAverage = PointAverage.f(otherPoints)
-					let originalDistance = PointDistance.f(originalPoint, otherAverage)
-					let newDistance = PointDistance.f(point, otherAverage)
-					let distanceRatio = newDistance /. originalDistance
-					let motion = PointSubtract.f(newAverage, originalAverage)
-					let newScroll = PointAdd.f(motion, state.scroll)
-					(newScroll, distanceRatio)
-				}
+
+        let (scroll, distanceRatio) = if Js.List.isEmpty(otherPoints) {
+          (PointAdd.f(PointSubtract.f(point, originalPoint), state.scroll), 1.0)
+        } else {
+          let originalAverage = PointAverage.f(Js.List.revAppend(otherPoints, list{originalPoint}))
+          let newAverage = PointAverage.f(Js.List.revAppend(otherPoints, list{point}))
+          let otherAverage = PointAverage.f(otherPoints)
+          let originalDistance = PointDistance.f(originalPoint, otherAverage)
+          let newDistance = PointDistance.f(point, otherAverage)
+          let distanceRatio = newDistance /. originalDistance
+          let motion = PointSubtract.f(newAverage, originalAverage)
+          let newScroll = PointAdd.f(motion, state.scroll)
+          (newScroll, distanceRatio)
+        }
 
         ReactUpdate.Update({
           ...state,
-          scroll,
-					zoom: state.zoom *. distanceRatio,
+          scroll: scroll,
+          zoom: state.zoom *. distanceRatio,
           pointers: Belt.Map.set(state.pointers, pointerID, ScrollZoom(point)),
         })
       | _ => ReactUpdate.NoUpdate
@@ -185,22 +185,9 @@ let f = (
       }
 
     | ReleasePointer =>
-      switch Belt.Map.get(state.pointers, pointerID) {
-      | Some(DrawingConnection(_))
-      | Some(ScrollZoom(_)) =>
-        ReactUpdate.Update({
-          ...state,
-          pointers: Belt.Map.remove(state.pointers, pointerID),
-        })
-      | Some(DraggingNode(nodeID)) =>
-        ReactUpdate.UpdateWithSideEffects(
-          {...state, pointers: Belt.Map.remove(state.pointers, pointerID)},
-          _ => {
-            emit(ChangeNodeScope({nodeID: nodeID, nodeScope: GraphScope}))
-            None
-          },
-        )
-      | _ => ReactUpdate.NoUpdate
-      }
+      ReactUpdate.Update({
+        ...state,
+        pointers: Belt.Map.remove(state.pointers, pointerID),
+      })
     }
   }

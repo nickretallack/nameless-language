@@ -232,20 +232,22 @@ let make = (
             | SelectedNodes(nodeIDs) => Belt.Set.String.has(nodeIDs, nodeID)
             | _ => false
             }}
-            onClick={event =>
-              emit(
-                SelectNode({
-                  nodeID: nodeID,
-                  additive: ReactEvent.Mouse.shiftKey(event),
-                }),
-              )}
             onPointerDown={event => {
               ReactEvent.Pointer.stopPropagation(event)
               let pointerID = ReactEvent.Pointer.pointerId(event)
               let _ = ReactEvent.Pointer.target(event)["setPointerCapture"](pointerID)
+              emit(
+                SelectNode({
+                  nodeID: nodeID,
+                  additive: ReactEvent.Pointer.shiftKey(event),
+                }),
+              )
               emit(PointerAction({pointerID: pointerID, action: StartDragging(nodeID)}))
             }}
-            onPointerUp={event => FireEventOnDropTarget.f(event, "finish-dragging")}
+            onPointerUp={event => {
+              ReactEvent.Pointer.stopPropagation(event)
+              FireEventOnDropTarget.f(event, "finish-dragging")
+            }}
           />,
       ),
     ),
