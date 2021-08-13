@@ -291,6 +291,32 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
             | _ =>
               raise(Exception.ShouldntHappen("Evaluating an accessor that's not a record or label"))
             }
+          | FunctionPointerCallNode =>
+            let implementationNib: ConnectionSide.t = {
+              node: source.node,
+              nib: ValueConnection,
+            }
+            let implementationSource = Belt.Map.getExn(
+              graphImplementation.connections,
+              implementationNib,
+            )
+            switch Belt.Map.get(scope.sourceValues, implementationSource) {
+            | None => {
+                ...execution,
+                stack: list{
+                  {
+                    ...frame,
+                    explicitConnectionSide: {
+                      isSource: false,
+                      connectionSide: implementationNib,
+                    },
+                    action: Evaluating,
+                  },
+                  ...execution.stack,
+                },
+              }
+            | Some(_) => execution // TODO: evaluate the function pointer
+            }
           | _ => raise(Exception.TODO("Evaluating a new kind of defined node"))
           }
         | _ => raise(Exception.TODO("Evaluating a new kind of node"))
