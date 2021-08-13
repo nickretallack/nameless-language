@@ -1,4 +1,4 @@
-let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
+let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Execution.t => {
   let frame = Belt.List.headExn(execution.stack)
   let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
   let definition = Belt.Map.String.getExn(definitions, scope.definitionID)
@@ -59,6 +59,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t): Execution.t => {
                   graphImplementation.connections,
                   externalImplementation,
                   outputID,
+                  webView,
                 )
               | _ =>
                 raise(

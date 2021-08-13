@@ -15,3 +15,4 @@ and t =
   | PrimitiveValue(PrimitiveValue.t)
   | DefinedValue(definedValueRecord)
   | LazyValue(lazyValue)
+  | Prerequisite

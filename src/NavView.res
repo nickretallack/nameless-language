@@ -13,6 +13,7 @@ let make = (
       <a href="#+definition" className={url == ["+definition"] ? "active" : ""}>
         {React.string("+Definition")}
       </a>
+      <a href={`#html`} className={url == ["html"] ? "active" : ""}> {React.string("HTML")} </a>
       {switch execution {
       | None => React.null
       | Some(execution) => <>

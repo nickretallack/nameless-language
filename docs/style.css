@@ -265,3 +265,9 @@ h3 {
 .interface > div {
   margin-right: 20px;
 }
+
+#webview {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}

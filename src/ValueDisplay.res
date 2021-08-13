@@ -32,4 +32,5 @@ and f = (value: Value.t, definitions: DefinitionMap.t, language: LanguageName.t)
   | PrimitiveValue(primitiveValue) => PrimitiveValueDisplay.f(primitiveValue)
   | DefinedValue(definedValue) => definedValueDisplay(definedValue, definitions, language)
   | LazyValue(_) => "(not computed yet)"
+  | Prerequisite => "(nothing)"
   }

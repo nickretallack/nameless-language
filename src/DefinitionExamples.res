@@ -96,6 +96,12 @@ let simple = GraphMake.f(
   (),
 )
 
+let keydown = DefinitionMake.f(
+  "en",
+  ~implementation=ConstantImplementation(TextValue("keydown")),
+  (),
+)
+
 let one = DefinitionMake.f("en", ~implementation=ConstantImplementation(NumberValue(1.0)), ())
 
 let point = DefinitionMake.f(
@@ -517,6 +523,25 @@ let greaterThan = DefinitionMake.f(
   (),
 )
 
+let addEventListener = DefinitionMake.f(
+  "en",
+  ~name="Add Event Listener",
+  ~inputs=[("event", "Event"), ("handler", "Handler"), (";", "")],
+  ~outputs=[(";", "")],
+  ~implementation=ExternalImplementation({
+    name: "addEventListener",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("event", ValueType.PrimitiveValueType(TextType)),
+        ("handler", ValueType.AnyType), // TODO: Function type with interface
+        (";", ValueType.AnyType), // TODO: sequencer type?
+      ]),
+      output: Belt.Map.String.fromArray([(";", ValueType.AnyType)]), // TODO: sequencer type
+    },
+  }),
+  (),
+)
+
 let somethingExample = GraphMake.f(
   "en",
   ~name="Something example",
@@ -759,6 +784,9 @@ let v = Belt.Map.String.fromArray([
   ("less-than", lessThan),
   ("greater-than", greaterThan),
   ("branch", branch),
+  // Web view stuff
+  ("keydown", keydown),
+  ("addEventListener", addEventListener),
   // Stuff used in examples
   ("one", one),
   ("point", point),

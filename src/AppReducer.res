@@ -1,4 +1,7 @@
-let f = (action: AppAction.t, state: AppState.t): ReactUpdate.update<AppAction.t, AppState.t> =>
+let f = (webView, action: AppAction.t, state: AppState.t): ReactUpdate.update<
+  AppAction.t,
+  AppState.t,
+> =>
   switch action {
   | SetAutoSave(value) => ReactUpdate.Update({...state, autoSave: value})
   | ResetData =>
@@ -9,6 +12,7 @@ let f = (action: AppAction.t, state: AppState.t): ReactUpdate.update<AppAction.t
           open Dom.Storage
           clear(localStorage)
         }
+
         None
       },
     )
@@ -35,7 +39,7 @@ let f = (action: AppAction.t, state: AppState.t): ReactUpdate.update<AppAction.t
         let frame = Belt.List.headExn(execution.stack)
         Some(
           switch frame.action {
-          | Evaluating => ExecutionReducer.f(execution, state.definitions)
+          | Evaluating => ExecutionReducer.f(execution, state.definitions, webView)
           | Returning(value) =>
             if Belt.List.length(execution.stack) == 1 {
               {
@@ -76,6 +80,7 @@ let f = (action: AppAction.t, state: AppState.t): ReactUpdate.update<AppAction.t
                     stack: Belt.List.tailExn(execution.stack),
                   },
                   state.definitions,
+                  webView,
                 )
               }
             }

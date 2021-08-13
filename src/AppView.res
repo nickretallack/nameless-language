@@ -1,6 +1,7 @@
 @react.component
 let make = () => {
-  let (state, dispatch) = ReactUpdate.useReducer(AppGetInitialState.f(), AppReducer.f)
+  let webView = React.useRef(Js.Nullable.null)
+  let (state, dispatch) = ReactUpdate.useReducer(AppGetInitialState.f(), AppReducer.f(webView))
 
   React.useEffect(() => {
     if state.autoSave {
@@ -23,9 +24,16 @@ let make = () => {
       emit=dispatch
     />
     <div id="content">
+      <div
+        id="webview"
+        tabIndex=0
+        style={ReactDOM.Style.make(~visibility=urlHash == ["html"] ? "visible" : "hidden", ())}
+        ref={ReactDOM.Ref.domRef(webView)}
+      />
       {switch urlHash {
       | [""] => <DefinitionListView definitions languageName />
       | ["+definition"] => <DefinitionAddView languageName emit=dispatch />
+      | ["html"] => <> </>
       | _ =>
         let definitionID = urlHash[0]
         let urlHashRest = Js.Array2.slice(~start=1, ~end_=Js.Array.length(urlHash), urlHash)

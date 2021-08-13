@@ -6,6 +6,7 @@ let f = (
   connections: ConnectionMap.t,
   externalImplementation: ExternalImplementation.t,
   outputID: NibID.t,
+  webView,
 ) =>
   switch EvaluateExternalFunction.f(
     externalImplementation.name,
@@ -16,6 +17,7 @@ let f = (
         Belt.Map.getExn(connections, {node: source.node, nib: NibConnection(nibID)}),
       )
     ),
+    webView,
   ) {
   | EvaluationResult(value) => {
       ...execution,
