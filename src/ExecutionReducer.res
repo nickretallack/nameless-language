@@ -22,29 +22,17 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
         | DefinedNode({kind, definitionID}) =>
           let nodeDefinition = Belt.Map.String.getExn(definitions, definitionID)
           switch kind {
-          | ValueNode =>
-            switch nodeDefinition.implementation {
-            | ConstantImplementation(primitiveValue) =>
-              EvaluateConstantReducer.f(primitiveValue, execution, frame, scope, source)
-            | SymbolImplementation =>
-              let value = Value.DefinedValue({definitionID: definitionID, value: SymbolValue})
-              {
-                ...execution,
-                stack: list{
-                  {...frame, action: Returning(value)},
-                  ...Belt.List.tailExn(execution.stack),
-                },
-                scopes: Belt.Map.String.set(
-                  execution.scopes,
-                  frame.scopeID,
-                  {
-                    ...scope,
-                    sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-                  },
-                ),
+          | ValueNode => {
+              let value = switch nodeDefinition.implementation {
+              | ConstantImplementation(primitiveValue) => Value.PrimitiveValue(primitiveValue)
+              | SymbolImplementation =>
+                Value.DefinedValue({definitionID: definitionID, value: SymbolValue})
+              | ExternalImplementation(_)
+              | GraphImplementation(_) =>
+                Value.DefinedValue({definitionID: definitionID, value: FunctionPointerValue})
+              | _ => raise(Exception.TODO("Evaluating a ValueNode that's not a symbol or constant"))
               }
-
-            | _ => raise(Exception.TODO("Evaluating a ValueNode that's not a symbol or constant"))
+              ExecutionReducerReturn.f(value, execution, source)
             }
           | FunctionCallNode =>
             switch nodeDefinition.implementation {
@@ -123,21 +111,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                   })),
                 ),
               })
-              {
-                ...execution,
-                stack: list{
-                  {...frame, action: Returning(value)},
-                  ...Belt.List.tailExn(execution.stack),
-                },
-                scopes: Belt.Map.String.set(
-                  execution.scopes,
-                  frame.scopeID,
-                  {
-                    ...scope,
-                    sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-                  },
-                ),
-              }
+              ExecutionReducerReturn.f(value, execution, source)
             | LabeledTypeImplementation(_) =>
               let value = Value.DefinedValue({
                 definitionID: definitionID,
@@ -151,21 +125,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                   }),
                 ),
               })
-              {
-                ...execution,
-                stack: list{
-                  {...frame, action: Returning(value)},
-                  ...Belt.List.tailExn(execution.stack),
-                },
-                scopes: Belt.Map.String.set(
-                  execution.scopes,
-                  frame.scopeID,
-                  {
-                    ...scope,
-                    sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-                  },
-                ),
-              }
+              ExecutionReducerReturn.f(value, execution, source)
             | _ =>
               raise(
                 Exception.ShouldntHappen("Evaluating a constructor that's not a record or label"),
@@ -360,21 +320,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
         | None =>
           // todo: a real implementation
           let value = Value.PrimitiveValue(NumberValue(3.0))
-          {
-            ...execution,
-            stack: list{
-              {...frame, action: Returning(value)},
-              ...Belt.List.tailExn(execution.stack),
-            },
-            scopes: Belt.Map.String.set(
-              execution.scopes,
-              frame.scopeID,
-              {
-                ...scope,
-                sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-              },
-            ),
-          }
+          ExecutionReducerReturn.f(value, execution, source)
         }
       }
     }

@@ -19,18 +19,7 @@ let f = (
     ),
     webView,
   ) {
-  | EvaluationResult(value) => {
-      ...execution,
-      stack: list{{...frame, action: Returning(value)}, ...Belt.List.tailExn(execution.stack)},
-      scopes: Belt.Map.String.set(
-        execution.scopes,
-        frame.scopeID,
-        {
-          ...scope,
-          sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-        },
-      ),
-    }
+  | EvaluationResult(value) => ExecutionReducerReturn.f(value, execution, source)
   | EvaluationRequired(nibIDs) => {
       ...execution,
       stack: Belt.List.concat(

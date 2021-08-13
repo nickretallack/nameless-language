@@ -1,11 +1,6 @@
-let f = (
-  primitiveValue: PrimitiveValue.t,
-  execution: Execution.t,
-  frame: StackFrame.t,
-  scope: Scope.t,
-  source: ConnectionSide.t,
-): Execution.t => {
-  let value = Value.PrimitiveValue(primitiveValue)
+let f = (value: Value.t, execution: Execution.t, source: ConnectionSide.t): Execution.t => {
+  let frame = Belt.List.headExn(execution.stack)
+  let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
   {
     ...execution,
     stack: list{{...frame, action: Returning(value)}, ...Belt.List.tailExn(execution.stack)},
