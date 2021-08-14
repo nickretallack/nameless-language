@@ -364,45 +364,70 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
               | Some(InlineFunction({scopeID, nodeID})) =>
                 // let inlineFunctionNode = Belt.Map.String.getExn(graphImplementation.nodes, nodeID)
                 let inlineFunctionScope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
-                let newSourceValues = Belt.Map.String.reduce(
-                  interfaceImplementation.input,
-                  inlineFunctionScope.sourceValues,
-                  (sourceValues, nibID, _) => {
-                    let nib = ConnectionNib.NibConnection(nibID)
-                    Belt.Map.set(
-                      sourceValues,
-                      {node: NodeConnection(nodeID), nib: nib},
-                      Value.LazyValue({
-                        scopeID: frame.scopeID,
-                        connectionSide: {node: source.node, nib: nib},
-                      }),
-                    )
-                  },
+
+                // try to evaluate this nib
+                let inlineFunctionScopeDefinition = Belt.Map.String.getExn(
+                  definitions,
+                  inlineFunctionScope.definitionID,
                 )
-                {
-                  ...execution,
-                  scopes: Belt.Map.String.set(
-                    execution.scopes,
-                    scopeID,
+                let inlineSource = switch inlineFunctionScopeDefinition.implementation {
+                | GraphImplementation(inlineFunctionGraphImplementation) =>
+                  Belt.Map.getExn(
+                    inlineFunctionGraphImplementation.connections,
                     {
-                      ...inlineFunctionScope,
-                      sourceValues: newSourceValues,
+                      node: NodeConnection(nodeID),
+                      nib: source.nib,
                     },
-                  ),
-                  stack: list{
-                    {
-                      scopeID: scopeID,
-                      explicitConnectionSide: {
-                        isSource: false,
-                        connectionSide: {
-                          node: NodeConnection(nodeID),
-                          nib: source.nib,
-                        },
+                  )
+                | _ =>
+                  raise(
+                    Exception.ShouldntHappen("inline function definition's scope must be a graph"),
+                  )
+                }
+                switch Belt.Map.get(inlineFunctionScope.sourceValues, inlineSource) {
+                | Some(value) => ExecutionReducerReturn.f(value, execution, source)
+                | None =>
+                  // make lazy values
+                  let newSourceValues = Belt.Map.String.reduce(
+                    interfaceImplementation.input,
+                    inlineFunctionScope.sourceValues,
+                    (sourceValues, nibID, _) => {
+                      let nib = ConnectionNib.NibConnection(nibID)
+                      Belt.Map.set(
+                        sourceValues,
+                        {node: NodeConnection(nodeID), nib: nib},
+                        Value.LazyValue({
+                          scopeID: frame.scopeID,
+                          connectionSide: {node: source.node, nib: nib},
+                        }),
+                      )
+                    },
+                  )
+                  {
+                    ...execution,
+                    scopes: Belt.Map.String.set(
+                      execution.scopes,
+                      scopeID,
+                      {
+                        ...inlineFunctionScope,
+                        sourceValues: newSourceValues,
                       },
-                      action: Evaluating,
+                    ),
+                    stack: list{
+                      {
+                        scopeID: scopeID,
+                        explicitConnectionSide: {
+                          isSource: false,
+                          connectionSide: {
+                            node: NodeConnection(nodeID),
+                            nib: source.nib,
+                          },
+                        },
+                        action: Evaluating,
+                      },
+                      ...execution.stack,
                     },
-                    ...execution.stack,
-                  },
+                  }
                 }
               | _ =>
                 raise(
