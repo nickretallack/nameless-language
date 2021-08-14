@@ -14,6 +14,19 @@ let make = () => {
   let url = RescriptReactRouter.useUrl()
   let urlHash = Js.String.split("/", url.hash)
   let {AppState.languageName: languageName, definitions, error, execution} = state
+
+  let webViewNode = switch state.execution {
+  | Some(execution) =>
+    <div
+      id="webview"
+      key=execution.reactKey
+      tabIndex=0
+      style={ReactDOM.Style.make(~visibility=urlHash == ["html"] ? "visible" : "hidden", ())}
+      ref={ReactDOM.Ref.domRef(webView)}
+    />
+  | None => <> </>
+  }
+
   <>
     <NavView
       url=urlHash
@@ -24,12 +37,7 @@ let make = () => {
       emit=dispatch
     />
     <div id="content">
-      <div
-        id="webview"
-        tabIndex=0
-        style={ReactDOM.Style.make(~visibility=urlHash == ["html"] ? "visible" : "hidden", ())}
-        ref={ReactDOM.Ref.domRef(webView)}
-      />
+      {webViewNode}
       {switch urlHash {
       | [""] => <DefinitionListView definitions languageName />
       | ["+definition"] => <DefinitionAddView languageName emit=dispatch />

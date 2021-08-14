@@ -247,6 +247,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
         stack: list{
           {scopeID: scopeID, explicitConnectionSide: explicitConnectionSide, action: Evaluating},
         },
+        reactKey: RandomIDMake.f(),
       }),
     })
   }
