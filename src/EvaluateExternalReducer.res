@@ -1,5 +1,6 @@
 let f = (
   execution: Execution.t,
+  definitions: DefinitionMap.t,
   scope: Scope.t,
   frame: StackFrame.t,
   source: ConnectionSide.t,
@@ -19,12 +20,9 @@ let f = (
       // try to resolve lazy values
       switch value {
       | Some(LazyValue(lazyValue)) =>
-        switch Belt.Map.get(
-          scope.sourceValues,
-          Belt.Map.getExn(connections, lazyValue.connectionSide),
-        ) {
-        | Some(value) => Some(value) // found the real value
-        | None => value // just pass through the un-evaluated value
+        switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
+        | Some(value) => Some(value)
+        | None => value
         }
       | value => value
       }

@@ -12,10 +12,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
     switch Belt.Map.get(scope.sourceValues, source) {
     | Some(LazyValue(lazyValue)) =>
       // evaluate lazy value
-      switch Belt.Map.get(
-        scope.sourceValues,
-        Belt.Map.getExn(graphImplementation.connections, lazyValue.connectionSide),
-      ) {
+      switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
       | None => {
           ...execution,
           stack: list{
@@ -71,6 +68,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
               | NibConnection(outputID) =>
                 EvaluateExternalReducer.f(
                   execution,
+                  definitions,
                   scope,
                   frame,
                   source,
@@ -180,13 +178,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                     | RecordValue(values) =>
                       switch Belt.Map.String.getExn(values, nibID) {
                       | LazyValue(lazyValue) =>
-                        switch Belt.Map.get(
-                          scope.sourceValues,
-                          Belt.Map.getExn(
-                            graphImplementation.connections,
-                            lazyValue.connectionSide,
-                          ),
-                        ) {
+                        switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
                         | None =>
                           // evaluate lazy value
                           Js.log("None value")
@@ -260,10 +252,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                   | LabeledValue(wrappedValue) =>
                     switch wrappedValue {
                     | LazyValue(lazyValue) =>
-                      switch Belt.Map.get(
-                        scope.sourceValues,
-                        Belt.Map.getExn(graphImplementation.connections, lazyValue.connectionSide),
-                      ) {
+                      switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
                       | None =>
                         Js.log("None value")
                         {
