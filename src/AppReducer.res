@@ -31,61 +31,67 @@ let f = (webView, action: AppAction.t, state: AppState.t): ReactUpdate.update<
   | DefinitionAction(definitionAction) => DefinitionReducer.f(definitionAction, state)
 
   | Step =>
-    ReactUpdate.Update({
-      ...state,
-      execution: switch state.execution {
-      | None => None
-      | Some(execution) =>
-        let frame = Belt.List.headExn(execution.stack)
-        Some(
-          switch frame.action {
-          | Evaluating => ExecutionReducer.f(execution, state.definitions, webView)
-          | Returning(value) =>
-            if Belt.List.length(execution.stack) == 1 {
+    switch state.execution {
+    | None => ReactUpdate.NoUpdate
+    | Some(execution) =>
+      let frame = Belt.List.headExn(execution.stack)
+      let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
+
+      let newExecution = switch frame.action {
+      | Evaluating => ExecutionReducer.f(execution, state.definitions, webView)
+      | Returning(value) =>
+        if Belt.List.length(execution.stack) == 1 {
+          {
+            ...execution,
+            result: Some(value),
+          }
+        } else {
+          let frames = Belt.List.tailExn(execution.stack)
+          let nextFrame = Belt.List.headExn(frames)
+          if frame.scopeID != nextFrame.scopeID {
+            let scope = Belt.Map.String.getExn(execution.scopes, nextFrame.scopeID)
+            let definition = Belt.Map.String.getExn(state.definitions, scope.definitionID)
+            let connectionSide = switch definition.implementation {
+            | GraphImplementation(graphImplementation) =>
+              ExplicitConnecttionSideGetSource.f(
+                nextFrame.explicitConnectionSide,
+                graphImplementation.connections,
+              )
+            | _ => raise(Exception.ShouldntHappen("Connection in non-graph"))
+            }
+            {
+              ...execution,
+              stack: list{{...nextFrame, action: Returning(value)}, ...Belt.List.tailExn(frames)},
+              scopes: MapStringUpdate.f(execution.scopes, nextFrame.scopeID, (scope: Scope.t) => {
+                ...scope,
+                sourceValues: Belt.Map.set(scope.sourceValues, connectionSide, value),
+              }),
+            }
+          } else {
+            ExecutionReducer.f(
               {
                 ...execution,
-                result: Some(value),
-              }
-            } else {
-              let frames = Belt.List.tailExn(execution.stack)
-              let nextFrame = Belt.List.headExn(frames)
-              if frame.scopeID != nextFrame.scopeID {
-                let scope = Belt.Map.String.getExn(execution.scopes, nextFrame.scopeID)
-                let definition = Belt.Map.String.getExn(state.definitions, scope.definitionID)
-                let connectionSide = switch definition.implementation {
-                | GraphImplementation(graphImplementation) =>
-                  ExplicitConnecttionSideGetSource.f(
-                    nextFrame.explicitConnectionSide,
-                    graphImplementation.connections,
-                  )
-                | _ => raise(Exception.ShouldntHappen("Connection in non-graph"))
-                }
-                {
-                  ...execution,
-                  stack: list{
-                    {...nextFrame, action: Returning(value)},
-                    ...Belt.List.tailExn(frames),
-                  },
-                  scopes: MapStringUpdate.f(execution.scopes, nextFrame.scopeID, (
-                    scope: Scope.t,
-                  ) => {
-                    ...scope,
-                    sourceValues: Belt.Map.set(scope.sourceValues, connectionSide, value),
-                  }),
-                }
-              } else {
-                ExecutionReducer.f(
-                  {
-                    ...execution,
-                    stack: Belt.List.tailExn(execution.stack),
-                  },
-                  state.definitions,
-                  webView,
-                )
-              }
-            }
-          },
-        )
-      },
-    })
+                stack: Belt.List.tailExn(execution.stack),
+              },
+              state.definitions,
+              webView,
+            )
+          }
+        }
+      }
+      ReactUpdate.UpdateWithSideEffects(
+        {
+          ...state,
+          execution: Some(newExecution),
+        },
+        _ => {
+          let newFrame = Belt.List.headExn(newExecution.stack)
+          let newScope = Belt.Map.String.getExn(newExecution.scopes, newFrame.scopeID)
+          if scope.definitionID != newScope.definitionID {
+            RescriptReactRouter.push("#" ++ newScope.definitionID)
+          }
+          None
+        },
+      )
+    }
   }
