@@ -10,6 +10,35 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
     )
     // check the cache to see if it's already evaluated
     switch Belt.Map.get(scope.sourceValues, source) {
+    | Some(LazyValue(lazyValue)) =>
+      // evaluate lazy value
+      switch Belt.Map.get(
+        scope.sourceValues,
+        Belt.Map.getExn(graphImplementation.connections, lazyValue.connectionSide),
+      ) {
+      | None => {
+          ...execution,
+          stack: list{
+            {
+              open StackFrame
+              {
+                scopeID: lazyValue.scopeID,
+                explicitConnectionSide: {
+                  isSource: false,
+                  connectionSide: lazyValue.connectionSide,
+                },
+                action: EvaluationAction.Evaluating,
+              }
+            },
+            ...execution.stack,
+          },
+          scopes: execution.scopes,
+        }
+      | Some(value) => {
+          ...execution,
+          stack: list{{...frame, action: Returning(value)}, ...Belt.List.tailExn(execution.stack)},
+        }
+      }
     | Some(value) => {
         ...execution,
         stack: list{{...frame, action: Returning(value)}, ...Belt.List.tailExn(execution.stack)},
@@ -27,6 +56,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
               | ConstantImplementation(primitiveValue) => Value.PrimitiveValue(primitiveValue)
               | SymbolImplementation =>
                 Value.DefinedValue({definitionID: definitionID, value: SymbolValue})
+              // TODO: disallow creation of these nodes since they can't be used currently
               | ExternalImplementation(_)
               | GraphImplementation(_) =>
                 Value.DefinedValue({definitionID: definitionID, value: FunctionPointerValue})
@@ -158,6 +188,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                           ),
                         ) {
                         | None =>
+                          // evaluate lazy value
                           Js.log("None value")
                           {
                             ...execution,
@@ -291,33 +322,97 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
             | _ =>
               raise(Exception.ShouldntHappen("Evaluating an accessor that's not a record or label"))
             }
+          | FunctionDefinitionNode =>
+            switch source.nib {
+            | ValueConnection =>
+              let value = Value.InlineFunction({scopeID: frame.scopeID, nodeID: nodeID})
+              ExecutionReducerReturn.f(value, execution, source)
+            | NibConnection(_) => execution
+            | _ =>
+              raise(
+                Exception.ShouldntHappen(
+                  "Inline function definitions don't have positional arguments.",
+                ),
+              )
+            }
           | FunctionPointerCallNode =>
-            let implementationNib: ConnectionSide.t = {
-              node: source.node,
-              nib: ValueConnection,
-            }
-            let implementationSource = Belt.Map.getExn(
-              graphImplementation.connections,
-              implementationNib,
-            )
-            switch Belt.Map.get(scope.sourceValues, implementationSource) {
-            | None => {
-                ...execution,
-                stack: list{
-                  {
-                    ...frame,
-                    explicitConnectionSide: {
-                      isSource: false,
-                      connectionSide: implementationNib,
-                    },
-                    action: Evaluating,
-                  },
-                  ...execution.stack,
-                },
+            switch nodeDefinition.implementation {
+            | InterfaceImplementation(interfaceImplementation) =>
+              let implementationNib: ConnectionSide.t = {
+                node: source.node,
+                nib: ValueConnection,
               }
-            | Some(_) => execution // TODO: evaluate the function pointer
+              let implementationSource = Belt.Map.getExn(
+                graphImplementation.connections,
+                implementationNib,
+              )
+              switch Belt.Map.get(scope.sourceValues, implementationSource) {
+              | None => {
+                  ...execution,
+                  stack: list{
+                    {
+                      ...frame,
+                      explicitConnectionSide: {
+                        isSource: false,
+                        connectionSide: implementationNib,
+                      },
+                      action: Evaluating,
+                    },
+                    ...execution.stack,
+                  },
+                }
+              | Some(InlineFunction({scopeID, nodeID})) =>
+                // let inlineFunctionNode = Belt.Map.String.getExn(graphImplementation.nodes, nodeID)
+                let inlineFunctionScope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
+                let newSourceValues = Belt.Map.String.reduce(
+                  interfaceImplementation.input,
+                  inlineFunctionScope.sourceValues,
+                  (sourceValues, nibID, _) => {
+                    let nib = ConnectionNib.NibConnection(nibID)
+                    Belt.Map.set(
+                      sourceValues,
+                      {node: NodeConnection(nodeID), nib: nib},
+                      Value.LazyValue({
+                        scopeID: frame.scopeID,
+                        connectionSide: {node: source.node, nib: nib},
+                      }),
+                    )
+                  },
+                )
+                {
+                  ...execution,
+                  scopes: Belt.Map.String.set(
+                    execution.scopes,
+                    scopeID,
+                    {
+                      ...inlineFunctionScope,
+                      sourceValues: newSourceValues,
+                    },
+                  ),
+                  stack: list{
+                    {
+                      scopeID: scopeID,
+                      explicitConnectionSide: {
+                        isSource: false,
+                        connectionSide: {
+                          node: NodeConnection(nodeID),
+                          nib: source.nib,
+                        },
+                      },
+                      action: Evaluating,
+                    },
+                    ...execution.stack,
+                  },
+                }
+              | _ =>
+                raise(
+                  Exception.ShouldntHappen(
+                    "Inline function call received something other than an inline function definition.",
+                  ),
+                )
+              }
+            | _ => raise(Exception.TODO("Inline function call wasn't an interface."))
             }
-          | _ => raise(Exception.TODO("Evaluating a new kind of defined node"))
           }
         | _ => raise(Exception.TODO("Evaluating a new kind of node"))
         }

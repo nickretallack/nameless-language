@@ -8,7 +8,8 @@ let f = (
     value,
   ) =>
     switch value {
-    | None => (values, Belt.List.add(needed, key))
+    | None
+    | Some(LazyValue(_)) => (values, Belt.List.add(needed, key))
     | Some(value) => (Belt.Map.String.set(values, key, value), needed)
     }
   )

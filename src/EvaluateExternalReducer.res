@@ -11,12 +11,24 @@ let f = (
   switch EvaluateExternalFunction.f(
     externalImplementation.name,
     outputID,
-    Belt.Map.String.mapWithKey(externalImplementation.interface.input, (nibID, _) =>
-      Belt.Map.get(
+    Belt.Map.String.mapWithKey(externalImplementation.interface.input, (nibID, _) => {
+      let value = Belt.Map.get(
         scope.sourceValues,
         Belt.Map.getExn(connections, {node: source.node, nib: NibConnection(nibID)}),
       )
-    ),
+      // try to resolve lazy values
+      switch value {
+      | Some(LazyValue(lazyValue)) =>
+        switch Belt.Map.get(
+          scope.sourceValues,
+          Belt.Map.getExn(connections, lazyValue.connectionSide),
+        ) {
+        | Some(value) => Some(value) // found the real value
+        | None => value // just pass through the un-evaluated value
+        }
+      | value => value
+      }
+    }),
     webView,
   ) {
   | EvaluationResult(value) => ExecutionReducerReturn.f(value, execution, source)
