@@ -9,7 +9,7 @@ let make = (
   ~languageName: LanguageName.t,
   ~emit: DefinitionAction.t => unit,
   ~error: AppError.t,
-  ~stackFrame: option<MaterializedStackFrame.t>,
+  ~execution: option<Execution.t>,
   ~urlHashRest: array<string>,
 ) => {
   let (state, dispatch) = ReactUpdate.useReducer(
@@ -90,7 +90,7 @@ let make = (
       />
     | [] =>
       <GraphImplementationView
-        definitions implementation definition display languageName state stackFrame emit=dispatch
+        definitions implementation definition display languageName state execution emit=dispatch
       />
     | _ => React.string("Not found")
     }}

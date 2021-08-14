@@ -1,7 +1,12 @@
 @react.component
 let make = () => {
   let webView = React.useRef(Js.Nullable.null)
-  let (state, dispatch) = ReactUpdate.useReducer(AppGetInitialState.f(), AppReducer.f(webView))
+  let url = RescriptReactRouter.useUrl()
+  let urlHash = Js.String.split("/", url.hash)
+  let (state, dispatch) = ReactUpdate.useReducer(
+    AppGetInitialState.f(),
+    AppReducer.f(webView, urlHash),
+  )
 
   React.useEffect(() => {
     if state.autoSave {
@@ -11,8 +16,6 @@ let make = () => {
     None
   })
 
-  let url = RescriptReactRouter.useUrl()
-  let urlHash = Js.String.split("/", url.hash)
   let {AppState.languageName: languageName, definitions, error, execution} = state
 
   let webViewNode = switch state.execution {
@@ -64,18 +67,6 @@ let make = () => {
           let {Definition.implementation: implementation, display, documentation} = definition
           let emit = (action: DefinitionAction.t) =>
             dispatch(DefinitionAction({definitionID: definitionID, action: action}))
-          let stackFrame = switch execution {
-          | Some(execution) =>
-            let {StackFrame.scopeID: scopeID, explicitConnectionSide, action} = Belt.List.headExn(
-              execution.stack,
-            )
-            let scope = Belt.Map.String.getExn(execution.scopes, scopeID)
-            Some({
-              open MaterializedStackFrame
-              {scope: scope, explicitConnectionSide: explicitConnectionSide, action: action}
-            })
-          | None => None
-          }
           switch implementation {
           | GraphImplementation(implementation) =>
             <GraphView
@@ -88,7 +79,7 @@ let make = () => {
               documentation
               emit
               error
-              stackFrame
+              execution
               languageName
               urlHashRest
             />

@@ -6,7 +6,7 @@ let make = (
   ~display: DefinitionDisplay.t,
   ~languageName: LanguageName.t,
   ~state: GraphState.t,
-  ~stackFrame: option<MaterializedStackFrame.t>,
+  ~execution: option<Execution.t>,
   ~emit: GraphAction.t => unit,
 ) => {
   let svg = React.useRef(Js.Nullable.null)
@@ -138,9 +138,10 @@ let make = (
   let renderedConnections = React.array(
     Belt.Array.map(Belt.Map.toArray(implementation.connections), ((sink, source)) => {
       let sourceIndex = Belt.Map.getExn(sourceToIndex, source)
-      let debugState = switch stackFrame {
+      let debugState = switch execution {
       | None => ConnectionDebug.NoDebugConnection
-      | Some(stackFrame) =>
+      | Some(execution) =>
+        let stackFrame = Belt.List.headExn(execution.stack)
         let stackConnectionSide = stackFrame.explicitConnectionSide
         if !stackConnectionSide.isSource && stackConnectionSide.connectionSide == sink {
           switch stackFrame.action {
@@ -175,9 +176,15 @@ let make = (
     Belt.Array.map(Belt.List.toArray(allNibs), ({name, explicitConnectionSide}) => {
       let {ExplicitConnectionSide.connectionSide: connectionSide, isSource} = explicitConnectionSide
       let value = if isSource {
-        switch stackFrame {
+        switch execution {
         | None => None
-        | Some(stackFrame) => Belt.Map.get(stackFrame.scope.sourceValues, connectionSide)
+        | Some(execution) =>
+          SourceResolveValue.f(
+            ExecutionGetCurrentScope.f(execution),
+            connectionSide,
+            execution,
+            definitions,
+          )
         }
       } else {
         None

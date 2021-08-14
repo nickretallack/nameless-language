@@ -1,4 +1,4 @@
-let f = (webView, action: AppAction.t, state: AppState.t): ReactUpdate.update<
+let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.update<
   AppAction.t,
   AppState.t,
 > =>
@@ -35,8 +35,6 @@ let f = (webView, action: AppAction.t, state: AppState.t): ReactUpdate.update<
     | None => ReactUpdate.NoUpdate
     | Some(execution) =>
       let frame = Belt.List.headExn(execution.stack)
-      let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
-
       let newExecution = switch frame.action {
       | Evaluating => ExecutionReducer.f(execution, state.definitions, webView)
       | Returning(value) =>
@@ -87,7 +85,7 @@ let f = (webView, action: AppAction.t, state: AppState.t): ReactUpdate.update<
         _ => {
           let newFrame = Belt.List.headExn(newExecution.stack)
           let newScope = Belt.Map.String.getExn(newExecution.scopes, newFrame.scopeID)
-          if scope.definitionID != newScope.definitionID {
+          if urlHash[0] != newScope.definitionID {
             RescriptReactRouter.push("#" ++ newScope.definitionID)
           }
           None

@@ -13,19 +13,12 @@ let f = (
     externalImplementation.name,
     outputID,
     Belt.Map.String.mapWithKey(externalImplementation.interface.input, (nibID, _) => {
-      let value = Belt.Map.get(
-        scope.sourceValues,
+      SourceResolveValue.f(
+        scope,
         Belt.Map.getExn(connections, {node: source.node, nib: NibConnection(nibID)}),
+        execution,
+        definitions,
       )
-      // try to resolve lazy values
-      switch value {
-      | Some(LazyValue(lazyValue)) =>
-        switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
-        | Some(value) => Some(value)
-        | None => value
-        }
-      | value => value
-      }
     }),
     webView,
   ) {
