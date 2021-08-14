@@ -327,7 +327,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
             | ValueConnection =>
               let value = Value.InlineFunction({scopeID: frame.scopeID, nodeID: nodeID})
               ExecutionReducerReturn.f(value, execution, source)
-            | NibConnection(_) => execution
+            | NibConnection(_) => execution // This will always be short-circuited, right?  Should it be an error if it gets here?
             | _ =>
               raise(
                 Exception.ShouldntHappen(
@@ -363,7 +363,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                 }
               | Some(InlineFunction({scopeID, nodeID})) =>
                 // let inlineFunctionNode = Belt.Map.String.getExn(graphImplementation.nodes, nodeID)
-                let inlineFunctionScope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
+                let inlineFunctionScope = Belt.Map.String.getExn(execution.scopes, scopeID)
 
                 // try to evaluate this nib
                 let inlineFunctionScopeDefinition = Belt.Map.String.getExn(
