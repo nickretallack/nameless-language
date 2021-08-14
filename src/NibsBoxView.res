@@ -1,6 +1,7 @@
 @react.component
 let make = (
   ~name=?,
+  ~nodeID: option<NodeID.t>=?,
   ~position: Point.t,
   ~height: float,
   ~nodeWidth: float,
@@ -12,11 +13,15 @@ let make = (
   ~onPointerUp=?,
 ) => {
   let box = React.useRef(Js.Nullable.null)
+  let id = switch nodeID {
+  | Some(value) => value
+  | None => ""
+  }
   React.useEffect(() => {
     RefDisableScrollingWhileDragging.f(box)
     Some(() => RefDisableScrollingWhileDragging.undo(box))
   })
-  <g ref={ReactDOM.Ref.domRef(box)} ?onClick ?onDoubleClick ?onPointerDown ?onPointerUp>
+  <g id ref={ReactDOM.Ref.domRef(box)} ?onClick ?onDoubleClick ?onPointerDown ?onPointerUp>
     <rect
       x={FloatToPixels.f(position.x)}
       y={FloatToPixels.f(position.y)}

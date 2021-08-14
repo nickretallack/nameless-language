@@ -16,6 +16,7 @@ let make = (
 ) => {
   let makeNode = (name: string, onDoubleClick) =>
     <NibsBoxView
+      nodeID
       name
       position
       height=size.y
