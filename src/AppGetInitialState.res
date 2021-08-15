@@ -1,6 +1,6 @@
 let f = (): AppState.t => {
   open Dom.Storage
-  switch getItem(AppStateName.v, localStorage) {
+  let appState = switch getItem(AppStateName.v, localStorage) {
   | None =>
     open AppState
     {
@@ -15,5 +15,11 @@ let f = (): AppState.t => {
     | Some(json) => AppStateFromPersistenceJson.f(json)
     | None => raise(Exception.JsonDecodeFailed)
     }
+  }
+
+  // overwrite builtins
+  {
+    ...appState,
+    definitions: Belt.Map.String.mergeMany(appState.definitions, DefinitionExamples.builtins),
   }
 }

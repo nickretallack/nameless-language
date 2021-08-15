@@ -472,8 +472,8 @@ let branch = DefinitionMake.f(
 let equals = DefinitionMake.f(
   "en",
   ~name="=",
-  ~inputs=[("left", "Left"), ("right", "Right")],
-  ~outputs=[("result", "Result")],
+  ~inputs=[("left", ""), ("right", "")],
+  ~outputs=[("result", "")],
   ~implementation=ExternalImplementation({
     name: "=",
     interface: {
@@ -768,22 +768,26 @@ let factorial2 = GraphMake.f(
   (),
 )
 
-let v = Belt.Map.String.fromArray([
+let builtins = [
   // Core types
   ("yes", yesLabel),
   ("no", noLabel),
   ("boolean", booleanUnion),
-  // wrapper label
-  ("something", somethingLabel),
-  ("somethingExample", somethingExample),
   // Externals
   ("plus", plus),
   ("minus", minus),
   ("times", times),
   ("divide", divide),
+  ("equals", equals),
   ("less-than", lessThan),
   ("greater-than", greaterThan),
   ("branch", branch),
+]
+
+let v = Belt.Map.String.fromArray([
+  // wrapper label
+  ("something", somethingLabel),
+  ("somethingExample", somethingExample),
   // Web view stuff
   ("keydown", keydown),
   ("addEventListener", addEventListener),
