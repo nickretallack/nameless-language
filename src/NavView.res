@@ -18,6 +18,7 @@ let make = (
       | None => React.null
       | Some(execution) => <>
           <button onClick={_ => emit(AppAction.Step)}> {React.string("step")} </button>
+          <button onClick={_ => emit(AppAction.Stop)}> {React.string("stop")} </button>
           {switch execution.result {
           | None => React.null
           | Some(value) =>

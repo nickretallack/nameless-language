@@ -29,7 +29,7 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
       },
     )
   | DefinitionAction(definitionAction) => DefinitionReducer.f(definitionAction, state)
-
+  | Stop => ReactUpdate.Update({...state, execution: None})
   | Step =>
     switch state.execution {
     | None => ReactUpdate.NoUpdate
