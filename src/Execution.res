@@ -3,4 +3,5 @@ type t = {
   stack: list<StackFrame.t>,
   result: option<Value.t>,
   reactKey: string,
+  debug: bool,
 }

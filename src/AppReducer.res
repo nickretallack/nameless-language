@@ -83,10 +83,12 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
           execution: Some(newExecution),
         },
         _ => {
-          let newFrame = Belt.List.headExn(newExecution.stack)
-          let newScope = Belt.Map.String.getExn(newExecution.scopes, newFrame.scopeID)
-          if urlHash[0] != newScope.definitionID {
-            RescriptReactRouter.push("#" ++ newScope.definitionID)
+          if newExecution.debug {
+            let newFrame = Belt.List.headExn(newExecution.stack)
+            let newScope = Belt.Map.String.getExn(newExecution.scopes, newFrame.scopeID)
+            if urlHash[0] != newScope.definitionID {
+              RescriptReactRouter.push("#" ++ newScope.definitionID)
+            }
           }
           None
         },

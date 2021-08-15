@@ -14,4 +14,4 @@ type t =
   | RemoveNodes(Belt.Set.String.t)
   | ChangeNodeScope(ChangeNodeScope.t)
   | Fork
-  | EvaluateNib(ExplicitConnectionSide.t)
+  | EvaluateNib(EvaluateNibAction.t)

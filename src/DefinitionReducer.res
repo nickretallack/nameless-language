@@ -237,18 +237,35 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
       }
     | _ => ReactUpdate.NoUpdate
     }
-  | EvaluateNib(explicitConnectionSide) =>
+  | EvaluateNib({explicitConnectionSide, debug}) =>
     let scopeID = RandomIDMake.f()
-    ReactUpdate.Update({
-      ...state,
-      execution: Some({
-        result: None,
-        scopes: Belt.Map.String.fromArray([(scopeID, ScopeMake.f(definitionID, None))]),
-        stack: list{
-          {scopeID: scopeID, explicitConnectionSide: explicitConnectionSide, action: Evaluating},
-        },
-        reactKey: RandomIDMake.f(),
-      }),
-    })
+    ReactUpdate.UpdateWithSideEffects(
+      {
+        ...state,
+        execution: Some({
+          result: None,
+          scopes: Belt.Map.String.fromArray([(scopeID, ScopeMake.f(definitionID, None))]),
+          stack: list{
+            {scopeID: scopeID, explicitConnectionSide: explicitConnectionSide, action: Evaluating},
+          },
+          reactKey: RandomIDMake.f(),
+          debug: debug,
+        }),
+      },
+      ({send, state}) => {
+        let rec runner = () => {
+          let _ = Js.Global.setTimeout(() => {
+            switch state.execution {
+            | Some({result: None, debug: false}) =>
+              send(Step)
+              runner()
+            | _ => ()
+            }
+          }, 0)
+        }
+        runner()
+        None
+      },
+    )
   }
 }

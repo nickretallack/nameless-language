@@ -40,8 +40,15 @@ let make = (
           <a href={`#${definitionID}/+node`} className={urlHashRest == ["+node"] ? "active" : ""}>
             {React.string("+Node")}
           </a>
-          <button onClick={_event => emit(EvaluateNib(explicitConnectionSide))}>
+          <button
+            onClick={_event =>
+              emit(EvaluateNib({explicitConnectionSide: explicitConnectionSide, debug: true}))}>
             {React.string("Debug")}
+          </button>
+          <button
+            onClick={_event =>
+              emit(EvaluateNib({explicitConnectionSide: explicitConnectionSide, debug: false}))}>
+            {React.string("Run")}
           </button>
         </>
       | SelectedConnection(connectionSide) => <>
@@ -50,8 +57,23 @@ let make = (
           </button>
           <button
             onClick={_event =>
-              emit(EvaluateNib({connectionSide: connectionSide, isSource: false}))}>
+              emit(
+                EvaluateNib({
+                  explicitConnectionSide: {connectionSide: connectionSide, isSource: false},
+                  debug: true,
+                }),
+              )}>
             {React.string("Debug")}
+          </button>
+          <button
+            onClick={_event =>
+              emit(
+                EvaluateNib({
+                  explicitConnectionSide: {connectionSide: connectionSide, isSource: false},
+                  debug: false,
+                }),
+              )}>
+            {React.string("Run")}
           </button>
         </>
       | SelectedNodes(_) =>
