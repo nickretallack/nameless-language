@@ -477,10 +477,7 @@ let equals = DefinitionMake.f(
   ~implementation=ExternalImplementation({
     name: "=",
     interface: {
-      input: Belt.Map.String.fromArray([
-        ("left", ValueType.PrimitiveValueType(NumberType)),
-        ("right", ValueType.PrimitiveValueType(NumberType)),
-      ]),
+      input: Belt.Map.String.fromArray([("left", ValueType.AnyType), ("right", ValueType.AnyType)]),
       output: Belt.Map.String.fromArray([("result", ValueType.DefinedValueType("boolean"))]),
     },
   }),

@@ -14,7 +14,7 @@ let f = (
   | ">" => EvaluateNumericComparison.f(\">")
   | "<=" => EvaluateNumericComparison.f(\"<=")
   | ">=" => EvaluateNumericComparison.f(\">=")
-  | "==" => EvaluateNumericComparison.f(\"=")
+  | "=" => EvaluateEquals.f
   | "addEventListener" => EvaluateAddEventListener.f(webView)
   | _ => raise(Exception.UnknownExternal(name))
   }
