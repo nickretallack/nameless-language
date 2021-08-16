@@ -1,0 +1,23 @@
+let rec f = (value: Value.t, execution: Execution.t, definitions: DefinitionMap.t): list<
+  Value.lazyValue,
+> =>
+  switch value {
+  | PrimitiveValue(_)
+  | Prerequisite
+  | InlineFunction(_) => list{}
+  | LazyValue(lazyValue) =>
+    switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
+    | Some(value) => f(value, execution, definitions)
+    | None => list{lazyValue}
+    }
+  | DefinedValue(definedValue) =>
+    switch definedValue.value {
+    | SymbolValue
+    | FunctionPointerValue => list{}
+    | LabeledValue(value) => f(value, execution, definitions)
+    | RecordValue(values) =>
+      Belt.List.reduce(Belt.Map.String.toList(values), list{}, (result, (_, value)) =>
+        Belt.List.concat(result, f(value, execution, definitions))
+      )
+    }
+  }

@@ -39,9 +39,31 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
       | Evaluating => ExecutionReducer.f(execution, state.definitions, webView)
       | Returning(value) =>
         if Belt.List.length(execution.stack) == 1 {
-          {
-            ...execution,
-            result: Some(value),
+          // resolve lazies in the final value
+          let lazies = ValueGetLazies.f(value, execution, state.definitions)
+          if Belt.List.length(lazies) == 0 {
+            {
+              ...execution,
+              result: Some(value),
+            }
+          } else {
+            {
+              ...execution,
+              stack: Belt.List.concat(
+                Belt.List.map(lazies, lazyValue => {
+                  open StackFrame
+                  {
+                    scopeID: lazyValue.scopeID,
+                    explicitConnectionSide: {
+                      isSource: false,
+                      connectionSide: lazyValue.connectionSide,
+                    },
+                    action: EvaluationAction.Evaluating,
+                  }
+                }),
+                execution.stack,
+              ),
+            }
           }
         } else {
           let frames = Belt.List.tailExn(execution.stack)
