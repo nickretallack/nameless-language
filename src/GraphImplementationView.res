@@ -179,12 +179,10 @@ let make = (
         switch execution {
         | None => None
         | Some(execution) =>
-          SourceResolveValue.f(
-            ExecutionGetCurrentScope.f(execution),
-            connectionSide,
-            execution,
-            definitions,
-          )
+          switch Belt.Map.get(ExecutionGetCurrentScope.f(execution).sourceValues, connectionSide) {
+          | None => None
+          | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
+          }
         }
       } else {
         None
@@ -194,7 +192,6 @@ let make = (
         text=name
         isSource
         connectionSide
-        languageName
         position={getNibPosition(connectionSide, !isSource)}
         emit
         isHighlighted={switch state.selection {
@@ -202,7 +199,6 @@ let make = (
           highlightedExplicitConnectionSide == explicitConnectionSide
         | _ => false
         }}
-        definitions
         value
       />
     }),

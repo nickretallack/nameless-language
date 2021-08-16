@@ -22,7 +22,7 @@ let make = (
           {switch execution.result {
           | None => React.null
           | Some(value) =>
-            React.string("Result: " ++ ValueDisplay.f(value, definitions, languageName))
+            React.string("Result: " ++ ValueDisplay.f(value, execution, definitions, languageName))
           }}
         </>
       }}

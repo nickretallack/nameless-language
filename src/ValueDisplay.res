@@ -1,5 +1,6 @@
 let rec definedValueDisplay = (
   definedValue: Value.definedValueRecord,
+  execution: Execution.t,
   definitions: DefinitionMap.t,
   languageName: LanguageName.t,
 ): string => {
@@ -7,7 +8,7 @@ let rec definedValueDisplay = (
   TranslatableGetText.f(definition.documentation.name, languageName) ++
   switch definedValue.value {
   | SymbolValue => ""
-  | LabeledValue(value) => " (" ++ (f(value, definitions, languageName) ++ ")")
+  | LabeledValue(value) => " (" ++ (f(value, execution, definitions, languageName) ++ ")")
   | FunctionPointerValue => " pointer"
   | RecordValue(values) =>
     "{" ++
@@ -20,18 +21,28 @@ let rec definedValueDisplay = (
             languageName,
           ) ++
           (": " ++
-          f(value, definitions, languageName))
+          f(value, execution, definitions, languageName))
         ),
       ),
     ) ++
     "}")
   }
 }
-and f = (value: Value.t, definitions: DefinitionMap.t, language: LanguageName.t): string =>
+and f = (
+  value: Value.t,
+  execution: Execution.t,
+  definitions: DefinitionMap.t,
+  language: LanguageName.t,
+): string =>
   switch value {
   | PrimitiveValue(primitiveValue) => PrimitiveValueDisplay.f(primitiveValue)
-  | DefinedValue(definedValue) => definedValueDisplay(definedValue, definitions, language)
-  | LazyValue(_) => "(not computed yet)"
+  | DefinedValue(definedValue) =>
+    definedValueDisplay(definedValue, execution, definitions, language)
+  | LazyValue(lazyValue) =>
+    switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
+    | Some(value) => f(value, execution, definitions, language)
+    | None => "(not computed yet)"
+    }
   | Prerequisite => "(nothing)"
   | InlineFunction(_) => "(inline function)"
   }

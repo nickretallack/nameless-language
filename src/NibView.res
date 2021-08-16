@@ -5,9 +5,7 @@ let make = (
   ~position: Point.t,
   ~text: string,
   ~isHighlighted: bool,
-  ~definitions: DefinitionMap.t,
-  ~languageName: LanguageName.t,
-  ~value: option<Value.t>,
+  ~value: option<string>,
   ~emit: GraphAction.t => unit,
 ) => {
   let sidePadding = 10.0
@@ -52,7 +50,7 @@ let make = (
         x={FloatToPixels.f(position.x -. sidePadding)}
         y={FloatToPixels.f(position.y)}
         alignmentBaseline="central">
-        {React.string(ValueDisplay.f(value, definitions, languageName))}
+        {React.string(value)}
       </text>
     }}
     <circle
