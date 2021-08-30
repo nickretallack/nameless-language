@@ -7,6 +7,7 @@ let make = (
   ~languageName: LanguageName.t,
   ~state: GraphState.t,
   ~execution: option<Execution.t>,
+  ~scopeID: option<ScopeID.t>,
   ~emit: GraphAction.t => unit,
 ) => {
   let svg = React.useRef(Js.Nullable.null)
@@ -179,7 +180,10 @@ let make = (
         switch execution {
         | None => None
         | Some(execution) =>
-          switch Belt.Map.get(ExecutionGetCurrentScope.f(execution).sourceValues, connectionSide) {
+          switch Belt.Map.get(
+            ExecutionGetCurrentScope.f(execution, scopeID).sourceValues,
+            connectionSide,
+          ) {
           | None => None
           | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
           }

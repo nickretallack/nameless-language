@@ -9,8 +9,9 @@ let make = (
   ~languageName: LanguageName.t,
   ~emit: DefinitionAction.t => unit,
   ~error: AppError.t,
+  ~subNav: string,
   ~execution: option<Execution.t>,
-  ~urlHashRest: array<string>,
+  ~scopeID: option<ScopeID.t>,
 ) => {
   let (state, dispatch) = ReactUpdate.useReducer(
     {
@@ -29,15 +30,17 @@ let make = (
     <nav id="graph-nav" className="nav-buttons">
       <a
         href={`#${definitionID}/documentation`}
-        className={urlHashRest == ["documentation"] ? "active" : ""}>
+        className={subNav == "documentation" ? "active" : ""}>
         {React.string("Documentation")}
       </a>
-      <a href={`#${definitionID}`} className={urlHashRest == [] ? "active" : ""}>
+      <a
+        href={`#${definitionID}/implementation`}
+        className={subNav == "implementation" ? "active" : ""}>
         {React.string("Implementation")}
       </a>
       {switch state.selection {
       | SelectedNib(explicitConnectionSide) => <>
-          <a href={`#${definitionID}/+node`} className={urlHashRest == ["+node"] ? "active" : ""}>
+          <a href={`#${definitionID}/+node`} className={subNav == "+node" ? "active" : ""}>
             {React.string("+Node")}
           </a>
           <button
@@ -96,12 +99,12 @@ let make = (
         </div>
       }}
     </nav>
-    {switch urlHashRest {
-    | ["documentation"] =>
+    {switch subNav {
+    | "documentation" =>
       <GraphDocumentationView
         definitionID definitions implementation display documentation languageName emit error
       />
-    | ["+node"] =>
+    | "+node" =>
       <NodeAddView
         emit
         graphDefinitionID=definitionID
@@ -110,9 +113,17 @@ let make = (
         nodes=implementation.nodes
         selection=state.selection
       />
-    | [] =>
+    | "implementation" =>
       <GraphImplementationView
-        definitions implementation definition display languageName state execution emit=dispatch
+        definitions
+        implementation
+        definition
+        display
+        languageName
+        state
+        execution
+        scopeID
+        emit=dispatch
       />
     | _ => React.string("Not found")
     }}

@@ -48,7 +48,8 @@ let make = () => {
       | ["stack"] => <ExecutionView execution definitions languageName />
       | _ =>
         let definitionID = urlHash[0]
-        let urlHashRest = Js.Array2.slice(~start=1, ~end_=Js.Array.length(urlHash), urlHash)
+        let subNav = urlHash[1]
+        let scopeID = Belt.Array.get(urlHash, 2)
         switch execution {
         | None => ()
         | Some(execution) =>
@@ -81,8 +82,9 @@ let make = () => {
               emit
               error
               execution
+              scopeID
               languageName
-              urlHashRest
+              subNav
             />
           | _ =>
             <SimpleDefinitionView definitionID definition definitions languageName emit error />

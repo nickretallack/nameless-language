@@ -20,7 +20,7 @@ let make = (~definitions: DefinitionMap.t, ~languageName: LanguageName.t) =>
           <tr key=definitionID>
             <td> {ImplementationGetName.f(definition.implementation)->React.string} </td>
             <td>
-              <a href={"#" ++ definitionID}>
+              <a href={`#${definitionID}/implementation`}>
                 {DefinitionGetDisplayName.f(definition, languageName)->React.string}
               </a>
             </td>

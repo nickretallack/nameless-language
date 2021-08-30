@@ -7,8 +7,8 @@ let make = (
   switch execution {
   | Some(execution) =>
     <div>
-      {RenderList.f(Belt.Map.String.toList(execution.scopes), (_, (_scopeID, scope)) => {
-        <ExecutionScopeView scope definitions languageName />
+      {RenderList.f(Belt.Map.String.toList(execution.scopes), (_, (scopeID, scope)) => {
+        <ExecutionScopeView scopeID scope definitions languageName key=scopeID />
       })}
     </div>
   | None => React.null
