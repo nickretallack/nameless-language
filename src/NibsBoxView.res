@@ -21,7 +21,13 @@ let make = (
     RefDisableScrollingWhileDragging.f(box)
     Some(() => RefDisableScrollingWhileDragging.undo(box))
   })
-  <g id ref={ReactDOM.Ref.domRef(box)} ?onClick ?onDoubleClick ?onPointerDown ?onPointerUp>
+  <g
+    id={`definition-id-${id}`}
+    ref={ReactDOM.Ref.domRef(box)}
+    ?onClick
+    ?onDoubleClick
+    ?onPointerDown
+    ?onPointerUp>
     <rect
       x={FloatToPixels.f(position.x)}
       y={FloatToPixels.f(position.y)}
