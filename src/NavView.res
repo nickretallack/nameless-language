@@ -9,11 +9,10 @@ let make = (
 ) => {
   <nav className="left-right" id="nav">
     <div className="nav-buttons">
-      <a href="#" className={url == [""] ? "active" : ""}> {React.string("Library")} </a>
-      <a href="#+definition" className={url == ["+definition"] ? "active" : ""}>
-        {React.string("+Definition")}
-      </a>
-      <a href={`#html`} className={url == ["html"] ? "active" : ""}> {React.string("HTML")} </a>
+      <NavLink name="" text="Library" url />
+      <NavLink name="+definition" text="+Definition" url />
+      <NavLink name="html" text="HTML" url />
+      <NavLink name="stack" text="Stack" url />
       {switch execution {
       | None => React.null
       | Some(execution) => <>

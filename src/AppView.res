@@ -45,6 +45,7 @@ let make = () => {
       | [""] => <DefinitionListView definitions languageName />
       | ["+definition"] => <DefinitionAddView languageName emit=dispatch />
       | ["html"] => <> </>
+      | ["stack"] => <ExecutionView execution definitions languageName />
       | _ =>
         let definitionID = urlHash[0]
         let urlHashRest = Js.Array2.slice(~start=1, ~end_=Js.Array.length(urlHash), urlHash)
