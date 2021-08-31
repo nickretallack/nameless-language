@@ -318,7 +318,30 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
             | ValueConnection =>
               let value = Value.InlineFunction({scopeID: frame.scopeID, nodeID: nodeID})
               ExecutionReducerReturn.f(value, execution, source)
-            | NibConnection(_) => execution // This will always be short-circuited, right?  Should it be an error if it gets here?
+            | NibConnection(nibID) =>
+              switch scope.callingScope {
+                | Some(callingScope) => {
+                  ...execution,
+                  stack: list{
+                    {
+                      open StackFrame
+                      {
+                        scopeID: callingScope.scopeID,
+                        explicitConnectionSide: {
+                          isSource: false,
+                          connectionSide: {
+                            node: NodeConnection(callingScope.nodeID),
+                            nib: source.nib,
+                          },
+                        },
+                        action: Evaluating,
+                      }
+                    },
+                    ...execution.stack,
+                  },
+                }
+                | None => raise(Exception.ShouldntHappen("Inline function definition had no caller."))
+              }
             | _ =>
               raise(
                 Exception.ShouldntHappen(

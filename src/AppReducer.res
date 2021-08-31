@@ -69,8 +69,8 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
           let frames = Belt.List.tailExn(execution.stack)
           let nextFrame = Belt.List.headExn(frames)
           if frame.scopeID != nextFrame.scopeID {
-            let scope = Belt.Map.String.getExn(execution.scopes, nextFrame.scopeID)
-            let definition = Belt.Map.String.getExn(state.definitions, scope.definitionID)
+            let definitionID = ScopeGetGraphDefinitionID.f(execution, nextFrame.scopeID)
+            let definition = Belt.Map.String.getExn(state.definitions, definitionID)
             let connectionSide = switch definition.implementation {
             | GraphImplementation(graphImplementation) =>
               ExplicitConnectionSideGetSource.f(
