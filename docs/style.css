@@ -267,3 +267,8 @@ h3 {
   height: 100%;
   position: absolute;
 }
+
+.child-scopes {
+  padding-left: 10px;
+  border-left: 1px solid lightgray;
+}

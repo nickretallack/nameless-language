@@ -6,11 +6,30 @@ let make = (
 ) => {
   switch execution {
   | Some(execution) =>
-    <div>
-      {RenderList.f(Belt.Map.String.toList(execution.scopes), (_, (scopeID, scope)) => {
-        <ExecutionScopeView scopeID scope definitions languageName execution key=scopeID />
-      })}
-    </div>
+    let (rootScopeID, rootScope) = Belt.Option.getExn(
+      Belt.Map.String.findFirstBy(execution.scopes, (_scopeID, scope) =>
+        Belt.Option.isNone(scope.parentScope)
+      ),
+    )
+    let scopeByParent = Belt.Map.String.reduce(execution.scopes, Belt.Map.String.empty, (
+      mapping,
+      scopeID,
+      scope,
+    ) =>
+      switch scope.parentScope {
+      | Some(parentScope) =>
+        Belt.Map.String.update(mapping, parentScope.scopeID, scopes =>
+          switch scopes {
+          | Some(scopes) => Some(Belt.List.add(scopes, (scopeID, scope)))
+          | None => Some(Belt.List.fromArray([(scopeID, scope)]))
+          }
+        )
+      | None => mapping
+      }
+    )
+    <ExecutionScopeTree
+      execution scope=rootScope scopeID=rootScopeID languageName definitions scopeByParent
+    />
   | None => React.null
   }
 }
