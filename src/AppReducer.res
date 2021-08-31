@@ -24,7 +24,7 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
         definitions: Belt.Map.String.set(state.definitions, newDefinitionID, definition),
       },
       _ => {
-        RescriptReactRouter.push("#" ++ newDefinitionID)
+        RescriptReactRouter.push(`#${newDefinitionID}/documentation`)
         None
       },
     )

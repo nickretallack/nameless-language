@@ -48,7 +48,7 @@ let make = () => {
       | ["stack"] => <ExecutionView execution definitions languageName />
       | _ =>
         let definitionID = urlHash[0]
-        let subNav = urlHash[1]
+        let subNav = Belt.Array.length(urlHash) > 1 ? urlHash[1] : "implementation"
         let scopeID = Belt.Array.get(urlHash, 2)
         switch execution {
         | None => ()
