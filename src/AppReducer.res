@@ -73,7 +73,7 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
             let definition = Belt.Map.String.getExn(state.definitions, scope.definitionID)
             let connectionSide = switch definition.implementation {
             | GraphImplementation(graphImplementation) =>
-              ExplicitConnecttionSideGetSource.f(
+              ExplicitConnectionSideGetSource.f(
                 nextFrame.explicitConnectionSide,
                 graphImplementation.connections,
               )
@@ -107,9 +107,9 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
         _ => {
           if newExecution.debug {
             let newFrame = Belt.List.headExn(newExecution.stack)
-            let newScope = Belt.Map.String.getExn(newExecution.scopes, newFrame.scopeID)
-            if urlHash[0] != newScope.definitionID {
-              RescriptReactRouter.push("#" ++ newScope.definitionID)
+            let definitionID = ScopeGetGraphDefinitionID.f(newExecution, newFrame.scopeID)
+            if urlHash[0] != definitionID {
+              RescriptReactRouter.push("#" ++ definitionID)
             }
           }
           None

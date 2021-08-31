@@ -1,10 +1,12 @@
+// TODO: honor NodeScope.  Prevent scoped nodes' nib values from being stored in the graph's sourceValues.
 let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Execution.t => {
   let frame = Belt.List.headExn(execution.stack)
   let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
-  let definition = Belt.Map.String.getExn(definitions, scope.definitionID)
+  let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution, frame.scopeID)
+  let definition = Belt.Map.String.getExn(definitions, graphDefinitionID)
   switch definition.implementation {
   | GraphImplementation(graphImplementation) =>
-    let source = ExplicitConnecttionSideGetSource.f(
+    let source = ExplicitConnectionSideGetSource.f(
       frame.explicitConnectionSide,
       graphImplementation.connections,
     )
@@ -93,7 +95,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                     Belt.Map.String.set(
                       execution.scopes,
                       nodeScopeID,
-                      ScopeMake.f(definitionID, Some({scopeID: frame.scopeID, nodeID: nodeID})),
+                      ScopeMake.f(definitionID, Some({scopeID: frame.scopeID, nodeID: nodeID}), GraphScope),
                     ),
                     frame.scopeID,
                     {
@@ -350,7 +352,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                     ...execution.stack,
                   },
                 }
-              | Some(InlineFunction({scopeID, nodeID})) =>
+              | Some(InlineFunction({scopeID, nodeID: inlineNodeID})) =>
                 // let inlineFunctionNode = Belt.Map.String.getExn(graphImplementation.nodes, nodeID)
                 let inlineFunctionScope = Belt.Map.String.getExn(execution.scopes, scopeID)
 
@@ -364,7 +366,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                   Belt.Map.getExn(
                     inlineFunctionGraphImplementation.connections,
                     {
-                      node: NodeConnection(nodeID),
+                      node: NodeConnection(inlineNodeID),
                       nib: source.nib,
                     },
                   )
@@ -376,43 +378,58 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                 switch Belt.Map.get(inlineFunctionScope.sourceValues, inlineSource) {
                 | Some(value) => ExecutionReducerReturn.f(value, execution, source)
                 | None =>
-                  // make lazy values
-                  let newSourceValues = Belt.Map.String.reduce(
-                    interfaceImplementation.input,
-                    inlineFunctionScope.sourceValues,
-                    (sourceValues, nibID, _) => {
-                      let nib = ConnectionNib.NibConnection(nibID)
-                      Belt.Map.set(
-                        sourceValues,
-                        {node: NodeConnection(nodeID), nib: nib},
-                        Value.LazyValue({
-                          scopeID: frame.scopeID,
-                          connectionSide: {node: source.node, nib: nib},
-                        }),
-                      )
-                    },
-                  )
+                  // create a new scope
+                  let (nodeScopeID, scopes) = switch Belt.Map.String.get(scope.nodeScopeIDs, nodeID) {
+                  | Some(nodeScopeID) => (nodeScopeID, execution.scopes)
+                  | None =>
+                    let nodeScopeID = RandomIDMake.f()
+                    (
+                      nodeScopeID,
+                      Belt.Map.String.set(
+                        Belt.Map.String.set(
+                          execution.scopes,
+                          nodeScopeID,
+                          ScopeMake.f(definitionID, Some({scopeID: frame.scopeID, nodeID: nodeID}), InlineScope({nodeID: inlineNodeID, parentScope: scopeID})),
+                        ),
+                        frame.scopeID,
+                        {
+                          ...scope,
+                          nodeScopeIDs: Belt.Map.String.set(scope.nodeScopeIDs, nodeID, nodeScopeID),
+                        },
+                      ),
+                    )
+                  }
+
+                  // // make lazy values
+                  // let newSourceValues = Belt.Map.String.reduce(
+                  //   interfaceImplementation.input,
+                  //   inlineFunctionScope.sourceValues,
+                  //   (sourceValues, nibID, _) => {
+                  //     let nib = ConnectionNib.NibConnection(nibID)
+                  //     Belt.Map.set(
+                  //       sourceValues,
+                  //       {node: NodeConnection(nodeID), nib: nib},
+                  //       Value.LazyValue({
+                  //         scopeID: frame.scopeID,
+                  //         connectionSide: {node: source.node, nib: nib},
+                  //       }),
+                  //     )
+                  //   },
+                  // )
                   {
                     ...execution,
-                    scopes: Belt.Map.String.set(
-                      execution.scopes,
-                      scopeID,
-                      {
-                        ...inlineFunctionScope,
-                        sourceValues: newSourceValues,
-                      },
-                    ),
+                    scopes: scopes,
                     stack: list{
                       {
-                        scopeID: scopeID,
+                        action: Evaluating,
+                        scopeID: nodeScopeID,
                         explicitConnectionSide: {
                           isSource: false,
                           connectionSide: {
-                            node: NodeConnection(nodeID),
+                            node: NodeConnection(inlineNodeID),
                             nib: source.nib,
                           },
                         },
-                        action: Evaluating,
                       },
                       ...execution.stack,
                     },
@@ -431,18 +448,18 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
         | _ => raise(Exception.TODO("Evaluating a new kind of node"))
         }
       | GraphConnection =>
-        switch scope.parentScope {
-        | Some(parentScope) => {
+        switch scope.callingScope {
+        | Some(callingScope) => {
             ...execution,
             stack: list{
               {
                 open StackFrame
                 {
-                  scopeID: parentScope.scopeID,
+                  scopeID: callingScope.scopeID,
                   explicitConnectionSide: {
                     isSource: false,
                     connectionSide: {
-                      node: NodeConnection(parentScope.nodeID),
+                      node: NodeConnection(callingScope.nodeID),
                       nib: source.nib,
                     },
                   },

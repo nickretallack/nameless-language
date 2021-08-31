@@ -244,7 +244,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
         ...state,
         execution: Some({
           result: None,
-          scopes: Belt.Map.String.fromArray([(scopeID, ScopeMake.f(definitionID, None))]),
+          scopes: Belt.Map.String.fromArray([(scopeID, ScopeMake.f(definitionID, None, GraphScope))]),
           stack: list{
             {scopeID: scopeID, explicitConnectionSide: explicitConnectionSide, action: Evaluating},
           },

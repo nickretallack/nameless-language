@@ -1,6 +1,7 @@
-let f = (definitionID: DefinitionID.t, parentScope: option<ParentScope.t>): Scope.t => {
+let f = (definitionID: DefinitionID.t, callingScope: option<ParentScope.t>, scopeType: ScopeType.t): Scope.t => {
   definitionID: definitionID,
-  parentScope: parentScope,
+  callingScope: callingScope,
+  scopeType: scopeType,
   sourceValues: Belt.Map.make(~id=module(ConnectionSideComparable.C)),
   nodeScopeIDs: Belt.Map.String.empty,
 }
