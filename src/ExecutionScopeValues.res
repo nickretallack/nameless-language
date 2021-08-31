@@ -6,13 +6,14 @@ let make = (
   ~definitions: DefinitionMap.t,
   ~languageName: LanguageName.t,
   ~execution: Execution.t,
+  ~nibToSource: NibID.t => ConnectionSide.t,
 ) =>
   <table>
     <tbody>
       {React.array(
         Belt.List.toArray(
           Belt.List.mapWithIndex(ordering, (_index, nibID) =>
-            switch Belt.Map.get(sourceValues, {node: GraphConnection, nib: NibConnection(nibID)}) {
+            switch Belt.Map.get(sourceValues, nibToSource(nibID)) {
             | None => React.null
             | Some(value) =>
               let name = TranslatableGetText.f(
