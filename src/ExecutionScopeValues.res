@@ -20,7 +20,15 @@ let make = (
               languageName,
             )
             let value = ValueDisplay.f(value, execution, definitions, languageName)
-            <div key={nibID}> {React.string(`${name}: ${value}`)} </div>
+            <div key={nibID}>
+              {React.string(
+                if name == "" {
+                  value
+                } else {
+                  `${name}: ${value}`
+                },
+              )}
+            </div>
           }
         ),
       ),
