@@ -55,10 +55,7 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
                 open StackFrame
                 {
                   scopeID: lazyValue.scopeID,
-                  explicitConnectionSide: {
-                    isSource: false,
-                    connectionSide: lazyValue.connectionSide,
-                  },
+                  explicitConnectionSide: lazyValue.explicitConnectionSide,
                   action: EvaluationAction.Evaluating,
                 }
               }),

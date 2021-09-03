@@ -22,10 +22,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
               open StackFrame
               {
                 scopeID: lazyValue.scopeID,
-                explicitConnectionSide: {
-                  isSource: false,
-                  connectionSide: lazyValue.connectionSide,
-                },
+                explicitConnectionSide: lazyValue.explicitConnectionSide,
                 action: EvaluationAction.Evaluating,
               }
             },
@@ -138,9 +135,12 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                 value: RecordValue(
                   Belt.Map.String.mapWithKey(typedFields, (nibID, _) => Value.LazyValue({
                     scopeID: frame.scopeID,
-                    connectionSide: {
-                      node: NodeConnection(nodeID),
-                      nib: NibConnection(nibID),
+                    explicitConnectionSide: {
+                      isSource: false,
+                      connectionSide: {
+                        node: NodeConnection(nodeID),
+                        nib: NibConnection(nibID),
+                      },
                     },
                   })),
                 ),
@@ -152,9 +152,12 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                 value: LabeledValue(
                   LazyValue({
                     scopeID: frame.scopeID,
-                    connectionSide: {
-                      node: NodeConnection(nodeID),
-                      nib: ValueConnection,
+                    explicitConnectionSide: {
+                      isSource: false,
+                      connectionSide: {
+                        node: NodeConnection(nodeID),
+                        nib: ValueConnection,
+                      },
                     },
                   }),
                 ),
@@ -195,10 +198,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                                 open StackFrame
                                 {
                                   scopeID: lazyValue.scopeID,
-                                  explicitConnectionSide: {
-                                    isSource: false,
-                                    connectionSide: lazyValue.connectionSide,
-                                  },
+                                  explicitConnectionSide: lazyValue.explicitConnectionSide,
                                   action: EvaluationAction.Evaluating,
                                 }
                               },
@@ -268,10 +268,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                               open StackFrame
                               {
                                 scopeID: lazyValue.scopeID,
-                                explicitConnectionSide: {
-                                  isSource: false,
-                                  connectionSide: lazyValue.connectionSide,
-                                },
+                                explicitConnectionSide: lazyValue.explicitConnectionSide,
                                 action: EvaluationAction.Evaluating,
                               }
                             },

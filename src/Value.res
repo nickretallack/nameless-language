@@ -9,7 +9,7 @@ and definedValueRecord = {
 }
 and lazyValue = {
   scopeID: ScopeID.t,
-  connectionSide: ConnectionSide.t,
+  explicitConnectionSide: ExplicitConnectionSide.t,
 }
 and inlineFunction = {
   scopeID: ScopeID.t,

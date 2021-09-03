@@ -253,7 +253,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
           result: Some(
             Value.LazyValue({
               scopeID: scopeID,
-              connectionSide: explicitConnectionSide.connectionSide, // TODO: what if it's a source?
+              explicitConnectionSide: explicitConnectionSide,
             }),
           ),
           scopes: Belt.Map.String.fromArray([
