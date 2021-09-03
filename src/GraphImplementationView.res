@@ -142,12 +142,16 @@ let make = (
       let debugState = switch execution {
       | None => ConnectionDebug.NoDebugConnection
       | Some(execution) =>
-        let stackFrame = Belt.List.headExn(execution.stack)
-        let stackConnectionSide = stackFrame.explicitConnectionSide
-        if !stackConnectionSide.isSource && stackConnectionSide.connectionSide == sink {
-          switch stackFrame.action {
-          | Evaluating => EvaluatingConnection
-          | Returning(_) => ReturningConnection
+        if Belt.List.length(execution.stack) != 0 {
+          let stackFrame = Belt.List.headExn(execution.stack)
+          let stackConnectionSide = stackFrame.explicitConnectionSide
+          if !stackConnectionSide.isSource && stackConnectionSide.connectionSide == sink {
+            switch stackFrame.action {
+            | Evaluating => EvaluatingConnection
+            | Returning(_) => ReturningConnection
+            }
+          } else {
+            ConnectionDebug.NoDebugConnection
           }
         } else {
           ConnectionDebug.NoDebugConnection
@@ -180,14 +184,18 @@ let make = (
         switch execution {
         | None => None
         | Some(execution) =>
-          switch SourceResolveValue.f(
-            ExecutionGetCurrentScope.f(execution, scopeID),
-            connectionSide,
-            execution,
-            definitions,
-          ) {
-          | None => None
-          | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
+          if Belt.List.length(execution.stack) != 0 {
+            switch SourceResolveValue.f(
+              ExecutionGetCurrentScope.f(execution, scopeID),
+              connectionSide,
+              execution,
+              definitions,
+            ) {
+            | None => None
+            | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
+            }
+          } else {
+            None
           }
         }
       } else {

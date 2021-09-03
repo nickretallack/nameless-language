@@ -95,7 +95,11 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                     Belt.Map.String.set(
                       execution.scopes,
                       nodeScopeID,
-                      ScopeMake.f(definitionID, Some({scopeID: frame.scopeID, nodeID: nodeID}), GraphScope),
+                      ScopeMake.f(
+                        definitionID,
+                        Some({scopeID: frame.scopeID, nodeID: nodeID}),
+                        GraphScope,
+                      ),
                     ),
                     frame.scopeID,
                     {
@@ -320,7 +324,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
               ExecutionReducerReturn.f(value, execution, source)
             | NibConnection(nibID) =>
               switch scope.callingScope {
-                | Some(callingScope) => {
+              | Some(callingScope) => {
                   ...execution,
                   stack: list{
                     {
@@ -340,7 +344,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                     ...execution.stack,
                   },
                 }
-                | None => raise(Exception.ShouldntHappen("Inline function definition had no caller."))
+              | None => raise(Exception.ShouldntHappen("Inline function definition had no caller."))
               }
             | _ =>
               raise(
@@ -351,7 +355,7 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
             }
           | FunctionPointerCallNode =>
             switch nodeDefinition.implementation {
-            | InterfaceImplementation(interfaceImplementation) =>
+            | InterfaceImplementation(_interfaceImplementation) =>
               let implementationNib: ConnectionSide.t = {
                 node: source.node,
                 nib: ValueConnection,
@@ -402,7 +406,10 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                 | Some(value) => ExecutionReducerReturn.f(value, execution, source)
                 | None =>
                   // create a new scope
-                  let (nodeScopeID, scopes) = switch Belt.Map.String.get(scope.nodeScopeIDs, nodeID) {
+                  let (nodeScopeID, scopes) = switch Belt.Map.String.get(
+                    scope.nodeScopeIDs,
+                    nodeID,
+                  ) {
                   | Some(nodeScopeID) => (nodeScopeID, execution.scopes)
                   | None =>
                     let nodeScopeID = RandomIDMake.f()
@@ -412,12 +419,20 @@ let f = (execution: Execution.t, definitions: DefinitionMap.t, webView): Executi
                         Belt.Map.String.set(
                           execution.scopes,
                           nodeScopeID,
-                          ScopeMake.f(definitionID, Some({scopeID: frame.scopeID, nodeID: nodeID}), InlineScope({nodeID: inlineNodeID, parentScope: scopeID})),
+                          ScopeMake.f(
+                            definitionID,
+                            Some({scopeID: frame.scopeID, nodeID: nodeID}),
+                            InlineScope({nodeID: inlineNodeID, parentScope: scopeID}),
+                          ),
                         ),
                         frame.scopeID,
                         {
                           ...scope,
-                          nodeScopeIDs: Belt.Map.String.set(scope.nodeScopeIDs, nodeID, nodeScopeID),
+                          nodeScopeIDs: Belt.Map.String.set(
+                            scope.nodeScopeIDs,
+                            nodeID,
+                            nodeScopeID,
+                          ),
                         },
                       ),
                     )

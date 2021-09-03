@@ -239,12 +239,26 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
     }
   | EvaluateNib({explicitConnectionSide, debug}) =>
     let scopeID = RandomIDMake.f()
+    // let source = explicitConnectionSide.isSource
+    //   ? explicitConnectionSide.connectionSide
+    //   : switch definition.implementation {
+    //     | GraphImplementation(graphImplementation) =>
+    //       Belt.Map.getExn(graphImplementation.connections, explicitConnectionSide.connectionSide)
+    //     | _ => raise(Exception.ShouldntHappen("Tried to evaluate outside a graph"))
+    //     }
     ReactUpdate.UpdateWithSideEffects(
       {
         ...state,
         execution: Some({
-          result: None,
-          scopes: Belt.Map.String.fromArray([(scopeID, ScopeMake.f(definitionID, None, GraphScope))]),
+          result: Some(
+            Value.LazyValue({
+              scopeID: scopeID,
+              connectionSide: explicitConnectionSide.connectionSide, // TODO: what if it's a source?
+            }),
+          ),
+          scopes: Belt.Map.String.fromArray([
+            (scopeID, ScopeMake.f(definitionID, None, GraphScope)),
+          ]),
           stack: list{
             {scopeID: scopeID, explicitConnectionSide: explicitConnectionSide, action: Evaluating},
           },
@@ -252,18 +266,8 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
           debug: debug,
         }),
       },
-      ({send, state}) => {
-        let rec runner = () => {
-          let _ = Js.Global.setTimeout(() => {
-            switch state.execution {
-            | Some({result: None, debug: false}) =>
-              send(Step)
-              runner()
-            | _ => ()
-            }
-          }, 0)
-        }
-        runner()
+      ({send}) => {
+        send(Step)
         None
       },
     )
