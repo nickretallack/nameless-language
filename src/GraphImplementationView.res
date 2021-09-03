@@ -180,9 +180,11 @@ let make = (
         switch execution {
         | None => None
         | Some(execution) =>
-          switch Belt.Map.get(
-            ExecutionGetCurrentScope.f(execution, scopeID).sourceValues,
+          switch SourceResolveValue.f(
+            ExecutionGetCurrentScope.f(execution, scopeID),
             connectionSide,
+            execution,
+            definitions,
           ) {
           | None => None
           | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
