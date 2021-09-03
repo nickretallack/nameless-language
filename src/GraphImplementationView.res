@@ -63,8 +63,8 @@ let make = (
       rows: max(
         graphSize.rows,
         max(
-          Belt.List.length(definition.display.inputOrdering),
-          Belt.List.length(definition.display.outputOrdering),
+          Belt.List.length(definition.display.inputOrdering) + 1,
+          Belt.List.length(definition.display.outputOrdering) + 1,
         ),
       ),
     }
