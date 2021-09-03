@@ -8,23 +8,21 @@ let make = (
   ~execution: Execution.t,
   ~nibToSource: NibID.t => ConnectionSide.t,
 ) =>
-  <table>
-    <tbody>
-      {React.array(
-        Belt.List.toArray(
-          Belt.List.mapWithIndex(ordering, (_index, nibID) =>
-            switch Belt.Map.get(sourceValues, nibToSource(nibID)) {
-            | None => React.null
-            | Some(value) =>
-              let name = TranslatableGetText.f(
-                Belt.Map.String.getExn(nibDocumentations, nibID),
-                languageName,
-              )
-              let value = ValueDisplay.f(value, execution, definitions, languageName)
-              <div key={nibID}> {React.string(`${name}: ${value}`)} </div>
-            }
-          ),
+  <div>
+    {React.array(
+      Belt.List.toArray(
+        Belt.List.mapWithIndex(ordering, (_index, nibID) =>
+          switch Belt.Map.get(sourceValues, nibToSource(nibID)) {
+          | None => React.null
+          | Some(value) =>
+            let name = TranslatableGetText.f(
+              Belt.Map.String.getExn(nibDocumentations, nibID),
+              languageName,
+            )
+            let value = ValueDisplay.f(value, execution, definitions, languageName)
+            <div key={nibID}> {React.string(`${name}: ${value}`)} </div>
+          }
         ),
-      )}
-    </tbody>
-  </table>
+      ),
+    )}
+  </div>
