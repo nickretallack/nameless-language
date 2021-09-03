@@ -6,7 +6,8 @@ let make = (
   ~languageName: LanguageName.t,
   ~execution: Execution.t,
 ) => {
-  let definition = Belt.Map.String.getExn(definitions, scope.definitionID)
+  let definitionID = ScopeGetGraphDefinitionID.f(execution, scopeID)
+  let definition = Belt.Map.String.getExn(definitions, definitionID)
   let graphImplementation = switch definition.implementation {
   | GraphImplementation(graphImplementation) => graphImplementation
   | _ => raise(Exception.ShouldntHappen("Scope view only works for graphs"))
