@@ -16,6 +16,11 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
         None
       },
     )
+  | SetDefinitions(definitions) =>
+    ReactUpdate.Update({
+      ...state,
+      definitions: definitions,
+    })
   | CreateDefinition(definition) =>
     let newDefinitionID = RandomIDMake.f()
     ReactUpdate.UpdateWithSideEffects(

@@ -5,3 +5,4 @@ type t =
   | Stop
   | SetAutoSave(bool)
   | ResetData
+  | SetDefinitions(DefinitionMap.t)

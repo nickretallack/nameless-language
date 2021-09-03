@@ -8,6 +8,7 @@ let make = () => {
     AppReducer.f(webView, urlHash),
   )
 
+  // Store local state whenever something changes
   React.useEffect(() => {
     if state.autoSave {
       open Dom.Storage
@@ -15,6 +16,23 @@ let make = () => {
     }
     None
   })
+
+  // Import state when someone changes something in another tab
+  React.useEffect1(() => {
+    let storageHandler = event => {
+      if EventGetKey.f(event) == "namelessAppState" {
+        Js.log("Loading changes from another window")
+        switch Json.parse(EventGetNewValue.f(event)) {
+        | Some(json) => dispatch(SetDefinitions(AppStateFromPersistenceJson.f(json).definitions))
+        | None => raise(Exception.JsonDecodeFailed)
+        }
+      }
+    }
+    Webapi.Dom.Window.addEventListener("storage", storageHandler, Webapi.Dom.window)
+    Some(
+      () => {Webapi.Dom.Window.removeEventListener("storage", storageHandler, Webapi.Dom.window)},
+    )
+  }, [])
 
   let {AppState.languageName: languageName, definitions, error, execution} = state
 
