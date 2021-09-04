@@ -18,12 +18,10 @@ let f = (
     externalImplementation.name,
     outputID,
     Belt.Map.String.mapWithKey(externalImplementation.interface.input, (nibID, _) => {
-      SourceResolveValue.f(
-        scope,
-        Belt.Map.getExn(connections, {node: source.node, nib: NibConnection(nibID)}),
-        execution,
-        definitions,
-      )
+      switch Belt.Map.get(connections, {node: source.node, nib: NibConnection(nibID)}) {
+      | None => None
+      | Some(connectionSide) => SourceResolveValue.f(scope, connectionSide, execution, definitions)
+      }
     }),
   ) {
   | EvaluationResult(value) => ExecutionReducerReturn.f(value, execution, source, state, urlHash)
