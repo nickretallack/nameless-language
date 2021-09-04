@@ -826,6 +826,8 @@ let builtins = [
   ("addKeyboardEventListener", addKeyboardEventListener),
 ]
 
+let builtinsMap = Belt.Map.String.fromArray(builtins)
+
 let v = Belt.Map.String.fromArray([
   // wrapper label
   ("something", somethingLabel),
