@@ -18,7 +18,7 @@ let make = () => {
   })
 
   // Import state when someone changes something in another tab
-  React.useEffect1(() => {
+  React.useEffect0(() => {
     let storageHandler = event => {
       if EventGetKey.f(event) == "namelessAppState" {
         Js.log("Loading changes from another window")
@@ -32,7 +32,24 @@ let make = () => {
     Some(
       () => {Webapi.Dom.Window.removeEventListener("storage", storageHandler, Webapi.Dom.window)},
     )
-  }, [])
+  })
+
+  // Ensure we're not looking at a non-existant scope
+  React.useEffect2(() => {
+    switch urlHash {
+    | [definitionID, "implementation", scopeID] =>
+      switch state.execution {
+      | None => RescriptReactRouter.push(`#${definitionID}/implementation`)
+      | Some(execution) =>
+        switch Belt.Map.String.get(execution.scopes, scopeID) {
+        | Some(_) => ()
+        | None => RescriptReactRouter.push(`#${definitionID}/implementation`)
+        }
+      }
+    | _ => ()
+    }
+    None
+  }, (state.execution, urlHash))
 
   let {AppState.languageName: languageName, definitions, error, execution} = state
 
