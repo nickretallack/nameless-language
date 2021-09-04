@@ -55,14 +55,23 @@ let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.
         },
         action: Evaluating,
       }
-      ReactUpdate.Update({
-        ...state,
-        execution: Some({
-          ...execution,
-          scopes: Belt.Map.String.set(execution.scopes, scopeID, scope),
-          stack: Belt.List.concat(execution.stack, list{newFrame}),
-        }),
-      })
+      ReactUpdate.UpdateWithSideEffects(
+        {
+          ...state,
+          execution: Some({
+            ...execution,
+            scopes: Belt.Map.String.set(execution.scopes, scopeID, scope),
+            stack: Belt.List.concat(execution.stack, list{newFrame}),
+          }),
+        },
+        ({send}) => {
+          // If we're running, make sure we keep running.
+          if Belt.List.length(execution.stack) == 0 && !execution.debug {
+            send(Step)
+          }
+          None
+        },
+      )
     }
   | Stop => ReactUpdate.Update({...state, execution: None})
   | Step => ExecutionReducer.f(state, webView, urlHash)
