@@ -68,19 +68,6 @@ let make = () => {
         let definitionID = urlHash[0]
         let subNav = Belt.Array.length(urlHash) > 1 ? urlHash[1] : "implementation"
         let scopeID = Belt.Array.get(urlHash, 2)
-        switch execution {
-        | None => ()
-        | Some(execution) =>
-          Js.log(
-            Belt.List.toArray(
-              Belt.List.reverse(
-                Belt.List.map(execution.stack, frame =>
-                  ExplicitConnectionSideKey.f(frame.explicitConnectionSide)
-                ),
-              ),
-            ),
-          )
-        }
         switch Belt.Map.String.get(definitions, definitionID) {
         | None => React.string("Not found")
         | Some(definition) =>

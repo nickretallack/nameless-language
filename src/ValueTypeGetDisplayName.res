@@ -4,4 +4,5 @@ let f = (valueType: ValueType.t, definitions: DefinitionMap.t, language: Languag
   | DefinedValueType(definitionID) =>
     DefinedTypeGetDisplayName.f(Belt.Map.String.getExn(definitions, definitionID), language)
   | AnyType => "Any"
+  | SequencerType => "Sequencer"
   }

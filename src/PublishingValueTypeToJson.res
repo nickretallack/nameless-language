@@ -9,5 +9,6 @@ let f = (valueType: PublishingValueType.t) => {
   | PublishingDefinedValueType(contentID) =>
     object_(list{("type", string("defined")), ("contentID", string(contentID))})
   | PublishingAnyType => object_(list{("type", string("any"))})
+  | PublishingSequencerType => object_(list{("type", string("sequencer"))})
   }
 }

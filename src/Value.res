@@ -12,6 +12,7 @@ and lazyValue = {
   explicitConnectionSide: ExplicitConnectionSide.t,
 }
 and inlineFunction = {
+  // TODO: unify with InlineScope
   scopeID: ScopeID.t,
   nodeID: NodeID.t,
 }

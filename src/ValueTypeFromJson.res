@@ -5,6 +5,7 @@ let f = (json: Js.Json.t): ValueType.t => {
   | "primitive" => PrimitiveValueType(field("primitiveType", PrimitiveValueTypeFromJson.f, json))
   | "defined" => DefinedValueType(field("definitionID", string, json))
   | "any" => AnyType
+  | "sequencer" => SequencerType
   | type_ => raise(Exception.JsonDecodeInvalidTypeName(type_, "ValueType"))
   }
 }

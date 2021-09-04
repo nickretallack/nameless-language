@@ -6,3 +6,4 @@ exception TODO(string)
 exception JsonDecodeFailed
 exception UnknownExternal(string)
 exception UnknownTypeName(string, string)
+exception TypeError(string)

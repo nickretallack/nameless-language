@@ -11,6 +11,7 @@ let f = (valueType: ValueType.t): Js.Json.t => {
         ("definitionID", string(definitionID)),
       }
     | AnyType => list{("type", string("any"))}
+    | SequencerType => list{("type", string("sequencer"))}
     },
   )
 }

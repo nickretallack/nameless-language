@@ -17,4 +17,5 @@ let f = (valueType: ValueType.t, definitions: DefinitionMap.t): TypeSelectorCate
     | _ => raise(Exception.TODO("TypeToCategory: unknown cateory"))
     }
   | AnyType => AnyCategory
+  | SequencerType => AnyCategory // TODO
   }

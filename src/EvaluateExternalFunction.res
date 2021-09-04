@@ -1,8 +1,10 @@
 let f = (
+  execution: Execution.t,
+  definitions: DefinitionMap.t,
+  languageName: LanguageName.t,
   name: string,
   outputID: string,
   inputs: Belt.Map.String.t<option<Value.t>>,
-  webView,
 ): ExternalEvaluationResult.t => {
   let externalFunction = switch name {
   | "branch" => EvaluateConditionalBranch.f
@@ -15,7 +17,8 @@ let f = (
   | "<=" => EvaluateNumericComparison.f(\"<=")
   | ">=" => EvaluateNumericComparison.f(\">=")
   | "=" => EvaluateEquals.f
-  | "addEventListener" => EvaluateAddEventListener.f(webView)
+  | "addKeyboardEventListener" => EvaluateAddKeyboardEventListener.f
+  | "log" => EvaluateLog.f(execution, definitions, languageName)
   | _ => raise(Exception.UnknownExternal(name))
   }
   externalFunction(inputs, outputID)

@@ -239,13 +239,6 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
     }
   | EvaluateNib({explicitConnectionSide, debug}) =>
     let scopeID = RandomIDMake.f()
-    // let source = explicitConnectionSide.isSource
-    //   ? explicitConnectionSide.connectionSide
-    //   : switch definition.implementation {
-    //     | GraphImplementation(graphImplementation) =>
-    //       Belt.Map.getExn(graphImplementation.connections, explicitConnectionSide.connectionSide)
-    //     | _ => raise(Exception.ShouldntHappen("Tried to evaluate outside a graph"))
-    //     }
     ReactUpdate.UpdateWithSideEffects(
       {
         ...state,
@@ -267,7 +260,9 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
         }),
       },
       ({send}) => {
-        send(Step)
+        if !debug {
+          send(Step)
+        }
         None
       },
     )

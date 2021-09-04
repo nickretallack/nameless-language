@@ -520,20 +520,49 @@ let greaterThan = DefinitionMake.f(
   (),
 )
 
-let addEventListener = DefinitionMake.f(
+let keyboardEventListener = DefinitionMake.f(
   "en",
-  ~name="Add Event Listener",
-  ~inputs=[("event", "Event"), ("handler", "Handler"), (";", "")],
-  ~outputs=[(";", "")],
+  ~name="Keyboard Event Listener",
+  ~inputs=[("code", "code")],
+  ~outputs=[(";", ";")],
+  ~implementation=InterfaceImplementation({
+    input: Belt.Map.String.fromArray([("code", ValueType.PrimitiveValueType(TextType))]),
+    output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
+  }),
+  (),
+)
+
+let addKeyboardEventListener = DefinitionMake.f(
+  "en",
+  ~name="Add Keyboard Event Listener",
+  ~inputs=[("handler", "Handler"), (";", ";")],
+  ~outputs=[(";", ";")],
   ~implementation=ExternalImplementation({
-    name: "addEventListener",
+    name: "addKeyboardEventListener",
     interface: {
       input: Belt.Map.String.fromArray([
-        ("event", ValueType.PrimitiveValueType(TextType)),
-        ("handler", ValueType.AnyType), // TODO: Function type with interface
-        (";", ValueType.AnyType), // TODO: sequencer type?
+        ("handler", ValueType.DefinedValueType("keyboardEventListener")),
+        (";", ValueType.SequencerType),
       ]),
-      output: Belt.Map.String.fromArray([(";", ValueType.AnyType)]), // TODO: sequencer type
+      output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
+    },
+  }),
+  (),
+)
+
+let log = DefinitionMake.f(
+  "en",
+  ~name="Log",
+  ~inputs=[("value", "Value"), (";", ";")],
+  ~outputs=[(";", ";")],
+  ~implementation=ExternalImplementation({
+    name: "log",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("value", ValueType.AnyType),
+        (";", ValueType.SequencerType),
+      ]),
+      output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
     },
   }),
   (),
@@ -765,11 +794,23 @@ let factorial2 = GraphMake.f(
   (),
 )
 
+let keyboardEvent = DefinitionMake.f(
+  "en",
+  ~name="Keyboard Event",
+  ~description="From a web browser",
+  ~inputs=[("code", "Code")],
+  ~implementation=RecordTypeImplementation(
+    Belt.Map.String.fromArray([("code", ValueType.PrimitiveValueType(TextType))]),
+  ),
+  (),
+)
+
 let builtins = [
   // Core types
   ("yes", yesLabel),
   ("no", noLabel),
   ("boolean", booleanUnion),
+  ("keybourdEvent", keyboardEvent),
   // Externals
   ("plus", plus),
   ("minus", minus),
@@ -779,15 +820,16 @@ let builtins = [
   ("less-than", lessThan),
   ("greater-than", greaterThan),
   ("branch", branch),
+  ("log", log),
+  // Web view stuff
+  ("keyboardEventListener", keyboardEventListener),
+  ("addKeyboardEventListener", addKeyboardEventListener),
 ]
 
 let v = Belt.Map.String.fromArray([
   // wrapper label
   ("something", somethingLabel),
   ("somethingExample", somethingExample),
-  // Web view stuff
-  ("keydown", keydown),
-  ("addEventListener", addEventListener),
   // Stuff used in examples
   ("one", one),
   ("point", point),

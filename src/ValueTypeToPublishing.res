@@ -4,4 +4,5 @@ let f = (valueType: ValueType.t, dependencies: PublishingDependencyMap.t): Publi
     PublishingDefinedValueType(Belt.Map.String.getExn(dependencies, definitionID).contentID)
   | PrimitiveValueType(primitiveValueType) => PublishingPrimitiveValueType(primitiveValueType)
   | AnyType => PublishingAnyType
+  | SequencerType => PublishingSequencerType
   }

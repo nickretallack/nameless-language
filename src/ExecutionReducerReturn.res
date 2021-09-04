@@ -1,16 +1,10 @@
-let f = (value: Value.t, execution: Execution.t, source: ConnectionSide.t): Execution.t => {
-  let frame = Belt.List.headExn(execution.stack)
-  let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
-  {
-    ...execution,
-    stack: list{{...frame, action: Returning(value)}, ...Belt.List.tailExn(execution.stack)},
-    scopes: Belt.Map.String.set(
-      execution.scopes,
-      frame.scopeID,
-      {
-        ...scope,
-        sourceValues: Belt.Map.set(scope.sourceValues, source, value),
-      },
-    ),
-  }
-}
+let f = (
+  value: Value.t,
+  execution: Execution.t,
+  source: ConnectionSide.t,
+  state: AppState.t,
+  urlHash,
+): ReactUpdate.update<AppAction.t, AppState.t> => ReactUpdate.UpdateWithSideEffects(
+  ExecutionReducerReturnState.f(value, execution, source, state),
+  ExecutionReducerSideEffects.f(urlHash),
+)
