@@ -611,7 +611,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                                 ScopeMake.f(
                                   definitionID,
                                   Some({scopeID: frame.scopeID, nodeID: nodeID}),
-                                  InlineScope({nodeID: inlineNodeID, parentScope: scopeID}),
+                                  InlineScope({nodeID: inlineNodeID, scopeID: scopeID}),
                                 ),
                               ),
                               frame.scopeID,

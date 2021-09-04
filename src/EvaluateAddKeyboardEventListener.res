@@ -38,7 +38,7 @@ let f = (
                     ~id=module(ConnectionSideComparable.C),
                   ),
                   connectionNib: NibConnection(";"),
-                  inlineScope: {parentScope: scopeID, nodeID: nodeID},
+                  inlineScope: {scopeID: scopeID, nodeID: nodeID},
                 }),
               ),
             element,

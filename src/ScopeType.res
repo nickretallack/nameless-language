@@ -1,3 +1,3 @@
 type t =
-| GraphScope
-| InlineScope(InlineScope.t)
+  | GraphScope
+  | InlineScope(NodeInScope.t)

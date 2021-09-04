@@ -1,4 +1,8 @@
-let f = (definitionID: DefinitionID.t, callingScope: option<ParentScope.t>, scopeType: ScopeType.t): Scope.t => {
+let f = (
+  definitionID: DefinitionID.t,
+  callingScope: option<NodeInScope.t>,
+  scopeType: ScopeType.t,
+): Scope.t => {
   definitionID: definitionID,
   callingScope: callingScope,
   scopeType: scopeType,

@@ -11,14 +11,9 @@ and lazyValue = {
   scopeID: ScopeID.t,
   explicitConnectionSide: ExplicitConnectionSide.t,
 }
-and inlineFunction = {
-  // TODO: unify with InlineScope
-  scopeID: ScopeID.t,
-  nodeID: NodeID.t,
-}
 and t =
   | PrimitiveValue(PrimitiveValue.t)
   | DefinedValue(definedValueRecord)
   | LazyValue(lazyValue)
-  | InlineFunction(inlineFunction)
+  | InlineFunction(NodeInScope.t)
   | Prerequisite

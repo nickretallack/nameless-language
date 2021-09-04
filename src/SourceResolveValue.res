@@ -13,8 +13,8 @@ let rec f = (
     }
   | None =>
     switch scope.scopeType {
-    | InlineScope({parentScope}) =>
-      let inlineScope = Belt.Map.String.getExn(execution.scopes, parentScope)
+    | InlineScope({scopeID}) =>
+      let inlineScope = Belt.Map.String.getExn(execution.scopes, scopeID)
       f(inlineScope, connectionSide, execution, definitions)
     | GraphScope => value
     }
