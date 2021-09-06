@@ -58,12 +58,15 @@ th {
 }
 
 #content {
-  flex: 1;
+  flex: 1 1;
+  display: flex;
+  overflow: hidden;
 }
 
 #graph-view {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .graph-canvas {
@@ -271,4 +274,24 @@ h3 {
 .child-scopes {
   padding-left: 10px;
   border-left: 1px solid lightgray;
+}
+
+#definition-list table {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+#definition-list tr {
+  display: grid;
+  grid-template-columns: [name] 1fr [type] 1fr;
+  height: 1em;
+}
+
+#definition-list tbody {
+  display: block;
+  overflow: auto;
+  height: 100%;
 }
