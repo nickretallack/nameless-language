@@ -243,6 +243,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
       {
         ...state,
         execution: Some({
+          references: Belt.Map.String.empty,
           result: Some(
             Value.LazyValue({
               scopeID: scopeID,

@@ -118,6 +118,66 @@ let point = DefinitionMake.f(
   (),
 )
 
+let makeReference = DefinitionMake.f(
+  "en",
+  ~name="Make Reference",
+  ~description="Create a shared reference to the supplied value.  Anyone you pass it to can read it and write to it.",
+  ~inputs=[("value", "Value")],
+  ~outputs=[("reference", "Reference")],
+  ~implementation=ExternalImplementation({
+    name: "makeReference",
+    interface: {
+      input: Belt.Map.String.fromArray([("value", ValueType.AnyType)]),
+      output: Belt.Map.String.fromArray([
+        ("reference", ValueType.ReferenceType(ValueType.AnyType)),
+      ]),
+    },
+  }),
+  (),
+)
+
+let setReference = DefinitionMake.f(
+  "en",
+  ~name="Set Reference Value",
+  ~description="Update a reference to contain a different value.  Other code with the reference will be able to read this new value.",
+  ~inputs=[("reference", "Reference"), ("newValue", "New Value"), (";", ";")],
+  ~outputs=[(";", ";")],
+  ~implementation=ExternalImplementation({
+    name: "makeReference",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("reference", ValueType.ReferenceType(ValueType.AnyType)),
+        ("newValue", ValueType.AnyType),
+        (";", ValueType.SequencerType),
+      ]),
+      output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
+    },
+  }),
+  (),
+)
+
+let getReference = DefinitionMake.f(
+  "en",
+  ~name="Get Reference Value",
+  ~description="Get the value a reference points to.",
+  ~inputs=[("reference", "Reference"), (";", ";")],
+  ~outputs=[("value", "Value"), (";", ";")],
+  ~implementation=ExternalImplementation({
+    name: "makeReference",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("reference", ValueType.ReferenceType(ValueType.AnyType)),
+        (";", ValueType.SequencerType),
+      ]),
+      output: Belt.Map.String.fromArray([
+        ("value", ValueType.AnyType),
+        (";", ValueType.SequencerType),
+      ]),
+    },
+  }),
+  (),
+)
+
 let plus = DefinitionMake.f(
   "en",
   ~name="+",
@@ -810,8 +870,11 @@ let builtins = [
   ("yes", yesLabel),
   ("no", noLabel),
   ("boolean", booleanUnion),
-  ("keybourdEvent", keyboardEvent),
-  // Externals
+  // References
+  ("makeReference", makeReference),
+  ("setReference", setReference),
+  ("getReference", getReference),
+  // Math
   ("plus", plus),
   ("minus", minus),
   ("times", times),
@@ -822,6 +885,7 @@ let builtins = [
   ("branch", branch),
   ("log", log),
   // Web view stuff
+  ("keyboardEvent", keyboardEvent),
   ("keyboardEventListener", keyboardEventListener),
   ("addKeyboardEventListener", addKeyboardEventListener),
 ]

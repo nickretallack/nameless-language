@@ -20,4 +20,6 @@ let rec f = (value: Value.t, execution: Execution.t, definitions: DefinitionMap.
         Belt.List.concat(result, f(value, execution, definitions))
       )
     }
+  | Reference(referenceID) =>
+    f(Belt.Map.String.getExn(execution.references, referenceID), execution, definitions)
   }

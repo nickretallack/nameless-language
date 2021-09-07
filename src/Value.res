@@ -17,3 +17,4 @@ and t =
   | LazyValue(lazyValue)
   | InlineFunction(NodeInScope.t)
   | Prerequisite
+  | Reference(ReferenceID.t)

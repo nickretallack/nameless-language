@@ -9,52 +9,50 @@ let f = (
   outputID: NibID.t,
   state: AppState.t,
   webView,
-  urlHash,
-): ReactUpdate.update<AppAction.t, AppState.t> =>
-  switch EvaluateExternalFunction.f(
-    execution,
-    definitions,
-    state.languageName,
-    externalImplementation.name,
-    outputID,
-    Belt.Map.String.mapWithKey(externalImplementation.interface.input, (nibID, _) => {
-      switch Belt.Map.get(connections, {node: source.node, nib: NibConnection(nibID)}) {
-      | None => None
-      | Some(connectionSide) => SourceResolveValue.f(scope, connectionSide, execution, definitions)
+  urlHash: array<string>,
+): ReactUpdate.update<AppAction.t, AppState.t> => {
+  let inputs = Belt.Map.String.mapWithKey(externalImplementation.interface.input, (nibID, _) => {
+    switch Belt.Map.get(connections, {node: source.node, nib: NibConnection(nibID)}) {
+    | None => None
+    | Some(connectionSide) => SourceResolveValue.f(scope, connectionSide, execution, definitions)
+    }
+  })
+  switch externalImplementation.name {
+  | "makeReference" =>
+    switch Belt.Map.String.getExn(inputs, "value") {
+    | None =>
+      ExecutionReducerRequireEvaluation.f(state, execution, list{"value"}, frame, source, urlHash)
+    | Some(value) =>
+      let referenceID = RandomIDMake.f()
+      let newExecution = {
+        ...execution,
+        references: Belt.Map.String.set(execution.references, referenceID, value),
       }
-    }),
-  ) {
-  | EvaluationResult(value) => ExecutionReducerReturn.f(value, execution, source, state, urlHash)
-  | SideEffect(value, sideEffect) =>
-    ReactUpdate.UpdateWithSideEffects(
-      ExecutionReducerReturnState.f(value, execution, source, state),
-      arg => {
-        let _ = ExecutionReducerSideEffects.f(urlHash, arg)
-        sideEffect(webView, arg)
-      },
-    )
-  | EvaluationRequired(nibIDs) =>
-    ReactUpdate.UpdateWithSideEffects(
-      {
-        ...state,
-        execution: Some({
-          ...execution,
-          stack: Belt.List.concat(
-            Belt.List.map(nibIDs, nibID => {
-              ...frame,
-              explicitConnectionSide: {
-                isSource: false,
-                connectionSide: {
-                  node: source.node,
-                  nib: NibConnection(nibID),
-                },
-              },
-              action: Evaluating,
-            }),
-            execution.stack,
-          ),
-        }),
-      },
-      ExecutionReducerSideEffects.f(urlHash),
-    )
+      let reference = Value.Reference(referenceID)
+      ExecutionReducerReturn.f(reference, newExecution, source, state, urlHash)
+    }
+  // | "setReference" => ()
+  // | "getReference" => ()
+  | _ =>
+    switch EvaluateExternalFunction.f(
+      execution,
+      definitions,
+      state.languageName,
+      externalImplementation.name,
+      outputID,
+      inputs,
+    ) {
+    | EvaluationResult(value) => ExecutionReducerReturn.f(value, execution, source, state, urlHash)
+    | SideEffect(value, sideEffect) =>
+      ReactUpdate.UpdateWithSideEffects(
+        ExecutionReducerReturnState.f(value, execution, source, state),
+        arg => {
+          let _ = ExecutionReducerSideEffects.f(urlHash, arg)
+          sideEffect(webView, arg)
+        },
+      )
+    | EvaluationRequired(nibIDs) =>
+      ExecutionReducerRequireEvaluation.f(state, execution, nibIDs, frame, source, urlHash)
+    }
   }
+}

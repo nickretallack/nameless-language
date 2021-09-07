@@ -45,4 +45,11 @@ and f = (
     }
   | Prerequisite => "(nothing)"
   | InlineFunction(_) => "(inline function)"
+  | Reference(referenceID) =>
+    `Reference to ${f(
+        Belt.Map.String.getExn(execution.references, referenceID),
+        execution,
+        definitions,
+        language,
+      )}`
   }

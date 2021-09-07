@@ -1,6 +1,6 @@
 type t =
   | EvaluationResult(Value.t)
-  | EvaluationRequired(list<string>)
+  | EvaluationRequired(list<NibID.t>)
   | SideEffect(
       Value.t,
       (

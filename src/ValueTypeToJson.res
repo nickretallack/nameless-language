@@ -1,4 +1,4 @@
-let f = (valueType: ValueType.t): Js.Json.t => {
+let rec f = (valueType: ValueType.t): Js.Json.t => {
   open Json.Encode
   object_(
     switch valueType {
@@ -12,6 +12,10 @@ let f = (valueType: ValueType.t): Js.Json.t => {
       }
     | AnyType => list{("type", string("any"))}
     | SequencerType => list{("type", string("sequencer"))}
+    | ReferenceType(referenceType) => list{
+        ("type", string("reference")),
+        ("referenceType", f(referenceType)),
+      }
     },
   )
 }

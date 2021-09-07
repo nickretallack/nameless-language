@@ -18,4 +18,5 @@ let f = (valueType: ValueType.t, definitions: DefinitionMap.t): TypeSelectorCate
     }
   | AnyType => AnyCategory
   | SequencerType => AnyCategory // TODO
+  | ReferenceType(_) => AnyCategory // TODO
   }

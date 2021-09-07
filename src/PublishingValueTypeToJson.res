@@ -1,4 +1,4 @@
-let f = (valueType: PublishingValueType.t) => {
+let rec f = (valueType: PublishingValueType.t) => {
   open Json.Encode
   switch valueType {
   | PublishingPrimitiveValueType(primitiveValueType) =>
@@ -10,5 +10,7 @@ let f = (valueType: PublishingValueType.t) => {
     object_(list{("type", string("defined")), ("contentID", string(contentID))})
   | PublishingAnyType => object_(list{("type", string("any"))})
   | PublishingSequencerType => object_(list{("type", string("sequencer"))})
+  | PublishingReferenceType(valueType) =>
+    object_(list{("type", string("reference")), ("referenceType", f(valueType))})
   }
 }
