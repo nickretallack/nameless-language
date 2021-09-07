@@ -143,7 +143,7 @@ let setReference = DefinitionMake.f(
   ~inputs=[("reference", "Reference"), ("newValue", "New Value"), (";", ";")],
   ~outputs=[(";", ";")],
   ~implementation=ExternalImplementation({
-    name: "makeReference",
+    name: "setReference",
     interface: {
       input: Belt.Map.String.fromArray([
         ("reference", ValueType.ReferenceType(ValueType.AnyType)),
@@ -163,7 +163,7 @@ let getReference = DefinitionMake.f(
   ~inputs=[("reference", "Reference"), (";", ";")],
   ~outputs=[("value", "Value"), (";", ";")],
   ~implementation=ExternalImplementation({
-    name: "makeReference",
+    name: "getReference",
     interface: {
       input: Belt.Map.String.fromArray([
         ("reference", ValueType.ReferenceType(ValueType.AnyType)),

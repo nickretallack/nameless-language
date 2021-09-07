@@ -32,7 +32,25 @@ let f = (
       ExecutionReducerReturn.f(reference, newExecution, source, state, urlHash)
     }
   // | "setReference" => ()
-  // | "getReference" => ()
+  | "getReference" =>
+    switch Belt.Map.String.getExn(inputs, "reference") {
+    | None =>
+      ExecutionReducerRequireEvaluation.f(
+        state,
+        execution,
+        list{"reference"},
+        frame,
+        source,
+        urlHash,
+      )
+    | Some(value) =>
+      switch value {
+      | Reference(referenceID) =>
+        let value = Belt.Map.String.getExn(execution.references, referenceID)
+        ExecutionReducerReturn.f(value, execution, source, state, urlHash)
+      | _ => raise(Exception.TypeError("getReference expected a reference"))
+      }
+    }
   | _ =>
     switch EvaluateExternalFunction.f(
       execution,
