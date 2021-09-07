@@ -19,19 +19,25 @@ let f = (
   })
   switch externalImplementation.name {
   | "makeReference" =>
-    switch Belt.Map.String.getExn(inputs, "value") {
+    let value = switch Belt.Map.String.getExn(inputs, "value") {
     | None =>
-      ExecutionReducerRequireEvaluation.f(state, execution, list{"value"}, frame, source, urlHash)
-    | Some(value) =>
-      let referenceID = RandomIDMake.f()
-      let newExecution = {
-        ...execution,
-        references: Belt.Map.String.set(execution.references, referenceID, value),
-      }
-      let reference = Value.Reference(referenceID)
-      ExecutionReducerReturn.f(reference, newExecution, source, state, urlHash)
+      Value.LazyValue({
+        scopeID: frame.scopeID,
+        explicitConnectionSide: {
+          isSource: false,
+          connectionSide: {node: source.node, nib: NibConnection("value")},
+        },
+      })
+    | Some(value) => value
     }
-  // | "setReference" => ()
+    let referenceID = RandomIDMake.f()
+    let newExecution = {
+      ...execution,
+      references: Belt.Map.String.set(execution.references, referenceID, value),
+    }
+    let reference = Value.Reference(referenceID)
+    ExecutionReducerReturn.f(reference, newExecution, source, state, urlHash)
+
   | "getReference" =>
     switch Belt.Map.String.getExn(inputs, "reference") {
     | None =>
