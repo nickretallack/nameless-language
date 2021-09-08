@@ -1,7 +1,6 @@
 let encodeNode = (node: PublishingNode.t) => {
   open Json.Encode
   switch node {
-  | PublishingReferenceNode => object_(list{("type", string("reference"))})
   | PublishingListNode(length) => object_(list{("type", string("list")), ("length", int(length))})
   | PublishingDefinedNode({kind, contentID}) =>
     object_(list{
@@ -81,7 +80,6 @@ let canonicalizeConnectionSide = (
         isSink ? PublishingNibConnection(index) : raise(Exception.InvalidConnection)
       | NibConnection(nibID) =>
         switch Belt.Map.String.getExn(graph.nodes, nodeID).kind {
-        | ReferenceNode => raise(Exception.InvalidConnection)
         | ListNode(_) => raise(Exception.InvalidConnection)
         | DefinedNode({definitionID}) =>
           let dependency = Belt.Map.String.getExn(dependencies, definitionID)
@@ -108,7 +106,6 @@ let canonicalizeGraph = (
     outputCount: Belt.List.size(display.outputOrdering),
     nodes: Belt.List.map(nodeOrdering, nodeID =>
       switch Belt.Map.String.getExn(graph.nodes, nodeID).kind {
-      | ReferenceNode => PublishingNode.PublishingReferenceNode
       | ListNode(length) => PublishingNode.PublishingListNode(length)
       | DefinedNode({kind, definitionID}) =>
         PublishingNode.PublishingDefinedNode({

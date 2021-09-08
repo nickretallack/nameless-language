@@ -1,7 +1,5 @@
 let f = (node: Node.t, definitions: DefinitionMap.t, language: LanguageName.t): NodeDisplayNibs.t =>
   switch node.kind {
-  | ReferenceNode =>
-    NodeDisplayNibsMake.f(~outputs=list{{nib: ValueConnection, name: "Reference"}}, ())
   | ListNode(length) =>
     NodeDisplayNibsMake.f(
       ~outputs=list{{nib: ValueConnection, name: ""}},

@@ -30,7 +30,6 @@ let make = (
     />
 
   switch node.kind {
-  | ReferenceNode => makeNode("Reference", None)
   | ListNode(_) => makeNode("List", None)
   | DefinedNode({definitionID}) =>
     let definition = Belt.Map.String.getExn(definitions, definitionID)

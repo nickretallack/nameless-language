@@ -163,28 +163,7 @@ let make = (
     <>
       <div className="type-selector-menu">
         <div className="type-selector-categories">
-          <h3> {React.string("Category")} </h3>
-          {renderCategory("Defined", AllCategory)}
-          {nib.isSource
-            ? React.null
-            : <>
-                <a
-                  onClick={_event => {
-                    emit(
-                      AddNode({
-                        node: {
-                          kind: ReferenceNode,
-                          scope: scope,
-                        },
-                        explicitConnectionSide: nib,
-                        connectionNib: ValueConnection,
-                      }),
-                    )
-                    RescriptReactRouter.push(`#${graphDefinitionID}`)
-                  }}>
-                  {React.string("Reference")}
-                </a>
-              </>}
+          <h3> {React.string("Category")} </h3> {renderCategory("Defined", AllCategory)}
         </div>
         {switch state.category {
         | None => React.null

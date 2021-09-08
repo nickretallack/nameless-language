@@ -15,7 +15,6 @@ let rec visitConnection = (
       } else {
         let nodeAcc = list{nodeID, ...nodes}
         switch Belt.Map.String.getExn(graph.nodes, nodeID).kind {
-        | ReferenceNode => nodeAcc
         | ListNode(length) =>
           Belt.List.reduce(Belt.List.makeBy(length, Identity.f), nodeAcc, (
             nodes: list<NodeID.t>,
