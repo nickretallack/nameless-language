@@ -594,6 +594,23 @@ let addKeyboardEventListener = DefinitionMake.f(
   (),
 )
 
+let htmlCreateElement = DefinitionMake.f(
+  "en",
+  ~name="Create HTML Element",
+  ~inputs=[("tagName", "Tag Name")],
+  ~outputs=[("element", "Element")],
+  ~implementation=ExternalImplementation({
+    name: "htmlCreateElement",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("tagName", ValueType.PrimitiveValueType(PrimitiveValueType.TextType)),
+      ]),
+      output: Belt.Map.String.fromArray([("element", ValueType.AnyType)]), // TODO
+    },
+  }),
+  (),
+)
+
 let log = DefinitionMake.f(
   "en",
   ~name="Log",
@@ -872,6 +889,7 @@ let builtins = [
   ("keyboardEvent", keyboardEvent),
   ("keyboardEventListener", keyboardEventListener),
   ("addKeyboardEventListener", addKeyboardEventListener),
+  ("htmlCreateElement", htmlCreateElement),
 ]
 
 let builtinsMap = Belt.Map.String.fromArray(builtins)

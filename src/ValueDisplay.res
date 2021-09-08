@@ -52,4 +52,5 @@ and f = (
         definitions,
         language,
       )}`
+  | HTMLElement(_) => "(HTML element)"
   }

@@ -303,3 +303,10 @@ h3 {
 .scrollable {
   overflow: auto;
 }
+
+/* TODO: remove this later */
+#webview div {
+  width: 100px;
+  height: 100px;
+  background: blue;
+}

@@ -18,3 +18,4 @@ and t =
   | InlineFunction(NodeInScope.t)
   | Prerequisite
   | Reference(ReferenceID.t)
+  | HTMLElement(Webapi.Dom.Element.t)
