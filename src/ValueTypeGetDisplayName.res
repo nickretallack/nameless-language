@@ -10,4 +10,5 @@ let rec f = (
   | AnyType => "Any"
   | SequencerType => "Sequencer"
   | ReferenceType(referenceType) => `Reference to ${f(referenceType, definitions, language)}`
+  | HTMLElementType => "HTML Element"
   }

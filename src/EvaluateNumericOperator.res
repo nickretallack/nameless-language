@@ -6,7 +6,7 @@ let f = (
   if outputID != "result" {
     raise(Not_found)
   }
-  EvaluateWithAllValues.f(inputs, values => PrimitiveValue(
+  EvaluateWithAllValuesResult.f(inputs, values => PrimitiveValue(
     NumberValue(
       operation(
         ValueToFloat.f(Belt.Map.String.getExn(values, "left")),

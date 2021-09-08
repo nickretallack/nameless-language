@@ -9,4 +9,5 @@ let rec f = (
   | AnyType => PublishingAnyType
   | SequencerType => PublishingSequencerType
   | ReferenceType(referenceType) => PublishingReferenceType(f(referenceType, dependencies))
+  | HTMLElementType => PublishingHTMLElementType
   }

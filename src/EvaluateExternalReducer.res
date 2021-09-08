@@ -27,7 +27,12 @@ let f = (
   if evaluatePrerequisite {
     ExecutionReducerRequireEvaluation.f(state, execution, list{";"}, frame, source, urlHash)
   } else {
-    let inputs = Belt.Map.String.mapWithKey(externalImplementation.interface.input, (nibID, _) => {
+    let nonPrerequisiteInputs = Belt.Map.String.keep(externalImplementation.interface.input, (
+      key,
+      _value,
+    ) => key != ";")
+
+    let inputs = Belt.Map.String.mapWithKey(nonPrerequisiteInputs, (nibID, _) => {
       switch Belt.Map.get(connections, {node: source.node, nib: NibConnection(nibID)}) {
       | None => None
       | Some(connectionSide) => SourceResolveValue.f(scope, connectionSide, execution, definitions)

@@ -309,4 +309,5 @@ h3 {
   width: 100px;
   height: 100px;
   background: blue;
+  position: absolute;
 }

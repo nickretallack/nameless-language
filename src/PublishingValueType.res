@@ -4,3 +4,4 @@ type rec t =
   | PublishingAnyType
   | PublishingSequencerType
   | PublishingReferenceType(t)
+  | PublishingHTMLElementType

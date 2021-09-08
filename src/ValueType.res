@@ -4,3 +4,4 @@ type rec t =
   | SequencerType
   | AnyType
   | ReferenceType(t)
+  | HTMLElementType

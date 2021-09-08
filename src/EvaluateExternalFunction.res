@@ -19,6 +19,7 @@ let f = (
   | "=" => EvaluateEquals.f
   | "addKeyboardEventListener" => EvaluateAddKeyboardEventListener.f
   | "htmlCreateElement" => EvaluateHtmlCreateElement.f
+  | "htmlSetCssProperty" => EvaluateHtmlSetCssProperty.f
   | "log" => EvaluateLog.f(execution, definitions, languageName)
   | _ => raise(Exception.UnknownExternal(name))
   }

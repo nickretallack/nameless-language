@@ -605,7 +605,26 @@ let htmlCreateElement = DefinitionMake.f(
       input: Belt.Map.String.fromArray([
         ("tagName", ValueType.PrimitiveValueType(PrimitiveValueType.TextType)),
       ]),
-      output: Belt.Map.String.fromArray([("element", ValueType.AnyType)]), // TODO
+      output: Belt.Map.String.fromArray([("element", ValueType.HTMLElementType)]), // TODO
+    },
+  }),
+  (),
+)
+
+let htmlSetCssProperty = DefinitionMake.f(
+  "en",
+  ~name="Set CSS Property",
+  ~inputs=[("element", "Element"), ("property", "Property"), ("value", "Value"), (";", ";")],
+  ~outputs=[(";", ";")],
+  ~implementation=ExternalImplementation({
+    name: "htmlSetCssProperty",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("element", ValueType.HTMLElementType),
+        ("property", ValueType.PrimitiveValueType(PrimitiveValueType.TextType)),
+        ("value", ValueType.PrimitiveValueType(PrimitiveValueType.TextType)),
+      ]),
+      output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
     },
   }),
   (),
@@ -890,6 +909,7 @@ let builtins = [
   ("keyboardEventListener", keyboardEventListener),
   ("addKeyboardEventListener", addKeyboardEventListener),
   ("htmlCreateElement", htmlCreateElement),
+  ("htmlSetCssProperty", htmlSetCssProperty),
 ]
 
 let builtinsMap = Belt.Map.String.fromArray(builtins)

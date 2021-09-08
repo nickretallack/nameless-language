@@ -12,5 +12,6 @@ let rec f = (valueType: PublishingValueType.t) => {
   | PublishingSequencerType => object_(list{("type", string("sequencer"))})
   | PublishingReferenceType(valueType) =>
     object_(list{("type", string("reference")), ("referenceType", f(valueType))})
+  | PublishingHTMLElementType => object_(list{("type", string("html element"))})
   }
 }

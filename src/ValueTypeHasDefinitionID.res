@@ -3,6 +3,7 @@ let f = (valueType: ValueType.t, definitionID: DefinitionID.t) =>
   | PrimitiveValueType(_)
   | SequencerType
   | ReferenceType(_)
+  | HTMLElementType
   | AnyType => false
   | DefinedValueType(theDefinitionID) => definitionID == theDefinitionID
   }

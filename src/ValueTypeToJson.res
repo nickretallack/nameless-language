@@ -16,6 +16,7 @@ let rec f = (valueType: ValueType.t): Js.Json.t => {
         ("type", string("reference")),
         ("referenceType", f(referenceType)),
       }
+    | HTMLElementType => list{("type", string("html element"))}
     },
   )
 }
