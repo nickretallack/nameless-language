@@ -1,1 +1,1 @@
-let f = () => Printf.sprintf("%x", Random.int(16))
+let f = () => Printf.sprintf("%x", Js.Math.random_int(0, 16))

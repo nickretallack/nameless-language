@@ -17,6 +17,7 @@ let f = (
   | "<=" => EvaluateNumericComparison.f(\"<=")
   | ">=" => EvaluateNumericComparison.f(\">=")
   | "=" => EvaluateEquals.f
+  | "concatenateText" => EvaluateConcatenateText.f
   | "addKeyboardEventListener" => EvaluateAddKeyboardEventListener.f
   | "htmlCreateElement" => EvaluateHtmlCreateElement.f
   | "htmlSetCssProperty" => EvaluateHtmlSetCssProperty.f

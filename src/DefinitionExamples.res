@@ -178,6 +178,25 @@ let getReference = DefinitionMake.f(
   (),
 )
 
+let concatenateText = DefinitionMake.f(
+  "en",
+  ~name="Concatenate Text",
+  ~description="Combine two strings into one.",
+  ~inputs=[("left", "Left"), ("right", "Right")],
+  ~outputs=[("result", "Result")],
+  ~implementation=ExternalImplementation({
+    name: "concatenateText",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("left", ValueType.PrimitiveValueType(TextType)),
+        ("right", ValueType.PrimitiveValueType(TextType)),
+      ]),
+      output: Belt.Map.String.fromArray([("result", ValueType.PrimitiveValueType(TextType))]),
+    },
+  }),
+  (),
+)
+
 let plus = DefinitionMake.f(
   "en",
   ~name="+",
@@ -904,6 +923,8 @@ let builtins = [
   ("greater-than", greaterThan),
   ("branch", branch),
   ("log", log),
+  // Text
+  ("concatenateText", concatenateText),
   // Web view stuff
   ("keyboardEvent", keyboardEvent),
   ("keyboardEventListener", keyboardEventListener),
