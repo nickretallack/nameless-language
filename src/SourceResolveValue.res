@@ -3,7 +3,7 @@ let rec f = (
   connectionSide: ConnectionSide.t,
   execution: Execution.t,
   definitions: DefinitionMap.t,
-) => {
+): option<Value.t> => {
   let value = Belt.Map.get(scope.sourceValues, connectionSide)
   switch value {
   | Some(LazyValue(lazyValue)) =>

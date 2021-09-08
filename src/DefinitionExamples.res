@@ -315,22 +315,6 @@ let pointExample = GraphMake.f(
   (),
 )
 
-let referenceExample = GraphMake.f(
-  "en",
-  ~name="Reference example",
-  ~description="",
-  ~inputs=[],
-  ~outputs=[("reference", "Reference")],
-  ~nodes=[("reference", {kind: ReferenceNode, scope: GraphScope})],
-  ~connections=[
-    (
-      {node: GraphConnection, nib: NibConnection("reference")},
-      {node: NodeConnection("reference"), nib: ValueConnection},
-    ),
-  ],
-  (),
-)
-
 let exampleInterface = DefinitionMake.f(
   "en",
   ~name="Example Interface",
@@ -904,7 +888,6 @@ let v = Belt.Map.String.fromArray([
   ("example", example),
   ("simple", simple),
   ("point-example", pointExample),
-  ("reference-example", referenceExample),
   ("interface-example", interfaceExample),
   ("nested-inline-example", nestedInlineExample),
   ("factorial", factorial),
