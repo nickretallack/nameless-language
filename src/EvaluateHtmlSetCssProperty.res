@@ -15,7 +15,7 @@ let f = (
     | PrimitiveValue(primitive) => PrimitiveValueToString.f(primitive)
     | _ => raise(Exception.TypeError("htmlSetCssProperty.value expected text"))
     }
-    // TODO: find better way of setting styles so you don't overwrite them
-    Webapi.Dom.Element.setAttribute("style", `${property}: ${value}`, element)
+    let style = ElementGetStyleDict.f(element)
+    Js.Dict.set(style, property, value)
     EvaluationResult(Prerequisite)
   })
