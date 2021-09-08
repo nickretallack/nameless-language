@@ -126,7 +126,6 @@ let make = (
         },
     )
 
-    let scope = getScope(nib, nodes)
     let renderCategory = (name: string, category: category) =>
       <a
         onClick={_event => send(SelectCategory(category))}
