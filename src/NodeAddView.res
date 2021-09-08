@@ -2,7 +2,7 @@ type category =
   | NumberCategory
   | AllCategory
 type state = {
-  category: option<category>,
+  category: category,
   definitionID: option<DefinitionID.t>,
   definedNodeKind: option<DefinedNodeKind.t>,
 }
@@ -52,12 +52,12 @@ let make = (
   | SelectedNib(explicitConnectionSide) =>
     let nib = explicitConnectionSide
     let (state, send) = ReactUpdate.useReducer(
-      {category: None, definitionID: None, definedNodeKind: None},
+      {category: AllCategory, definitionID: None, definedNodeKind: None},
       (action: action, state: state) =>
         switch action {
         | SelectCategory(category) =>
           ReactUpdate.Update({
-            category: Some(category),
+            category: category,
             definitionID: None,
             definedNodeKind: None,
           })
@@ -129,29 +129,31 @@ let make = (
     let renderCategory = (name: string, category: category) =>
       <a
         onClick={_event => send(SelectCategory(category))}
-        className={state.category == Some(category) ? "selected" : ""}>
+        className={state.category == category ? "selected" : ""}>
         {React.string(name)}
       </a>
     let nodeSelector = (filterFunction: Definition.t => bool) =>
       <div className="type-selector-choices">
         <h3> {React.string("Definitions")} </h3>
-        {React.array(
-          Belt.Array.map(
-            Belt.Map.String.toArray(
-              Belt.Map.String.keep(definitions, (
-                _definitionID: DefinitionID.t,
-                definition: Definition.t,
-              ) => filterFunction(definition) && canConnectToNib(definition, nib.isSource)),
+        <div className="scrollable">
+          {React.array(
+            Belt.Array.map(
+              Belt.Map.String.toArray(
+                Belt.Map.String.keep(definitions, (
+                  _definitionID: DefinitionID.t,
+                  definition: Definition.t,
+                ) => filterFunction(definition) && canConnectToNib(definition, nib.isSource)),
+              ),
+              ((definitionID: DefinitionID.t, definition: Definition.t)) =>
+                <a
+                  key=definitionID
+                  className={state.definitionID == Some(definitionID) ? "selected" : ""}
+                  onClick={_event => send(SelectDefinition(definitionID))}>
+                  {React.string(DefinitionGetDisplayName.f(definition, languageName))}
+                </a>,
             ),
-            ((definitionID: DefinitionID.t, definition: Definition.t)) =>
-              <a
-                key=definitionID
-                className={state.definitionID == Some(definitionID) ? "selected" : ""}
-                onClick={_event => send(SelectDefinition(definitionID))}>
-                {React.string(DefinitionGetDisplayName.f(definition, languageName))}
-              </a>,
-          ),
-        )}
+          )}
+        </div>
       </div>
     let nodeTypeLink = (kind, name) =>
       <a
@@ -162,15 +164,11 @@ let make = (
     <>
       <div className="type-selector-menu">
         <div className="type-selector-categories">
-          <h3> {React.string("Category")} </h3> {renderCategory("Defined", AllCategory)}
+          <h3> {React.string("Category")} </h3> {renderCategory("All", AllCategory)}
         </div>
         {switch state.category {
-        | None => React.null
-        | Some(category) =>
-          switch category {
-          | NumberCategory => nodeSelector(isNumberConstant)
-          | AllCategory => nodeSelector(_ => true)
-          }
+        | NumberCategory => nodeSelector(isNumberConstant)
+        | AllCategory => nodeSelector(_ => true)
         }}
         {switch state.definitionID {
         | None => React.null

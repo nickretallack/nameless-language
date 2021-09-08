@@ -192,9 +192,13 @@ th {
 
 .type-selector-menu {
   display: flex;
+  overflow: hidden;
 }
+
 .type-selector-menu > div {
   margin-right: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 .type-selector-menu a {
@@ -294,4 +298,8 @@ h3 {
   display: block;
   overflow: auto;
   height: 100%;
+}
+
+.scrollable {
+  overflow: auto;
 }
