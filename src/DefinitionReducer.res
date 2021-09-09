@@ -237,6 +237,186 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
       }
     | _ => ReactUpdate.NoUpdate
     }
+  | NewFunctionFromNodes(nodeIDs) =>
+    switch definition.implementation {
+    | GraphImplementation(graphImplementation) =>
+      let (innerNodes, outerNodes) = Belt.Map.String.partition(graphImplementation.nodes, (
+        nodeID,
+        _node,
+      ) => Belt.Set.String.has(nodeIDs, nodeID))
+
+      let scopes = Belt.Map.String.reduce(innerNodes, NodeScopeSet.fromArray([]), (
+        scopes,
+        _nodeID,
+        node,
+      ) => Belt.Set.add(scopes, node.scope))
+
+      if Belt.Set.size(scopes) != 1 {
+        Js.log("Tried to join nodes from different scopes.") // TODO: make the button not show up in this case
+        ReactUpdate.NoUpdate
+      } else {
+        let scope = Belt.Set.toArray(scopes)[0]
+        let newNodeID = RandomIDMake.f()
+        let innerDefinitionID = RandomIDMake.f()
+        let outerNodes = Belt.Map.String.set(
+          outerNodes,
+          newNodeID,
+          {
+            scope: scope,
+            kind: DefinedNode({
+              kind: FunctionCallNode,
+              definitionID: innerDefinitionID,
+            }),
+          },
+        )
+
+        let (
+          inboundConnections,
+          outboundConnections,
+          innerConnections,
+        ) = Belt.Map.reduce(
+          graphImplementation.connections,
+          (
+            ConnectionMapInverted.fromArray([]),
+            ConnectionMapInverted.fromArray([]),
+            ConnectionMap.fromArray([]),
+          ),
+          ((inbound, outbound, contained), sink: ConnectionSide.t, source: ConnectionSide.t) => {
+            let isInside = (connectionNode: ConnectionNode.t): bool =>
+              switch connectionNode {
+              | GraphConnection => false
+              | NodeConnection(nodeID) => Belt.Map.String.has(innerNodes, nodeID)
+              }
+            let addToInverse = (
+              connections: ConnectionMapInverted.t,
+              source: ConnectionSide.t,
+              sink: ConnectionSide.t,
+            ): ConnectionMapInverted.t => {
+              Belt.Map.update(connections, source, maybeSinks =>
+                switch maybeSinks {
+                | None => Some(ConnectionSideSet.fromArray([sink]))
+                | Some(sinks) => Some(Belt.Set.add(sinks, sink))
+                }
+              )
+            }
+
+            let sinkInside = isInside(sink.node)
+            let sourceInside = isInside(source.node)
+            if sinkInside && sourceInside {
+              (inbound, outbound, Belt.Map.set(contained, sink, source))
+            } else if sourceInside {
+              (inbound, addToInverse(outbound, source, sink), contained)
+            } else if sinkInside {
+              (addToInverse(inbound, source, sink), outbound, contained)
+            } else {
+              (inbound, outbound, contained)
+            }
+          },
+        )
+
+        let outputNibs = Belt.Map.String.fromArray([])
+        let inputNibs = Belt.Map.String.fromArray([])
+        let outerConnections = Belt.Map.keep(graphImplementation.connections, (sink, _source) =>
+          !Belt.Map.has(innerConnections, sink)
+        )
+
+        let (outputNibs, outerConnections, innerConnections) = Belt.Map.reduce(
+          outboundConnections,
+          (outputNibs, outerConnections, innerConnections),
+          ((nibs, outerConnections, innerConnections), source, sinks) => {
+            let nibID = RandomIDMake.f()
+            let nibConnection = ConnectionNib.NibConnection(nibID)
+            let outerConnectionSide = {
+              ConnectionSide.node: NodeConnection(newNodeID),
+              nib: nibConnection,
+            }
+            let innerConnectionSide = {ConnectionSide.node: GraphConnection, nib: nibConnection}
+
+            let nibs = Belt.Map.String.set(nibs, nibID, ValueType.AnyType)
+            // old connections get overwritten so we don't need to manually remove them
+            let outerConnections = Belt.Set.reduce(sinks, outerConnections, (
+              outerConnections,
+              sink,
+            ) => {
+              Belt.Map.set(outerConnections, sink, outerConnectionSide)
+            })
+            let innerConnections = Belt.Map.set(innerConnections, innerConnectionSide, source)
+
+            (nibs, outerConnections, innerConnections)
+          },
+        )
+
+        let (inputNibs, outerConnections, innerConnections) = Belt.Map.reduce(
+          inboundConnections,
+          (inputNibs, outerConnections, innerConnections),
+          ((nibs, outerConnections, innerConnections), source, sinks) => {
+            let nibID = RandomIDMake.f()
+            let nibConnection = ConnectionNib.NibConnection(nibID)
+            let outerConnectionSide = {
+              ConnectionSide.node: NodeConnection(newNodeID),
+              nib: nibConnection,
+            }
+            let innerConnectionSide = {ConnectionSide.node: GraphConnection, nib: nibConnection}
+
+            let nibs = Belt.Map.String.set(nibs, nibID, ValueType.AnyType)
+            let innerConnections = Belt.Set.reduce(sinks, innerConnections, (
+              innerConnections,
+              sink,
+            ) => {
+              Belt.Map.set(innerConnections, sink, innerConnectionSide)
+            })
+            let outerConnections = Belt.Map.set(outerConnections, outerConnectionSide, source)
+            // remove old connections
+            let outerConnections = Belt.Set.reduce(sinks, outerConnections, (
+              outerConnections,
+              sink,
+            ) => Belt.Map.remove(outerConnections, sink))
+
+            (nibs, outerConnections, innerConnections)
+          },
+        )
+
+        let innerGraph = {
+          Definition.implementation: GraphImplementation({
+            nodes: innerNodes,
+            connections: innerConnections,
+            interface: {
+              input: inputNibs,
+              output: outputNibs,
+            },
+          }),
+          display: {
+            inputOrdering: Belt.List.fromArray(Belt.Map.String.keysToArray(inputNibs)),
+            outputOrdering: Belt.List.fromArray(Belt.Map.String.keysToArray(outputNibs)),
+          },
+          documentation: {
+            name: TranslatableEmpty.v,
+            description: TranslatableEmpty.v,
+            inputs: Belt.Map.String.map(inputNibs, _ => TranslatableEmpty.v),
+            outputs: Belt.Map.String.map(outputNibs, _ => TranslatableEmpty.v),
+          },
+        }
+
+        let outerGraph = {
+          ...definition,
+          implementation: GraphImplementation({
+            ...graphImplementation,
+            nodes: outerNodes,
+            connections: outerConnections,
+          }),
+        }
+
+        let newDefinitions = Belt.Map.String.set(state.definitions, innerDefinitionID, innerGraph)
+        let newDefinitions = Belt.Map.String.set(newDefinitions, definitionID, outerGraph)
+
+        ReactUpdate.Update({
+          ...state,
+          definitions: newDefinitions,
+        })
+      }
+    | _ => ReactUpdate.NoUpdate
+    }
+
   | EvaluateNib({explicitConnectionSide, debug}) =>
     let scopeID = RandomIDMake.f()
     ReactUpdate.UpdateWithSideEffects(

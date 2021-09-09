@@ -15,3 +15,4 @@ type t =
   | ChangeNodeScope(ChangeNodeScope.t)
   | Fork
   | EvaluateNib(EvaluateNibAction.t)
+  | NewFunctionFromNodes(Belt.Set.String.t)

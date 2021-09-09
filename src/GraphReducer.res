@@ -6,7 +6,6 @@ let f = (
 ): ReactUpdate.update<GraphAction.t, GraphState.t> => {
   switch action {
   | SelectNode({nodeID, additive}) =>
-    Js.log("select node")
     ReactUpdate.Update({
       ...state,
       selection: switch state.selection {
@@ -28,6 +27,18 @@ let f = (
       | _ => SelectedNodes(Belt.Set.String.fromArray([nodeID]))
       },
     })
+  | NewFunctionFromSelection =>
+    switch state.selection {
+    | SelectedNodes(nodeIDs) =>
+      ReactUpdate.UpdateWithSideEffects(
+        {...state, selection: NoSelection},
+        _ => {
+          emit(NewFunctionFromNodes(nodeIDs))
+          None
+        },
+      )
+    | _ => ReactUpdate.NoUpdate
+    }
   | RemoveSelectedNodes =>
     switch state.selection {
     | SelectedNodes(nodeIDs) =>

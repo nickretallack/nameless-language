@@ -79,10 +79,14 @@ let make = (
             {React.string("Run")}
           </button>
         </>
-      | SelectedNodes(_) =>
-        <button onClick={_event => dispatch(RemoveSelectedNodes)}>
-          {React.string("Remove Node(s)")}
-        </button>
+      | SelectedNodes(_) => <>
+          <button onClick={_event => dispatch(RemoveSelectedNodes)}>
+            {React.string("Remove Node(s)")}
+          </button>
+          <button onClick={_event => dispatch(NewFunctionFromSelection)}>
+            {React.string("Make Function")}
+          </button>
+        </>
       | NoSelection => React.null
       }}
       {switch state.error {
