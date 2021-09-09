@@ -4,8 +4,8 @@ let make = () => {
   let url = RescriptReactRouter.useUrl()
   let urlHash = Js.String.split("/", url.hash)
   let (state, dispatch) = ReactUpdate.useReducer(
-    AppGetInitialState.f(),
     AppReducer.f(webView, urlHash),
+    AppGetInitialState.f(),
   )
 
   // Store local state whenever something changes

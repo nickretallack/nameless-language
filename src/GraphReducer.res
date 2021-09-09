@@ -1,11 +1,12 @@
 let f = (
   emit: DefinitionAction.t => unit,
   implementation: GraphImplementation.t,
-  action: GraphAction.t,
   state: GraphState.t,
-): ReactUpdate.update<GraphAction.t, GraphState.t> =>
+  action: GraphAction.t,
+): ReactUpdate.update<GraphAction.t, GraphState.t> => {
   switch action {
   | SelectNode({nodeID, additive}) =>
+    Js.log("select node")
     ReactUpdate.Update({
       ...state,
       selection: switch state.selection {
@@ -191,3 +192,4 @@ let f = (
       })
     }
   }
+}

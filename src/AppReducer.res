@@ -1,4 +1,4 @@
-let f = (webView, urlHash, action: AppAction.t, state: AppState.t): ReactUpdate.update<
+let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.update<
   AppAction.t,
   AppState.t,
 > =>

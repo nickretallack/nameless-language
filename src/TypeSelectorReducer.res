@@ -1,7 +1,7 @@
 let f = (
   changeType: ValueType.t => unit,
-  action: TypeSelectorAction.t,
   state: TypeSelectorState.t,
+  action: TypeSelectorAction.t,
 ): ReactUpdate.update<TypeSelectorAction.t, TypeSelectorState.t> =>
   switch action {
   | Toggle => ReactUpdate.Update({...state, opened: !state.opened})

@@ -51,53 +51,23 @@ let make = (
   switch selection {
   | SelectedNib(explicitConnectionSide) =>
     let nib = explicitConnectionSide
-    let (state, send) = ReactUpdate.useReducer(
-      {category: AllCategory, definitionID: None, definedNodeKind: None},
-      (action: action, state: state) =>
-        switch action {
-        | SelectCategory(category) =>
-          ReactUpdate.Update({
-            category: category,
-            definitionID: None,
-            definedNodeKind: None,
-          })
-        | SetDefinedNodeKind(definedNodeKind) =>
-          ReactUpdate.Update({
-            ...state,
-            definedNodeKind: Some(definedNodeKind),
-          })
-        | SelectDefinition(definitionID) =>
-          switch Belt.Map.String.getExn(definitions, definitionID).implementation {
-          | ConstantImplementation(_) =>
-            if nib.isSource {
-              ReactUpdate.NoUpdate
-            } else {
-              ReactUpdate.SideEffects(
-                _ => {
-                  emit(
-                    AddNode({
-                      node: {
-                        kind: DefinedNode({kind: ValueNode, definitionID: definitionID}),
-                        scope: getScope(nib, nodes),
-                      },
-                      explicitConnectionSide: nib,
-                      connectionNib: ValueConnection,
-                    }),
-                  )
-                  RescriptReactRouter.push(`#${graphDefinitionID}`)
-                  None
-                },
-              )
-            }
-          | _ =>
-            ReactUpdate.Update({
-              ...state,
-              definitionID: Some(definitionID),
-              definedNodeKind: None,
-            })
-          }
-        | AddValue =>
-          if nib.isSource && state.definedNodeKind != Some(ConstructorNode) {
+    let (state, send) = ReactUpdate.useReducer((state: state, action: action) =>
+      switch action {
+      | SelectCategory(category) =>
+        ReactUpdate.Update({
+          category: category,
+          definitionID: None,
+          definedNodeKind: None,
+        })
+      | SetDefinedNodeKind(definedNodeKind) =>
+        ReactUpdate.Update({
+          ...state,
+          definedNodeKind: Some(definedNodeKind),
+        })
+      | SelectDefinition(definitionID) =>
+        switch Belt.Map.String.getExn(definitions, definitionID).implementation {
+        | ConstantImplementation(_) =>
+          if nib.isSource {
             ReactUpdate.NoUpdate
           } else {
             ReactUpdate.SideEffects(
@@ -105,13 +75,7 @@ let make = (
                 emit(
                   AddNode({
                     node: {
-                      kind: DefinedNode({
-                        kind: ValueNode,
-                        definitionID: switch state.definitionID {
-                        | None => raise(Not_found)
-                        | Some(definitionID) => definitionID
-                        },
-                      }),
+                      kind: DefinedNode({kind: ValueNode, definitionID: definitionID}),
                       scope: getScope(nib, nodes),
                     },
                     explicitConnectionSide: nib,
@@ -123,8 +87,42 @@ let make = (
               },
             )
           }
-        },
-    )
+        | _ =>
+          ReactUpdate.Update({
+            ...state,
+            definitionID: Some(definitionID),
+            definedNodeKind: None,
+          })
+        }
+      | AddValue =>
+        if nib.isSource && state.definedNodeKind != Some(ConstructorNode) {
+          ReactUpdate.NoUpdate
+        } else {
+          ReactUpdate.SideEffects(
+            _ => {
+              emit(
+                AddNode({
+                  node: {
+                    kind: DefinedNode({
+                      kind: ValueNode,
+                      definitionID: switch state.definitionID {
+                      | None => raise(Not_found)
+                      | Some(definitionID) => definitionID
+                      },
+                    }),
+                    scope: getScope(nib, nodes),
+                  },
+                  explicitConnectionSide: nib,
+                  connectionNib: ValueConnection,
+                }),
+              )
+              RescriptReactRouter.push(`#${graphDefinitionID}`)
+              None
+            },
+          )
+        }
+      }
+    , {category: AllCategory, definitionID: None, definedNodeKind: None})
 
     let renderCategory = (name: string, category: category) =>
       <a

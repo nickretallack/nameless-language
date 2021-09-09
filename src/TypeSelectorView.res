@@ -6,6 +6,7 @@ let make = (
   ~changeType: ValueType.t => unit,
 ) => {
   let (state, dispatch) = ReactUpdate.useReducer(
+    TypeSelectorReducer.f(changeType),
     {
       open TypeSelectorState
       {
@@ -13,7 +14,6 @@ let make = (
         category: TypeToCategory.f(valueType, definitions),
       }
     },
-    TypeSelectorReducer.f(changeType),
   )
 
   let renderCategory = (name: string, category: TypeSelectorCategory.t) =>

@@ -14,6 +14,7 @@ let make = (
   ~scopeID: option<ScopeID.t>,
 ) => {
   let (state, dispatch) = ReactUpdate.useReducer(
+    GraphReducer.f(emit, implementation),
     {
       open GraphState
       {
@@ -24,7 +25,6 @@ let make = (
         zoom: 1.0,
       }
     },
-    GraphReducer.f(emit, implementation),
   )
   <div id="graph-view">
     <nav id="graph-nav" className="nav-buttons">
