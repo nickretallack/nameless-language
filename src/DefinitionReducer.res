@@ -240,17 +240,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
   | NewFunctionFromNodes(nodeIDs) =>
     switch definition.implementation {
     | GraphImplementation(graphImplementation) =>
-      let (innerNodes, outerNodes) = Belt.Map.String.partition(graphImplementation.nodes, (
-        nodeID,
-        _node,
-      ) => Belt.Set.String.has(nodeIDs, nodeID))
-
-      let scopes = Belt.Map.String.reduce(innerNodes, NodeScopeSet.fromArray([]), (
-        scopes,
-        _nodeID,
-        node,
-      ) => Belt.Set.add(scopes, node.scope))
-
+      let (innerNodes, outerNodes, scopes) = GraphNodesGetScopes.f(graphImplementation, nodeIDs)
       if Belt.Set.size(scopes) != 1 {
         Js.log("Tried to join nodes from different scopes.") // TODO: make the button not show up in this case
         ReactUpdate.NoUpdate

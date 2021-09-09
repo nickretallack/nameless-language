@@ -26,6 +26,7 @@ let make = (
       }
     },
   )
+
   <div id="graph-view">
     <nav id="graph-nav" className="nav-buttons">
       <a
@@ -79,13 +80,20 @@ let make = (
             {React.string("Run")}
           </button>
         </>
-      | SelectedNodes(_) => <>
+      | SelectedNodes(nodeIDs) =>
+        let (_, _, scopes) = GraphNodesGetScopes.f(implementation, nodeIDs)
+
+        <>
           <button onClick={_event => dispatch(RemoveSelectedNodes)}>
             {React.string("Remove Node(s)")}
           </button>
-          <button onClick={_event => dispatch(NewFunctionFromSelection)}>
-            {React.string("Make Function")}
-          </button>
+          {if Belt.Set.size(scopes) == 1 {
+            <button onClick={_event => dispatch(NewFunctionFromSelection)}>
+              {React.string("Make Function")}
+            </button>
+          } else {
+            React.null
+          }}
         </>
       | NoSelection => React.null
       }}
