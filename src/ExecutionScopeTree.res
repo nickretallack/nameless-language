@@ -5,7 +5,7 @@ let rec make = (
   ~languageName: LanguageName.t,
   ~scopeID: ScopeID.t,
   ~scope: Scope.t,
-   ~scopeByParent: Belt.Map.String.t<Belt.List.t<(ScopeID.t, Scope.t)>>,
+  ~scopeByParent: Belt.Map.String.t<Belt.List.t<(ScopeID.t, Scope.t)>>,
 ) => {
   <div>
     <ExecutionScopeView scopeID scope definitions languageName execution />
@@ -14,9 +14,19 @@ let rec make = (
         _,
         (scopeID, scope),
       ) => {
-        React.createElement(make, makeProps(
-            ~scopeID=scopeID, ~scope=scope, ~definitions=definitions, ~languageName=languageName, ~execution=execution, 
-            ~scopeByParent=scopeByParent, ~key=scopeID, ()))
+        React.createElement(
+          make,
+          makeProps(
+            ~scopeID,
+            ~scope,
+            ~definitions,
+            ~languageName,
+            ~execution,
+            ~scopeByParent,
+            ~key=scopeID,
+            (),
+          ),
+        )
       })}
     </div>
   </div>
