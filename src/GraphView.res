@@ -39,6 +39,7 @@ let make = (
         className={subNav == "implementation" ? "active" : ""}>
         {React.string("Implementation")}
       </a>
+      <button onClick={_ => emit(Publish)}> {React.string("Publish")} </button>
       {switch state.selection {
       | SelectedNib(explicitConnectionSide) => <>
           <a href={`#${definitionID}/+node`} className={subNav == "+node" ? "active" : ""}>

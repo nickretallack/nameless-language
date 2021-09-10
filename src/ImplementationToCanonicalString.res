@@ -1,5 +1,5 @@
 let f = (
-  id: DefinitionID.t /* only used for labels */,
+  id: DefinitionID.t /* only used for symbols and labels */,
   implementation: Implementation.t,
   display: DefinitionDisplay.t,
   dependencies: PublishingDependencyMap.t,

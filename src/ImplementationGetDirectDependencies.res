@@ -1,5 +1,5 @@
-let f = (definition: Definition.t): Belt.Set.String.t =>
-  switch definition.implementation {
+let f = (implementation: Implementation.t): Belt.Set.String.t =>
+  switch implementation {
   | ConstantImplementation(_)
   | SymbolImplementation => Belt.Set.String.empty
   | LabeledTypeImplementation(valueType) => ValueTypeGetDirectDependencies.f(valueType)
