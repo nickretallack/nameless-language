@@ -39,11 +39,11 @@ let f = (
       display: isInput
         ? {
             ...definition.display,
-            inputOrdering: ListMoveItemToIndex.f(definition.display.inputOrdering, nibID, index),
+            inputOrdering: ArrayMoveItemToIndex.f(definition.display.inputOrdering, nibID, index),
           }
         : {
             ...definition.display,
-            outputOrdering: ListMoveItemToIndex.f(definition.display.outputOrdering, nibID, index),
+            outputOrdering: ArrayMoveItemToIndex.f(definition.display.outputOrdering, nibID, index),
           },
     })
   | RemoveNib =>
@@ -55,13 +55,13 @@ let f = (
         display: isInput
           ? {
               ...definition.display,
-              inputOrdering: Belt.List.keep(definition.display.inputOrdering, item =>
+              inputOrdering: Belt.Array.keep(definition.display.inputOrdering, item =>
                 item != nibID
               ),
             }
           : {
               ...definition.display,
-              outputOrdering: Belt.List.keep(definition.display.outputOrdering, item =>
+              outputOrdering: Belt.Array.keep(definition.display.outputOrdering, item =>
                 item != nibID
               ),
             },

@@ -16,8 +16,8 @@ let f = (
       outputs: RecordDocumentationMake.f(outputs),
     },
     display: {
-      inputOrdering: Array.to_list(Array.map(((id, _name)) => id, inputs)),
-      outputOrdering: Array.to_list(Array.map(((id, _name)) => id, outputs)),
+      inputOrdering: Array.map(((id, _name)) => id, inputs),
+      outputOrdering: Array.map(((id, _name)) => id, outputs),
     },
     implementation: implementation,
   }

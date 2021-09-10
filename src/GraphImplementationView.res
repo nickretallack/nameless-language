@@ -63,8 +63,8 @@ let make = (
       rows: max(
         graphSize.rows,
         max(
-          Belt.List.length(definition.display.inputOrdering) + 1,
-          Belt.List.length(definition.display.outputOrdering) + 1,
+          Belt.Array.length(definition.display.inputOrdering) + 1,
+          Belt.Array.length(definition.display.outputOrdering) + 1,
         ),
       ),
     }
@@ -129,7 +129,7 @@ let make = (
       let nibIndex = NodeGetNibIndex.f(node, definitions, connectionSide.nib, isSink)
       nibPositionFormula(isInternal, isSink, nodePosition, nodeSize, nibIndex)
     | GraphConnection =>
-      let nibIndex = ListFindByIndexExn.f(
+      let nibIndex = ArrayFindIndexByExn.f(
         isSink ? definition.display.outputOrdering : definition.display.inputOrdering,
         nibID => ConnectionNib.NibConnection(nibID) == connectionSide.nib,
       )
@@ -178,7 +178,7 @@ let make = (
     }),
   )
   let renderedNibs = React.array(
-    Belt.Array.map(Belt.List.toArray(allNibs), ({name, explicitConnectionSide}) => {
+    Belt.Array.map(allNibs, ({name, explicitConnectionSide}) => {
       let {ExplicitConnectionSide.connectionSide: connectionSide, isSource} = explicitConnectionSide
       let value = if isSource {
         switch execution {

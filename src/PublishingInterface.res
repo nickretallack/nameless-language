@@ -1,4 +1,4 @@
 type t = {
-  inputs: list<PublishingValueType.t>,
-  outputs: list<PublishingValueType.t>,
+  inputs: array<PublishingValueType.t>,
+  outputs: array<PublishingValueType.t>,
 }

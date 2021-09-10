@@ -95,7 +95,7 @@ and layoutSubGraph = (
   let nibRows = switch definitionNode.node.kind {
   | DefinedNode({definitionID}) =>
     let display = Belt.Map.String.getExn(definitions, definitionID).display
-    max(Belt.List.length(display.inputOrdering), Belt.List.length(display.outputOrdering))
+    max(Belt.Array.length(display.inputOrdering), Belt.Array.length(display.outputOrdering))
   | _ => raise(Not_found)
   }
 

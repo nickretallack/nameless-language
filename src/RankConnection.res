@@ -10,7 +10,7 @@ let f = (
     let sinkColumnIndex = -1
     let sinkIndexInColumn = 0
     let sinkIndex = switch sink.nib {
-    | NibConnection(nibID) => ListFindIndexExn.f(display.outputOrdering, nibID)
+    | NibConnection(nibID) => ArrayFindIndexExn.f(display.outputOrdering, nibID)
     | _ => raise(Exception.TODO("RankConnection non-nib connection"))
     }
 
@@ -26,6 +26,6 @@ let f = (
     let nibCollection = NodeIsFunctionDefinition.f(node.node)
       ? nodeDisplay.internalOutputs
       : nodeDisplay.inputs
-    let sinkIndex = ListFindByIndexExn.f(nibCollection, ({nib}) => nib == sink.nib) // 3rd metric
+    let sinkIndex = ArrayFindIndexByExn.f(nibCollection, ({nib}) => nib == sink.nib) // 3rd metric
     (-sinkColumnIndex, sinkIndexInColumn, sinkIndex)
   }

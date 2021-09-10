@@ -9,7 +9,7 @@ let f = (
 ): NodePosition.t =>
   switch connectionSide.node {
   | GraphConnection =>
-    let nibIndex = ListFindByIndexExn.f(
+    let nibIndex = ArrayFindIndexByExn.f(
       isSink ? definition.display.outputOrdering : definition.display.inputOrdering,
       nibID => ConnectionNib.NibConnection(nibID) == connectionSide.nib,
     )

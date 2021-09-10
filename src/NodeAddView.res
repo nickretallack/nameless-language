@@ -32,7 +32,7 @@ let getScope = (nib: ExplicitConnectionSide.t, nodes: NodeMap.t) =>
 let maybeNameless = (string: string) => String.length(string) == 0 ? "(nameless)" : string
 let canConnectToNib = (definition: Definition.t, isSource: bool) =>
   !isSource ||
-  (Belt.List.length(definition.display.inputOrdering) != 0 ||
+  (Belt.Array.length(definition.display.inputOrdering) != 0 ||
   switch definition.implementation {
   | ConstantImplementation(_) => false
   | LabeledTypeImplementation(_) => true
@@ -328,31 +328,29 @@ let make = (
               <div>
                 <h3> {React.string(nib.isSource ? "Input" : "Output")} </h3>
                 {React.array(
-                  Belt.List.toArray(
-                    Belt.List.map(nib.isSource ? display.inputs : display.outputs, (
-                      displayNib: DisplayNib.t,
-                    ) =>
-                      <a
-                        key={ConnectionNibKey.f(displayNib.nib)}
-                        onClick={_event => {
-                          emit(
-                            AddNode({
-                              node: {
-                                scope: getScope(nib, nodes),
-                                kind: DefinedNode({
-                                  kind: definedNodeKind,
-                                  definitionID: definitionID,
-                                }),
-                              },
-                              explicitConnectionSide: nib,
-                              connectionNib: displayNib.nib,
-                            }),
-                          )
-                          RescriptReactRouter.push(`#${graphDefinitionID}`)
-                        }}>
-                        {React.string(maybeNameless(displayNib.name))}
-                      </a>
-                    ),
+                  Belt.Array.map(nib.isSource ? display.inputs : display.outputs, (
+                    displayNib: DisplayNib.t,
+                  ) =>
+                    <a
+                      key={ConnectionNibKey.f(displayNib.nib)}
+                      onClick={_event => {
+                        emit(
+                          AddNode({
+                            node: {
+                              scope: getScope(nib, nodes),
+                              kind: DefinedNode({
+                                kind: definedNodeKind,
+                                definitionID: definitionID,
+                              }),
+                            },
+                            explicitConnectionSide: nib,
+                            connectionNib: displayNib.nib,
+                          }),
+                        )
+                        RescriptReactRouter.push(`#${graphDefinitionID}`)
+                      }}>
+                      {React.string(maybeNameless(displayNib.name))}
+                    </a>
                   ),
                 )}
               </div>

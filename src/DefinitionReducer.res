@@ -115,7 +115,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
       },
       display: {
         ...definition.display,
-        inputOrdering: List.append(definition.display.inputOrdering, list{nibID}),
+        inputOrdering: Belt.Array.concat(definition.display.inputOrdering, [nibID]),
       },
       implementation: switch definition.implementation {
       | InterfaceImplementation(interface) =>
@@ -147,7 +147,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
       },
       display: {
         ...definition.display,
-        outputOrdering: List.append(definition.display.outputOrdering, list{nibID}),
+        outputOrdering: Belt.Array.concat(definition.display.outputOrdering, [nibID]),
       },
       implementation: switch definition.implementation {
       | InterfaceImplementation(interface) =>
@@ -385,8 +385,8 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
             },
           }),
           display: {
-            inputOrdering: Belt.List.fromArray(Belt.Map.String.keysToArray(inputNibs)),
-            outputOrdering: Belt.List.fromArray(Belt.Map.String.keysToArray(outputNibs)),
+            inputOrdering: Belt.Map.String.keysToArray(inputNibs),
+            outputOrdering: Belt.Map.String.keysToArray(outputNibs),
           },
           documentation: {
             name: TranslatableEmpty.v,

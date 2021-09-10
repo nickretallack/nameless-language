@@ -1,7 +1,7 @@
-let f = (nodes: NodeMap.t, definitions: DefinitionMap.t, languageName: LanguageName.t): list<
+let f = (nodes: NodeMap.t, definitions: DefinitionMap.t, languageName: LanguageName.t): array<
   ExplicitDisplayNib.t,
 > =>
-  Belt.List.reduce(Belt.Map.String.toList(nodes), list{}, (acc, (nodeID, node)) => {
+  Belt.List.reduce(Belt.Map.String.toList(nodes), [], (acc, (nodeID, node)) => {
     let {
       NodeDisplayNibs.inputs: inputs,
       outputs,
@@ -9,7 +9,7 @@ let f = (nodes: NodeMap.t, definitions: DefinitionMap.t, languageName: LanguageN
       internalOutputs,
     } = NodeGetDisplayNibs.f(node, definitions, languageName)
     let connectionNode = ConnectionNode.NodeConnection(nodeID)
-    Belt.List.concatMany([
+    Belt.Array.concatMany([
       acc,
       DisplayNibsToExplicit.f(inputs, connectionNode, false),
       DisplayNibsToExplicit.f(outputs, connectionNode, true),

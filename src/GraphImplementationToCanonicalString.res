@@ -59,7 +59,7 @@ let canonicalizeConnectionSide = (
   graph: GraphImplementation.t,
   dependencies: PublishingDependencyMap.t,
   nodeOrdering: list<NodeID.t>,
-  graphNibOrdering: list<NodeID.t>,
+  graphNibOrdering: array<NodeID.t>,
   connectionSide: ConnectionSide.t,
   isSink: bool,
 ): PublishingConnectionSide.t =>
@@ -69,7 +69,8 @@ let canonicalizeConnectionSide = (
       nib: switch connectionSide.nib {
       | ValueConnection => raise(Exception.InvalidConnection)
       | PositionalConnection(_) => raise(Exception.InvalidConnection)
-      | NibConnection(nibID) => PublishingNibConnection(ListFindIndexExn.f(graphNibOrdering, nibID))
+      | NibConnection(nibID) =>
+        PublishingNibConnection(ArrayFindIndexExn.f(graphNibOrdering, nibID))
       },
     }
   | NodeConnection(nodeID) => {
@@ -102,8 +103,8 @@ let canonicalizeGraph = (
   let nodeOrdering = NodeInputOrdering.f(graph, dependencies, display.outputOrdering)
 
   {
-    inputCount: Belt.List.size(display.inputOrdering),
-    outputCount: Belt.List.size(display.outputOrdering),
+    inputCount: Belt.Array.length(display.inputOrdering),
+    outputCount: Belt.Array.length(display.outputOrdering),
     nodes: Belt.List.map(nodeOrdering, nodeID =>
       switch Belt.Map.String.getExn(graph.nodes, nodeID).kind {
       | ListNode(length) => PublishingNode.PublishingListNode(length)

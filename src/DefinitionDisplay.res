@@ -1,4 +1,4 @@
 type t = {
-  inputOrdering: Belt.List.t<string>,
-  outputOrdering: Belt.List.t<string>,
+  inputOrdering: array<string>,
+  outputOrdering: array<string>,
 }

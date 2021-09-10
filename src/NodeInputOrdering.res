@@ -86,10 +86,10 @@ and visitNibConnections = (
 let f = (
   graph: GraphImplementation.t,
   dependencies: PublishingDependencyMap.t,
-  outputOrdering: list<NibID.t>,
+  outputOrdering: array<NibID.t>,
 ): list<NodeID.t> =>
   Belt.List.reverse(
-    Belt.List.reduce(outputOrdering, list{}, (acc, nibID) =>
+    Belt.Array.reduce(outputOrdering, list{}, (acc, nibID) =>
       visitConnection(graph, dependencies, {node: GraphConnection, nib: NibConnection(nibID)}, acc)
     ),
   )

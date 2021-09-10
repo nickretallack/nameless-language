@@ -1,7 +1,7 @@
-let f = (displayNibs: list<DisplayNib.t>, node: ConnectionNode.t, isSource: bool): list<
+let f = (displayNibs: array<DisplayNib.t>, node: ConnectionNode.t, isSource: bool): array<
   ExplicitDisplayNib.t,
 > =>
-  Belt.List.map(displayNibs, (displayNib: DisplayNib.t) => {
+  Belt.Array.map(displayNibs, (displayNib: DisplayNib.t) => {
     open ExplicitDisplayNib
     {
       name: displayNib.name,

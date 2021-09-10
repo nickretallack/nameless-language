@@ -1,5 +1,5 @@
-let f = (definition: Definition.t, language: LanguageName.t, isInputs: bool): list<DisplayNib.t> =>
-  Belt.List.map(
+let f = (definition: Definition.t, language: LanguageName.t, isInputs: bool): array<DisplayNib.t> =>
+  Belt.Array.map(
     isInputs ? definition.display.inputOrdering : definition.display.outputOrdering,
     nibID => {
       let documentation = definition.documentation

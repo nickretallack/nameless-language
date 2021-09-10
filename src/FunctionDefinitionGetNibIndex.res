@@ -5,5 +5,5 @@ let f = (definition: Definition.t, connectionNib: ConnectionNib.t, isSink: bool)
     raise(Exception.TODO("PositionalConnection in FunctionDefinitionGetNibIndex"))
   | NibConnection(_) =>
     let nibs = DefinitionGetKeywordDisplayNibs.f(definition, "en", !isSink)
-    ListFindByIndexExn.f(nibs, ({nib}) => nib == connectionNib)
+    ArrayFindIndexByExn.f(nibs, ({nib}) => nib == connectionNib)
   }

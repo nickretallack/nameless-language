@@ -1,10 +1,4 @@
-let f = (
-  ~inputs=list{},
-  ~outputs=list{},
-  ~internalInputs=list{},
-  ~internalOutputs=list{},
-  _unit: unit,
-) => {
+let f = (~inputs=[], ~outputs=[], ~internalInputs=[], ~internalOutputs=[], _unit: unit) => {
   open NodeDisplayNibs
   {
     inputs: inputs,

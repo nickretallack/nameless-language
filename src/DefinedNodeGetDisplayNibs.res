@@ -10,19 +10,19 @@ let f = (
       ~outputs=DefinitionGetKeywordDisplayNibOutputs.f(definition, language),
       (),
     )
-  | ValueNode => NodeDisplayNibsMake.f(~outputs=list{{nib: ValueConnection, name: ""}}, ())
+  | ValueNode => NodeDisplayNibsMake.f(~outputs=[{nib: ValueConnection, name: ""}], ())
   | FunctionPointerCallNode =>
     NodeDisplayNibsMake.f(
-      ~inputs=list{
-        {nib: ValueConnection, name: "implementation"},
-        ...DefinitionGetKeywordDisplayNibInputs.f(definition, language),
-      },
+      ~inputs=Belt.Array.concat(
+        [{DisplayNib.nib: ValueConnection, name: "implementation"}],
+        DefinitionGetKeywordDisplayNibInputs.f(definition, language),
+      ),
       ~outputs=DefinitionGetKeywordDisplayNibOutputs.f(definition, language),
       (),
     )
   | FunctionDefinitionNode =>
     NodeDisplayNibsMake.f(
-      ~outputs=list{{nib: ValueConnection, name: ""}},
+      ~outputs=[{nib: ValueConnection, name: ""}],
       ~internalInputs=DefinitionGetKeywordDisplayNibInputs.f(definition, language),
       ~internalOutputs=DefinitionGetKeywordDisplayNibOutputs.f(definition, language),
       (),
@@ -30,16 +30,16 @@ let f = (
   | ConstructorNode =>
     NodeDisplayNibsMake.f(
       ~inputs=DefinitionIsWrappedType.f(definition)
-        ? list{{nib: ValueConnection, name: "wrapped"}}
+        ? [{nib: ValueConnection, name: "wrapped"}]
         : DefinitionGetKeywordDisplayNibInputs.f(definition, language),
-      ~outputs=list{{nib: ValueConnection, name: ""}},
+      ~outputs=[{nib: ValueConnection, name: ""}],
       (),
     )
   | AccessorNode =>
     NodeDisplayNibsMake.f(
-      ~inputs=list{{nib: ValueConnection, name: ""}},
+      ~inputs=[{nib: ValueConnection, name: ""}],
       ~outputs=DefinitionIsWrappedType.f(definition)
-        ? list{{nib: ValueConnection, name: "wrapped"}}
+        ? [{nib: ValueConnection, name: "wrapped"}]
         : DefinitionGetKeywordDisplayNibInputs.f(definition, language),
       (),
     )

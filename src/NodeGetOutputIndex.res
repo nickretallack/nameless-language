@@ -8,5 +8,5 @@ let f = (node: Node.t, definitions: DefinitionMap.t, connectionNib: ConnectionNi
     )
   | _ =>
     let {NodeDisplayNibs.outputs: outputs} = NodeGetDisplayNibs.f(node, definitions, "en")
-    ListFindByIndexExn.f(outputs, ({nib}) => nib == connectionNib)
+    ArrayFindIndexByExn.f(outputs, ({nib}) => nib == connectionNib)
   }

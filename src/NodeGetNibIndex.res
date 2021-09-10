@@ -14,6 +14,6 @@ let f = (
   | _ =>
     let {NodeDisplayNibs.inputs: inputs, outputs} = NodeGetDisplayNibs.f(node, definitions, "en")
     let nibs = isSink ? inputs : outputs
-    let nibIndex = ListFindByIndexExn.f(nibs, ({nib}) => nib == connectionNib)
-    (isSink ? nibIndex : nibIndex + Belt.List.length(inputs)) + 1
+    let nibIndex = ArrayFindIndexByExn.f(nibs, ({nib}) => nib == connectionNib)
+    (isSink ? nibIndex : nibIndex + Belt.Array.length(inputs)) + 1
   }

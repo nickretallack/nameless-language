@@ -2,8 +2,8 @@ let f = (node: Node.t, definitions: DefinitionMap.t, language: LanguageName.t): 
   switch node.kind {
   | ListNode(length) =>
     NodeDisplayNibsMake.f(
-      ~outputs=list{{nib: ValueConnection, name: ""}},
-      ~inputs=Belt.List.makeBy(length, index => {
+      ~outputs=[{nib: ValueConnection, name: ""}],
+      ~inputs=Belt.Array.makeBy(length, index => {
         open DisplayNib
         {
           nib: PositionalConnection(index),
