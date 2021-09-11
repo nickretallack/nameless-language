@@ -32,25 +32,68 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
       if Belt.Array.length(component) == 1 {
         let definitionID = component[0]
         let definition = Belt.Map.String.getExn(state.definitions, definitionID)
-        // Js.log2("Dependencies:", Belt.Map.String.toArray(dependencies))
-        let canonicalString = ImplementationToCanonicalString.f(
-          definitionID,
-          definition.implementation,
-          definition.display,
-          dependencies,
-        )
-        let contentID = ReScriptHash.Sha256.make(canonicalString)
         Belt.Map.String.set(
           dependencies,
           definitionID,
-          {
-            contentID: contentID,
-            inputOrdering: Belt.List.fromArray(definition.display.inputOrdering),
-            outputOrdering: Belt.List.fromArray(definition.display.outputOrdering),
-          },
+          DefinitionToPublishingDependency.f(definitionID, definition, dependencies),
         )
       } else {
-        raise(Exception.TODO("mutual recursion"))
+        Belt.Array.reduce(component, dependencies, (dependencies, definitionID) => {
+          // Each definition in the cycle comes up with ids for its mutuals
+          let definition = Belt.Map.String.getExn(state.definitions, definitionID)
+
+          let cycleDependencies = Belt.Array.map(
+            ArrayWithout.f(component, definitionID),
+            childDefinitionID => {
+              let childDefinition = Belt.Map.String.getExn(state.definitions, childDefinitionID)
+              (
+                childDefinitionID,
+                {
+                  PublishingDependency.kind: MutualRecursion(childDefinition),
+                  inputOrdering: childDefinition.display.inputOrdering,
+                  outputOrdering: childDefinition.display.outputOrdering,
+                },
+              )
+            },
+          )
+
+          let dependency = DefinitionToPublishingDependency.f(
+            definitionID,
+            definition,
+            Belt.Map.String.mergeMany(dependencies, cycleDependencies),
+          )
+
+          Belt.Map.String.set(dependencies, definitionID, dependency)
+
+          // let fakeDependency = {
+          //   kind: MutualRecursion,
+          //   inputOrdering: cycleRootDefinition.display.inputOrdering,
+          //   outputOrdering: cycleRootDefinition.display.outputOrdering,
+          // }
+
+          // let cycleDependencies = Belt.Array.map(
+          //   ArrayWithout.f(component, cycleRootDefinitionID),
+          //   cycleChildDefinitionID => {
+          //     let cycleChildDefinition = Belt.Map.String.getExn(
+          //       state.definitions,
+          //       cycleChildDefinitionID,
+          //     )
+
+          //     let cycleDependency = DefinitionToPublishingDependency.f(
+          //       cycleChildDefinitionID,
+          //       cycleChildDefinition,
+          //       Belt.Map.String.set(dependencies, cycleRootDefinitionID, fakeDependency),
+          //     )
+          //     (cycleChildDefinitionID, cycleDependency)
+          //   },
+          // )
+
+          // let dependency = DefinitionToPublishingDependency.f(
+          //   cycleRootDefinitionID,
+          //   cycleRootDefinition,
+          //   Belt.Map.String.mergeMany(dependencies, cycleDependencies),
+          // )
+        })
       }
     })
     Js.log2("Publishing:", Belt.Map.String.toArray(publishing))

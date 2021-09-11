@@ -76,17 +76,23 @@ let canonicalizeConnectionSide = (
   | NodeConnection(nodeID) => {
       node: PublishingNodeConnection(ListFindIndexExn.f(nodeOrdering, nodeID)),
       nib: switch connectionSide.nib {
-      | ValueConnection => isSink ? raise(Exception.InvalidConnection) : PublishingValueConnection
+      | ValueConnection => PublishingValueConnection
       | PositionalConnection(index) =>
         isSink ? PublishingNibConnection(index) : raise(Exception.InvalidConnection)
       | NibConnection(nibID) =>
         switch Belt.Map.String.getExn(graph.nodes, nodeID).kind {
         | ListNode(_) => raise(Exception.InvalidConnection)
-        | DefinedNode({definitionID}) =>
+        | DefinedNode({kind, definitionID}) =>
           let dependency = Belt.Map.String.getExn(dependencies, definitionID)
+          let useInputs = switch kind {
+          | FunctionDefinitionNode
+          | AccessorNode =>
+            !isSink
+          | _ => isSink
+          }
           PublishingNibConnection(
-            ListFindIndexExn.f(
-              isSink ? dependency.inputOrdering : dependency.outputOrdering,
+            ArrayFindIndexExn.f(
+              useInputs ? dependency.inputOrdering : dependency.outputOrdering,
               nibID,
             ),
           )
@@ -102,6 +108,18 @@ let canonicalizeGraph = (
 ): PublishingGraphImplementation.t => {
   let nodeOrdering = NodeInputOrdering.f(graph, dependencies, display.outputOrdering)
 
+  // find mutual recursions in order
+  // let mutualRecursions = Belt.List.reduce(nodeOrdering, list{}, (mutualRecursions, nodeID) => {
+  //   switch Belt.Map.String.getExn(graph.nodes, nodeID).kind {
+  //   | DefinedNode({kind, definitionID}) =>
+  //     switch Belt.Map.String.getExn(dependencies, definitionID).kind {
+  //     | MutualRecursion(a) => list{a, ...mutualRecursions}
+  //     | _ => mutualRecursions
+  //     }
+  //   | _ => mutualRecursions
+  //   }
+  // })
+
   {
     inputCount: Belt.Array.length(display.inputOrdering),
     outputCount: Belt.Array.length(display.outputOrdering),
@@ -111,7 +129,11 @@ let canonicalizeGraph = (
       | DefinedNode({kind, definitionID}) =>
         PublishingNode.PublishingDefinedNode({
           kind: kind,
-          contentID: Belt.Map.String.getExn(dependencies, definitionID).contentID,
+          contentID: switch Belt.Map.String.getExn(dependencies, definitionID).kind {
+          | Final({contentID}) => contentID
+          | Recursion => "self"
+          | MutualRecursion(_) => "mutual" // TODO: recursively look at the definition
+          },
         })
       }
     ),

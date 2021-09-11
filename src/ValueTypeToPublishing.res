@@ -4,7 +4,13 @@ let rec f = (
 ): PublishingValueType.t =>
   switch valueType {
   | DefinedValueType(definitionID) =>
-    PublishingDefinedValueType(Belt.Map.String.getExn(dependencies, definitionID).contentID)
+    PublishingDefinedValueType(
+      switch Belt.Map.String.getExn(dependencies, definitionID).kind {
+      | Final({contentID}) => contentID
+      | Recursion => "self"
+      | MutualRecursion(_definition) => "mutual" // TODO: base it on the definition
+      },
+    )
   | PrimitiveValueType(primitiveValueType) => PublishingPrimitiveValueType(primitiveValueType)
   | AnyType => PublishingAnyType
   | SequencerType => PublishingSequencerType

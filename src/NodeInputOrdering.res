@@ -70,7 +70,7 @@ and visitNibConnections = (
   nodes: list<NodeID.t>,
 ): list<NodeID.t> => {
   let dependency = Belt.Map.String.getExn(dependencies, definitionID)
-  Belt.List.reduce(isInputs ? dependency.inputOrdering : dependency.outputOrdering, nodes, (
+  Belt.Array.reduce(isInputs ? dependency.inputOrdering : dependency.outputOrdering, nodes, (
     acc: list<NodeID.t>,
     nibID: NibID.t,
   ) =>
