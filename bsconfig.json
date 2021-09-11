@@ -23,6 +23,7 @@
 		"@rescript/react",
 		"@glennsl/bs-json",
 		"bs-webapi",
-		"rescript-react-update"
+		"rescript-react-update",
+    "rescript-hash"
 	]
 }

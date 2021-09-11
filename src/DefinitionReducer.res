@@ -14,14 +14,47 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
   | Publish =>
     // TODO: topologically sort the dependency graph
     let dependencyMap = ImplementationGetDependencyMap.f(definitionID, state.definitions)
-    Js.log(
+    Js.log2(
+      "Dependency map:",
       Belt.Array.map(Belt.Map.String.toArray(dependencyMap), ((key, value)) => (
         key,
         Belt.Set.String.toArray(value),
       )),
     )
 
-    Js.log(DependencyMapTarjan.f(dependencyMap))
+    let components = DependencyMapTarjan.f(dependencyMap)
+    Js.log2("Components:", components)
+
+    let publishing = Belt.Array.reduceReverse(components, Belt.Map.String.empty, (
+      dependencies,
+      component,
+    ) => {
+      if Belt.Array.length(component) == 1 {
+        let definitionID = component[0]
+        let definition = Belt.Map.String.getExn(state.definitions, definitionID)
+        // Js.log2("Dependencies:", Belt.Map.String.toArray(dependencies))
+        let canonicalString = ImplementationToCanonicalString.f(
+          definitionID,
+          definition.implementation,
+          definition.display,
+          dependencies,
+        )
+        let contentID = ReScriptHash.Sha256.make(canonicalString)
+        Belt.Map.String.set(
+          dependencies,
+          definitionID,
+          {
+            contentID: contentID,
+            inputOrdering: Belt.List.fromArray(definition.display.inputOrdering),
+            outputOrdering: Belt.List.fromArray(definition.display.outputOrdering),
+          },
+        )
+      } else {
+        raise(Exception.TODO("mutual recursion"))
+      }
+    })
+    Js.log2("Publishing:", Belt.Map.String.toArray(publishing))
+
     ReactUpdate.NoUpdate
   | CreateConnection({source, sink}) =>
     switch definition.implementation {

@@ -28,6 +28,7 @@
 		"bs-webapi": "^0.19",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
+		"rescript-hash": "^1.5.0",
 		"rescript-react-update": "^4",
 		"webpack": "^5.35.0",
 		"webpack-cli": "^4.6.0"

@@ -13,10 +13,10 @@ let rec visitConnection = (
       if ListHas.f(nodes, nodeID) {
         nodes
       } else {
-        let nodeAcc = list{nodeID, ...nodes}
+        let nodes = list{nodeID, ...nodes}
         switch Belt.Map.String.getExn(graph.nodes, nodeID).kind {
         | ListNode(length) =>
-          Belt.List.reduce(Belt.List.makeBy(length, Identity.f), nodeAcc, (
+          Belt.List.reduce(Belt.List.makeBy(length, Identity.f), nodes, (
             nodes: list<NodeID.t>,
             index: int,
           ) =>
