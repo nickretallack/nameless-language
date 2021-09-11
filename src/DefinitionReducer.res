@@ -13,12 +13,15 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
   switch action {
   | Publish =>
     // TODO: topologically sort the dependency graph
+    let dependencyMap = ImplementationGetDependencyMap.f(definitionID, state.definitions)
     Js.log(
-      Belt.Array.map(
-        Belt.Map.String.toArray(ImplementationGetDependencyMap.f(definitionID, state.definitions)),
-        ((key, value)) => (key, Belt.Set.String.toArray(value)),
-      ),
+      Belt.Array.map(Belt.Map.String.toArray(dependencyMap), ((key, value)) => (
+        key,
+        Belt.Set.String.toArray(value),
+      )),
     )
+
+    Js.log(DependencyMapTarjan.f(dependencyMap))
     ReactUpdate.NoUpdate
   | CreateConnection({source, sink}) =>
     switch definition.implementation {
