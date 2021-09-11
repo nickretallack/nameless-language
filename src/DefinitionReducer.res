@@ -64,35 +64,6 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
           )
 
           Belt.Map.String.set(dependencies, definitionID, dependency)
-
-          // let fakeDependency = {
-          //   kind: MutualRecursion,
-          //   inputOrdering: cycleRootDefinition.display.inputOrdering,
-          //   outputOrdering: cycleRootDefinition.display.outputOrdering,
-          // }
-
-          // let cycleDependencies = Belt.Array.map(
-          //   ArrayWithout.f(component, cycleRootDefinitionID),
-          //   cycleChildDefinitionID => {
-          //     let cycleChildDefinition = Belt.Map.String.getExn(
-          //       state.definitions,
-          //       cycleChildDefinitionID,
-          //     )
-
-          //     let cycleDependency = DefinitionToPublishingDependency.f(
-          //       cycleChildDefinitionID,
-          //       cycleChildDefinition,
-          //       Belt.Map.String.set(dependencies, cycleRootDefinitionID, fakeDependency),
-          //     )
-          //     (cycleChildDefinitionID, cycleDependency)
-          //   },
-          // )
-
-          // let dependency = DefinitionToPublishingDependency.f(
-          //   cycleRootDefinitionID,
-          //   cycleRootDefinition,
-          //   Belt.Map.String.mergeMany(dependencies, cycleDependencies),
-          // )
         })
       }
     })
