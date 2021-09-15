@@ -129,11 +129,9 @@ let canonicalizeGraph = (
       | DefinedNode({kind, definitionID}) =>
         PublishingNode.PublishingDefinedNode({
           kind: kind,
-          contentID: switch Belt.Map.String.getExn(dependencies, definitionID).kind {
-          | Final({contentID}) => contentID
-          | Recursion => "self"
-          | MutualRecursion(_) => "mutual" // TODO: recursively look at the definition
-          },
+          contentID: PublishingDependencyKindToContentID.f(
+            Belt.Map.String.getExn(dependencies, definitionID).kind,
+          ),
         })
       }
     ),

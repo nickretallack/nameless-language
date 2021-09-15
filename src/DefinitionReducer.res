@@ -38,32 +38,78 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
           DefinitionToPublishingDependency.f(definitionID, definition, dependencies),
         )
       } else {
-        Belt.Array.reduce(component, dependencies, (dependencies, definitionID) => {
-          // Each definition in the cycle comes up with ids for its mutuals
+        // serialize the cycle members once to determine their sort order
+        let unorderedMutualRecursionStubs = Belt.Array.map(component, definitionID => {
           let definition = Belt.Map.String.getExn(state.definitions, definitionID)
-
-          let cycleDependencies = Belt.Array.map(
-            ArrayWithout.f(component, definitionID),
-            childDefinitionID => {
-              let childDefinition = Belt.Map.String.getExn(state.definitions, childDefinitionID)
-              (
-                childDefinitionID,
-                {
-                  PublishingDependency.kind: MutualRecursion(childDefinition),
-                  inputOrdering: childDefinition.display.inputOrdering,
-                  outputOrdering: childDefinition.display.outputOrdering,
-                },
-              )
+          (
+            definitionID,
+            {
+              PublishingDependency.kind: UnorderedMutualRecursion,
+              inputOrdering: definition.display.inputOrdering,
+              outputOrdering: definition.display.outputOrdering,
             },
           )
+        })
+        let temporaryDependencies = Belt.Map.String.mergeMany(
+          dependencies,
+          unorderedMutualRecursionStubs,
+        )
 
-          let dependency = DefinitionToPublishingDependency.f(
+        // sort by preliminary canonical string
+        let orderedComponent = Belt.List.toArray(
+          ListSortBy.f(Belt.List.fromArray(component), definitionID => {
+            let definition = Belt.Map.String.getExn(state.definitions, definitionID)
+            DefinitionToCanonicalString.f(definitionID, definition, temporaryDependencies)
+          }),
+        )
+
+        // calculate content IDs again now that we have an ordering
+        let orderedMutualRecursionStubs = Belt.Array.mapWithIndex(component, (
+          index,
+          definitionID,
+        ) => {
+          let definition = Belt.Map.String.getExn(state.definitions, definitionID)
+          (
             definitionID,
-            definition,
-            Belt.Map.String.mergeMany(dependencies, cycleDependencies),
+            {
+              PublishingDependency.kind: OrderedMutualRecursion(index),
+              inputOrdering: definition.display.inputOrdering,
+              outputOrdering: definition.display.outputOrdering,
+            },
           )
+        })
+        let orderedDependencies = Belt.Map.String.mergeMany(
+          dependencies,
+          orderedMutualRecursionStubs,
+        )
 
-          Belt.Map.String.set(dependencies, definitionID, dependency)
+        let canonicalStrings = Belt.Array.map(orderedComponent, definitionID => {
+          let definition = Belt.Map.String.getExn(state.definitions, definitionID)
+          DefinitionToCanonicalString.f(definitionID, definition, orderedDependencies)
+        })
+
+        let canonicalString = Json.stringify(
+          Json.Encode.array(Json.Encode.string, canonicalStrings),
+        )
+
+        let contentID = ReScriptHash.Sha256.make(canonicalString)
+        let hashedContent = {
+          HashedContent.contentID: contentID,
+          canonicalString: canonicalString,
+        }
+
+        Belt.Array.reduceWithIndex(component, dependencies, (dependencies, definitionID, index) => {
+          // Each definition in the cycle comes up with ids for its mutuals
+          let definition = Belt.Map.String.getExn(state.definitions, definitionID)
+          Belt.Map.String.set(
+            dependencies,
+            definitionID,
+            {
+              kind: FinalMutualRecursion({position: index, content: hashedContent}),
+              inputOrdering: definition.display.inputOrdering,
+              outputOrdering: definition.display.outputOrdering,
+            },
+          )
         })
       }
     })

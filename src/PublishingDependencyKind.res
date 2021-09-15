@@ -1,4 +1,6 @@
 type t =
   | Final(HashedContent.t)
   | Recursion
-  | MutualRecursion(Definition.t)
+  | UnorderedMutualRecursion
+  | OrderedMutualRecursion(int)
+  | FinalMutualRecursion(MutualRecursion.t)
