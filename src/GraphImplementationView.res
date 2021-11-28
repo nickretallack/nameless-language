@@ -72,7 +72,6 @@ let make = (
   let nodeWidth = 120.0
   let textHeight = 20.0
   let xPadding = 60.0
-  /* let yPadding = 20.0; */
   let columnWidth = nodeWidth +. xPadding
   let getNodePosition = nodeID => {
     let position = Belt.Map.String.getExn(nodeLayouts, nodeID).position
