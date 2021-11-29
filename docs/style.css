@@ -290,8 +290,11 @@ h3 {
 
 #definition-list tr {
   display: grid;
-  grid-template-columns: [name] 1fr [type] 1fr;
-  height: 1em;
+  grid-template-columns: [name] 3fr [type] 1fr;
+}
+
+#definition-list td {
+  padding: 0;
 }
 
 #definition-list tbody {
