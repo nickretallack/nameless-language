@@ -283,7 +283,7 @@ let make = (
           {x: rect.left, y: rect.top}
         | None => {x: 0.0, y: 0.0}
         }
-        let adjustedPoint = PointScale.f(PointSubtract.f(point, svgPosition), state.zoom)
+        let adjustedPoint = PointScale.f(PointSubtract.f(point, svgPosition), 1.0 /. state.zoom)
         <ConnectionView
           key={PointerIDToString.f(pointerID)}
           sourcePosition={startIsSource ? getNibPosition(connectionSide, false) : adjustedPoint}
