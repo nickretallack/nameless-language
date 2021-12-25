@@ -19,3 +19,4 @@ and t =
   | Prerequisite
   | Reference(ReferenceID.t)
   | HTMLElement(Webapi.Dom.Element.t)
+  | ScheduledEventIdentifier(ScheduledEventIdentifier.t)

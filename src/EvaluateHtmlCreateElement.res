@@ -7,7 +7,7 @@ let f = (
   | Some(Value.PrimitiveValue(TextValue(tagName))) =>
     let element = Webapi.Dom.Document.createElement(tagName, Webapi.Dom.document)
     SideEffect(
-      HTMLElement(element),
+      Some(HTMLElement(element)),
       (webView, _) => {
         let webViewElement = Belt.Option.getUnsafe(Js.Nullable.toOption(webView.current))
         Webapi.Dom.Element.appendChild(element, webViewElement)

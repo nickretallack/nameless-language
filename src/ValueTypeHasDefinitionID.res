@@ -4,6 +4,7 @@ let f = (valueType: ValueType.t, definitionID: DefinitionID.t) =>
   | SequencerType
   | ReferenceType(_)
   | HTMLElementType
+  | ScheduledEventIdentifierType
   | AnyType => false
   | DefinedValueType(theDefinitionID) => definitionID == theDefinitionID
   }

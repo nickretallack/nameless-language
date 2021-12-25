@@ -5,3 +5,4 @@ type rec t =
   | PublishingSequencerType
   | PublishingReferenceType(t)
   | PublishingHTMLElementType
+  | PublishingScheduledEventIdentifierType

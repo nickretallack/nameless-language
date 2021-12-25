@@ -533,6 +533,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
           },
           reactKey: RandomIDMake.f(),
           debug: debug,
+          scheduledEvents: ScheduledEventSet.fromArray([]),
         }),
       },
       ({send}) => {

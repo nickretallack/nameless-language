@@ -12,7 +12,7 @@ let f = (
     switch handler {
     | InlineFunction({scopeID, nodeID}) =>
       SideEffect(
-        Prerequisite,
+        Some(Prerequisite),
         (webView, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
           let element = switch Js.Nullable.toOption(webView.current) {
           | Some(element) => element

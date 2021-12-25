@@ -53,4 +53,5 @@ and f = (
         language,
       )}`
   | HTMLElement(_) => "(HTML element)"
+  | ScheduledEventIdentifier(_) => "(scheduled event identifier)"
   }

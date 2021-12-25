@@ -13,5 +13,7 @@ let rec f = (valueType: PublishingValueType.t) => {
   | PublishingReferenceType(valueType) =>
     object_(list{("type", string("reference")), ("referenceType", f(valueType))})
   | PublishingHTMLElementType => object_(list{("type", string("html element"))})
+  | PublishingScheduledEventIdentifierType =>
+    object_(list{("type", string("scheduled event identifier"))})
   }
 }

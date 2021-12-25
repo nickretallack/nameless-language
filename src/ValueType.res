@@ -5,3 +5,4 @@ type rec t =
   | AnyType
   | ReferenceType(t)
   | HTMLElementType
+  | ScheduledEventIdentifierType

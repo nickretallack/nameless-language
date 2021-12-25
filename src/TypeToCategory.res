@@ -20,4 +20,5 @@ let f = (valueType: ValueType.t, definitions: DefinitionMap.t): TypeSelectorCate
   | SequencerType => AnyCategory // TODO
   | ReferenceType(_) => AnyCategory // TODO
   | HTMLElementType => AnyCategory // TODO
+  | ScheduledEventIdentifierType => AnyCategory // TODO
   }

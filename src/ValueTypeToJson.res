@@ -17,6 +17,7 @@ let rec f = (valueType: ValueType.t): Js.Json.t => {
         ("referenceType", f(referenceType)),
       }
     | HTMLElementType => list{("type", string("html element"))}
+    | ScheduledEventIdentifierType => list{("type", string("scheduled event identifier"))}
     },
   )
 }

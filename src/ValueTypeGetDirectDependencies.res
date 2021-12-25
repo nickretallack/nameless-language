@@ -5,5 +5,6 @@ let rec f = (valueType: ValueType.t): Belt.Set.String.t =>
   | PrimitiveValueType(_)
   | SequencerType
   | AnyType
+  | ScheduledEventIdentifierType
   | HTMLElementType => Belt.Set.String.empty
   }

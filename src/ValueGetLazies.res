@@ -4,6 +4,7 @@ let rec f = (value: Value.t, execution: Execution.t, definitions: DefinitionMap.
   switch value {
   | PrimitiveValue(_)
   | Prerequisite
+  | ScheduledEventIdentifier(_)
   | HTMLElement(_)
   | InlineFunction(_) => list{}
   | LazyValue(lazyValue) =>

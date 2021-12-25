@@ -124,14 +124,20 @@ let f = (
       ) {
       | EvaluationResult(value) =>
         ExecutionReducerReturn.f(value, execution, source, state, urlHash)
-      | SideEffect(value, sideEffect) =>
-        ReactUpdate.UpdateWithSideEffects(
-          ExecutionReducerReturnState.f(value, execution, source, state),
-          arg => {
-            let _ = ExecutionReducerSideEffects.f(urlHash, arg)
-            sideEffect(webView, arg)
-          },
-        )
+      | SideEffect(optionalValue, sideEffect) =>
+        let doSideEffects = arg => {
+          let _ = ExecutionReducerSideEffects.f(urlHash, arg)
+          sideEffect(webView, arg)
+        }
+
+        switch optionalValue {
+        | Some(value) =>
+          ReactUpdate.UpdateWithSideEffects(
+            ExecutionReducerReturnState.f(value, execution, source, state),
+            doSideEffects,
+          )
+        | None => ReactUpdate.SideEffects(doSideEffects)
+        }
       | EvaluationRequired(nibIDs) =>
         ExecutionReducerRequireEvaluation.f(state, execution, nibIDs, frame, source, urlHash)
       }

@@ -14,4 +14,5 @@ let rec f = (
   | SequencerType => PublishingSequencerType
   | ReferenceType(referenceType) => PublishingReferenceType(f(referenceType, dependencies))
   | HTMLElementType => PublishingHTMLElementType
+  | ScheduledEventIdentifierType => PublishingScheduledEventIdentifierType
   }

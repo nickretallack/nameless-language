@@ -5,4 +5,5 @@ type t = {
   result: option<Value.t>,
   reactKey: string,
   debug: bool,
+  scheduledEvents: ScheduledEventSet.t,
 }

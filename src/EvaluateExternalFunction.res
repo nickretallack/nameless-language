@@ -19,6 +19,7 @@ let f = (
   | "=" => EvaluateEquals.f
   | "concatenateText" => EvaluateConcatenateText.f
   | "addKeyboardEventListener" => EvaluateAddKeyboardEventListener.f
+  | "scheduleRecurringEvent" => EvaluateScheduleRecurringEvent.f
   | "htmlCreateElement" => EvaluateHtmlCreateElement.f
   | "htmlSetCssProperty" => EvaluateHtmlSetCssProperty.f
   | "log" => EvaluateLog.f(execution, definitions, languageName)

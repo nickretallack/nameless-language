@@ -11,4 +11,5 @@ let rec f = (
   | SequencerType => "Sequencer"
   | ReferenceType(referenceType) => `Reference to ${f(referenceType, definitions, language)}`
   | HTMLElementType => "HTML Element"
+  | ScheduledEventIdentifierType => "Scheduled event identifier"
   }

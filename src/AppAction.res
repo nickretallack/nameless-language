@@ -7,3 +7,4 @@ type t =
   | SetAutoSave(bool)
   | ResetData
   | SetDefinitions(DefinitionMap.t)
+  | AddScheduledEvent(AddScheduledEvent.t)

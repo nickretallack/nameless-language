@@ -585,7 +585,7 @@ let greaterThan = DefinitionMake.f(
 
 let keyboardEventListener = DefinitionMake.f(
   "en",
-  ~name="Keyboard Event Listener",
+  ~name="Keyboard Event Handler",
   ~inputs=[("code", "code")],
   ~outputs=[(";", ";")],
   ~implementation=InterfaceImplementation({
@@ -597,7 +597,7 @@ let keyboardEventListener = DefinitionMake.f(
 
 let addKeyboardEventListener = DefinitionMake.f(
   "en",
-  ~name="Add Keyboard Event Listener",
+  ~name="Add Keyboard Event Handler",
   ~inputs=[("handler", "Handler"), (";", ";")],
   ~outputs=[(";", ";")],
   ~implementation=ExternalImplementation({
@@ -610,6 +610,47 @@ let addKeyboardEventListener = DefinitionMake.f(
       output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
     },
   }),
+  (),
+)
+
+let scheduledEventHandler = DefinitionMake.f(
+  "en",
+  ~name="Scheduled Event Handler",
+  ~inputs=[],
+  ~outputs=[(";", ";")],
+  ~implementation=InterfaceImplementation({
+    input: Belt.Map.String.fromArray([]),
+    output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
+  }),
+  (),
+)
+
+let scheduleRecurringEvent = DefinitionMake.f(
+  "en",
+  ~name="Schedule Recurring Event",
+  ~inputs=[("handler", "Handler"), ("interval", "interval"), (";", ";")],
+  ~outputs=[("identifier", "Identifier"), (";", ";")],
+  ~implementation=ExternalImplementation({
+    name: "scheduleRecurringEvent",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("handler", ValueType.DefinedValueType("scheduledEventHandler")),
+        ("interval", ValueType.PrimitiveValueType(IntegerType)),
+        (";", ValueType.SequencerType),
+      ]),
+      output: Belt.Map.String.fromArray([
+        (";", ValueType.SequencerType),
+        ("identifier", ValueType.ScheduledEventIdentifierType),
+      ]),
+    },
+  }),
+  (),
+)
+
+let scheduledEventIdentifier = DefinitionMake.f(
+  "en",
+  ~name="Scheduled Event Identifier",
+  ~implementation=LabeledTypeImplementation(PrimitiveValueType(IntegerType)),
   (),
 )
 
@@ -909,6 +950,8 @@ let builtins = [
   ("yes", yesLabel),
   ("no", noLabel),
   ("boolean", booleanUnion),
+  ("scheduledEventIdentifier", scheduledEventIdentifier),
+  ("scheduledEventHandler", scheduledEventHandler),
   // References
   ("makeReference", makeReference),
   ("setReference", setReference),
@@ -931,6 +974,7 @@ let builtins = [
   ("addKeyboardEventListener", addKeyboardEventListener),
   ("htmlCreateElement", htmlCreateElement),
   ("htmlSetCssProperty", htmlSetCssProperty),
+  ("scheduleRecurringEvent", scheduleRecurringEvent),
 ]
 
 let builtinsMap = Belt.Map.String.fromArray(builtins)

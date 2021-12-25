@@ -73,6 +73,72 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
         },
       )
     }
-  | Stop => ReactUpdate.Update({...state, execution: None})
+  | Stop =>
+    switch state.execution {
+    | Some(execution) =>
+      Belt.Set.forEach(execution.scheduledEvents, eventId => {
+        switch eventId {
+        | IntervalID(intervalID) => Js.Global.clearInterval(intervalID)
+        | TimeoutID(timeoutID) => Js.Global.clearTimeout(timeoutID)
+        }
+      })
+    | None => ()
+    }
+    ReactUpdate.Update({...state, execution: None})
   | Step => ExecutionReducer.f(state, webView, urlHash)
+  | AddScheduledEvent({eventID, values}) =>
+    switch state.execution {
+    | None => ReactUpdate.NoUpdate
+    | Some(execution) => {
+        let frame = Belt.List.headExn(Belt.List.tailExn(execution.stack))
+        let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
+        let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution, frame.scopeID)
+        let definition = Belt.Map.String.getExn(state.definitions, graphDefinitionID)
+        switch definition.implementation {
+        | GraphImplementation(graphImplementation) =>
+          let source = ExplicitConnectionSideGetSource.f(
+            frame.explicitConnectionSide,
+            graphImplementation.connections,
+          )
+
+          let sourceNibId = switch source.nib {
+          | NibConnection(nibID) => nibID
+          | _ => raise(Exception.ShouldntHappen("add scheduled event must use nib connections"))
+          }
+          let returnValue = Belt.Map.String.getExn(values, sourceNibId)
+          let newSourceValues = Belt.Map.String.reduce(values, scope.sourceValues, (
+            sourceValues,
+            nibID,
+            value,
+          ) =>
+            Belt.Map.set(
+              sourceValues,
+              {ConnectionSide.node: source.node, nib: NibConnection(nibID)},
+              value,
+            )
+          )
+
+          ReactUpdate.Update({
+            ...state,
+            execution: Some({
+              ...execution,
+              scheduledEvents: Belt.Set.add(execution.scheduledEvents, eventID),
+              stack: list{
+                {...frame, action: Returning(returnValue)},
+                ...Belt.List.tailExn(execution.stack),
+              },
+              scopes: Belt.Map.String.set(
+                execution.scopes,
+                frame.scopeID,
+                {
+                  ...scope,
+                  sourceValues: newSourceValues,
+                },
+              ),
+            }),
+          })
+        | _ => raise(Exception.ShouldntHappen("add scheduled event must occur in a graph"))
+        }
+      }
+    }
   }
