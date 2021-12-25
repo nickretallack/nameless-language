@@ -80,6 +80,7 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
         switch eventId {
         | IntervalID(intervalID) => Js.Global.clearInterval(intervalID)
         | TimeoutID(timeoutID) => Js.Global.clearTimeout(timeoutID)
+        | AnimationFrameRequestID(requestID) => AnimationFrame.cancel(requestID)
         }
       })
     | None => ()
@@ -90,7 +91,8 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
     switch state.execution {
     | None => ReactUpdate.NoUpdate
     | Some(execution) => {
-        let frame = Belt.List.headExn(Belt.List.tailExn(execution.stack))
+        let stack = Belt.List.tailExn(execution.stack)
+        let frame = Belt.List.headExn(stack)
         let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
         let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution, frame.scopeID)
         let definition = Belt.Map.String.getExn(state.definitions, graphDefinitionID)
@@ -123,10 +125,7 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
             execution: Some({
               ...execution,
               scheduledEvents: Belt.Set.add(execution.scheduledEvents, eventID),
-              stack: list{
-                {...frame, action: Returning(returnValue)},
-                ...Belt.List.tailExn(execution.stack),
-              },
+              stack: list{{...frame, action: Returning(returnValue)}, ...Belt.List.tailExn(stack)},
               scopes: Belt.Map.String.set(
                 execution.scopes,
                 frame.scopeID,

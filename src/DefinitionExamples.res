@@ -647,10 +647,45 @@ let scheduleRecurringEvent = DefinitionMake.f(
   (),
 )
 
-let scheduledEventIdentifier = DefinitionMake.f(
+let scheduleAnimationFrame = DefinitionMake.f(
   "en",
-  ~name="Scheduled Event Identifier",
-  ~implementation=LabeledTypeImplementation(PrimitiveValueType(IntegerType)),
+  ~name="Schedule Animation Frame",
+  ~inputs=[("handler", "Handler"), (";", ";")],
+  ~outputs=[("identifier", "Identifier"), (";", ";")],
+  ~implementation=ExternalImplementation({
+    name: "scheduleAnimationFrame",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("handler", ValueType.DefinedValueType("scheduledEventHandler")),
+        (";", ValueType.SequencerType),
+      ]),
+      output: Belt.Map.String.fromArray([
+        (";", ValueType.SequencerType),
+        ("identifier", ValueType.ScheduledEventIdentifierType),
+      ]),
+    },
+  }),
+  (),
+)
+
+let prerequisite = DefinitionMake.f(
+  "en",
+  ~name="Prerequisite",
+  ~inputs=[("value", "Value"), (";", ";")],
+  ~outputs=[("value", "Value"), (";", ";")],
+  ~implementation=ExternalImplementation({
+    name: "prerequisite",
+    interface: {
+      input: Belt.Map.String.fromArray([
+        ("value", ValueType.AnyType),
+        (";", ValueType.SequencerType),
+      ]),
+      output: Belt.Map.String.fromArray([
+        ("value", ValueType.AnyType),
+        (";", ValueType.SequencerType),
+      ]),
+    },
+  }),
   (),
 )
 
@@ -950,7 +985,6 @@ let builtins = [
   ("yes", yesLabel),
   ("no", noLabel),
   ("boolean", booleanUnion),
-  ("scheduledEventIdentifier", scheduledEventIdentifier),
   ("scheduledEventHandler", scheduledEventHandler),
   // References
   ("makeReference", makeReference),
@@ -964,10 +998,12 @@ let builtins = [
   ("equals", equals),
   ("less-than", lessThan),
   ("greater-than", greaterThan),
-  ("branch", branch),
-  ("log", log),
   // Text
   ("concatenateText", concatenateText),
+  // flow control
+  ("branch", branch),
+  ("prerequisite", prerequisite),
+  ("log", log),
   // Web view stuff
   ("keyboardEvent", keyboardEvent),
   ("keyboardEventListener", keyboardEventListener),
@@ -975,6 +1011,7 @@ let builtins = [
   ("htmlCreateElement", htmlCreateElement),
   ("htmlSetCssProperty", htmlSetCssProperty),
   ("scheduleRecurringEvent", scheduleRecurringEvent),
+  ("scheduleAnimationFrame", scheduleAnimationFrame),
 ]
 
 let builtinsMap = Belt.Map.String.fromArray(builtins)
