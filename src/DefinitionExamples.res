@@ -729,7 +729,7 @@ let log = DefinitionMake.f(
   "en",
   ~name="Log",
   ~inputs=[("value", "Value"), (";", ";")],
-  ~outputs=[(";", ";")],
+  ~outputs=[("value", "Value"), (";", ";")],
   ~implementation=ExternalImplementation({
     name: "log",
     interface: {
@@ -737,7 +737,10 @@ let log = DefinitionMake.f(
         ("value", ValueType.AnyType),
         (";", ValueType.SequencerType),
       ]),
-      output: Belt.Map.String.fromArray([(";", ValueType.SequencerType)]),
+      output: Belt.Map.String.fromArray([
+        ("value", ValueType.AnyType),
+        (";", ValueType.SequencerType),
+      ]),
     },
   }),
   (),

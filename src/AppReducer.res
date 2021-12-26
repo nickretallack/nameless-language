@@ -103,23 +103,9 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
             graphImplementation.connections,
           )
 
-          let sourceNibId = switch source.nib {
-          | NibConnection(nibID) => nibID
-          | _ => raise(Exception.ShouldntHappen("add scheduled event must use nib connections"))
-          }
+          let sourceNibId = NibGetID.f(source.nib)
           let returnValue = Belt.Map.String.getExn(values, sourceNibId)
-          let newSourceValues = Belt.Map.String.reduce(values, scope.sourceValues, (
-            sourceValues,
-            nibID,
-            value,
-          ) =>
-            Belt.Map.set(
-              sourceValues,
-              {ConnectionSide.node: source.node, nib: NibConnection(nibID)},
-              value,
-            )
-          )
-
+          let newSourceValues = ValuesMerge.f(source, values, scope.sourceValues)
           ReactUpdate.Update({
             ...state,
             execution: Some({

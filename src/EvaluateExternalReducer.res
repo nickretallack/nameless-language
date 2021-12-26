@@ -140,6 +140,8 @@ let f = (
         }
       | EvaluationRequired(nibIDs) =>
         ExecutionReducerRequireEvaluation.f(state, execution, nibIDs, frame, source, urlHash)
+      | MultiValue(values) =>
+        ExecutionReducerReturnMultiple.f(source, values, execution, state, urlHash)
       }
     }
   }

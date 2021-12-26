@@ -9,6 +9,6 @@ let f = (
   | None => EvaluationRequired(list{"value"})
   | Some(value) =>
     Js.log(ValueDisplay.f(value, execution, definitions, languageName))
-    EvaluationResult(value)
+    MultiValue(Belt.Map.String.fromArray([("value", value), (";", Value.Prerequisite)]))
   }
 }
