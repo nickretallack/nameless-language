@@ -2116,7 +2116,7 @@ eval("\n\n\nvar list = {\n  hd: /* GraphImplementationType */0,\n  tl: {\n    hd
   \*************************/
 /***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-eval("\n\nvar React = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\nvar ReactDom = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\nvar AppView$Nameless = __webpack_require__(/*! ./AppView.bs.js */ \"./src/AppView.bs.js\");\n\nvar root = document.querySelector(\"#app\");\n\nif (!(root == null)) {\n  ReactDom.render(React.createElement(AppView$Nameless.make, {}), root);\n}\n\n/* root Not a pure module */\n\n\n//# sourceURL=webpack://nameless/./src/Index.bs.js?");
+eval("\n\nvar React = __webpack_require__(/*! react */ \"./node_modules/react/index.js\");\nvar ReactDom = __webpack_require__(/*! react-dom */ \"./node_modules/react-dom/index.js\");\nvar AppView$Nameless = __webpack_require__(/*! ./AppView.bs.js */ \"./src/AppView.bs.js\");\n\nvar root = document.querySelector(\"#app\");\n\nif (!(root == null)) {\n  ReactDom.render(React.createElement(React.StrictMode, {\n            children: React.createElement(AppView$Nameless.make, {})\n          }), root);\n}\n\n/* root Not a pure module */\n\n\n//# sourceURL=webpack://nameless/./src/Index.bs.js?");
 
 /***/ }),
 
