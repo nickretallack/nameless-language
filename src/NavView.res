@@ -18,11 +18,9 @@ let make = (
       | Some(execution) => <>
           <button onClick={_ => emit(AppAction.Step)}> {React.string("step")} </button>
           <button onClick={_ => emit(AppAction.Stop)}> {React.string("stop")} </button>
-          {switch execution.result {
-          | None => React.null
-          | Some(value) =>
-            React.string("Result: " ++ ValueDisplay.f(value, execution, definitions, languageName))
-          }}
+          {React.string(
+            "Result: " ++ ValueDisplay.f(execution.result, execution, definitions, languageName),
+          )}
         </>
       }}
     </div>
