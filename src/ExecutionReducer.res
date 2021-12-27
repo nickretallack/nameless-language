@@ -87,48 +87,26 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
             graphImplementation.connections,
           )
           // check the cache to see if it's already evaluated
-          switch Belt.Map.get(scope.sourceValues, source) {
-          | Some(LazyValue(lazyValue)) =>
-            // evaluate lazy value
-            switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
-            | None =>
-              ReactUpdate.UpdateWithSideEffects(
-                {
-                  ...state,
-                  execution: Some({
-                    ...execution,
-                    stack: list{
-                      {
-                        open StackFrame
-                        {
-                          scopeID: lazyValue.scopeID,
-                          explicitConnectionSide: lazyValue.explicitConnectionSide,
-                          action: EvaluationAction.Evaluating,
-                        }
-                      },
-                      ...execution.stack,
-                    },
-                    scopes: execution.scopes,
-                  }),
+          switch SourceResolveValue.f(scope, source, execution, definitions) {
+          | Some(Value.LazyValue(lazyValue)) =>
+            // Require evaluation
+            UpdateExecution.f(
+              state,
+              urlHash,
+              {
+                ...execution,
+                stack: list{
+                  {
+                    scopeID: lazyValue.scopeID,
+                    explicitConnectionSide: lazyValue.explicitConnectionSide,
+                    action: Evaluating,
+                  },
+                  ...execution.stack,
                 },
-                ExecutionReducerSideEffects.f(urlHash),
-              )
-            | Some(value) =>
-              ReactUpdate.UpdateWithSideEffects(
-                {
-                  ...state,
-                  execution: Some({
-                    ...execution,
-                    stack: list{
-                      {...frame, action: Returning(value)},
-                      ...Belt.List.tailExn(execution.stack),
-                    },
-                  }),
-                },
-                ExecutionReducerSideEffects.f(urlHash),
-              )
-            }
+              },
+            )
           | Some(value) =>
+            // Return
             ReactUpdate.UpdateWithSideEffects(
               {
                 ...state,

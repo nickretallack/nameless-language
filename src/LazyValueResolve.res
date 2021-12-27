@@ -8,10 +8,7 @@ let f = (
     lazyValue.explicitConnectionSide.connectionSide
   } else {
     let definition = Belt.Map.String.getExn(definitions, scope.definitionID)
-    let graphImplementation = switch definition.implementation {
-    | GraphImplementation(graphImplementation) => graphImplementation
-    | _ => raise(Exception.ShouldntHappen("lazy values must come from graphs"))
-    }
+    let graphImplementation = DefinitionAssertGraph.f(definition)
     Belt.Map.getExn(
       graphImplementation.connections,
       lazyValue.explicitConnectionSide.connectionSide,
