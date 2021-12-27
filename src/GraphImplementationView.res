@@ -178,28 +178,20 @@ let make = (
   )
   let renderedNibs = React.array(
     Belt.Array.map(allNibs, ({name, explicitConnectionSide}) => {
-      let {ExplicitConnectionSide.connectionSide: connectionSide, isSource} = explicitConnectionSide
-      let value = if isSource {
-        switch execution {
-        | None => None
-        | Some(execution) =>
-          if Belt.List.length(execution.stack) != 0 {
-            switch SourceResolveValue.f(
-              ExecutionGetCurrentScope.f(execution, scopeID),
-              connectionSide,
-              execution,
-              definitions,
-            ) {
-            | None => None
-            | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
-            }
-          } else {
-            None
+      let {connectionSide, isSource} = explicitConnectionSide
+      let value = switch (isSource, execution, scopeID) {
+      | (true, Some(execution), Some(scopeID)) =>
+        switch Belt.Map.String.get(execution.scopes, scopeID) {
+        | Some(scope) =>
+          switch SourceResolveValue.f(scope, connectionSide, execution, definitions) {
+          | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
+          | None => None
           }
+        | None => None
         }
-      } else {
-        None
+      | _ => None
       }
+
       <NibView
         key={ExplicitConnectionSideKey.f(explicitConnectionSide)}
         text=name

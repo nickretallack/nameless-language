@@ -10,8 +10,8 @@ let f = (urlHash: array<string>, {send, state}: ReactUpdate.self<AppAction.t, Ap
       | None => ()
       | Some(frame) =>
         let definitionID = ScopeGetGraphDefinitionID.f(execution, frame.scopeID)
-        if urlHash[0] != definitionID {
-          RescriptReactRouter.push(`#${definitionID}/implementation`)
+        if urlHash != [definitionID, "implementation", frame.scopeID] {
+          RescriptReactRouter.push(`#${definitionID}/implementation/${frame.scopeID}`)
         }
       }
     } else {

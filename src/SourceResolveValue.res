@@ -27,11 +27,7 @@ let rec f = (
         }
         let newSource = Belt.Map.getExn(graphImplementation.connections, sink)
         f(callingScope, newSource, execution, definitions)
-      | None =>
-        // TODO: this shouldn't be reached.
-        // raise(Exception.ShouldntHappen("Reached the top of the call stack"))
-        Js.log("No calling scope for graph connection")
-        value
+      | None => raise(Exception.ShouldntHappen("Reached the top of the call stack"))
       }
     | NodeConnection(nodeID) =>
       switch Belt.Map.String.get(scope.nodeScopeIDs, nodeID) {

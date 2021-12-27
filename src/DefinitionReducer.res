@@ -537,6 +537,7 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
         }),
       },
       ({send}) => {
+        RescriptReactRouter.push(`#${definitionID}/implementation/${scopeID}`)
         if !debug {
           send(Step)
         }
