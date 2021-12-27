@@ -11,7 +11,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
       | Returning(value) =>
         if Belt.List.length(execution.stack) == 1 {
           // resolve lazies in the final value
-          let lazies = ValueGetLazies.f(value, execution, state.definitions)
+          let lazies = ValueGetLazies.f(execution.result, execution, state.definitions)
           ReactUpdate.UpdateWithSideEffects(
             {
               ...state,
