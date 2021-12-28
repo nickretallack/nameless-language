@@ -6,7 +6,7 @@ let f = (
     let handler = Belt.Map.String.getExn(values, "handler")
     let interval = Belt.Map.String.getExn(values, "interval")
     switch handler {
-    | InlineFunction({scopeID, nodeID}) =>
+    | InlineFunction(inlineFunctionContext) =>
       switch interval {
       | PrimitiveValue(NumberValue(intervalValue)) =>
         SideEffect(
@@ -18,7 +18,7 @@ let f = (
                     definitionID: "scheduledEventHandler",
                     inputs: Belt.Map.fromArray([], ~id=module(ConnectionSideComparable.C)),
                     connectionNib: NibConnection(";"),
-                    inlineScope: {scopeID: scopeID, nodeID: nodeID},
+                    inlineScope: inlineFunctionContext,
                   }),
                 )
               , intervalValue))

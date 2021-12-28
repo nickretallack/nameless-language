@@ -15,7 +15,7 @@ and t =
   | PrimitiveValue(PrimitiveValue.t)
   | DefinedValue(definedValueRecord)
   | LazyValue(lazyValue)
-  | InlineFunction(NodeInScope.t)
+  | InlineFunction(InlineFunctionContext.t)
   | Prerequisite
   | Reference(ReferenceID.t)
   | HTMLElement(Webapi.Dom.Element.t)

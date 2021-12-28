@@ -44,9 +44,9 @@ let rec resolveSource = (
         resolveSource(childScope, newSource, scopes, definitions)
       | None =>
         switch scope.scopeType {
-        | InlineScope({scopeID}) =>
+        | InlineScope({parentScopeID}) =>
           // Check the outer scope.
-          let inlineScope = Belt.Map.String.getExn(scopes, scopeID)
+          let inlineScope = Belt.Map.String.getExn(scopes, parentScopeID)
           resolveSource(inlineScope, source, scopes, definitions)
         | GraphScope => value
         }

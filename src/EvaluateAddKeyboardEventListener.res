@@ -10,7 +10,7 @@ let f = (
   | None => ExternalEvaluationResult.EvaluationRequired(list{"handler"})
   | Some(handler) =>
     switch handler {
-    | InlineFunction({scopeID, nodeID}) =>
+    | InlineFunction(inlineFunctionContext) =>
       SideEffect(
         Some(Prerequisite),
         (webView, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
@@ -31,14 +31,17 @@ let f = (
                   inputs: Belt.Map.fromArray(
                     [
                       (
-                        {ConnectionSide.node: NodeConnection(nodeID), nib: NibConnection("code")},
+                        {
+                          ConnectionSide.node: NodeConnection(inlineFunctionContext.nodeID),
+                          nib: NibConnection("code"),
+                        },
                         Value.PrimitiveValue(TextValue(EventGetCode.f(event))),
                       ),
                     ],
                     ~id=module(ConnectionSideComparable.C),
                   ),
                   connectionNib: NibConnection(";"),
-                  inlineScope: {scopeID: scopeID, nodeID: nodeID},
+                  inlineScope: inlineFunctionContext,
                 }),
               ),
             element,

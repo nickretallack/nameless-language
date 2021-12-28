@@ -5,7 +5,7 @@ let f = (
   EvaluateWithAllValues.f(inputs, values => {
     let handler = Belt.Map.String.getExn(values, "handler")
     switch handler {
-    | InlineFunction({scopeID, nodeID}) =>
+    | InlineFunction(inlineFunctionContext) =>
       SideEffect(
         None,
         (_webView, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
@@ -16,7 +16,7 @@ let f = (
                   definitionID: "scheduledEventHandler",
                   inputs: Belt.Map.fromArray([], ~id=module(ConnectionSideComparable.C)),
                   connectionNib: NibConnection(";"),
-                  inlineScope: {scopeID: scopeID, nodeID: nodeID},
+                  inlineScope: inlineFunctionContext,
                 }),
               )
             }),

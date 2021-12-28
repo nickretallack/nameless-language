@@ -444,7 +444,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                 | FunctionDefinitionNode =>
                   switch source.nib {
                   | ValueConnection =>
-                    let value = Value.InlineFunction({scopeID: frame.scopeID, nodeID: nodeID})
+                    let value = Value.InlineFunction({parentScopeID: frame.scopeID, nodeID: nodeID})
                     ExecutionReducerReturn.f(value, execution, source, state, urlHash)
                   | NibConnection(_nibID) =>
                     switch scope.callingScope {
@@ -521,9 +521,12 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                         ExecutionReducerSideEffects.f(urlHash),
                       )
 
-                    | Some(InlineFunction({scopeID, nodeID: inlineNodeID})) =>
+                    | Some(InlineFunction({parentScopeID, nodeID: inlineNodeID})) =>
                       // let inlineFunctionNode = Belt.Map.String.getExn(graphImplementation.nodes, nodeID)
-                      let inlineFunctionScope = Belt.Map.String.getExn(execution.scopes, scopeID)
+                      let inlineFunctionScope = Belt.Map.String.getExn(
+                        execution.scopes,
+                        parentScopeID,
+                      )
 
                       // try to evaluate this nib
                       let inlineFunctionScopeDefinition = Belt.Map.String.getExn(
@@ -567,7 +570,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                                 ScopeMake.f(
                                   definitionID,
                                   Some({callingScopeID: frame.scopeID, nodeID: nodeID}),
-                                  InlineScope({nodeID: inlineNodeID, scopeID: scopeID}),
+                                  InlineScope({nodeID: inlineNodeID, parentScopeID: parentScopeID}),
                                 ),
                               ),
                               frame.scopeID,
