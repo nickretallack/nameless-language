@@ -102,16 +102,13 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
             frame.explicitConnectionSide,
             graphImplementation.connections,
           )
-
-          let sourceNibId = NibGetID.f(source.nib)
-          let returnValue = Belt.Map.String.getExn(values, sourceNibId)
           let newSourceValues = ValuesMerge.f(source, values, scope.sourceValues)
           ReactUpdate.Update({
             ...state,
             execution: Some({
               ...execution,
               scheduledEvents: Belt.Set.add(execution.scheduledEvents, eventID),
-              stack: list{{...frame, action: Returning(returnValue)}, ...Belt.List.tailExn(stack)},
+              stack: list{{...frame, action: Returning}, ...Belt.List.tailExn(stack)},
               scopes: Belt.Map.String.set(
                 execution.scopes,
                 frame.scopeID,

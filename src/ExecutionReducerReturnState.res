@@ -10,7 +10,7 @@ let f = (
     ...state,
     execution: Some({
       ...execution,
-      stack: list{{...frame, action: Returning(value)}, ...Belt.List.tailExn(execution.stack)},
+      stack: list{{...frame, action: Returning}, ...Belt.List.tailExn(execution.stack)},
       scopes: Belt.Map.String.set(
         execution.scopes,
         frame.scopeID,

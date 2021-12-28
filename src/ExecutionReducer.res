@@ -9,7 +9,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
     } else {
       let frame = Belt.List.headExn(execution.stack)
       switch frame.action {
-      | Returning(_) =>
+      | Returning =>
         if Belt.List.length(execution.stack) == 1 {
           // The execution stack is empty.  Try to resolve the result now.
           let lazies = ValueGetLazies.f(execution.result, execution, state.definitions)
@@ -72,17 +72,14 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                 stack: list{stackFrame, ...execution.stack},
               },
             )
-          | Some(value) =>
+          | Some(_) =>
             // Return
             ReactUpdate.UpdateWithSideEffects(
               {
                 ...state,
                 execution: Some({
                   ...execution,
-                  stack: list{
-                    {...frame, action: Returning(value)},
-                    ...Belt.List.tailExn(execution.stack),
-                  },
+                  stack: list{{...frame, action: Returning}, ...Belt.List.tailExn(execution.stack)},
                 }),
               },
               ExecutionReducerSideEffects.f(urlHash),
@@ -282,27 +279,13 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                                         },
                                         ...execution.stack,
                                       },
-                                      scopes: execution.scopes,
                                     }),
                                   },
                                   ExecutionReducerSideEffects.f(urlHash),
                                 )
 
                               | Some(value) =>
-                                ReactUpdate.UpdateWithSideEffects(
-                                  {
-                                    ...state,
-                                    execution: Some({
-                                      ...execution,
-                                      stack: list{
-                                        {...frame, action: Returning(value)},
-                                        ...Belt.List.tailExn(execution.stack),
-                                      },
-                                      scopes: execution.scopes,
-                                    }),
-                                  },
-                                  ExecutionReducerSideEffects.f(urlHash),
-                                )
+                                ExecutionReducerReturn.f(value, execution, source, state, urlHash)
                               }
                             | _ => raise(Not_found) // todo
                             }
@@ -333,7 +316,6 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                               },
                               ...execution.stack,
                             },
-                            scopes: execution.scopes,
                           }),
                         },
                         ExecutionReducerSideEffects.f(urlHash),
@@ -377,27 +359,13 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                                       },
                                       ...execution.stack,
                                     },
-                                    scopes: execution.scopes,
                                   }),
                                 },
                                 ExecutionReducerSideEffects.f(urlHash),
                               )
 
                             | Some(value) =>
-                              ReactUpdate.UpdateWithSideEffects(
-                                {
-                                  ...state,
-                                  execution: Some({
-                                    ...execution,
-                                    stack: list{
-                                      {...frame, action: Returning(value)},
-                                      ...Belt.List.tailExn(execution.stack),
-                                    },
-                                    scopes: execution.scopes,
-                                  }),
-                                },
-                                ExecutionReducerSideEffects.f(urlHash),
-                              )
+                              ExecutionReducerReturn.f(value, execution, source, state, urlHash)
                             }
                           | _ => raise(Not_found) // todo
                           }
@@ -426,7 +394,6 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                               },
                               ...execution.stack,
                             },
-                            scopes: execution.scopes,
                           }),
                         },
                         ExecutionReducerSideEffects.f(urlHash),

@@ -147,7 +147,7 @@ let make = (
           if !stackConnectionSide.isSource && stackConnectionSide.connectionSide == sink {
             switch stackFrame.action {
             | Evaluating => EvaluatingConnection
-            | Returning(_) => ReturningConnection
+            | Returning => ReturningConnection
             }
           } else {
             ConnectionDebug.NoDebugConnection

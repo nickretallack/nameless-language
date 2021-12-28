@@ -1,3 +1,3 @@
 type t =
   | Evaluating
-  | Returning(Value.t)
+  | Returning
