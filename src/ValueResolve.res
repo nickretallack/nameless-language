@@ -16,9 +16,9 @@ let rec resolveSource = (
     switch source.node {
     | GraphConnection =>
       switch scope.callingScope {
-      | Some({nodeID, scopeID}) =>
+      | Some({nodeID, callingScopeID}) =>
         // Check the calling scope.
-        let callingScope = Belt.Map.String.getExn(scopes, scopeID)
+        let callingScope = Belt.Map.String.getExn(scopes, callingScopeID)
         let definition = Belt.Map.String.getExn(definitions, callingScope.definitionID)
         let graphImplementation = DefinitionAssertGraph.f(definition)
         let sink: ConnectionSide.t = {

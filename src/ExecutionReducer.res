@@ -154,7 +154,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                             nodeScopeID,
                             ScopeMake.f(
                               definitionID,
-                              Some({scopeID: frame.scopeID, nodeID: nodeID}),
+                              Some({callingScopeID: frame.scopeID, nodeID: nodeID}),
                               GraphScope,
                             ),
                           ),
@@ -458,7 +458,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                               {
                                 open StackFrame
                                 {
-                                  scopeID: callingScope.scopeID,
+                                  scopeID: callingScope.callingScopeID,
                                   explicitConnectionSide: {
                                     isSource: false,
                                     connectionSide: {
@@ -566,7 +566,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                                 nodeScopeID,
                                 ScopeMake.f(
                                   definitionID,
-                                  Some({scopeID: frame.scopeID, nodeID: nodeID}),
+                                  Some({callingScopeID: frame.scopeID, nodeID: nodeID}),
                                   InlineScope({nodeID: inlineNodeID, scopeID: scopeID}),
                                 ),
                               ),
@@ -632,7 +632,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                         {
                           open StackFrame
                           {
-                            scopeID: callingScope.scopeID,
+                            scopeID: callingScope.callingScopeID,
                             explicitConnectionSide: {
                               isSource: false,
                               connectionSide: {

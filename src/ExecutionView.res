@@ -18,7 +18,7 @@ let make = (
     ) =>
       switch scope.callingScope {
       | Some(callingScope) =>
-        Belt.Map.String.update(mapping, callingScope.scopeID, scopes =>
+        Belt.Map.String.update(mapping, callingScope.callingScopeID, scopes =>
           switch scopes {
           | Some(scopes) => Some(Belt.List.add(scopes, (scopeID, scope)))
           | None => Some(Belt.List.fromArray([(scopeID, scope)]))

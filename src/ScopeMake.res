@@ -1,6 +1,6 @@
 let f = (
   definitionID: DefinitionID.t,
-  callingScope: option<NodeInScope.t>,
+  callingScope: option<CallingScope.t>,
   scopeType: ScopeType.t,
 ): Scope.t => {
   definitionID: definitionID,
