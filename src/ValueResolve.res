@@ -28,8 +28,11 @@ let rec resolveSource = (
           node: nodeConnection,
           nib: source.nib,
         }
-        let newSource = FollowConnection.f(sink, calledScopeID, scopes, definitions)
-        resolveSource(calledScope, newSource, scopes, definitions)
+        switch FollowConnection.f(sink, calledScopeID, scopes, definitions) {
+        | Some(newSource) => resolveSource(calledScope, newSource, scopes, definitions)
+        | None => value
+        }
+
       | None =>
         switch scope.scopeType {
         | InlineScope({parentScopeID, nodeID: inlineDefinitionNodeID}) =>
@@ -58,24 +61,26 @@ and resolveLazyValue = (
   scopes: Belt.Map.String.t<Nameless.Scope.t>,
 ): option<Value.t> => {
   let scope = Belt.Map.String.getExn(scopes, lazyValue.scopeID)
-  let source = if lazyValue.explicitConnectionSide.isSource {
-    lazyValue.explicitConnectionSide.connectionSide
+  if lazyValue.explicitConnectionSide.isSource {
+    resolveSource(scope, lazyValue.explicitConnectionSide.connectionSide, scopes, definitions)
   } else {
-    FollowConnection.f(
+    switch FollowConnection.f(
       lazyValue.explicitConnectionSide.connectionSide,
       lazyValue.scopeID,
       scopes,
       definitions,
-    )
+    ) {
+    | Some(source) => resolveSource(scope, source, scopes, definitions)
+    | None => None
+    }
   }
-  resolveSource(scope, source, scopes, definitions)
 }
 and resolveInCaller = (
   scope: Scope.t,
   nib: ConnectionNib.t,
   scopes: Belt.Map.String.t<Scope.t>,
   definitions: DefinitionMap.t,
-) =>
+): option<Value.t> =>
   switch scope.callingContext {
   | Some({nodeID, callingScopeID}) =>
     // Check the calling scope.
@@ -84,7 +89,9 @@ and resolveInCaller = (
       node: NodeConnection(nodeID),
       nib: nib,
     }
-    let newSource = FollowConnection.f(sink, callingScopeID, scopes, definitions)
-    resolveSource(callingScope, newSource, scopes, definitions)
+    switch FollowConnection.f(sink, callingScopeID, scopes, definitions) {
+    | Some(newSource) => resolveSource(callingScope, newSource, scopes, definitions)
+    | None => None
+    }
   | None => raise(Exception.ShouldntHappen("Reached the top of the call stack"))
   }
