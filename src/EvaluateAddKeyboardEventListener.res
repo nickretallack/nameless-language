@@ -41,7 +41,7 @@ let f = (
                     ~id=module(ConnectionSideComparable.C),
                   ),
                   connectionNib: NibConnection(";"),
-                  inlineScope: inlineFunctionContext,
+                  inlineFunctionContext: inlineFunctionContext,
                 }),
               ),
             element,

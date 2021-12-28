@@ -18,7 +18,7 @@ let f = (
                     definitionID: "scheduledEventHandler",
                     inputs: Belt.Map.fromArray([], ~id=module(ConnectionSideComparable.C)),
                     connectionNib: NibConnection(";"),
-                    inlineScope: inlineFunctionContext,
+                    inlineFunctionContext: inlineFunctionContext,
                   }),
                 )
               , intervalValue))

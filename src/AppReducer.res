@@ -34,13 +34,13 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
       },
     )
   | DefinitionAction(definitionAction) => DefinitionReducer.f(definitionAction, state)
-  | QueueEvaluation({definitionID, inlineScope, connectionNib, inputs}) =>
+  | QueueEvaluation({definitionID, inlineFunctionContext, connectionNib, inputs}) =>
     switch state.execution {
     | None => ReactUpdate.NoUpdate
     | Some(execution) =>
       let scopeID = RandomIDMake.f()
       let scope = {
-        ...ScopeMake.f(definitionID, None, InlineScope(inlineScope)),
+        ...ScopeMake.f(definitionID, None, InlineScope(inlineFunctionContext)),
         sourceValues: inputs,
       }
       open StackFrame
@@ -50,7 +50,7 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
           isSource: false,
           connectionSide: {
             nib: connectionNib,
-            node: NodeConnection(inlineScope.nodeID),
+            node: NodeConnection(inlineFunctionContext.nodeID),
           },
         },
         action: Evaluating,
