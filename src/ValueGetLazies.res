@@ -8,7 +8,7 @@ let rec f = (value: Value.t, execution: Execution.t, definitions: DefinitionMap.
   | HTMLElement(_)
   | InlineFunction(_) => list{}
   | LazyValue(lazyValue) =>
-    switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
+    switch ValueResolve.resolveLazyValue(lazyValue, definitions, execution.scopes) {
     | Some(value) => f(value, execution, definitions)
     | None => list{lazyValue}
     }

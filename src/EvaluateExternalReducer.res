@@ -18,7 +18,7 @@ let f = (
   ) {
   | None => false
   | Some(connectionSide) =>
-    switch SourceResolveValue.f(scope, connectionSide, execution, definitions) {
+    switch ValueResolve.resolveSource(scope, connectionSide, execution.scopes, definitions) {
     | None => true
     | Some(_) => false
     }
@@ -35,7 +35,8 @@ let f = (
     let inputs = Belt.Map.String.mapWithKey(nonPrerequisiteInputs, (nibID, _) => {
       switch Belt.Map.get(connections, {node: source.node, nib: NibConnection(nibID)}) {
       | None => None
-      | Some(connectionSide) => SourceResolveValue.f(scope, connectionSide, execution, definitions)
+      | Some(connectionSide) =>
+        ValueResolve.resolveSource(scope, connectionSide, execution.scopes, definitions)
       }
     })
     switch externalImplementation.name {

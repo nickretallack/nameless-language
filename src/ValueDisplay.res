@@ -39,7 +39,7 @@ and f = (
   | DefinedValue(definedValue) =>
     definedValueDisplay(definedValue, execution, definitions, language)
   | LazyValue(lazyValue) =>
-    switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
+    switch ValueResolve.resolveLazyValue(lazyValue, definitions, execution.scopes) {
     | Some(value) => f(value, execution, definitions, language)
     | None => "(not computed yet)"
     }

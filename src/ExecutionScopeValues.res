@@ -11,7 +11,12 @@ let make = (
   <div>
     {React.array(
       Belt.Array.mapWithIndex(ordering, (_index, nibID) =>
-        switch SourceResolveValue.f(scope, nibToSource(nibID), execution, definitions) {
+        switch ValueResolve.resolveSource(
+          scope,
+          nibToSource(nibID),
+          execution.scopes,
+          definitions,
+        ) {
         | None => React.null
         | Some(value) =>
           let name = TranslatableGetText.f(

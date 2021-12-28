@@ -1,3 +1,4 @@
+let quickReturns = false
 let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.t, AppState.t> => {
   let definitions = state.definitions
   switch state.execution {
@@ -8,9 +9,9 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
     } else {
       let frame = Belt.List.headExn(execution.stack)
       switch frame.action {
-      | Returning(value) =>
+      | Returning(_) =>
         if Belt.List.length(execution.stack) == 1 {
-          // resolve lazies in the final value
+          // The execution stack is empty.  Try to resolve the result now.
           let lazies = ValueGetLazies.f(execution.result, execution, state.definitions)
           ReactUpdate.UpdateWithSideEffects(
             {
@@ -30,50 +31,18 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
             ExecutionReducerSideEffects.f(urlHash),
           )
         } else {
-          let frames = Belt.List.tailExn(execution.stack)
-          let nextFrame = Belt.List.headExn(frames)
-          if frame.scopeID != nextFrame.scopeID {
-            let definitionID = ScopeGetGraphDefinitionID.f(execution, nextFrame.scopeID)
-            let definition = Belt.Map.String.getExn(state.definitions, definitionID)
-            let connectionSide = switch definition.implementation {
-            | GraphImplementation(graphImplementation) =>
-              ExplicitConnectionSideGetSource.f(
-                nextFrame.explicitConnectionSide,
-                graphImplementation.connections,
-              )
-            | _ => raise(Exception.ShouldntHappen("Connection in non-graph"))
-            }
-            ReactUpdate.UpdateWithSideEffects(
-              {
-                ...state,
-                execution: Some({
-                  ...execution,
-                  stack: list{
-                    {...nextFrame, action: Returning(value)},
-                    ...Belt.List.tailExn(frames),
-                  },
-                  scopes: MapStringUpdate.f(execution.scopes, nextFrame.scopeID, (
-                    scope: Scope.t,
-                  ) => {
-                    ...scope,
-                    sourceValues: Belt.Map.set(scope.sourceValues, connectionSide, value),
-                  }),
-                }),
-              },
-              ExecutionReducerSideEffects.f(urlHash),
-            )
+          // Pop the Return off the stack.
+          let newState = {
+            ...state,
+            execution: Some({
+              ...execution,
+              stack: Belt.List.tailExn(execution.stack),
+            }),
+          }
+          if quickReturns {
+            f(newState, webView, urlHash)
           } else {
-            f(
-              {
-                ...state,
-                execution: Some({
-                  ...execution,
-                  stack: Belt.List.tailExn(execution.stack),
-                }),
-              },
-              webView,
-              urlHash,
-            )
+            ReactUpdate.UpdateWithSideEffects(newState, ExecutionReducerSideEffects.f(urlHash))
           }
         }
       | Evaluating =>
@@ -87,7 +56,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
             graphImplementation.connections,
           )
           // check the cache to see if it's already evaluated
-          switch SourceResolveValue.f(scope, source, execution, definitions) {
+          switch ValueResolve.resolveSource(scope, source, execution.scopes, definitions) {
           | Some(Value.LazyValue(lazyValue)) =>
             // Require evaluation
             UpdateExecution.f(
@@ -291,7 +260,11 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                           | RecordValue(values) =>
                             switch Belt.Map.String.getExn(values, nibID) {
                             | LazyValue(lazyValue) =>
-                              switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
+                              switch ValueResolve.resolveLazyValue(
+                                lazyValue,
+                                definitions,
+                                execution.scopes,
+                              ) {
                               | None =>
                                 // evaluate lazy value
                                 Js.log("None value")
@@ -383,7 +356,11 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                         | LabeledValue(wrappedValue) =>
                           switch wrappedValue {
                           | LazyValue(lazyValue) =>
-                            switch LazyValueResolve.f(lazyValue, definitions, execution.scopes) {
+                            switch ValueResolve.resolveLazyValue(
+                              lazyValue,
+                              definitions,
+                              execution.scopes,
+                            ) {
                             | None =>
                               Js.log("None value")
                               ReactUpdate.UpdateWithSideEffects(
@@ -522,6 +499,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                     )
                     switch Belt.Map.get(scope.sourceValues, implementationSource) {
                     | None =>
+                      // Require evaluation
                       ReactUpdate.UpdateWithSideEffects(
                         {
                           ...state,

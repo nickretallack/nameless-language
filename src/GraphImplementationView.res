@@ -183,7 +183,7 @@ let make = (
       | (true, Some(execution), Some(scopeID)) =>
         switch Belt.Map.String.get(execution.scopes, scopeID) {
         | Some(scope) =>
-          switch SourceResolveValue.f(scope, connectionSide, execution, definitions) {
+          switch ValueResolve.resolveSource(scope, connectionSide, execution.scopes, definitions) {
           | Some(value) => Some(ValueDisplay.f(value, execution, definitions, languageName))
           | None => None
           }
