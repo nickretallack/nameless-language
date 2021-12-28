@@ -1,7 +1,7 @@
 let rec resolveSource = (
   scope: Scope.t,
   source: ConnectionSide.t,
-  scopes: Belt.Map.String.t<Nameless.Scope.t>,
+  scopes: Belt.Map.String.t<Scope.t>,
   definitions: DefinitionMap.t,
 ): option<Value.t> => {
   let value = Belt.Map.get(scope.sourceValues, source)
@@ -14,40 +14,36 @@ let rec resolveSource = (
   | None =>
     // Special case for graph inputs and nodes that have already been entered
     switch source.node {
-    | GraphConnection =>
-      switch scope.callingContext {
-      | Some({nodeID, callingScopeID}) =>
-        // Check the calling scope.
-        let callingContext = Belt.Map.String.getExn(scopes, callingScopeID)
-        let definition = Belt.Map.String.getExn(definitions, callingContext.definitionID)
-        let graphImplementation = DefinitionAssertGraph.f(definition)
-        let sink: ConnectionSide.t = {
-          node: NodeConnection(nodeID),
-          nib: source.nib,
-        }
-        let newSource = Belt.Map.getExn(graphImplementation.connections, sink)
-        resolveSource(callingContext, newSource, scopes, definitions)
-      | None => raise(Exception.ShouldntHappen("Reached the top of the call stack"))
-      }
+    | GraphConnection => resolveInCaller(scope, source.nib, scopes, definitions)
     | NodeConnection(nodeID) =>
       switch Belt.Map.String.get(scope.nodeScopeIDs, nodeID) {
       | Some(scopeID) =>
         // Node was already entered.  Check the child scope.
-        let childScope = Belt.Map.String.getExn(scopes, scopeID)
-        let definition = Belt.Map.String.getExn(definitions, childScope.definitionID)
+        let calledScope = Belt.Map.String.getExn(scopes, scopeID)
+        let definitionID = ScopeGetGraphDefinitionID.f(scopes, scopeID)
+        let definition = Belt.Map.String.getExn(definitions, definitionID)
         let graphImplementation = DefinitionAssertGraph.f(definition)
+        let nodeConnection: ConnectionNode.t = switch calledScope.scopeType {
+        | GraphScope => GraphConnection
+        | InlineScope({nodeID}) => NodeConnection(nodeID)
+        }
         let sink: ConnectionSide.t = {
-          node: GraphConnection,
+          node: nodeConnection,
           nib: source.nib,
         }
         let newSource = Belt.Map.getExn(graphImplementation.connections, sink)
-        resolveSource(childScope, newSource, scopes, definitions)
+        resolveSource(calledScope, newSource, scopes, definitions)
       | None =>
         switch scope.scopeType {
-        | InlineScope({parentScopeID}) =>
-          // Check the outer scope.
-          let inlineScope = Belt.Map.String.getExn(scopes, parentScopeID)
-          resolveSource(inlineScope, source, scopes, definitions)
+        | InlineScope({parentScopeID, nodeID: inlineDefinitionNodeID}) =>
+          if nodeID == inlineDefinitionNodeID {
+            resolveInCaller(scope, source.nib, scopes, definitions)
+          } else {
+            // Check the outer scope.
+            let inlineScope = Belt.Map.String.getExn(scopes, parentScopeID)
+            resolveSource(inlineScope, source, scopes, definitions)
+          }
+
         | GraphScope => value
         }
       }
@@ -74,3 +70,24 @@ and resolveLazyValue = (
   }
   resolveSource(scope, source, scopes, definitions)
 }
+and resolveInCaller = (
+  scope: Scope.t,
+  nib: ConnectionNib.t,
+  scopes: Belt.Map.String.t<Scope.t>,
+  definitions: DefinitionMap.t,
+) =>
+  switch scope.callingContext {
+  | Some({nodeID, callingScopeID}) =>
+    // Check the calling scope.
+    let callingScope = Belt.Map.String.getExn(scopes, callingScopeID)
+    let definitionID = ScopeGetGraphDefinitionID.f(scopes, callingScopeID)
+    let definition = Belt.Map.String.getExn(definitions, definitionID)
+    let graphImplementation = DefinitionAssertGraph.f(definition)
+    let sink: ConnectionSide.t = {
+      node: NodeConnection(nodeID),
+      nib: nib,
+    }
+    let newSource = Belt.Map.getExn(graphImplementation.connections, sink)
+    resolveSource(callingScope, newSource, scopes, definitions)
+  | None => raise(Exception.ShouldntHappen("Reached the top of the call stack"))
+  }

@@ -94,7 +94,7 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
         let stack = Belt.List.tailExn(execution.stack)
         let frame = Belt.List.headExn(stack)
         let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
-        let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution, frame.scopeID)
+        let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution.scopes, frame.scopeID)
         let definition = Belt.Map.String.getExn(state.definitions, graphDefinitionID)
         switch definition.implementation {
         | GraphImplementation(graphImplementation) =>

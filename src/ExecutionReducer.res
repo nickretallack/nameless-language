@@ -47,7 +47,7 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
         }
       | Evaluating =>
         let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
-        let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution, frame.scopeID)
+        let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution.scopes, frame.scopeID)
         let definition = Belt.Map.String.getExn(definitions, graphDefinitionID)
         switch definition.implementation {
         | GraphImplementation(graphImplementation) =>
@@ -59,19 +59,17 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
           switch ValueResolve.resolveSource(scope, source, execution.scopes, definitions) {
           | Some(Value.LazyValue(lazyValue)) =>
             // Require evaluation
+            let stackFrame: StackFrame.t = {
+              scopeID: lazyValue.scopeID,
+              explicitConnectionSide: lazyValue.explicitConnectionSide,
+              action: Evaluating,
+            }
             UpdateExecution.f(
               state,
               urlHash,
               {
                 ...execution,
-                stack: list{
-                  {
-                    scopeID: lazyValue.scopeID,
-                    explicitConnectionSide: lazyValue.explicitConnectionSide,
-                    action: Evaluating,
-                  },
-                  ...execution.stack,
-                },
+                stack: list{stackFrame, ...execution.stack},
               },
             )
           | Some(value) =>
@@ -499,118 +497,74 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                     )
                     switch Belt.Map.get(scope.sourceValues, implementationSource) {
                     | None =>
-                      // Require evaluation
-                      ReactUpdate.UpdateWithSideEffects(
-                        {
-                          ...state,
-                          execution: Some({
-                            ...execution,
-                            stack: list{
-                              {
-                                ...frame,
-                                explicitConnectionSide: {
-                                  isSource: false,
-                                  connectionSide: implementationNib,
-                                },
-                                action: Evaluating,
-                              },
-                              ...execution.stack,
-                            },
-                          }),
+                      let stackFrame: StackFrame.t = {
+                        scopeID: frame.scopeID,
+                        explicitConnectionSide: {
+                          isSource: false,
+                          connectionSide: implementationNib,
                         },
-                        ExecutionReducerSideEffects.f(urlHash),
+                        action: Evaluating,
+                      }
+                      UpdateExecution.f(
+                        state,
+                        urlHash,
+                        {
+                          ...execution,
+                          stack: list{stackFrame, ...execution.stack},
+                        },
                       )
 
                     | Some(InlineFunction({parentScopeID, nodeID: inlineNodeID})) =>
-                      // let inlineFunctionNode = Belt.Map.String.getExn(graphImplementation.nodes, nodeID)
-                      let inlineFunctionScope = Belt.Map.String.getExn(
-                        execution.scopes,
-                        parentScopeID,
-                      )
+                      // first, we check if the function has been called by looking at the node scope for the calling node.
+                      let (nodeScopeID, scopes) = switch Belt.Map.String.get(
+                        scope.nodeScopeIDs,
+                        nodeID,
+                      ) {
+                      | Some(nodeScopeID) => (nodeScopeID, execution.scopes)
+                      | None =>
+                        let nodeScopeID = RandomIDMake.f()
 
-                      // try to evaluate this nib
-                      let inlineFunctionScopeDefinition = Belt.Map.String.getExn(
-                        definitions,
-                        inlineFunctionScope.definitionID,
-                      )
-                      let inlineSource = switch inlineFunctionScopeDefinition.implementation {
-                      | GraphImplementation(inlineFunctionGraphImplementation) =>
-                        Belt.Map.getExn(
-                          inlineFunctionGraphImplementation.connections,
-                          {
-                            node: NodeConnection(inlineNodeID),
+                        let calledScope = ScopeMake.f(
+                          definitionID,
+                          Some({callingScopeID: frame.scopeID, nodeID: nodeID}),
+                          InlineScope({nodeID: inlineNodeID, parentScopeID: parentScopeID}),
+                        )
+                        let scopes = Belt.Map.String.set(execution.scopes, nodeScopeID, calledScope)
+
+                        let callingScope = {
+                          ...scope,
+                          nodeScopeIDs: Belt.Map.String.set(
+                            scope.nodeScopeIDs,
+                            nodeID,
+                            nodeScopeID,
+                          ),
+                        }
+                        let scopes = Belt.Map.String.set(scopes, frame.scopeID, callingScope)
+
+                        (nodeScopeID, scopes)
+                      }
+
+                      let newFrame: StackFrame.t = {
+                        action: Evaluating,
+                        scopeID: nodeScopeID,
+                        explicitConnectionSide: {
+                          isSource: false,
+                          connectionSide: {
+                            node: NodeConnection(inlineNodeID), // TODO: get the node
                             nib: source.nib,
                           },
-                        )
-                      | _ =>
-                        raise(
-                          Exception.ShouldntHappen(
-                            "inline function definition's scope must be a graph",
-                          ),
-                        )
+                        },
                       }
-                      switch Belt.Map.get(inlineFunctionScope.sourceValues, inlineSource) {
-                      | Some(value) =>
-                        ExecutionReducerReturn.f(value, execution, source, state, urlHash)
-                      | None =>
-                        // create a new scope
-                        let (nodeScopeID, scopes) = switch Belt.Map.String.get(
-                          scope.nodeScopeIDs,
-                          nodeID,
-                        ) {
-                        | Some(nodeScopeID) => (nodeScopeID, execution.scopes)
-                        | None =>
-                          let nodeScopeID = RandomIDMake.f()
-                          (
-                            nodeScopeID,
-                            Belt.Map.String.set(
-                              Belt.Map.String.set(
-                                execution.scopes,
-                                nodeScopeID,
-                                ScopeMake.f(
-                                  definitionID,
-                                  Some({callingScopeID: frame.scopeID, nodeID: nodeID}),
-                                  InlineScope({nodeID: inlineNodeID, parentScopeID: parentScopeID}),
-                                ),
-                              ),
-                              frame.scopeID,
-                              {
-                                ...scope,
-                                nodeScopeIDs: Belt.Map.String.set(
-                                  scope.nodeScopeIDs,
-                                  nodeID,
-                                  nodeScopeID,
-                                ),
-                              },
-                            ),
-                          )
-                        }
+                      UpdateExecution.f(
+                        state,
+                        urlHash,
+                        {
+                          ...execution,
+                          scopes: scopes,
+                          stack: list{newFrame, ...execution.stack},
+                        },
+                      )
 
-                        ReactUpdate.UpdateWithSideEffects(
-                          {
-                            ...state,
-                            execution: Some({
-                              ...execution,
-                              scopes: scopes,
-                              stack: list{
-                                {
-                                  action: Evaluating,
-                                  scopeID: nodeScopeID,
-                                  explicitConnectionSide: {
-                                    isSource: false,
-                                    connectionSide: {
-                                      node: NodeConnection(inlineNodeID),
-                                      nib: source.nib,
-                                    },
-                                  },
-                                },
-                                ...execution.stack,
-                              },
-                            }),
-                          },
-                          ExecutionReducerSideEffects.f(urlHash),
-                        )
-                      }
                     | _ =>
                       raise(
                         Exception.ShouldntHappen(

@@ -9,7 +9,7 @@ let f = (urlHash: array<string>, {send, state}: ReactUpdate.self<AppAction.t, Ap
       switch Belt.List.head(execution.stack) {
       | None => ()
       | Some(frame) =>
-        let definitionID = ScopeGetGraphDefinitionID.f(execution, frame.scopeID)
+        let definitionID = ScopeGetGraphDefinitionID.f(execution.scopes, frame.scopeID)
         if urlHash != [definitionID, "implementation", frame.scopeID] {
           RescriptReactRouter.push(`#${definitionID}/implementation/${frame.scopeID}`)
         }

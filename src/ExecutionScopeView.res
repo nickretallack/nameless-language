@@ -11,7 +11,7 @@ let make = (
   | InlineScope({nodeID}) => NodeConnection(nodeID)
   }
 
-  let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution, scopeID)
+  let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution.scopes, scopeID)
   let graphDefinition = Belt.Map.String.getExn(definitions, graphDefinitionID)
   let graphImplementation = switch graphDefinition.implementation {
   | GraphImplementation(graphImplementation) => graphImplementation
