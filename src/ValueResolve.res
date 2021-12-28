@@ -1,7 +1,7 @@
 let rec resolveSource = (
   scope: Scope.t,
   source: ConnectionSide.t,
-  scopes: Belt.Map.String.t<Scope.t>,
+  scopes: ScopeMap.t,
   definitions: DefinitionMap.t,
 ): option<Value.t> => {
   let value = Belt.Map.get(scope.sourceValues, source)
@@ -17,12 +17,9 @@ let rec resolveSource = (
     | GraphConnection => resolveInCaller(scope, source.nib, scopes, definitions)
     | NodeConnection(nodeID) =>
       switch Belt.Map.String.get(scope.nodeScopeIDs, nodeID) {
-      | Some(scopeID) =>
+      | Some(calledScopeID) =>
         // Node was already entered.  Check the child scope.
-        let calledScope = Belt.Map.String.getExn(scopes, scopeID)
-        let definitionID = ScopeGetGraphDefinitionID.f(scopes, scopeID)
-        let definition = Belt.Map.String.getExn(definitions, definitionID)
-        let graphImplementation = DefinitionAssertGraph.f(definition)
+        let calledScope = Belt.Map.String.getExn(scopes, calledScopeID)
         let nodeConnection: ConnectionNode.t = switch calledScope.scopeType {
         | GraphScope => GraphConnection
         | InlineScope({nodeID}) => NodeConnection(nodeID)
@@ -31,7 +28,7 @@ let rec resolveSource = (
           node: nodeConnection,
           nib: source.nib,
         }
-        let newSource = Belt.Map.getExn(graphImplementation.connections, sink)
+        let newSource = FollowConnection.f(sink, calledScopeID, scopes, definitions)
         resolveSource(calledScope, newSource, scopes, definitions)
       | None =>
         switch scope.scopeType {
@@ -64,13 +61,11 @@ and resolveLazyValue = (
   let source = if lazyValue.explicitConnectionSide.isSource {
     lazyValue.explicitConnectionSide.connectionSide
   } else {
-    // Follow connection to source
-    let definitionID = ScopeGetGraphDefinitionID.f(scopes, lazyValue.scopeID)
-    let definition = Belt.Map.String.getExn(definitions, definitionID)
-    let graphImplementation = DefinitionAssertGraph.f(definition)
-    Belt.Map.getExn(
-      graphImplementation.connections,
+    FollowConnection.f(
       lazyValue.explicitConnectionSide.connectionSide,
+      lazyValue.scopeID,
+      scopes,
+      definitions,
     )
   }
   resolveSource(scope, source, scopes, definitions)
@@ -85,14 +80,11 @@ and resolveInCaller = (
   | Some({nodeID, callingScopeID}) =>
     // Check the calling scope.
     let callingScope = Belt.Map.String.getExn(scopes, callingScopeID)
-    let definitionID = ScopeGetGraphDefinitionID.f(scopes, callingScopeID)
-    let definition = Belt.Map.String.getExn(definitions, definitionID)
-    let graphImplementation = DefinitionAssertGraph.f(definition)
     let sink: ConnectionSide.t = {
       node: NodeConnection(nodeID),
       nib: nib,
     }
-    let newSource = Belt.Map.getExn(graphImplementation.connections, sink)
+    let newSource = FollowConnection.f(sink, callingScopeID, scopes, definitions)
     resolveSource(callingScope, newSource, scopes, definitions)
   | None => raise(Exception.ShouldntHappen("Reached the top of the call stack"))
   }
