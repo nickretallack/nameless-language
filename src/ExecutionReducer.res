@@ -1,4 +1,4 @@
-let quickReturns = false
+let quickReturns = true
 let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.t, AppState.t> => {
   let definitions = state.definitions
   switch state.execution {

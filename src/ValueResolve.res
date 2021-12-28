@@ -37,7 +37,11 @@ let rec resolveSource = (
         switch scope.scopeType {
         | InlineScope({parentScopeID, nodeID: inlineDefinitionNodeID}) =>
           if nodeID == inlineDefinitionNodeID {
-            resolveInCaller(scope, source.nib, scopes, definitions)
+            // Ensure it's an interior connection, not the implementation nib.
+            switch source.nib {
+            | NibConnection(_) => resolveInCaller(scope, source.nib, scopes, definitions)
+            | _ => value
+            }
           } else {
             // Check the outer scope.
             let inlineScope = Belt.Map.String.getExn(scopes, parentScopeID)
@@ -61,7 +65,8 @@ and resolveLazyValue = (
     lazyValue.explicitConnectionSide.connectionSide
   } else {
     // Follow connection to source
-    let definition = Belt.Map.String.getExn(definitions, scope.definitionID)
+    let definitionID = ScopeGetGraphDefinitionID.f(scopes, lazyValue.scopeID)
+    let definition = Belt.Map.String.getExn(definitions, definitionID)
     let graphImplementation = DefinitionAssertGraph.f(definition)
     Belt.Map.getExn(
       graphImplementation.connections,
