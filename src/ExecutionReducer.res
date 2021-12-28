@@ -447,8 +447,8 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                     let value = Value.InlineFunction({parentScopeID: frame.scopeID, nodeID: nodeID})
                     ExecutionReducerReturn.f(value, execution, source, state, urlHash)
                   | NibConnection(_nibID) =>
-                    switch scope.callingScope {
-                    | Some(callingScope) =>
+                    switch scope.callingContext {
+                    | Some(callingContext) =>
                       ReactUpdate.UpdateWithSideEffects(
                         {
                           ...state,
@@ -458,11 +458,11 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                               {
                                 open StackFrame
                                 {
-                                  scopeID: callingScope.callingScopeID,
+                                  scopeID: callingContext.callingScopeID,
                                   explicitConnectionSide: {
                                     isSource: false,
                                     connectionSide: {
-                                      node: NodeConnection(callingScope.nodeID),
+                                      node: NodeConnection(callingContext.nodeID),
                                       nib: source.nib,
                                     },
                                   },
@@ -624,8 +624,8 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
               | _ => raise(Exception.TODO("Evaluating a new kind of node"))
               }
             | GraphConnection =>
-              switch scope.callingScope {
-              | Some(callingScope) =>
+              switch scope.callingContext {
+              | Some(callingContext) =>
                 ReactUpdate.UpdateWithSideEffects(
                   {
                     ...state,
@@ -635,11 +635,11 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                         {
                           open StackFrame
                           {
-                            scopeID: callingScope.callingScopeID,
+                            scopeID: callingContext.callingScopeID,
                             explicitConnectionSide: {
                               isSource: false,
                               connectionSide: {
-                                node: NodeConnection(callingScope.nodeID),
+                                node: NodeConnection(callingContext.nodeID),
                                 nib: source.nib,
                               },
                             },

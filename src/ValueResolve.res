@@ -15,18 +15,18 @@ let rec resolveSource = (
     // Special case for graph inputs and nodes that have already been entered
     switch source.node {
     | GraphConnection =>
-      switch scope.callingScope {
+      switch scope.callingContext {
       | Some({nodeID, callingScopeID}) =>
         // Check the calling scope.
-        let callingScope = Belt.Map.String.getExn(scopes, callingScopeID)
-        let definition = Belt.Map.String.getExn(definitions, callingScope.definitionID)
+        let callingContext = Belt.Map.String.getExn(scopes, callingScopeID)
+        let definition = Belt.Map.String.getExn(definitions, callingContext.definitionID)
         let graphImplementation = DefinitionAssertGraph.f(definition)
         let sink: ConnectionSide.t = {
           node: NodeConnection(nodeID),
           nib: source.nib,
         }
         let newSource = Belt.Map.getExn(graphImplementation.connections, sink)
-        resolveSource(callingScope, newSource, scopes, definitions)
+        resolveSource(callingContext, newSource, scopes, definitions)
       | None => raise(Exception.ShouldntHappen("Reached the top of the call stack"))
       }
     | NodeConnection(nodeID) =>
