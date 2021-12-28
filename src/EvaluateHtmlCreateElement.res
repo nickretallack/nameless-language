@@ -8,7 +8,7 @@ let f = (
     let element = Webapi.Dom.Document.createElement(tagName, Webapi.Dom.document)
     SideEffect(
       Some(HTMLElement(element)),
-      (webView, _) => {
+      (webView, _, _) => {
         let webViewElement = Belt.Option.getUnsafe(Js.Nullable.toOption(webView.current))
         Webapi.Dom.Element.appendChild(element, webViewElement)
         None

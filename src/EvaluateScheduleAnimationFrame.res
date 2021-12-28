@@ -8,7 +8,7 @@ let f = (
     | InlineFunction(inlineFunctionContext) =>
       SideEffect(
         None,
-        (_webView, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
+        (_webView, callingContext, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
           let eventID = ScheduledEventIdentifier.AnimationFrameRequestID(
             AnimationFrame.request(() => {
               send(
@@ -17,6 +17,7 @@ let f = (
                   inputs: Belt.Map.fromArray([], ~id=module(ConnectionSideComparable.C)),
                   connectionNib: NibConnection(";"),
                   inlineFunctionContext: inlineFunctionContext,
+                  callingContext: callingContext,
                 }),
               )
             }),

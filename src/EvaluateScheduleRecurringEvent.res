@@ -11,7 +11,7 @@ let f = (
       | PrimitiveValue(NumberValue(intervalValue)) =>
         SideEffect(
           None,
-          (_webView, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
+          (_webView, callingContext, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
             let eventID = ScheduledEventIdentifier.IntervalID(Js.Global.setIntervalFloat(() =>
                 send(
                   AppAction.QueueEvaluation({
@@ -19,6 +19,7 @@ let f = (
                     inputs: Belt.Map.fromArray([], ~id=module(ConnectionSideComparable.C)),
                     connectionNib: NibConnection(";"),
                     inlineFunctionContext: inlineFunctionContext,
+                    callingContext: callingContext,
                   }),
                 )
               , intervalValue))

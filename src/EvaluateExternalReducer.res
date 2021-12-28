@@ -128,7 +128,7 @@ let f = (
       | SideEffect(optionalValue, sideEffect) =>
         let doSideEffects = arg => {
           let _ = ExecutionReducerSideEffects.f(urlHash, arg)
-          sideEffect(webView, arg)
+          sideEffect(webView, scope.callingContext, arg)
         }
 
         switch optionalValue {

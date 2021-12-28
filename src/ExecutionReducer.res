@@ -462,7 +462,12 @@ let rec f = (state: AppState.t, webView, urlHash): ReactUpdate.update<AppAction.
                       graphImplementation.connections,
                       implementationNib,
                     )
-                    switch Belt.Map.get(scope.sourceValues, implementationSource) {
+                    switch ValueResolve.resolveSource(
+                      scope,
+                      implementationSource,
+                      execution.scopes,
+                      definitions,
+                    ) {
                     | None =>
                       let stackFrame: StackFrame.t = {
                         scopeID: frame.scopeID,

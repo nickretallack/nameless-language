@@ -34,13 +34,13 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
       },
     )
   | DefinitionAction(definitionAction) => DefinitionReducer.f(definitionAction, state)
-  | QueueEvaluation({definitionID, inlineFunctionContext, connectionNib, inputs}) =>
+  | QueueEvaluation({definitionID, inlineFunctionContext, callingContext, connectionNib, inputs}) =>
     switch state.execution {
     | None => ReactUpdate.NoUpdate
     | Some(execution) =>
       let scopeID = RandomIDMake.f()
       let scope = {
-        ...ScopeMake.f(definitionID, None, InlineScope(inlineFunctionContext)),
+        ...ScopeMake.f(definitionID, callingContext, InlineScope(inlineFunctionContext)),
         sourceValues: inputs,
       }
       open StackFrame
@@ -94,33 +94,31 @@ let f = (webView, urlHash, state: AppState.t, action: AppAction.t): ReactUpdate.
         let stack = Belt.List.tailExn(execution.stack)
         let frame = Belt.List.headExn(stack)
         let scope = Belt.Map.String.getExn(execution.scopes, frame.scopeID)
-        let graphDefinitionID = ScopeGetGraphDefinitionID.f(execution.scopes, frame.scopeID)
-        let definition = Belt.Map.String.getExn(state.definitions, graphDefinitionID)
-        switch definition.implementation {
-        | GraphImplementation(graphImplementation) =>
-          let source = ExplicitConnectionSideGetSource.f(
-            frame.explicitConnectionSide,
-            graphImplementation.connections,
-          )
-          let newSourceValues = ValuesMerge.f(source, values, scope.sourceValues)
-          ReactUpdate.Update({
-            ...state,
-            execution: Some({
-              ...execution,
-              scheduledEvents: Belt.Set.add(execution.scheduledEvents, eventID),
-              stack: list{{...frame, action: Returning}, ...Belt.List.tailExn(stack)},
-              scopes: Belt.Map.String.set(
-                execution.scopes,
-                frame.scopeID,
-                {
-                  ...scope,
-                  sourceValues: newSourceValues,
-                },
-              ),
-            }),
-          })
-        | _ => raise(Exception.ShouldntHappen("add scheduled event must occur in a graph"))
-        }
+        let source = Belt.Option.getExn(
+          FollowConnection.f(
+            frame.explicitConnectionSide.connectionSide,
+            frame.scopeID,
+            execution.scopes,
+            state.definitions,
+          ),
+        )
+        let newSourceValues = ValuesMerge.f(source, values, scope.sourceValues)
+        ReactUpdate.Update({
+          ...state,
+          execution: Some({
+            ...execution,
+            scheduledEvents: Belt.Set.add(execution.scheduledEvents, eventID),
+            stack: list{{...frame, action: Returning}, ...Belt.List.tailExn(stack)},
+            scopes: Belt.Map.String.set(
+              execution.scopes,
+              frame.scopeID,
+              {
+                ...scope,
+                sourceValues: newSourceValues,
+              },
+            ),
+          }),
+        })
       }
     }
   }

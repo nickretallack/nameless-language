@@ -3,4 +3,5 @@ type t = {
   inputs: SourceValues.t,
   connectionNib: ConnectionNib.t,
   inlineFunctionContext: InlineFunctionContext.t,
+  callingContext: option<CallingContext.t>,
 }

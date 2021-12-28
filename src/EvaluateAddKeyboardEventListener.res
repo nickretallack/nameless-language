@@ -13,7 +13,7 @@ let f = (
     | InlineFunction(inlineFunctionContext) =>
       SideEffect(
         Some(Prerequisite),
-        (webView, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
+        (webView, callingContext, {send}: ReactUpdate.self<AppAction.t, AppState.t>) => {
           let element = switch Js.Nullable.toOption(webView.current) {
           | Some(element) => element
           | None =>
@@ -42,6 +42,7 @@ let f = (
                   ),
                   connectionNib: NibConnection(";"),
                   inlineFunctionContext: inlineFunctionContext,
+                  callingContext: callingContext,
                 }),
               ),
             element,
