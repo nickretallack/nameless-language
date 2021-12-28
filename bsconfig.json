@@ -10,7 +10,7 @@
   "warnings": {
     "error" : "+101"
   },
-	"bsc-flags": ["-bs-super-errors", "-bs-no-version-header"],
+	"bsc-flags": ["-bs-super-errors", "-bs-no-version-header", "-bs-g"],
 	"package-specs": [
 		{
 			"module": "commonjs",
