@@ -1,0 +1,1 @@
+clang++ -v compiler.cpp -isysroot `xcrun --show-sdk-path` `llvm-config --cxxflags --ldflags --system-libs --libs core` -L/opt/homebrew/lib -mmacosx-version-min=13.2 -o compiler

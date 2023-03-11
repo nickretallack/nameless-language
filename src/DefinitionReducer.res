@@ -113,6 +113,31 @@ let f = ({definitionID, action}: DefinitionActionRecord.t, state: AppState.t): R
         })
       }
     })
+
+    let publishedMap = Belt.Array.reduce(Belt.Map.String.valuesToArray(publishing), Belt.Map.String.empty, (publishingMap, publishingDependency) => {
+      switch (publishingDependency.kind) {
+        | Final(hashedContent) => Belt.Map.String.set(publishingMap, hashedContent.contentID, hashedContent.canonicalString)
+      }
+    })
+
+    let entryPointContentID = switch(Belt.Map.String.getExn(publishing, definitionID).kind) {
+      | Final(hashedContent) => hashedContent.contentID
+    }
+
+    let canonicalDefinitions = StringMapToJson.f(publishedMap, Json.Encode.string)
+    let compilerObject = Json.Encode.object_(list{
+      ("definitions", canonicalDefinitions),
+      ("entryPoint", Json.Encode.object_(list{
+        ("contentID", Json.Encode.string(entryPointContentID)),
+        ("nibIndex", Json.Encode.int(0),
+      )}))
+    })
+
+    Js.log(Json.stringify(compilerObject))
+
+    // Js.log(Json.stringify(Json.Encode.array(PublishingDependencyToJson.f, Belt.Map.String.valuesToArray(publishing))))
+    
+    // Js.log(Json.stringify(publishing))
     Js.log2("Publishing:", Belt.Map.String.toArray(publishing))
 
     ReactUpdate.NoUpdate
