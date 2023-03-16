@@ -16,10 +16,9 @@
 #include <map>
 #include <string>
 #include <vector>
-
 #include <iostream>
 #include <fstream>
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
 
 using std::to_string;
 using json = nlohmann::json;
@@ -32,9 +31,17 @@ static std::unique_ptr<Module> TheModule;
 static std::unique_ptr<IRBuilder<>> Builder;
 static std::map<std::string, json> definitions;
 
-// followConnection(json graph) {
-
-// }
+static std::map<std::string, APInt> symbolValues;
+static int currentSymbolValue = 0;
+Value *SymbolValueGet(std::string id)
+{
+  if (symbolValues.find(id) != symbolValues.end())
+  {
+    symbolValues[id] = currentSymbolValue;
+    currentSymbolValue++;
+  }
+  return ConstantInt::get(*TheContext, APInt(symbolValues[id]));
+}
 
 json findEntryPoint(json connections, int nibIndex)
 {
@@ -88,19 +95,59 @@ Value *compileSource(json graph, json source)
 
     if (kind == "function call")
     {
-      if (node["contentID"] == "dee1e378171f8de7a4882c442055f818fa248e4b030b7fa5d26e348f5c5fd496")
+      std::string contentID = node["contentID"];
+      if (contentID == "dee1e378171f8de7a4882c442055f818fa248e4b030b7fa5d26e348f5c5fd496") // add
       {
-        // add
         Value *left = compileSink(graph, nodeIndex, 0);
         Value *right = compileSink(graph, nodeIndex, 1);
 
         return Builder->CreateFAdd(left, right, "addtmp");
       }
+      else if (contentID == "0646a9929c4e9c05197370bf3a6cbe8ce646922b81e630f3a51e60ebe6ee6ad6") // branch
+      {
+        Value *condition = compileSink(graph, nodeIndex, 0);
+        Value *yes = SymbolValueGet("yes");
+        condition = Builder->CreateFCmpONE(condition, ConstantInt::get(*TheContext, APInt(64, 0)), "branch-if");
+
+        Function *TheFunction = Builder->GetInsertBlock()->getParent();
+
+        // Create blocks for the then and else cases.  Insert the 'then' block at the
+        // end of the function.
+        BasicBlock *ThenBB =
+            BasicBlock::Create(*TheContext, "then", TheFunction);
+        BasicBlock *ElseBB = BasicBlock::Create(*TheContext, "else", TheFunction);
+        BasicBlock *MergeBB = BasicBlock::Create(*TheContext, "ifcont", TheFunction);
+
+        Builder->CreateCondBr(condition, ThenBB, ElseBB);
+
+        Value *then = compileSink(graph, nodeIndex, 1);
+
+        Builder->CreateBr(MergeBB);
+        // Codegen of 'Then' can change the current block, update ThenBB for the PHI.
+        ThenBB = Builder->GetInsertBlock();
+
+        Builder->SetInsertPoint(ElseBB);
+        Value *otherwise = compileSink(graph, nodeIndex, 2);
+
+        Builder->CreateBr(MergeBB);
+        // codegen of 'Else' can change the current block, update ElseBB for the PHI.
+        ElseBB = Builder->GetInsertBlock();
+
+        TheFunction->insert(TheFunction->end(), MergeBB);
+        Builder->SetInsertPoint(MergeBB);
+        PHINode *PN =
+            Builder->CreatePHI(Type::getDoubleTy(*TheContext), 2, "iftmp");
+
+        PN->addIncoming(then, ThenBB);
+        PN->addIncoming(otherwise, ElseBB);
+        return PN;
+      }
     }
     else if (kind == "value")
     {
       json definition = definitions[node["contentID"]];
-      if (definition["type"] == "constant")
+      std::string type = definition["type"];
+      if (type == "constant")
       {
         json value = definition["value"];
         if (value["type"] == "number")
@@ -108,6 +155,10 @@ Value *compileSource(json graph, json source)
           double numberValue = value["value"];
           return ConstantFP::get(*TheContext, APFloat(numberValue));
         }
+      }
+      else if (type == "symbol")
+      {
+        return SymbolValueGet(definition["id"]);
       }
     }
   }
@@ -122,17 +173,15 @@ Value *compileGraph(json graph, int nibIndex)
   return compileSource(graph, source);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-  std::string entryDefinitionID = "2abb71cd4f4bebdde86c7375314649fbf184424b4356879f39758b11edd12915";
-  int entryNibIndex = 0;
+  if (argc < 2)
+  {
+    std::cout << "Pass a JSON path\n";
+    return 1;
+  }
 
-  TheContext = std::make_unique<LLVMContext>();
-  TheModule = std::make_unique<Module>("module", *TheContext);
-
-  Builder = std::make_unique<IRBuilder<>>(*TheContext);
-
-  std::ifstream f("published-samples/1+1.json");
+  std::ifstream f(argv[1]);
   json data = json::parse(f);
   json rawDefinitions = data["definitions"];
 
@@ -150,18 +199,22 @@ int main()
   if (type != "graph")
   {
     std::cout << "non-graph\n";
-    return 0;
+    return 1;
   }
+
+  InitializeNativeTarget();
+  InitializeNativeTargetAsmPrinter();
+
+  TheContext = std::make_unique<LLVMContext>();
+  TheModule = std::make_unique<Module>("module", *TheContext);
+
+  Builder = std::make_unique<IRBuilder<>>(*TheContext);
 
   std::cout << "compiling graph" << '\n';
   Value *value = compileGraph(definition, nibIndex);
+  std::cout << "done\n";
   value->print(errs());
   std::cout << '\n';
-
-  // std::cout << data.dump(4) << std::endl;
-  // InitializeNativeTarget();
-  // InitializeNativeTargetAsmPrinter();
-  // InitializeNativeTargetAsmParser();
 
   // TheJIT = ExitOnErr(KaleidoscopeJIT::Create());
 

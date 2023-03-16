@@ -4,6 +4,8 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
+                "/Users/nicholasretallack/Documents/llvm-project/build/include",
+                "/Users/nicholasretallack/Documents/llvm-project/llvm/include",
                 "/opt/homebrew/Cellar/nlohmann-json/3.11.2/include"
             ],
             "defines": [],
@@ -14,7 +16,11 @@
             "compilerPath": "/Users/nicholasretallack/Documents/llvm-project/build/bin/clang",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "macos-clang-arm64"
+            "intelliSenseMode": "macos-clang-arm64",
+            "compilerArgs": [
+                "-isysroot",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk"
+            ]
         }
     ],
     "version": 4
